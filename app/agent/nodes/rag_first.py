@@ -1,7 +1,9 @@
 from app.harness.state import LearningState
 from app.harness.enums import Stage
+from app.agent.spec_decorator import with_spec
 
 
+@with_spec(intent="qa_direct", node="rag_first")
 def rag_first_node(state: LearningState) -> dict:
     """qa_direct 分支：优先检索 RAG 知识"""
     user_input = state["user_input"]

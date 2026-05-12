@@ -1,7 +1,9 @@
 from app.harness.state import LearningState
 from app.harness.enums import Stage
+from app.agent.spec_decorator import with_spec
 
 
+@with_spec(intent="teach_loop", node="knowledge_retrieval")
 def knowledge_retrieval_node(state: LearningState) -> dict:
     """检索与主题相关的知识内容"""
     topic = state.get("memory", {}).get("topic", "")

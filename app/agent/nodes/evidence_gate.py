@@ -1,7 +1,9 @@
 from app.harness.state import LearningState
 from app.harness.enums import Stage, GateStatus
+from app.agent.spec_decorator import with_spec
 
 
+@with_spec(intent="qa_direct", node="evidence_gate")
 def evidence_gate_node(state: LearningState) -> dict:
     """证据守门：评估 RAG 检索质量，决定是否继续"""
     rag_found = state.get("retrieval", {}).get("rag_found", False)

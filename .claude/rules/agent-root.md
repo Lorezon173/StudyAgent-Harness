@@ -3,47 +3,45 @@ globs: app/agent/**/*.py
 description: 学习Agent框架根规范 — 编辑agent代码时自动加载
 ---
 
-# LearningAgent 框架根规范
+# LearningAgent 框架根规范（Claude Code 开发指引）
 
-本规范适用于 `app/agent/` 下所有代码，作为所有 Agent/SubAgent 的共享契约。
+本规范适用于 `app/agent/` 下所有代码，作为开发时的约束指引。
+运行时的 Agent 行为规范存储在 `app/agent/specs/` 目录。
 
 ## 架构约束
 
 - **四层单向依赖**：API → Orchestration → Harness → Infrastructure，严禁反向依赖
 - **薄壳节点**：节点只做「读 state → 委托 harness → 写 sub-state」，业务逻辑不写在节点内
-- **safe_node 包装**：所有节点必须通过 `safe_node` 装饰器注册，统一错误处理与可观测性
+- **safe_node 包装**：所有节点必须通过 `safe_node` 装饰器注册
+- **@with_spec 声明**：所有节点必须通过 `@with_spec(intent, node)` 声明规范来源
+- **system_prompt 来自 SpecLoader**：节点内不再硬编码 prompt，通过 `state["_system_prompt"]` 获取
 
 ## State 读写契约
 
-- 每个节点只写入自己所属的 sub-state 命名空间（routing / teaching / retrieval / evaluation / memory / meta）
-- 严禁跨命名空间写入（如 teaching 节点写入 retrieval 字段）
-- 读取其他命名空间是允许的（如 evaluate 读取 teaching.diagnosis）
-- 返回格式：`{"命名空间": {字段: 值}}`
+- 每个节点只写自己所属的 sub-state 命名空间
+- 严禁跨命名空间写入
+- `_system_prompt` 是由 `@with_spec` 注入的临时字段，不写入持久化 state
 
-## 路由决策规则
+## 规范文件同步规则（必须遵守）
 
-| 意图 | 入口节点 | 分支 |
-|------|---------|------|
-| TEACH_LOOP | history_check | 诊断→检索→讲解→复述检查→循环 |
-| QA_DIRECT | rag_first | 检索→证据门控→回答策略 |
-| REPLAN | replan → route_intent | 重新路由 |
-| REVIEW | summarize | 直接总结 |
+项目采用双文件分离：`.md`（开发者规范）+ `.prompt.md`（LLM 运行时 Prompt）
 
-## 错误处理
+**修改任何一个 `.md` 规范文件时，必须同步修改对应的 `.prompt.md` 文件。**
 
-- 节点异常由 `safe_node` 捕获，自动路由到 `recovery` 节点
-- `recovery` 节点根据 `ErrorKind` 枚举选择恢复策略
-- 严禁在节点内部吞掉异常（`except: pass`）
+对应关系：
+- `specs/_root.md` ↔ `specs/_root.prompt.md`
+- `specs/agents/teaching.md` ↔ `specs/agents/teaching.prompt.md`
+- `specs/prompts/diagnose.md` ↔ `specs/prompts/diagnose.prompt.md`
+- （其他文件同理）
 
-## 可观测性
+如果只改了规范没改 prompt，或者只改了 prompt 没改规范，视为不完整修改。
 
-- 所有关键操作通过 `Observability` 单例记录 trace/metric/log
-- 节点入口/出口记录 stage 变更到 `meta.stage`
+## 渐进式加载体系
 
-## 渐进式规范加载
+```
+层级0: specs/_root.prompt.md        → 始终加载（全局规则）
+层级1: specs/agents/<name>.prompt.md → 路由后加载（角色定义）
+层级2: specs/prompts/<name>.prompt.md → 节点执行时加载（精确指令）
+```
 
-当需要深入了解某个 SubAgent 的行为规范时，调用对应的 Skill：
-- 教学 Agent：invoke Skill `teaching-agent`
-- 评估 Agent：invoke Skill `eval-agent`
-- 检索 Agent：invoke Skill `retrieval-agent`
-- 编排 Agent：invoke Skill `orchestrator-agent`
+SpecLoader 通过 `intent_map.yaml` 查询意图→资源映射，按需组合三层 prompt。

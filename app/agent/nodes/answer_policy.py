@@ -1,17 +1,20 @@
 from app.harness.state import LearningState
 from app.infrastructure.llm import FakeLLM
 from app.harness.enums import Stage
+from app.agent.spec_decorator import with_spec
 
 _llm = FakeLLM()
 
 
+@with_spec(intent="qa_direct", node="answer_policy")
 def answer_policy_node(state: LearningState) -> dict:
     """根据 RAG 证据和策略生成回答"""
+    system_prompt = state["_system_prompt"]
     rag_context = state.get("retrieval", {}).get("rag_context", "")
     user_input = state["user_input"]
     result = _llm.invoke(
-        "你是问答助手",
-        f"知识：{rag_context}\n用户问题：{user_input}\n请回答",
+        system_prompt,
+        f"知识：{rag_context}\n用户问题：{user_input}",
     )
     return {
         "teaching": {"reply": result},

@@ -1,0 +1,87 @@
+# 意图地图：定义每个意图下的节点流程和资源需求
+# SpecLoader 根据此地图渐进式加载规范和 prompt
+
+teach_loop:
+  agent: teaching
+  flow:
+    route_intent:
+      needs: [prompts/route_intent]
+      next: history_check
+    history_check:
+      needs: [prompts/history_check]
+      next: diagnose
+    diagnose:
+      needs: [prompts/diagnose]
+      next: knowledge_retrieval
+    knowledge_retrieval:
+      needs: [prompts/knowledge_retrieval]
+      next: explain
+    explain:
+      needs: [prompts/explain]
+      next: restate_check
+    restate_check:
+      needs: [prompts/restate_check]
+      next:
+        followup:
+          needs: [prompts/followup]
+          next: evaluate
+        explain:
+          needs: [prompts/explain]
+          next: restate_check
+        summarize:
+          needs: [prompts/summarize]
+          next: END
+    followup:
+      needs: [prompts/followup]
+      next: evaluate
+    evaluate:
+      needs: [prompts/evaluate]
+      next: summarize
+    summarize:
+      needs: [prompts/summarize]
+      next: END
+
+qa_direct:
+  agent: retrieval
+  flow:
+    route_intent:
+      needs: [prompts/route_intent]
+      next: rag_first
+    rag_first:
+      needs: [prompts/rag_first]
+      next: evidence_gate
+    evidence_gate:
+      needs: [prompts/evidence_gate]
+      next:
+        answer_policy:
+          needs: [prompts/answer_policy]
+          next: evaluate
+        recovery:
+          needs: [prompts/recovery]
+          next: answer_policy
+    answer_policy:
+      needs: [prompts/answer_policy]
+      next: evaluate
+    recovery:
+      needs: [prompts/recovery]
+      next: answer_policy
+    evaluate:
+      needs: [prompts/evaluate]
+      next: summarize
+    summarize:
+      needs: [prompts/summarize]
+      next: END
+
+replan:
+  agent: orchestrator
+  flow:
+    replan:
+      needs: [prompts/replan]
+      next: route_intent
+
+review:
+  agent: orchestrator
+  flow:
+    summarize:
+      needs: [prompts/summarize]
+      next: END
