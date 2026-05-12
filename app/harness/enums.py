@@ -5,13 +5,15 @@ class Stage(StrEnum):
     """节点执行阶段"""
     INIT = "init"
     ROUTING = "routing"
+    HISTORY_CHECK = "history_check"
+    KNOWLEDGE_RETRIEVAL = "knowledge_retrieval"
     RETRIEVING = "retrieving"
     DIAGNOSING = "diagnosing"
     EXPLAINING = "explaining"
     RESTATE_CHECK = "restate_check"
     FOLLOWUP = "followup"
-    EVALUATING = "evaluating"
-    SUMMARIZING = "summarizing"
+    EVALUATE = "evaluate"
+    SUMMARIZE = "summarize"
     RECOVERING = "recovering"
     COMPLETE = "complete"
 
@@ -33,9 +35,9 @@ class GateStatus(StrEnum):
 
 class MasteryLevel(StrEnum):
     """掌握度等级"""
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+    WEAK = "weak"
+    PARTIAL = "partial"
+    MASTERED = "mastered"
 
 
 class ErrorKind(StrEnum):

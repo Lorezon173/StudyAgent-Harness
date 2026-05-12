@@ -28,10 +28,13 @@ class LLMService:
 
 class FakeLLM:
     RESPONSES = {
+        "掌握度评估": '{"mastery_score": 65, "mastery_level": "partial", "mastery_rationale": "基本概念掌握，细节不足"}',
+        "意图分类": '{"intent": "teach_loop", "confidence": 0.9}',
+        "学习总结": "本次学习了二分查找的核心概念，掌握程度为中等。建议复习边界条件和时间复杂度分析。",
         "诊断": "用户对主题有基础了解，需要补充细节",
         "讲解": "知识点讲解内容...",
-        "评估": '{"mastery_score": 65, "mastery_level": "medium"}',
-        "意图": '{"intent": "teach_loop", "confidence": 0.9}',
+        "追问": "能否解释一下时间复杂度为什么是O(log n)？",
+        "评估": "用户理解较为准确",
     }
 
     def invoke(self, system_prompt: str, user_prompt: str, **kwargs) -> str:
