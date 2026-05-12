@@ -1,60 +1,60 @@
-# LearningAgent Harness Multi-Agent Implementation Plan
+# LearningAgent Harness 多智能体实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **面向智能体工作者：** 必需子技能：使用 superpowers:subagent-driven-development（推荐）或 superpowers:executing-plans 按任务逐步实施本计划。步骤使用复选框（`- [ ]`）语法进行跟踪。
 
-**Goal:** Build a complete LearningAgent Harness system with LangGraph orchestration, LlamaIndex RAG, SQLAlchemy storage, and Multi-Agent SubGraph collaboration.
+**目标：** 构建完整的 LearningAgent Harness 系统，包含 LangGraph 编排、LlamaIndex RAG、SQLAlchemy 存储和多智能体 SubGraph 协作。
 
-**Architecture:** Four-layer strict dependency (API → Orchestration → Harness → Infrastructure). State flows through TypedDict sub-states, nodes are thin shells delegating to harness components, Multi-Agent uses LangGraph SubGraph pattern.
+**架构：** 四层严格单向依赖（API → 编排层 → Harness 层 → 基础设施层）。状态通过 TypedDict 子状态流转，节点是委托给 Harness 组件的薄壳，多智能体使用 LangGraph SubGraph 模式。
 
-**Tech Stack:** FastAPI, LangGraph, LlamaIndex, SQLAlchemy 2.0 async, Chroma, ragas, Langfuse, Chainlit, Vue 3 + Vite
+**技术栈：** FastAPI、LangGraph、LlamaIndex、SQLAlchemy 2.0 异步、Chroma、ragas、Langfuse、Chainlit、Vue 3 + Vite
 
 ---
 
-## Phase 1: Project Skeleton + State Model + Database
+## 阶段 1：项目骨架 + 状态模型 + 数据库
 
-### Task 1: Initialize project with uv and create directory structure
+### 任务 1：使用 uv 初始化项目并创建目录结构
 
-**Files:**
-- Create: `pyproject.toml`
-- Create: `app/__init__.py`
-- Create: `app/core/__init__.py`
-- Create: `app/harness/__init__.py`
-- Create: `app/harness/state/__init__.py`
-- Create: `app/models/__init__.py`
-- Create: `app/agent/__init__.py`
-- Create: `app/agent/nodes/__init__.py`
-- Create: `app/agent/multi_agent/__init__.py`
-- Create: `app/agent/system_eval/__init__.py`
-- Create: `app/infrastructure/__init__.py`
-- Create: `app/infrastructure/rag/__init__.py`
-- Create: `app/infrastructure/storage/__init__.py`
-- Create: `app/infrastructure/external/__init__.py`
-- Create: `app/infrastructure/extraction/__init__.py`
-- Create: `app/api/__init__.py`
-- Create: `app/worker/__init__.py`
-- Create: `app/ui/__init__.py`
-- Create: `tests/__init__.py`
-- Create: `tests/unit/__init__.py`
-- Create: `tests/unit/harness/__init__.py`
-- Create: `tests/unit/infrastructure/__init__.py`
-- Create: `tests/unit/agent/__init__.py`
-- Create: `tests/integration/__init__.py`
-- Create: `tests/api/__init__.py`
+**文件：**
+- 创建：`pyproject.toml`
+- 创建：`app/__init__.py`
+- 创建：`app/core/__init__.py`
+- 创建：`app/harness/__init__.py`
+- 创建：`app/harness/state/__init__.py`
+- 创建：`app/models/__init__.py`
+- 创建：`app/agent/__init__.py`
+- 创建：`app/agent/nodes/__init__.py`
+- 创建：`app/agent/multi_agent/__init__.py`
+- 创建：`app/agent/system_eval/__init__.py`
+- 创建：`app/infrastructure/__init__.py`
+- 创建：`app/infrastructure/rag/__init__.py`
+- 创建：`app/infrastructure/storage/__init__.py`
+- 创建：`app/infrastructure/external/__init__.py`
+- 创建：`app/infrastructure/extraction/__init__.py`
+- 创建：`app/api/__init__.py`
+- 创建：`app/worker/__init__.py`
+- 创建：`app/ui/__init__.py`
+- 创建：`tests/__init__.py`
+- 创建：`tests/unit/__init__.py`
+- 创建：`tests/unit/harness/__init__.py`
+- 创建：`tests/unit/infrastructure/__init__.py`
+- 创建：`tests/unit/agent/__init__.py`
+- 创建：`tests/integration/__init__.py`
+- 创建：`tests/api/__init__.py`
 
-- [ ] **Step 1: Initialize uv project and create pyproject.toml**
+- [ ] **第 1 步：初始化 uv 项目并创建 pyproject.toml**
 
 ```bash
 cd d:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness
 uv init --no-readme
 ```
 
-Then replace `pyproject.toml` with:
+然后替换 `pyproject.toml` 为：
 
 ```toml
 [project]
 name = "learning-agent-harness"
 version = "0.1.0"
-description = "LearningAgent Harness - Feynman method multi-agent learning system"
+description = "LearningAgent Harness - 基于费曼学习法的多智能体学习系统"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",
@@ -89,31 +89,31 @@ dev = [
 ]
 ```
 
-- [ ] **Step 2: Install dependencies**
+- [ ] **第 2 步：安装依赖**
 
 ```bash
 uv sync
 ```
 
-Expected: Dependencies installed successfully.
+预期结果：依赖安装成功。
 
-- [ ] **Step 3: Create all __init__.py files**
+- [ ] **第 3 步：创建所有 __init__.py 文件**
 
 ```bash
 mkdir -p app/core app/harness/state app/models app/agent/nodes app/agent/multi_agent app/agent/system_eval app/infrastructure/rag app/infrastructure/storage app/infrastructure/external app/infrastructure/extraction app/api app/worker app/ui tests/unit/harness tests/unit/infrastructure tests/unit/agent tests/integration tests/api
 ```
 
-Then create empty `__init__.py` in each directory.
+然后为每个目录创建空的 `__init__.py`。
 
-- [ ] **Step 4: Verify project structure**
+- [ ] **第 4 步：验证项目结构**
 
 ```bash
 uv run python -c "import app; print('OK')"
 ```
 
-Expected: `OK`
+预期结果：`OK`
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git init
@@ -123,13 +123,13 @@ git commit -m "chore: initialize project with uv and directory structure"
 
 ---
 
-### Task 2: Create enums module
+### 任务 2：创建枚举模块
 
-**Files:**
-- Create: `app/harness/enums.py`
-- Test: `tests/unit/harness/test_enums.py`
+**文件：**
+- 创建：`app/harness/enums.py`
+- 测试：`tests/unit/harness/test_enums.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_enums.py
@@ -210,15 +210,15 @@ def test_enum_is_string():
     assert isinstance(Intent.TEACH_LOOP, str)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_enums.py -v
 ```
 
-Expected: FAIL — `ModuleNotFoundError: No module named 'app.harness.enums'`
+预期结果：失败 — `ModuleNotFoundError: No module named 'app.harness.enums'`
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/harness/enums.py
@@ -287,7 +287,7 @@ class MemoryScope(StrEnum):
     GLOBAL = "global"
 
 class AgentRole(StrEnum):
-    """Multi-Agent 角色标识"""
+    """多智能体角色标识"""
     TEACHING = "teaching"
     EVAL = "eval"
     RETRIEVAL = "retrieval"
@@ -301,15 +301,15 @@ class EvalMetric(StrEnum):
     CONTEXT_RECALL = "context_recall"
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_enums.py -v
 ```
 
-Expected: All 10 tests PASS
+预期结果：全部 10 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/harness/enums.py tests/unit/harness/test_enums.py
@@ -318,19 +318,19 @@ git commit -m "feat: add harness enums with StrEnum definitions"
 
 ---
 
-### Task 3: Create state model (sub-states + LearningState)
+### 任务 3：创建状态模型（子状态 + LearningState）
 
-**Files:**
-- Create: `app/harness/state/routing.py`
-- Create: `app/harness/state/teaching.py`
-- Create: `app/harness/state/retrieval.py`
-- Create: `app/harness/state/evaluation.py`
-- Create: `app/harness/state/memory.py`
-- Create: `app/harness/state/meta.py`
-- Create: `app/harness/state/__init__.py`
-- Test: `tests/unit/harness/test_state.py`
+**文件：**
+- 创建：`app/harness/state/routing.py`
+- 创建：`app/harness/state/teaching.py`
+- 创建：`app/harness/state/retrieval.py`
+- 创建：`app/harness/state/evaluation.py`
+- 创建：`app/harness/state/memory.py`
+- 创建：`app/harness/state/meta.py`
+- 创建：`app/harness/state/__init__.py`
+- 测试：`tests/unit/harness/test_state.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_state.py
@@ -396,17 +396,17 @@ def test_learning_state_total_false_allows_partial():
     assert state["user_input"] == "hello"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_state.py -v
 ```
 
-Expected: FAIL — `ModuleNotFoundError`
+预期结果：失败 — `ModuleNotFoundError`
 
-- [ ] **Step 3: Write all sub-state files**
+- [ ] **第 3 步：编写所有子状态文件**
 
-Create each file with the exact content from the spec Section 5.3:
+按照设计文档第 5.3 节的精确内容创建每个文件：
 
 `app/harness/state/routing.py`:
 ```python
@@ -521,7 +521,7 @@ from .memory import MemoryState
 from .meta import MetaState
 
 class LearningState(TypedDict, total=False):
-    """学习 Agent 总状态 — 所有图节点共享"""
+    """学习智能体总状态 — 所有图节点共享"""
     user_input: str
     routing: RoutingState
     teaching: TeachingState
@@ -531,23 +531,23 @@ class LearningState(TypedDict, total=False):
     meta: MetaState
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_state.py -v
 ```
 
-Expected: All 8 tests PASS
+预期结果：全部 8 个测试通过
 
-- [ ] **Step 5: Verify gate check**
+- [ ] **第 5 步：验证门禁检查**
 
 ```bash
-uv run python -c "from app.harness.state import LearningState; print('GATE PASS')"
+uv run python -c "from app.harness.state import LearningState; print('门禁通过')"
 ```
 
-Expected: `GATE PASS`
+预期结果：`门禁通过`
 
-- [ ] **Step 6: Commit**
+- [ ] **第 6 步：提交**
 
 ```bash
 git add app/harness/state/ tests/unit/harness/test_state.py
@@ -556,15 +556,15 @@ git commit -m "feat: add layered state model with LearningState composition"
 
 ---
 
-### Task 4: Create config and database modules
+### 任务 4：创建配置和数据库模块
 
-**Files:**
-- Create: `app/core/config.py`
-- Create: `app/core/database.py`
-- Create: `app/models/tables.py`
-- Test: `tests/unit/test_database.py`
+**文件：**
+- 创建：`app/core/config.py`
+- 创建：`app/core/database.py`
+- 创建：`app/models/tables.py`
+- 测试：`tests/unit/test_database.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/test_database.py
@@ -626,15 +626,15 @@ async def test_knowledge_table_has_doc_ids():
     await engine.dispose()
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/test_database.py -v
 ```
 
-Expected: FAIL — `ModuleNotFoundError`
+预期结果：失败 — `ModuleNotFoundError`
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 `app/core/config.py`:
 ```python
@@ -728,15 +728,15 @@ class EvalTable(Base):
     created_at = Column(DateTime, server_default=func.now())
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/test_database.py -v
 ```
 
-Expected: All 3 tests PASS
+预期结果：全部 3 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/core/config.py app/core/database.py app/models/tables.py tests/unit/test_database.py
@@ -745,13 +745,13 @@ git commit -m "feat: add config, database engine, and ORM table definitions"
 
 ---
 
-### Task 5: Create FastAPI application entry point
+### 任务 5：创建 FastAPI 应用入口
 
-**Files:**
-- Create: `app/main.py`
-- Test: `tests/unit/test_main.py`
+**文件：**
+- 创建：`app/main.py`
+- 测试：`tests/unit/test_main.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/test_main.py
@@ -767,15 +767,15 @@ async def test_app_starts():
         assert response.status_code == 200
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/test_main.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/main.py
@@ -808,15 +808,15 @@ if os.path.exists("web/dist"):
         return FileResponse("web/dist/index.html")
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/test_main.py -v
 ```
 
-Expected: PASS
+预期结果：通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/main.py tests/unit/test_main.py
@@ -825,15 +825,15 @@ git commit -m "feat: add FastAPI application entry with lifespan and health endp
 
 ---
 
-## Phase 2: Harness Core Components (Minimal)
+## 阶段 2：Harness 核心组件（最小集）
 
-### Task 6: Create Observability module
+### 任务 6：创建可观测性模块
 
-**Files:**
-- Create: `app/harness/observability.py`
-- Test: `tests/unit/harness/test_observability.py`
+**文件：**
+- 创建：`app/harness/observability.py`
+- 测试：`tests/unit/harness/test_observability.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_observability.py
@@ -864,15 +864,15 @@ def test_get_observability_returns_singleton():
     assert obs1 is obs2
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_observability.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/harness/observability.py
@@ -910,15 +910,15 @@ def get_observability() -> Observability:
     return _instance
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_observability.py -v
 ```
 
-Expected: All 4 tests PASS
+预期结果：全部 4 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/harness/observability.py tests/unit/harness/test_observability.py
@@ -927,13 +927,13 @@ git commit -m "feat: add Observability module with structured logging"
 
 ---
 
-### Task 7: Create ErrorHandler module
+### 任务 7：创建错误处理模块
 
-**Files:**
-- Create: `app/harness/error_handler.py`
-- Test: `tests/unit/harness/test_error_handler.py`
+**文件：**
+- 创建：`app/harness/error_handler.py`
+- 测试：`tests/unit/harness/test_error_handler.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_error_handler.py
@@ -975,15 +975,15 @@ def test_get_error_handler_returns_singleton():
     assert h1 is h2
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_error_handler.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/harness/error_handler.py
@@ -1037,15 +1037,15 @@ def get_error_handler() -> ErrorHandler:
     return _instance
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_error_handler.py -v
 ```
 
-Expected: All 5 tests PASS
+预期结果：全部 5 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/harness/error_handler.py tests/unit/harness/test_error_handler.py
@@ -1054,13 +1054,13 @@ git commit -m "feat: add ErrorHandler with classification and recovery mapping"
 
 ---
 
-### Task 8: Create IntentRouter module (rule-based only)
+### 任务 8：创建意图路由模块（仅基于规则）
 
-**Files:**
-- Create: `app/harness/intent_router.py`
-- Test: `tests/unit/harness/test_intent_router.py`
+**文件：**
+- 创建：`app/harness/intent_router.py`
+- 测试：`tests/unit/harness/test_intent_router.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_intent_router.py
@@ -1103,15 +1103,15 @@ def test_qa_evaluate():
     assert result["intent"] == Intent.QA_DIRECT
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_intent_router.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/harness/intent_router.py
@@ -1141,23 +1141,23 @@ class IntentRouter:
         )
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_intent_router.py -v
 ```
 
-Expected: All 6 tests PASS
+预期结果：全部 6 个测试通过
 
-- [ ] **Step 5: Verify gate check**
+- [ ] **第 5 步：验证门禁检查**
 
 ```bash
-uv run python -c "from app.harness.intent_router import IntentRouter; r = IntentRouter().route('我想学二分查找', None, []); assert r['intent'] == 'teach_loop'; print('GATE PASS')"
+uv run python -c "from app.harness.intent_router import IntentRouter; r = IntentRouter().route('我想学二分查找', None, []); assert r['intent'] == 'teach_loop'; print('门禁通过')"
 ```
 
-Expected: `GATE PASS`
+预期结果：`门禁通过`
 
-- [ ] **Step 6: Commit**
+- [ ] **第 6 步：提交**
 
 ```bash
 git add app/harness/intent_router.py tests/unit/harness/test_intent_router.py
@@ -1166,13 +1166,13 @@ git commit -m "feat: add IntentRouter with rule-based routing and fallback"
 
 ---
 
-### Task 9: Create StateManager module
+### 任务 9：创建状态管理器模块
 
-**Files:**
-- Create: `app/harness/state_manager.py`
-- Test: `tests/unit/harness/test_state_manager.py`
+**文件：**
+- 创建：`app/harness/state_manager.py`
+- 测试：`tests/unit/harness/test_state_manager.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/harness/test_state_manager.py
@@ -1226,15 +1226,15 @@ def test_snapshot_and_restore():
     assert restored["routing"]["intent"] == "teach_loop"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/harness/test_state_manager.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/harness/state_manager.py
@@ -1274,15 +1274,15 @@ class StateManager:
         return copy.deepcopy(self._snapshots[snapshot_id])
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/harness/test_state_manager.py -v
 ```
 
-Expected: All 4 tests PASS
+预期结果：全部 4 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/harness/state_manager.py tests/unit/harness/test_state_manager.py
@@ -1291,15 +1291,15 @@ git commit -m "feat: add StateManager with transition, snapshot, and restore"
 
 ---
 
-## Phase 3: Infrastructure Minimal Set
+## 阶段 3：基础设施最小集
 
-### Task 10: Create LLM service
+### 任务 10：创建大语言模型服务
 
-**Files:**
-- Create: `app/infrastructure/llm.py`
-- Test: `tests/unit/infrastructure/test_llm.py`
+**文件：**
+- 创建：`app/infrastructure/llm.py`
+- 测试：`tests/unit/infrastructure/test_llm.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/infrastructure/test_llm.py
@@ -1325,15 +1325,15 @@ def test_llm_service_has_interface():
     assert hasattr(LLMService, 'invoke_json')
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/infrastructure/test_llm.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 ```python
 # app/infrastructure/llm.py
@@ -1382,15 +1382,15 @@ class FakeLLM:
         return json.loads(self.invoke(system_prompt, user_prompt))
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/infrastructure/test_llm.py -v
 ```
 
-Expected: All 4 tests PASS
+预期结果：全部 4 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/infrastructure/llm.py tests/unit/infrastructure/test_llm.py
@@ -1399,14 +1399,14 @@ git commit -m "feat: add LLMService with langchain-openai and FakeLLM for tests"
 
 ---
 
-### Task 11: Create session store (SQLAlchemy)
+### 任务 11：创建会话存储（SQLAlchemy）
 
-**Files:**
-- Create: `app/infrastructure/storage/session_store.py`
-- Create: `app/infrastructure/storage/user_store.py`
-- Test: `tests/unit/infrastructure/test_stores.py`
+**文件：**
+- 创建：`app/infrastructure/storage/session_store.py`
+- 创建：`app/infrastructure/storage/user_store.py`
+- 测试：`tests/unit/infrastructure/test_stores.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/infrastructure/test_stores.py
@@ -1454,15 +1454,15 @@ async def test_user_create_and_find(db):
     assert found.username == "testuser"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/infrastructure/test_stores.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 `app/infrastructure/storage/session_store.py`:
 ```python
@@ -1538,15 +1538,15 @@ class UserStore:
         return result.scalar_one_or_none()
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/infrastructure/test_stores.py -v
 ```
 
-Expected: All 3 tests PASS
+预期结果：全部 3 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/infrastructure/storage/session_store.py app/infrastructure/storage/user_store.py tests/unit/infrastructure/test_stores.py
@@ -1555,16 +1555,16 @@ git commit -m "feat: add SessionStore and UserStore with SQLAlchemy async"
 
 ---
 
-## Phase 4: Minimal Graph
+## 阶段 4：最小图
 
-### Task 12: Create safe_node wrapper and route_intent node
+### 任务 12：创建 safe_node 包装器和 route_intent 节点
 
-**Files:**
-- Create: `app/agent/node_wrapper.py`
-- Create: `app/agent/nodes/route_intent.py`
-- Test: `tests/unit/agent/test_route_intent.py`
+**文件：**
+- 创建：`app/agent/node_wrapper.py`
+- 创建：`app/agent/nodes/route_intent.py`
+- 测试：`tests/unit/agent/test_route_intent.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/agent/test_route_intent.py
@@ -1600,15 +1600,15 @@ def test_safe_node_catches_exception():
     assert result["meta"]["error_kind"] is not None
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/agent/test_route_intent.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write implementation**
+- [ ] **第 3 步：编写实现**
 
 `app/agent/node_wrapper.py`:
 ```python
@@ -1651,15 +1651,15 @@ def route_intent_node(state: LearningState) -> dict:
     return {"routing": dict(routing)}
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/agent/test_route_intent.py -v
 ```
 
-Expected: All 2 tests PASS
+预期结果：全部 2 个测试通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/agent/node_wrapper.py app/agent/nodes/route_intent.py tests/unit/agent/test_route_intent.py
@@ -1668,16 +1668,16 @@ git commit -m "feat: add safe_node wrapper and route_intent node"
 
 ---
 
-### Task 13: Create diagnose and explain nodes + minimal graph
+### 任务 13：创建诊断和讲解节点 + 最小图
 
-**Files:**
-- Create: `app/agent/nodes/diagnose.py`
-- Create: `app/agent/nodes/explain.py`
-- Create: `app/agent/routers.py`
-- Create: `app/agent/graph.py`
-- Test: `tests/unit/agent/test_minimal_graph.py`
+**文件：**
+- 创建：`app/agent/nodes/diagnose.py`
+- 创建：`app/agent/nodes/explain.py`
+- 创建：`app/agent/routers.py`
+- 创建：`app/agent/graph.py`
+- 测试：`tests/unit/agent/test_minimal_graph.py`
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **第 1 步：编写失败测试**
 
 ```python
 # tests/unit/agent/test_minimal_graph.py
@@ -1699,15 +1699,15 @@ def test_minimal_graph_route_intent():
     assert result["routing"]["intent"] == Intent.TEACH_LOOP
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **第 2 步：运行测试验证失败**
 
 ```bash
 uv run pytest tests/unit/agent/test_minimal_graph.py -v
 ```
 
-Expected: FAIL
+预期结果：失败
 
-- [ ] **Step 3: Write all node files**
+- [ ] **第 3 步：编写所有节点文件**
 
 `app/agent/nodes/diagnose.py`:
 ```python
@@ -1784,15 +1784,15 @@ def build_learning_graph():
     return graph.compile(checkpointer=MemorySaver())
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **第 4 步：运行测试验证通过**
 
 ```bash
 uv run pytest tests/unit/agent/test_minimal_graph.py -v
 ```
 
-Expected: PASS
+预期结果：通过
 
-- [ ] **Step 5: Commit**
+- [ ] **第 5 步：提交**
 
 ```bash
 git add app/agent/nodes/diagnose.py app/agent/nodes/explain.py app/agent/routers.py app/agent/graph.py tests/unit/agent/test_minimal_graph.py
@@ -1801,17 +1801,17 @@ git commit -m "feat: add minimal graph with route_intent, diagnose, explain node
 
 ---
 
-## Remaining Phases (Steps 5-12)
+## 后续阶段（第 5-12 步）
 
-The same TDD pattern continues for:
+相同的测试驱动开发模式将继续用于：
 
-- **Phase 5 (Step 5):** Complete teach_loop — add history_check, knowledge_retrieval, restate_check, followup, evaluate, summarize nodes; update routers with full conditional edges
-- **Phase 6 (Step 6):** qa_direct + recovery — add rag_first, evidence_gate, answer_policy, recovery nodes; add guardrails module
-- **Phase 7 (Step 7):** Remaining harness + RAG — add tool_registry, memory manager, LLM intent router, RAG coordinator, reranker, embedding, strategies
-- **Phase 8 (Step 8):** Full infrastructure — add eval_store, knowledge_store, external services, file extraction, Alembic migrations
-- **Phase 9 (Step 9):** API layer — add all API endpoints with schemas
-- **Phase 10 (Step 10):** Multi-Agent SubGraph — add MultiAgentState, teaching_graph, eval_graph, retrieval_graph, orchestrator_graph, multi_graph
-- **Phase 11 (Step 11):** Tests + UI + Worker — add conftest with FakeRAGStore, Chainlit integration, Vue project init, Celery worker
-- **Phase 12 (Step 12):** Cleanup + docs — README, dependency validation script, pyproject.toml finalization
+- **阶段 5（第 5 步）：** 完整教学循环 — 添加 history_check、knowledge_retrieval、restate_check、followup、evaluate、summarize 节点；更新路由器以包含完整的条件边
+- **阶段 6（第 6 步）：** 直接问答 + 恢复 — 添加 rag_first、evidence_gate、answer_policy、recovery 节点；添加安全边界模块
+- **阶段 7（第 7 步）：** 剩余 Harness + RAG — 添加 tool_registry、memory manager、LLM 意图路由、RAG 协调器、重排序器、嵌入、检索策略
+- **阶段 8（第 8 步）：** 完整基础设施 — 添加 eval_store、knowledge_store、外部服务、文件提取、Alembic 迁移
+- **阶段 9（第 9 步）：** API 层 — 添加所有 API 端点及数据模型
+- **阶段 10（第 10 步）：** 多智能体 SubGraph — 添加 MultiAgentState、teaching_graph、eval_graph、retrieval_graph、orchestrator_graph、multi_graph
+- **阶段 11（第 11 步）：** 测试 + 用户界面 + 后台任务 — 添加 conftest（含 FakeRAGStore）、Chainlit 集成、Vue 项目初始化、Celery 后台任务
+- **阶段 12（第 12 步）：** 收尾 + 文档 — README、依赖验证脚本、pyproject.toml 最终定稿
 
-Each phase follows the exact same TDD pattern as Phases 1-4: write failing test → verify fail → write implementation → verify pass → commit.
+每个阶段遵循与阶段 1-4 完全相同的测试驱动开发模式：编写失败测试 → 验证失败 → 编写实现 → 验证通过 → 提交。
