@@ -4,6 +4,14 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.core.database import init_db
+from app.api.auth import router as auth_router
+from app.api.chat import router as chat_router
+from app.api.chat_stream import router as chat_stream_router
+from app.api.chat_multi import router as chat_multi_router
+from app.api.eval import router as eval_router
+from app.api.knowledge import router as knowledge_router
+from app.api.sessions import router as sessions_router
+from app.api.profile import router as profile_router
 
 
 @asynccontextmanager
@@ -13,6 +21,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="LearningAgent", version="0.1.0", lifespan=lifespan)
+
+app.include_router(auth_router, prefix="/api")
+app.include_router(chat_router, prefix="/api")
+app.include_router(chat_stream_router, prefix="/api")
+app.include_router(chat_multi_router, prefix="/api")
+app.include_router(eval_router, prefix="/api")
+app.include_router(knowledge_router, prefix="/api")
+app.include_router(sessions_router, prefix="/api")
+app.include_router(profile_router, prefix="/api")
 
 
 @app.get("/health")
