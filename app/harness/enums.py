@@ -66,8 +66,9 @@ class RetrievalMode(StrEnum):
 
 
 class MemoryScope(StrEnum):
-    """记忆作用域"""
+    """记忆作用域 — 5级"""
     WORKING = "working"
+    EPISODE = "episode"
     SESSION = "session"
     USER = "user"
     GLOBAL = "global"

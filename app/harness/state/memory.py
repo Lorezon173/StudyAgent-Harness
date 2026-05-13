@@ -13,3 +13,7 @@ class MemoryState(TypedDict, total=False):
     has_history: bool
     history_summary: str
     history_mastery: str
+    short_term_ids: List[str]
+    long_term_context: str
+    user_profile_summary: str
+    mastery_history: List[dict]
