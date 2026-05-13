@@ -2,10 +2,10 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    app_name: str = "LearningAgent"
+    app_name: str = "StudyAgent"
     app_version: str = "0.1.0"
     debug: bool = True
-    database_url: str = "sqlite+aiosqlite:///./learning_agent.db"
+    database_url: str = "sqlite+aiosqlite:///./study_agent.db"
     openai_api_key: str = ""
     openai_base_url: str = ""
     openai_model: str = "gpt-4o-mini"

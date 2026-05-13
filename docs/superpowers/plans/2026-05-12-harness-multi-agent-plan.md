@@ -1,8 +1,8 @@
-# LearningAgent Harness 多智能体实施计划
+# StudyAgent Harness 多智能体实施计划
 
 > **面向智能体工作者：** 必需子技能：使用 superpowers:subagent-driven-development（推荐）或 superpowers:executing-plans 按任务逐步实施本计划。步骤使用复选框（`- [ ]`）语法进行跟踪。
 
-**目标：** 构建完整的 LearningAgent Harness 系统，包含 LangGraph 编排、LlamaIndex RAG、SQLAlchemy 存储和多智能体 SubGraph 协作。
+**目标：** 构建完整的 StudyAgent Harness 系统，包含 LangGraph 编排、LlamaIndex RAG、SQLAlchemy 存储和多智能体 SubGraph 协作。
 
 **架构：** 四层严格单向依赖（API → 编排层 → Harness 层 → 基础设施层）。状态通过 TypedDict 子状态流转，节点是委托给 Harness 组件的薄壳，多智能体使用 LangGraph SubGraph 模式。
 
@@ -44,7 +44,7 @@
 - [ ] **第 1 步：初始化 uv 项目并创建 pyproject.toml**
 
 ```bash
-cd d:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness
+cd d:/backup/basic_file/Program/StudyAgent/StudyAgent-Harness
 uv init --no-readme
 ```
 
@@ -52,9 +52,9 @@ uv init --no-readme
 
 ```toml
 [project]
-name = "learning-agent-harness"
+name = "study-agent-harness"
 version = "0.1.0"
-description = "LearningAgent Harness - 基于费曼学习法的多智能体学习系统"
+description = "StudyAgent Harness - 基于费曼学习法的多智能体学习系统"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",
@@ -641,10 +641,10 @@ uv run pytest tests/unit/test_database.py -v
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    app_name: str = "LearningAgent"
+    app_name: str = "StudyAgent"
     app_version: str = "0.1.0"
     debug: bool = True
-    database_url: str = "sqlite+aiosqlite:///./learning_agent.db"
+    database_url: str = "sqlite+aiosqlite:///./study_agent.db"
     openai_api_key: str = ""
     openai_base_url: str = ""
     openai_model: str = "gpt-4o-mini"
@@ -669,7 +669,7 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
-def get_engine(url: str = "sqlite+aiosqlite:///./learning_agent.db"):
+def get_engine(url: str = "sqlite+aiosqlite:///./study_agent.db"):
     return create_async_engine(url, echo=False)
 
 engine = get_engine()
@@ -791,7 +791,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     yield
 
-app = FastAPI(title="LearningAgent", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="StudyAgent", version="0.1.0", lifespan=lifespan)
 
 @app.get("/health")
 async def health():
@@ -879,7 +879,7 @@ uv run pytest tests/unit/harness/test_observability.py -v
 import logging
 import json
 
-logger = logging.getLogger("learning_agent")
+logger = logging.getLogger("study_agent")
 
 class Observability:
     def trace(self, session_id: str, node: str, event: str,

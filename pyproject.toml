@@ -1,7 +1,7 @@
 [project]
-name = "learning-agent-harness"
+name = "study-agent-harness"
 version = "0.1.0"
-description = "LearningAgent Harness - Feynman method multi-agent learning system"
+description = "StudyAgent Harness - Feynman method multi-agent learning system"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",

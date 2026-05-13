@@ -3,7 +3,7 @@ globs: app/agent/**/*.py
 description: 学习Agent框架根规范 — 编辑agent代码时自动加载
 ---
 
-# LearningAgent 框架根规范（Claude Code 开发指引）
+# StudyAgent 框架根规范（Claude Code 开发指引）
 
 本规范适用于 `app/agent/` 下所有代码，作为开发时的约束指引。
 运行时的 Agent 行为规范存储在 `app/agent/specs/` 目录。

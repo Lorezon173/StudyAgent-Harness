@@ -1,7 +1,7 @@
 import logging
 import json
 
-logger = logging.getLogger("learning_agent")
+logger = logging.getLogger("study_agent")
 
 
 class Observability:

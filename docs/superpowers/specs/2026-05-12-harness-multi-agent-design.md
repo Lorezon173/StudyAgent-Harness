@@ -1,4 +1,4 @@
-# LearningAgent Harness Multi-Agent 项目设计方案
+# StudyAgent Harness Multi-Agent 项目设计方案
 
 > **日期**：2026-05-12
 > **基于**：`top-2026-05-12-harness-architecture-refactoring-design.md` 升级
@@ -8,7 +8,7 @@
 
 ## 1. 项目定位
 
-LearningAgent 是一个面向学习场景的 Agent 系统，以费曼学习法为主线，核心流程：
+StudyAgent 是一个面向学习场景的 Agent 系统，以费曼学习法为主线，核心流程：
 
 1. **诊断**：识别用户已有认知水平
 2. **讲解**：用更易理解的方式讲解知识点
@@ -1313,7 +1313,7 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
-engine = create_async_engine("sqlite+aiosqlite:///./learning_agent.db", echo=False)
+engine = create_async_engine("sqlite+aiosqlite:///./study_agent.db", echo=False)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db() -> AsyncSession:
@@ -1439,7 +1439,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     yield
 
-app = FastAPI(title="LearningAgent", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="StudyAgent", version="0.1.0", lifespan=lifespan)
 
 # API 路由
 app.include_router(auth_router, prefix="/api")

@@ -1,4 +1,4 @@
-# LearningAgent Harness
+# StudyAgent Harness
 
 基于苏格拉底教学法的多 Agent 学习框架。通过诊断→讲解→复述→追问的交互循环，引导用户主动构建知识理解，而非被动接受信息。
 
