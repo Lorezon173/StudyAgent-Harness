@@ -13,7 +13,11 @@ def restate_check_node(state: LearningState) -> dict:
     explanation = state.get("teaching", {}).get("explanation", "")
     user_input = state["user_input"]
     loop_count = state.get("teaching", {}).get("explain_loop_count", 0)
-    result = _llm.invoke(system_prompt, f"讲解：{explanation}\n用户复述：{user_input}")
+    session_id = state.get("meta", {}).get("session_id", "")
+    result = _llm.invoke(
+        system_prompt, f"讲解：{explanation}\n用户复述：{user_input}",
+        session_id=session_id, node="restate_check", intent="teach_loop",
+    )
     return {
         "teaching": {"restatement_eval": result, "explain_loop_count": loop_count},
         "meta": {"stage": Stage.RESTATE_CHECK},

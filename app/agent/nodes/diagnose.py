@@ -11,5 +11,9 @@ def diagnose_node(state: LearningState) -> dict:
     system_prompt = state["_system_prompt"]
     topic = state.get("memory", {}).get("topic", "")
     user_input = state["user_input"]
-    result = _llm.invoke(system_prompt, f"主题：{topic}\n用户：{user_input}")
+    session_id = state.get("meta", {}).get("session_id", "")
+    result = _llm.invoke(
+        system_prompt, f"主题：{topic}\n用户：{user_input}",
+        session_id=session_id, node="diagnose", intent="teach_loop",
+    )
     return {"teaching": {"diagnosis": result}}

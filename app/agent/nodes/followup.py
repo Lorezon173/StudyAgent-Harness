@@ -12,7 +12,11 @@ def followup_node(state: LearningState) -> dict:
     system_prompt = state["_system_prompt"]
     diagnosis = state.get("teaching", {}).get("diagnosis", "")
     restatement_eval = state.get("teaching", {}).get("restatement_eval", "")
-    result = _llm.invoke(system_prompt, f"诊断：{diagnosis}\n复述评估：{restatement_eval}")
+    session_id = state.get("meta", {}).get("session_id", "")
+    result = _llm.invoke(
+        system_prompt, f"诊断：{diagnosis}\n复述评估：{restatement_eval}",
+        session_id=session_id, node="followup", intent="teach_loop",
+    )
     return {
         "teaching": {"followup_question": result},
         "meta": {"stage": Stage.FOLLOWUP},

@@ -12,9 +12,11 @@ def answer_policy_node(state: LearningState) -> dict:
     system_prompt = state["_system_prompt"]
     rag_context = state.get("retrieval", {}).get("rag_context", "")
     user_input = state["user_input"]
+    session_id = state.get("meta", {}).get("session_id", "")
     result = _llm.invoke(
         system_prompt,
         f"知识：{rag_context}\n用户问题：{user_input}",
+        session_id=session_id, node="answer_policy", intent="qa_direct",
     )
     return {
         "teaching": {"reply": result},
