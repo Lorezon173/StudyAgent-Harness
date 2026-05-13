@@ -124,10 +124,10 @@ SubGraph
 |------|------|
 | Web 框架 | FastAPI + Pydantic V2 |
 | Agent 编排 | LangGraph StateGraph + MemorySaver |
-| LLM 接入 | LangChain OpenAI (可替换) |
+| LLM 接入 | LangChain OpenAI + 重试/回退/流式/成本追踪 |
 | RAG | LlamaIndex + Chroma(开发) / Qdrant(生产) |
 | ORM | SQLAlchemy 2.0 async + Alembic |
-| 可观测性 | Langfuse |
+| 可观测性 | Langfuse（生产）/ Console（开发）+ SessionStats 汇总 |
 | 评估 | ragas (faithfulness/relevancy/context_precision) |
 | 任务队列 | Celery + Redis (可选) |
 | UI | Chainlit (可选) |
@@ -156,15 +156,15 @@ app/
 │   ├── state/                  # 分层状态模型 (7个文件)
 │   ├── intent_router.py        # 规则优先 + LLM 兜底路由
 │   ├── error_handler.py        # 错误分类与恢复策略
-│   ├── observability.py        # 可观测性 (trace/metric/log)
-│   ├── memory.py               # 分作用域记忆管理
+│   ├── observability.py        # Observability ABC + Langfuse/Console/Fake
+│   ├── memory.py               # 短期(LRU+TTL) + 长期(SQLite) 双层记忆
 │   ├── tool_registry.py        # 工具注册与执行
 │   ├── guardrails.py           # 输入/工具/输出护栏
 │   └── state_manager.py        # 状态转换/快照/恢复
 ├── infrastructure/             # 基础设施层
-│   ├── llm.py                  # LLMService + FakeLLM
+│   ├── llm.py                  # LLMService (重试/回退/流式) + LLMConfig + FakeLLM
 │   ├── rag/                    # RAGCoordinator + FakeRAGStore
-│   ├── storage/                # 会话/用户/评估/知识库存储
+│   ├── storage/                # 会话/用户/评估/知识库/记忆存储
 │   ├── extraction/             # 文件提取 (pdf/txt/md/csv)
 │   └── external/               # OCR / Web搜索 / Redis
 ├── api/                        # API 层 (8个路由模块)
@@ -238,15 +238,16 @@ store = SessionStore(db=None)  # 自动使用内存字典
 - `MasteryLevel` — 掌握度 (weak / partial / mastered)
 - `ErrorKind` — 错误分类 (rag_timeout / llm_error / fatal / ...)
 - `RecoveryAction` — 恢复策略 (retry / fallback_llm / skip_retrieval / abort)
+- `MemoryScope` — 记忆作用域 (working / episode / session / user / global)
 - `AgentRole` — Agent 角色 (teaching / eval / retrieval / orchestrator)
 
 ## 测试
 
 ```
-104 个测试覆盖全部模块
+147 个测试覆盖全部模块
 
-tests/unit/harness/         枚举、状态、路由、错误处理、护栏、记忆、工具 (39个)
-tests/unit/infrastructure/  LLM、RAG、存储 (11个)
+tests/unit/harness/         枚举、状态、路由、错误处理、护栏、记忆、可观测 (58个)
+tests/unit/infrastructure/  LLM、RAG、存储、记忆存储 (23个)
 tests/unit/agent/           图执行、节点、多Agent、系统评估、SpecLoader (48个)
 tests/unit/api/             API 端点 (6个)
 ```
