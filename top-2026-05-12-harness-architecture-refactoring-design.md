@@ -171,7 +171,7 @@ app/
 │   ├── chainlit_app.py           # Chainlit 对话界面（对话专用）
 │   └── chainlit_backend.py
 │
-└── web/                          # Vue 3 + Vite 前端（管理界面）
+└── web/                          # Vue 3 + React + Vite 前端（管理界面）
     ├── package.json
     ├── vite.config.ts
     ├── tsconfig.json
@@ -1229,15 +1229,15 @@ class FakeLLM:
 FastAPI (uvicorn)
     ├── /api/*          → REST API
     ├── /chat/*         → Chainlit 对话界面（对话专用）
-    └── /*              → Vue 构建产物 (web/dist/)
+    └── /*              → 前端构建产物 (web/dist/)
 ```
 
 | 系统 | 技术 | 职责 | 入口 |
 |------|------|------|------|
 | **Chainlit** | Python | 对话交互（流式输出、多轮会话、学习闭环） | `uv run chainlit run app/ui/chainlit_app.py --port 2554` |
-| **Vue 3 + Vite** | TypeScript | 管理界面（知识库、会话、档案、评估大屏） | FastAPI `StaticFiles` 托管 `web/dist/` |
+| **Vue 3 + React + Vite** | TypeScript | 管理界面（知识库、会话、档案、评估大屏） | FastAPI `StaticFiles` 托管 `web/dist/` |
 
-### 10.2 为什么是 Vue 3 + Vite
+### 10.2 为什么是 Vue 3 + React + Vite
 
 1. **中文生态优先**：Element Plus（表格、表单、上传、对话框）开箱即用
 2. **构建产物为纯静态文件**：`vite build` 输出到 `web/dist/`，FastAPI 直接 `StaticFiles` 托管，**不需要额外 Node 服务**
@@ -1259,7 +1259,7 @@ FastAPI (uvicorn)
 - 学习档案页面 → Vue
 - 会话列表管理 → Vue
 
-### 10.4 Vue 页面规划
+### 10.4 Vue + React 页面规划
 
 | 页面 | 路由 | 核心组件 | 数据来源 |
 |------|------|---------|---------|
@@ -1277,7 +1277,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), react()],
   server: {
     port: 3000,
     proxy: {
@@ -1310,7 +1310,7 @@ uv run chainlit run app/ui/chainlit_app.py --port 2554
 **生产部署**：
 
 ```bash
-# 构建 Vue 静态文件
+# 构建 前端静态文件
 cd web && npm run build
 
 # FastAPI 托管全部（API + Vue 静态 + Chainlit）
@@ -1330,12 +1330,12 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
 # ...
 
-# Vue 静态文件（生产模式）
+# 前端静态文件（生产模式）
 if os.path.exists("web/dist"):
     app.mount("/assets", StaticFiles(directory="web/dist/assets"), name="assets")
 
     @app.get("/{full_path:path}")
-    async def serve_vue(full_path: str):
+    async def serve_frontend(full_path: str):
         """Vue SPA fallback：所有非 API 路径返回 index.html"""
         file_path = f"web/dist/{full_path}"
         if os.path.exists(file_path) and not full_path.startswith("api"):
@@ -1456,11 +1456,11 @@ if os.path.exists("web/dist"):
 - `tests/` 全部文件
 - `app/ui/chainlit_app.py`、`app/ui/chainlit_backend.py`
 - `app/worker/`
-- `web/` Vue 3 + Vite 项目初始化
+- `web/` Vue 3 + React + Vite 项目初始化
 - `web/src/views/` 核心页面（LoginView、KnowledgeView、EvalDashboardView）
 - `web/vite.config.ts` + FastAPI 静态文件挂载
 
-**门禁**：全量测试 100% 通过 + Vue 页面可访问 + Chainlit 对话可用
+**门禁**：全量测试 100% 通过 + 前端页面可访问 + Chainlit 对话可用
 
 ### 12：清理 + 文档
 
@@ -1518,7 +1518,7 @@ Step 12 (清理+文档)
 | 可观测 | Langfuse |
 | 异步 | Celery + Redis |
 | 前端-对话 | Chainlit |
-| 前端-管理 | Vue 3 + Vite + Element Plus + vue-echarts |
+| 前端-管理 | Vue 3 + React + Vite + Element Plus + Ant Design + recharts |
 | 存储 | SQLite |
 | 包管理 | uv（后端）+ npm（前端） |
 
@@ -1535,8 +1535,8 @@ Step 12 (清理+文档)
 | 功能 | Multi-Agent 协作 | 可走通 |
 | 功能 | System Eval | 可走通 |
 | 功能 | Chainlit 对话 | 流式输出正常 |
-| 功能 | Vue 知识库管理 | 上传/列表/删除可用 |
-| 功能 | Vue 评估大屏 | 图表渲染正常 |
+| 功能 | 知识库管理（Vue+React） | 上传/列表/删除可用 |
+| 功能 | 评估大屏（React） | 图表渲染正常 |
 | 质量 | 全量测试 | 100% 通过，0 skip |
 | 质量 | route 命中率 | ≥ 90% |
 | 质量 | silent failure | 0% |
@@ -1545,5 +1545,5 @@ Step 12 (清理+文档)
 | 架构 | 上帝服务 | 不存在 |
 | 架构 | 扁平状态 | 不存在 |
 | 架构 | silent catch | 不存在 |
-| 前端 | Vue 构建产物 | FastAPI StaticFiles 正常托管 |
+| 前端 | 前端构建产物 | FastAPI StaticFiles 正常托管 |
 | 前端 | 开发模式 | Vite proxy 到 FastAPI 正常 |

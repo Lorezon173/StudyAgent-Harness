@@ -173,7 +173,7 @@ app/
 │   ├── chainlit_app.py              # Chainlit 对话界面
 │   └── chainlit_backend.py
 │
-└── web/                             # Vue 3 + Vite 前端
+└── web/                             # Vue 3 + React + Vite 前端
     ├── package.json
     ├── vite.config.ts
     ├── tsconfig.json
@@ -236,7 +236,7 @@ tests/                               # 测试
 | 可观测 | Langfuse | 追踪 + ragas 指标上报 |
 | 异步 | Celery + Redis | 后台任务 |
 | 前端-对话 | Chainlit | LangGraph 原生集成 |
-| 前端-管理 | Vue 3 + Vite + Element Plus + vue-echarts | 中文生态好 |
+| 前端-管理 | Vue 3 + React 18 3 + React + Vite + Element Plus + Ant Design + recharts | 中文生态好 |
 | 包管理 | uv(后端) + npm(前端) | — |
 
 ---
@@ -1451,12 +1451,12 @@ app.include_router(knowledge_router, prefix="/api")
 app.include_router(sessions_router, prefix="/api")
 app.include_router(profile_router, prefix="/api")
 
-# Vue 静态文件（生产模式）
+# 前端静态文件（生产模式）
 if os.path.exists("web/dist"):
     app.mount("/assets", StaticFiles(directory="web/dist/assets"), name="assets")
 
     @app.get("/{full_path:path}")
-    async def serve_vue(full_path: str):
+    async def serve_frontend(full_path: str):
         file_path = f"web/dist/{full_path}"
         if os.path.exists(file_path) and not full_path.startswith("api"):
             return FileResponse(file_path)
@@ -1634,9 +1634,9 @@ class FakeRAGStore:
 | 系统 | 技术 | 职责 | 入口 |
 |------|------|------|------|
 | **Chainlit** | Python | 对话交互（流式输出、多轮会话） | `uv run chainlit run app/ui/chainlit_app.py --port 2554` |
-| **Vue 3 + Vite** | TypeScript | 管理界面（知识库、会话、档案、评估大屏） | FastAPI StaticFiles 托管 web/dist/ |
+| **Vue 3 + React + Vite** | TypeScript | 管理界面（知识库、会话、档案、评估大屏） | FastAPI StaticFiles 托管 web/dist/ |
 
-### 12.2 Vue 页面规划
+### 12.2 Vue + React 页面规划
 
 | 页面 | 路由 | 核心组件 | 数据来源 |
 |------|------|---------|---------|
@@ -1663,7 +1663,7 @@ uv run chainlit run app/ui/chainlit_app.py --port 2554
 
 ```typescript
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), react()],
   server: {
     port: 3000,
     proxy: {
@@ -1781,9 +1781,9 @@ export default defineConfig({
 - `tests/` 全部文件
 - `app/ui/` Chainlit
 - `app/worker/`
-- `web/` Vue 3 + Vite
+- `web/` Vue 3 + React + Vite
 
-**门禁**：全量测试 100% 通过 + Vue 页面可访问 + Chainlit 对话可用
+**门禁**：全量测试 100% 通过 + 前端页面可访问 + Chainlit 对话可用
 
 ### Step 12：清理 + 文档
 
@@ -1838,8 +1838,8 @@ Step 12 (清理+文档)
 | 功能 | Multi-Agent SubGraph 协作 | 可走通 |
 | 功能 | ragas 评估指标采集 | faithfulness/relevancy 可输出 |
 | 功能 | Chainlit 对话 | 流式输出正常 |
-| 功能 | Vue 知识库管理 | 上传/列表/删除可用 |
-| 功能 | Vue 评估大屏 | 图表渲染正常 |
+| 功能 | 知识库管理（Vue+React） | 上传/列表/删除可用 |
+| 功能 | 评估大屏（React） | 图表渲染正常 |
 | 质量 | 全量测试 | 100% 通过，0 skip |
 | 质量 | route 命中率 | ≥ 90% |
 | 质量 | silent failure | 0% |
@@ -1850,5 +1850,5 @@ Step 12 (清理+文档)
 | 架构 | silent catch | 不存在 |
 | 架构 | LlamaIndex 调用封装在 Infra 层 | Harness 不直接 import llama_index |
 | 迁移 | Alembic 迁移 | `alembic upgrade head` 无报错 |
-| 前端 | Vue 构建产物 | FastAPI StaticFiles 正常托管 |
+| 前端 | 前端构建产物 | FastAPI StaticFiles 正常托管 |
 | 前端 | 开发模式 | Vite proxy 到 FastAPI 正常 |

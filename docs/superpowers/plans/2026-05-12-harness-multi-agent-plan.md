@@ -6,7 +6,7 @@
 
 **架构：** 四层严格单向依赖（API → 编排层 → Harness 层 → 基础设施层）。状态通过 TypedDict 子状态流转，节点是委托给 Harness 组件的薄壳，多智能体使用 LangGraph SubGraph 模式。
 
-**技术栈：** FastAPI、LangGraph、LlamaIndex、SQLAlchemy 2.0 异步、Chroma、ragas、Langfuse、Chainlit、Vue 3 + Vite
+**技术栈：** FastAPI、LangGraph、LlamaIndex、SQLAlchemy 2.0 异步、Chroma、ragas、Langfuse、Chainlit、Vue 3 + React + Vite
 
 ---
 
@@ -801,7 +801,7 @@ if os.path.exists("web/dist"):
     app.mount("/assets", StaticFiles(directory="web/dist/assets"), name="assets")
 
     @app.get("/{full_path:path}")
-    async def serve_vue(full_path: str):
+    async def serve_frontend(full_path: str):
         file_path = f"web/dist/{full_path}"
         if os.path.exists(file_path) and not full_path.startswith("api"):
             return FileResponse(file_path)
