@@ -58,3 +58,53 @@ def test_critic_ignores_evidence_without_purpose_teaching(mock_llm_invoke_json):
                session_id="s1", payload={"chunks": [], "purpose": "exploration"})
     out = CriticAgent().handle(ev, ws)
     assert out == []   # 纯探索检索跳过（#18 成本优化）
+
+
+def test_critic_emits_confusion_when_present(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "partial",
+        "confusion": {"concept_a": "retrieval", "concept_b": "augment"},
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = CriticAgent().handle(_user_msg("先搜，再给 LLM 处理"), ws)
+    confusion = [e for e in out if e.type == EventType.CONFUSION_DETECTED]
+    assert len(confusion) == 1
+    assert confusion[0].payload["concept_a"] == "retrieval"
+    assert confusion[0].payload["concept_b"] == "augment"
+
+
+def test_critic_emits_contradiction_when_present(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "weak",
+        "contradiction": {"description": "前后说 RAG 是又是微调又是检索"},
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = CriticAgent().handle(_user_msg("反复矛盾"), ws)
+    assert any(e.type == EventType.CONTRADICTION_DETECTED for e in out)
+
+
+def test_critic_emits_low_confidence(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "partial",
+        "low_confidence": True,
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = CriticAgent().handle(_user_msg("可能…大概…"), ws)
+    assert any(e.type == EventType.LOW_CONFIDENCE_DETECTED for e in out)
+
+
+def test_critic_emits_all_observations_in_single_handle(mock_llm_invoke_json):
+    # 一次 handle 同时 emit 多观察（回合屏障的输入条件）
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "partial",
+        "confusion": {"concept_a": "A", "concept_b": "B"},
+        "low_confidence": True,
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = CriticAgent().handle(_user_msg("x"), ws)
+    types = {e.type for e in out}
+    assert types == {
+        EventType.MASTERY_ASSESSED,
+        EventType.CONFUSION_DETECTED,
+        EventType.LOW_CONFIDENCE_DETECTED,
+    }

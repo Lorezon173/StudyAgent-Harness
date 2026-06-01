@@ -56,6 +56,26 @@ class CriticAgent(AgentBase):
                     "rationale": result.get("rationale", ""),
                 },
                 parent_id=event.id))
+        if isinstance(result.get("confusion"), dict):
+            c = result["confusion"]
+            events.append(self.emit(
+                EventType.CONFUSION_DETECTED, ws,
+                payload={
+                    "concept_a": c.get("concept_a", ""),
+                    "concept_b": c.get("concept_b", ""),
+                },
+                parent_id=event.id))
+        if isinstance(result.get("contradiction"), dict):
+            events.append(self.emit(
+                EventType.CONTRADICTION_DETECTED, ws,
+                payload={"description":
+                         result["contradiction"].get("description", "")},
+                parent_id=event.id))
+        if result.get("low_confidence") is True:
+            events.append(self.emit(
+                EventType.LOW_CONFIDENCE_DETECTED, ws,
+                payload={"signal": "user_self_uncertain"},
+                parent_id=event.id))
         # 其余观察字段在后续 Task 落地（避免一次落地过大）
         return events
 
