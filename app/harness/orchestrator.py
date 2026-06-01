@@ -187,5 +187,20 @@ class Orchestrator:
 
     def _translate_conductor_decision(self, event: Event,
                                        ws: WorkspaceState) -> list[Event]:
-        # 在 Task 5.4 落地
-        return []
+        action = event.payload.get("action", "")
+        if action == str(ActionKind.LOOP_EXIT):
+            return [Event(type=EventType.LOOP_EXIT,
+                          source=EventSource.ORCHESTRATOR,
+                          session_id=ws.session_id,
+                          payload={"reason": "conductor"},
+                          parent_id=event.id)]
+        return [Event(type=EventType.ACTION_REQUESTED,
+                      source=EventSource.ORCHESTRATOR,
+                      session_id=ws.session_id,
+                      payload={
+                          "action": action,
+                          "target": event.payload.get("target", ""),
+                          "via_conductor": True,
+                          "reason": event.payload.get("reason", ""),
+                      },
+                      parent_id=event.id)]

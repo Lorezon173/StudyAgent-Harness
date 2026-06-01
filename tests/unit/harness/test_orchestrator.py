@@ -156,3 +156,56 @@ def test_tick_clears_buffer_for_next_micro_turn():
                               source=EventSource.CRITIC, session_id="s1",
                               payload={"level": "weak"}), ws)
     assert any(e.type == EventType.ORCHESTRATOR_TICK for e in out)
+
+
+def test_tick_with_no_match_emits_conductor_requested():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.LOW_CONFIDENCE_DETECTED,
+                        source=EventSource.CRITIC, session_id="s1",
+                        payload={"signal": "user_uncertain"}), ws)
+    out = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                              source=EventSource.ORCHESTRATOR,
+                              session_id="s1", payload={}), ws)
+    assert any(e.type == EventType.CONDUCTOR_REQUESTED for e in out)
+    cr = next(e for e in out if e.type == EventType.CONDUCTOR_REQUESTED)
+    assert "observations" in cr.payload
+
+
+def test_conductor_decided_translated_to_action_requested():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    decided = Event(type=EventType.CONDUCTOR_DECIDED,
+                    source=EventSource.CONDUCTOR, session_id="s1",
+                    payload={"action": "tutor_offer_analogy", "target": "tutor",
+                             "observation_enough": True})
+    out = orch.on_event(decided, ws)
+    assert len(out) == 1
+    assert out[0].type == EventType.ACTION_REQUESTED
+    assert out[0].payload["action"] == "tutor_offer_analogy"
+    assert out[0].payload["target"] == "tutor"
+    assert out[0].parent_id == decided.id
+
+
+def test_conductor_decided_request_observation_routes_to_critic():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    decided = Event(type=EventType.CONDUCTOR_DECIDED,
+                    source=EventSource.CONDUCTOR, session_id="s1",
+                    payload={"action": "request_observation",
+                             "target": "critic",
+                             "observation_enough": False})
+    out = orch.on_event(decided, ws)
+    assert out[0].type == EventType.ACTION_REQUESTED
+    assert out[0].payload["action"] == "request_observation"
+    assert out[0].payload["target"] == "critic"
+
+
+def test_conductor_decided_loop_exit_emits_loop_exit():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    decided = Event(type=EventType.CONDUCTOR_DECIDED,
+                    source=EventSource.CONDUCTOR, session_id="s1",
+                    payload={"action": "loop_exit", "observation_enough": True})
+    out = orch.on_event(decided, ws)
+    assert out[0].type == EventType.LOOP_EXIT
