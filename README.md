@@ -133,13 +133,20 @@ SubGraph
 
 **Wave 1 进展**：
 
+- **Plan A 检索与知识库**已落地（[Plan A](docs/superpowers/plans/2026-06-01-plan-a-retrieval.md)，8 Task TDD，68 测试）：
+  - `app/agents/retriever.py` — RetrieverAgent（事件驱动，机械层检索 + retrieval_status: ok/empty/timeout/low_score；不自评语义质量，符合§3.6 职能正交）
+  - `app/infrastructure/rag/coordinator.py` — RAGCoordinator 扩展为多 Provider 协调器（IndexProvider 协议 + Chunk/SearchResult 数据结构 + 去重排序聚合）
+  - `app/infrastructure/rag/ocr.py` — OCRProvider（图片文本提取，pytesseract 可选依赖优雅降级）
+  - `app/infrastructure/rag/code_index.py` — CodeIndexProvider（Python AST 切片，按函数/类粒度索引）
+  - `app/infrastructure/rag/extractors/` — Extractor 协议 + PDF/DOCX/TXT 实现（所有重依赖可选）
+  - evaluate() 实现 §5.2 RAG 三件套（faithfulness / answer_relevancy / context_precision / recall@k / latency / redundancy），多集 Counter Jaccard 字符相似度
 - **Plan B 记忆与画像**已落地（[Plan B](docs/superpowers/plans/2026-06-01-plan-b-memory-profile.md)，5 Task TDD，35 测试）：
   - `app/harness/mastery_graph.py` — MasteryGraph 引擎（DOC_ORDER/LLM_INFER/INTERACTION 三来源冷启动建图 + 置信度加权前置薄弱检测）
   - `app/harness/user_profile.py` — UserProfile 偏好与进度
   - `app/agents/curator.py` — Curator Agent（MasteryAssessed 实测 / TopicEntered 历史画像 双时机；historical 分支渐进启用）
   - `app/infrastructure/storage/mastery_graph_store.py` — aiosqlite 持久化
 
-Wave 1 其余（Plan A 检索 / Plan C 教学编排）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
+Wave 1 其余（Plan C 教学编排）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
 
 ## 技术栈
 
