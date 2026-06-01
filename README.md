@@ -145,8 +145,10 @@ SubGraph
   - `app/harness/user_profile.py` — UserProfile 偏好与进度
   - `app/agents/curator.py` — Curator Agent（MasteryAssessed 实测 / TopicEntered 历史画像 双时机；historical 分支渐进启用）
   - `app/infrastructure/storage/mastery_graph_store.py` — aiosqlite 持久化
+- ✅ Plan C 教学与编排（Tutor / Critic / Conductor + Orchestrator 规则引擎 +
+  TeachingPolicy 状态机 + 回合屏障 + graph 协作环接入；spec §4.3 场景可复现）
 
-Wave 1 其余（Plan C 教学编排）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
+Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
 
 ## 技术栈
 
