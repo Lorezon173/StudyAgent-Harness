@@ -127,3 +127,25 @@ def test_orchestrator_hook_invoked_and_can_exit():
     finally:
         store.close()
         os.unlink(path)
+
+
+def test_priority_queue_tick_is_last():
+    # OrchestratorTick 最低优先级（回合屏障基础：观察处理完才决策，§3.5.3）
+    q = PriorityEventQueue()
+    q.push(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR, session_id="s"))
+    q.push(Event(type=EventType.TUTOR_ASKED, source=EventSource.TUTOR, session_id="s"))
+    q.push(Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC, session_id="s"))
+    assert q.pop().type == EventType.MASTERY_ASSESSED   # 观察类先
+    assert q.pop().type == EventType.TUTOR_ASKED         # 默认次
+    assert q.pop().type == EventType.ORCHESTRATOR_TICK   # Tick 最后（屏障）
+
+
+def test_loop_exit_preempts_queued_events():
+    # 熔断安全性基础：LoopExit 优先级最高，即使队列已堆积大量普通/观察事件，
+    # 注入的 LoopExit 也会被立即 pop（保证熔断即时终止，不必等队列耗尽）。
+    q = PriorityEventQueue()
+    for _ in range(5):
+        q.push(Event(type=EventType.TUTOR_ASKED, source=EventSource.TUTOR, session_id="s"))
+        q.push(Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC, session_id="s"))
+    q.push(Event(type=EventType.LOOP_EXIT, source=EventSource.ORCHESTRATOR, session_id="s"))
+    assert q.pop().type == EventType.LOOP_EXIT   # 穿透所有已排队事件

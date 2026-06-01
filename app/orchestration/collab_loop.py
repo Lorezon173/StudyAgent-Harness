@@ -68,5 +68,8 @@ def run_collab_loop(bus: EventBus, ws: WorkspaceState, seed_events: list[Event],
             for new_ev in orchestrator.on_event(event, ws):
                 _publish_and_enqueue(new_ev)
 
+    # turn 是循环迭代次数：含「pop 到 LoopExit 即退出」的那一轮空转（熔断或正常
+    # 出环时该轮未处理真实事件），故 turn_count 比真实处理回合数多 1。§5 评估
+    # 协作指标若需「真实处理回合数」应取 turn_count - 1。
     ws.turn_count = turn
     return ws
