@@ -209,3 +209,43 @@ def test_conductor_decided_loop_exit_emits_loop_exit():
                     payload={"action": "loop_exit", "observation_enough": True})
     out = orch.on_event(decided, ws)
     assert out[0].type == EventType.LOOP_EXIT
+
+
+def test_barrier_blocks_routing_until_tick_arrives():
+    """回合屏障专项：观察集不完整时 Orchestrator 绝不裁决（无 ActionRequested）。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    # 第一个观察到达：仅注入 Tick，不产 ActionRequested
+    out1 = orch.on_event(Event(type=EventType.CONFUSION_DETECTED,
+                               source=EventSource.CRITIC, session_id="s1",
+                               payload={"concept_a": "A", "concept_b": "B"}), ws)
+    assert all(e.type != EventType.ACTION_REQUESTED for e in out1), \
+        "屏障失效：观察集未完整就路由"
+    assert any(e.type == EventType.ORCHESTRATOR_TICK for e in out1)
+
+    # 第二个观察到达（同 micro-turn）：仍不裁决（Tick 已存在不重复注入）
+    out2 = orch.on_event(Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED,
+                               source=EventSource.CURATOR, session_id="s1",
+                               payload={"basis": "observed"}), ws)
+    assert all(e.type != EventType.ACTION_REQUESTED for e in out2), \
+        "屏障失效：观察集仍不完整就路由"
+
+    # Tick 弹出（此时观察集已完整）：唯一一次路由裁决，前置缺失优先
+    out3 = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                               source=EventSource.ORCHESTRATOR,
+                               session_id="s1", payload={}), ws)
+    actions = [e for e in out3 if e.type == EventType.ACTION_REQUESTED]
+    assert len(actions) == 1, "屏障应只产唯一动作"
+    assert actions[0].payload["action"] == "regress_to_prereq", \
+        "屏障未裁决出 §2.4 优先级（前置 > 混淆）"
+
+
+def test_barrier_handles_single_observation_correctly():
+    """单观察场景：Tick 依然必要 — 屏障对所有观察一视同仁。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out1 = orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                               source=EventSource.CRITIC, session_id="s1",
+                               payload={"level": "mastered"}), ws)
+    # 仍只产 Tick，不直接路由
+    assert all(e.type != EventType.ACTION_REQUESTED for e in out1)
