@@ -107,6 +107,20 @@ Wave 2（2 窗口并行）   Plan D 集成灰度          Plan E 评估体系
 
 > 每张卡的"开场 prompt"可整段复制粘贴到新窗口作为首条消息，新窗口即获得零上下文启动所需的全部信息。
 
+### ⚙️ 环境前置（每个新窗口开场必读 —— 连同对应卡片开场 prompt 一起复制）
+
+> Wave 0 已搭好环境，**新窗口请勿重新装 uv/依赖**。把下面这段一并贴给新窗口：
+
+```
+【环境已就绪，勿重新搭建 uv/依赖】
+- 工作目录：/Users/ywwl/Downloads/云文档/code/StudyAgent-Harness
+- 测试命令一律用 .venv：`.venv/bin/python -m pytest <路径> -q`（裸 pytest/python 无 pytest 会报错）
+- 现有基线 189 passed, 4 failed。这 4 个预存失败在 tests/unit/infrastructure/test_stores.py（Python 3.12 event-loop 兼容问题），与你的任务无关——不要碰、不要修；你只需保证自己的新测试全绿且不新增失败
+- Plan 0 已冻结的接口可直接 import：app/harness/{events,eventbus,enums,workspace_state}.py、app/infrastructure/storage/event_store.py、app/agents/base.py、app/orchestration/{collab_loop,graph}.py
+- commit message 末尾必须加：Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+- 当前分支 feat/multi-agent-redesign（非默认分支，可正常 commit）；严格 TDD，每个子任务末尾提交
+```
+
 ### 窗口①（T0）：Plan 0 核心契约地基 —— 直接执行
 
 **开场 prompt（复制到新窗口）：**
