@@ -38,16 +38,29 @@ class TeachingPolicy:
         return target, action
 
     def _decide(self, obs: ObservationSet) -> tuple[TeachingMode, ActionKind]:
-        # 熔断（§4.2 任意模式 + turn>MAX → LoopExit）
         if obs.turn_over_limit:
             return self.current_mode, ActionKind.LOOP_EXIT
 
+        # 全局优先级（§2.4 / §3.4）：前置缺失 observed > contradiction >
+        # confusion > mastery weak/partial/mastered
+        if obs.prereq_weak and obs.prereq_basis == "observed":
+            return TeachingMode.REGRESS, ActionKind.REGRESS_TO_PREREQ
+        if obs.contradiction:
+            return self.current_mode, ActionKind.TUTOR_CORRECT
+        if obs.prereq_weak and obs.prereq_basis == "historical":
+            return TeachingMode.SOCRATIC, ActionKind.TUTOR_PROBE_PREREQ
+
         if self.current_mode == TeachingMode.SOCRATIC:
             return self._from_socratic(obs)
-        # 其他模式分支在后续 Task 落地
+        if self.current_mode == TeachingMode.FEYNMAN:
+            return self._from_feynman(obs)
+        if self.current_mode == TeachingMode.ANALOGY:
+            return self._from_analogy(obs)
+        if self.current_mode == TeachingMode.REGRESS:
+            return self._from_regress(obs)
         return self.current_mode, ActionKind.TUTOR_ASK
 
-    def _from_socratic(self, obs: ObservationSet) -> tuple[TeachingMode, ActionKind]:
+    def _from_socratic(self, obs):
         if obs.mastery == MasteryLevel.MASTERED and obs.topic_complete:
             return self.current_mode, ActionKind.LOOP_EXIT
         if obs.confusion:
@@ -57,3 +70,24 @@ class TeachingPolicy:
         if obs.mastery == MasteryLevel.WEAK and obs.repeat_count < self.MAX_REPEAT:
             return TeachingMode.SOCRATIC, ActionKind.TUTOR_RE_EXPLAIN
         return self.current_mode, ActionKind.TUTOR_ASK
+
+    def _from_feynman(self, obs):
+        if obs.mastery == MasteryLevel.MASTERED:
+            return TeachingMode.SOCRATIC, ActionKind.TUTOR_ASK
+        if obs.confusion:
+            return TeachingMode.ANALOGY, ActionKind.TUTOR_OFFER_ANALOGY
+        if obs.mastery == MasteryLevel.WEAK:
+            return TeachingMode.SOCRATIC, ActionKind.TUTOR_RE_EXPLAIN
+        return self.current_mode, ActionKind.TUTOR_REQUEST_RECAP
+
+    def _from_analogy(self, obs):
+        if obs.mastery in (MasteryLevel.PARTIAL, MasteryLevel.MASTERED):
+            return TeachingMode.SOCRATIC, ActionKind.TUTOR_ASK
+        if obs.mastery == MasteryLevel.WEAK:
+            return TeachingMode.REGRESS, ActionKind.REGRESS_TO_PREREQ
+        return self.current_mode, ActionKind.TUTOR_OFFER_ANALOGY
+
+    def _from_regress(self, obs):
+        if obs.mastery == MasteryLevel.MASTERED:
+            return TeachingMode.SOCRATIC, ActionKind.TUTOR_ASK
+        return self.current_mode, ActionKind.REGRESS_TO_PREREQ
