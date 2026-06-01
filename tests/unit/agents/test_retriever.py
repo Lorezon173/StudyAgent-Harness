@@ -181,9 +181,150 @@ def test_retriever_emitted_event_passes_bus_ownership(agent, ws):
     check_ownership(ev)  # 不抛错
 
 
-# --- evaluate 接口 ---
+# ===== Task 7: evaluate() — RAG 三件套 =====
 
-def test_evaluate_raises_not_implemented_before_task7():
-    """Task 6 阶段 evaluate 应抛 NotImplementedError"""
-    with pytest.raises(NotImplementedError):
-        RetrieverAgent().evaluate(test_case={})
+def test_evaluate_returns_all_metrics():
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "RAG 是检索增强生成"},
+        {"content": "LLM 结合外部知识库"},
+    ])
+    test_case = {
+        "query": "RAG",
+        "golden_chunks": ["RAG 是检索增强生成"],
+        "golden_answer": "RAG 即检索增强生成",
+        "top_k": 5,
+    }
+    metrics = agent.evaluate(test_case)
+    assert "faithfulness" in metrics
+    assert "answer_relevancy" in metrics
+    assert "context_precision" in metrics
+    assert "recall_at_k" in metrics
+    assert "latency_ms" in metrics
+    assert "redundancy" in metrics
+
+
+def test_evaluate_recall_at_k_perfect():
+    """所有 golden_chunks 都被检索到时 recall=1.0"""
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "检索增强生成的定义"},
+        {"content": "向量数据库"},
+    ])
+    test_case = {
+        "query": "RAG 检索",
+        "golden_chunks": ["检索增强生成"],
+    }
+    metrics = agent.evaluate(test_case)
+    assert metrics["recall_at_k"] == 1.0
+
+
+def test_evaluate_recall_at_k_zero():
+    """golden_chunks 完全未被检索到时 recall=0.0"""
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "完全不相关的文档"},
+    ])
+    test_case = {
+        "query": "RAG",
+        "golden_chunks": ["量子计算原理"],
+    }
+    metrics = agent.evaluate(test_case)
+    assert metrics["recall_at_k"] == 0.0
+
+
+def test_evaluate_context_precision():
+    """检索结果中相关 chunk 占比"""
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "RAG 技术详解"},       # 相关
+        {"content": "无关的天气报告"},      # 无关
+        {"content": "RAG 应用场景"},       # 相关
+    ])
+    test_case = {
+        "query": "RAG",
+        "golden_chunks": ["RAG"],
+    }
+    metrics = agent.evaluate(test_case)
+    assert 0.0 <= metrics["context_precision"] <= 1.0
+
+
+def test_evaluate_latency_ms_is_positive():
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([{"content": "测试"}])
+    metrics = agent.evaluate({
+        "query": "测试",
+        "golden_chunks": [],
+        "golden_answer": "",
+    })
+    assert metrics["latency_ms"] >= 0
+
+
+def test_evaluate_redundancy_zero_for_unique_results():
+    """所有检索结果内容不同时 redundancy=0"""
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "完全不同的 A 内容"},
+        {"content": "另一个完全不同的 B 内容"},
+        {"content": "第三个独特的 C 内容"},
+    ])
+    metrics = agent.evaluate({
+        "query": "内容",
+        "golden_chunks": [],
+        "golden_answer": "",
+        "top_k": 3,
+    })
+    # 这些不同 chunk 字符重叠较低 (Jaccard < 0.8)
+    assert metrics["redundancy"] == 0.0
+
+
+def test_evaluate_redundancy_detects_duplicates():
+    """有重复/高度相似内容时 redundancy > 0"""
+    agent = RetrieverAgent()
+    # 两条非常相似的内容（仅末尾字符不同），Jaccard 字符相似度 > 0.8
+    agent._coordinator.index_documents([
+        {"content": "重复内容重复内容重复内容 A"},
+        {"content": "重复内容重复内容重复内容 B"},
+    ])
+    metrics = agent.evaluate({
+        "query": "重复内容",
+        "golden_chunks": [],
+        "golden_answer": "",
+        "top_k": 5,
+    })
+    assert metrics["redundancy"] > 0.0
+
+
+def test_evaluate_faithfulness_with_golden_answer():
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "注意力机制的核心是 QKV 三个矩阵"},
+    ])
+    metrics = agent.evaluate({
+        "query": "注意力机制",
+        "golden_chunks": [],
+        "golden_answer": "QKV 矩阵是注意力机制核心",
+    })
+    # 检索结果 + golden_answer 有词语重叠 -> faithfulness > 0
+    assert metrics["faithfulness"] > 0.0
+
+
+def test_evaluate_metric_bounds():
+    """所有指标应在 [0, 1] 区间（latency_ms 除外）"""
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "BERT 使用双向 Transformer 编码器"},
+        {"content": "今天天气不错"},
+    ])
+    metrics = agent.evaluate({
+        "query": "Transformer",
+        "golden_chunks": ["BERT 使用双向 Transformer 编码器"],
+        "golden_answer": "BERT 是双向 Transformer",
+        "top_k": 3,
+    })
+    assert 0.0 <= metrics["recall_at_k"] <= 1.0
+    assert 0.0 <= metrics["context_precision"] <= 1.0
+    assert 0.0 <= metrics["faithfulness"] <= 1.0
+    assert 0.0 <= metrics["answer_relevancy"] <= 1.0
+    assert 0.0 <= metrics["redundancy"] <= 1.0
+    assert metrics["latency_ms"] >= 0
