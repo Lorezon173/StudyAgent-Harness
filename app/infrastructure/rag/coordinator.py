@@ -1,4 +1,46 @@
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+
 from app.infrastructure.rag.store import FakeRAGStore
+
+
+@dataclass
+class Chunk:
+    """检索结果的最小单元（§3.6 证据片段）。"""
+    content: str
+    score: float                         # 原始 similarity score
+    source: str = "vector"               # "vector" | "ocr" | "code"
+    metadata: dict = field(default_factory=dict)  # file_path, page, line, symbol, ...
+
+
+@dataclass
+class SearchResult:
+    """多源聚合的检索结果。"""
+    chunks: list[Chunk]
+    total_found: int
+    sources_used: list[str]
+
+
+class IndexProvider(ABC):
+    """检索后端协议：所有 provider（向量/OCR/代码）必须实现。"""
+
+    name: str
+
+    @abstractmethod
+    def index(self, docs: list[dict]) -> None:
+        """索引一批文档/文本块。"""
+        ...
+
+    @abstractmethod
+    def search(self, query: str, top_k: int = 5) -> list[Chunk]:
+        """检索并返回 Chunk 列表。"""
+        ...
+
+    @property
+    @abstractmethod
+    def doc_count(self) -> int:
+        """已索引的文档数。"""
+        ...
 
 
 class RAGCoordinator:
