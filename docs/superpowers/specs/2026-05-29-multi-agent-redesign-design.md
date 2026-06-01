@@ -37,6 +37,7 @@
 | 4 角色（无 Conductor） | 缺少长尾决策兜底，规则未覆盖场景无解 |
 | 纯费曼 / 纯苏格拉底单一教学法 | 单一方法无法覆盖"零基础→精通"全路径；融合式按掌握度动态切换更优 |
 | 真并发多 Agent（多线程 / asyncio task） | 引入竞态，事件无法全序回放，违背 §5 replay 需求；教学场景本就顺序因果，真并发收益小 |
+| 放松 Conductor 约束（允许自产语义观察） | Conductor 可在规则未覆盖时绕过 Critic/Curator 直接判断用户状态 → 职能正交仅在规则命中时成立，长尾路径上 Conductor 退化为全能 Agent，评估死区不可观测；反之，Conductor 仅基于已有观察路由 + 观察不足时请求补观察 → 正交全局成立、评估可追溯 |
 
 ---
 
@@ -104,10 +105,10 @@
 
 | Agent | 职责 |
 |---|---|
-| **Tutor** | 教学主体；执行讲解、提问、追问、复述检查、类比生成；订阅 Curator 的画像和 Retriever 的证据 |
-| **Retriever** | 知识检索；接 RAG + OCR + 代码索引；输出带置信度的证据片段；订阅 Tutor 的查询事件 |
-| **Critic** | L1 在线评估；**只判文本语义层**：掌握度、概念混淆、自相矛盾、回答置信度、RAG 质量；发出观察事件供 Orchestrator 决策。**不读图谱、不判前置缺失、不做路由决策** |
-| **Curator** | 维护用户画像与掌握点知识图谱；订阅 Critic 评估事件，更新 MasteryGraph；**只判结构层**：基于图谱前置关系 + 用户在前置节点掌握度，判定"前置薄弱"并发 `GraphPrereqWeakDetected`；为 Tutor 提供画像上下文。**不判文本语义** |
+| **Tutor** | 教学主体；执行讲解、提问、追问、**发起复述请求**、类比生成；订阅 Curator 的画像和 Retriever 的证据 |
+| **Retriever** | 知识检索（**只做机械层**）；接 RAG + OCR + 代码索引；输出证据片段（原始 similarity score + 机械状态 `retrieval_status`）；订阅 Tutor 的查询事件。**不自评语义质量**——"证据够不够相关/充分"归 Critic |
+| **Critic** | L1 在线评估；**只判文本语义层**：掌握度、概念混淆、自相矛盾、回答置信度、RAG 语义质量（**仅当证据将用于教学动作时评**，纯探索检索跳过以省成本）；发出观察事件供 Orchestrator 决策。**不读图谱、不判前置缺失、不做路由决策** |
+| **Curator** | 维护用户画像与掌握点知识图谱；**订阅两类事件做双时机前置检查**：① `MasteryAssessed`（回合中，基于实测）② `TopicEntered`（开局/切主题，基于历史画像）；更新 MasteryGraph；**只判结构层**：基于图谱前置关系 + 用户在前置节点掌握度，判定"前置薄弱"并发 `GraphPrereqWeakDetected`（带 `basis: historical\|observed`）；为 Tutor 提供画像上下文。**不判文本语义** |
 | **Conductor** | 规则未覆盖时的 LLM 决策兜底；不订阅特定事件，由 Orchestrator 按需召唤；输出「下一动作 + 理由」 |
 
 ### 2.2 统一 Agent 契约
@@ -119,12 +120,14 @@
 输出：emit(Event) → 写回 EventBus；可以多次 emit
 副作用：仅允许通过 Harness 接口（无直接 LLM 调用、无直接 DB 写入）
 状态：每个 Agent 持有自己的 working set，不写 WorkspaceState
+声明：每个 Agent 类声明 emittable_types: set[EventType]——声明即契约，EventBus 据此校验
 ```
 
 **关键约束**：
 - 5 个 Agent **不直接互相调用**，只通过事件通信
 - Agent 内部允许多次 LLM 调用，但必须通过统一的 `LLMService.call(node, intent, ...)` 接口（已就绪）
 - 每个 Agent 必须暴露**评估接口** `evaluate(test_case) → metrics`（为 §5 评估体系准备）
+- **每个 Agent 只允许 emit 其专业领域内的事件类型**（事件所有权白名单，见 §3.2）；`EventBus.publish()` 校验 `event.source` 是否有权发该 `type`，越权直接抛 `EmitViolationError`——这是职能正交的运行时强制，也是协作质量指标"违约率（应恒为 0）"的数据源
 
 ### 2.3 Conductor 的特殊性
 
@@ -133,6 +136,13 @@
 - 决策频率低（仅规则未覆盖时触发），token 成本可控
 - 决策可记录、可回放、可被 EvalKernel 评估为「该决策与人类专家是否一致」
 - 形成 L2 → L1 的反馈环：规则未覆盖率高 → Conductor 高频触发 → EvalKernel 检测出该补哪些规则 → 升级规则集
+
+**硬约束（防越权）**：Conductor **只能在已有观察事件（Critic/Curator 产出）之上做路由决策，不可自产语义/结构观察**。且 Conductor 只能 emit `ConductorDecided`（白名单约束，§3.2），由 Orchestrator 将其转译为 `ActionRequested`。具体而言：
+- 若当前观察事件足够做决策 → emit `ConductorDecided(action=...)`，Orchestrator 转为 `ActionRequested`
+- 若观察不足（缺某类关键评估）→ Conductor **不自己判断**，而是 emit `ConductorDecided(action=REQUEST_OBSERVATION, target=critic|curator)`，由 Orchestrator 据此发 `ActionRequested(target=...)` 请求补观察。观察补齐后下轮可能命中规则，无需 Conductor 再次介入
+- `UserMessage` 的 payload 仅作上下文参考，不可据此自行判断"用户是否混淆/掌握度如何/前置薄弱"——那些是 Critic/Curator 的职能
+
+这意味着 Conductor 可能需要**多轮 micro-turn** 才能做出最终决策（先请求补观察 → 等评估 → 再路由）。这是正交的代价：分工带来多一轮通信，换来的是一致性和可评估性。
 
 ### 2.4 职能正交原则（专业的人做专业的事）
 
@@ -149,7 +159,9 @@
 
 **关键**：没有任何单一 Agent 做"混淆 vs 前置缺失"的二选一。Critic 从文本发它的、Curator 从图谱发它的，两个观察都进事件队列；Orchestrator 在"回合屏障"（§3.5）后按优先级裁决（前置缺失 priority 100 > 混淆 priority 80，故"既混淆又前置缺失"时优先补前置）。补完前置回来若仍混淆，Critic 会再次发 `ConfusionDetected`，此时图谱前置已达标、`GraphPrereqWeakDetected` 不再触发，自然走 Analogy。**时序 + 优先级自动消解冲突，无需任何 Agent 越权。**
 
-因果链要求：Curator 必须订阅 Critic 的评估事件（`MasteryAssessed` → 触发图谱检查），这是设计的一部分而非耦合——Curator 本就应在掌握度变化时更新图谱。
+因果链要求：Curator 订阅两类事件做**双时机前置检查**——`MasteryAssessed`（回合中，掌握度变化时更新图谱并实测前置）与 `TopicEntered`（开局/切主题，基于历史画像预判前置）。这是设计的一部分而非耦合——Curator 本就应在主题进入与掌握度变化时维护图谱。开局基于历史的判定发 `basis=historical` 弱信号（先探测确认），回合中基于实测发 `basis=observed` 强信号（可直接回退）。详见 §4.2 开局前置探测。
+
+**运行时强制**：职能正交不仅是设计原则，更是运行时契约——通过事件所有权白名单（§3.2）在 `EventBus.publish()` 层校验，越权 emit 直接抛 `EmitViolationError`。这既堵住了"Agent A 越界发 Agent B 的事件"的漏洞，也为评估体系的"协作质量"指标（§5）提供了可度量的数据源。详见 §2.2 契约约束。
 
 ---
 
@@ -162,7 +174,7 @@ Event {
   id: ULID            # 全局唯一 + 时序可排
   ts: float           # epoch ms
   session_id: str
-  source: str         # "tutor" | "retriever" | "critic" | "curator" | "conductor" | "user"
+  source: str         # "tutor"|"retriever"|"critic"|"curator"|"conductor"|"user"|"orchestrator"
   type: EventType     # 见 §3.2
   payload: dict       # 结构化负载
   parent_id: str?     # 因果链（用于回放和评估）
@@ -171,47 +183,50 @@ Event {
 ```
 
 EventBus 提供：
-- `publish(event)` — 发布事件
+- `publish(event)` — 发布事件（**校验 `event.source` 是否有权发该 `event.type`，越权抛 `EmitViolationError`**；见 §3.2 所有权表）
 - `subscribe(agent, event_types)` — 订阅
 - `replay(session_id)` — 从 EventStore 回放整条事件链（用于评估）
 - 每个事件发布时自动写入 Observability 的 EventSink（trace 沉淀）
 
 ### 3.2 事件类型清单（最小完整集）
 
+以下事件清单同时是**事件所有权白名单**——每种事件类型仅有唯一的合法 `source`，`EventBus.publish()` 据此校验（见 §3.1）。Orchestrator 本身不是事件的 source（控制类事件由 Orchestrator 内部逻辑产生，但 `ActionRequested` 的 `source` 仍标为 `"orchestrator"` 用于审计）。
+
 ```
 == 用户输入类 ==
-UserMessage              用户发言（首轮或回合中）
-UserUploaded             用户上传资料
+UserMessage              [source: user]             用户发言（首轮或回合中）
+UserUploaded             [source: user]             用户上传资料
 
 == Tutor 产出类 ==
-TutorAsked               Tutor 抛出引导问题（苏格拉底模式）
-TutorExplained           Tutor 给出讲解
-TutorRequestedRecap      Tutor 要求用户复述（切入费曼模式）
-TutorOfferedAnalogy      Tutor 给出类比
+TutorAsked               [source: tutor]            Tutor 抛出引导问题（苏格拉底模式）
+TutorExplained           [source: tutor]            Tutor 给出讲解
+TutorRequestedRecap      [source: tutor]            Tutor 要求用户复述（切入费曼模式）
+TutorOfferedAnalogy      [source: tutor]            Tutor 给出类比
 
 == Retriever 产出类 ==
-RetrievedEvidence        证据片段集合（带 score, source, gate_status）
-RetrievalFailed          检索失败/超时
+RetrievedEvidence        [source: retriever]        证据片段集合（带 score=原始 similarity, source, retrieval_status: ok|empty|timeout|low_score 纯机械状态，不含语义质量判断）
+RetrievalFailed          [source: retriever]        检索失败/超时
 
-== Critic 产出类 ==
-MasteryAssessed          掌握度评估（mastered/partial/weak）
-ConfusionDetected        混淆检测（具体哪两个概念混淆）
-ContradictionDetected    自相矛盾检测
-LowConfidenceDetected    用户回答置信度不足
-RAGQualityAssessed       证据相关性/完整性评分
+== Critic 产出类（只判文本语义层，不读图谱、不判前置缺失、不做路由决策）==
+MasteryAssessed          [source: critic]           掌握度评估（mastered/partial/weak）
+ConfusionDetected        [source: critic]           混淆检测（具体哪两个概念混淆）
+ContradictionDetected    [source: critic]           自相矛盾检测
+LowConfidenceDetected    [source: critic]           用户回答置信度不足
+RAGQualityAssessed       [source: critic]           证据语义质量评分（相关性/充分性）——**唯一**的检索质量信号，驱动重检索；仅当证据将用于教学动作时触发（检索意图带 purpose=teaching；纯探索检索跳过省成本）
 
-== Curator 产出类 ==
-ProfileUpdated           用户画像变更
-GraphNodeStrengthened    掌握点图谱：节点强度变化
-GraphPrereqWeakDetected  发现"前置薄弱"，建议回退
+== Curator 产出类（只判结构层，不判文本语义）==
+ProfileUpdated           [source: curator]          用户画像变更
+GraphNodeStrengthened    [source: curator]          掌握点图谱：节点强度变化
+GraphPrereqWeakDetected  [source: curator]          发现"前置薄弱"，建议回退（payload 含 basis: historical=历史画像推断 / observed=本轮实测）
 
 == 控制类 ==
-LoopExit                 Orchestrator 决定退出协作环
-PolicyTransition         融合循环模式切换（Socratic ↔ Feynman ↔ Analogy ↔ Regress）
-ActionRequested          Orchestrator 请求 Tutor/Retriever 做下一步
-ConductorRequested       规则未覆盖，Orchestrator 召唤 Conductor 决策
-ConductorDecided         Conductor 输出决策（动作 + 理由），转为 ActionRequested
-OrchestratorTick         内部哨兵：最低优先级，micro-turn 内观察事件静默后触发一次路由决策（实现回合屏障，§3.5.3）
+TopicEntered             [source: orchestrator]     主题确定/切换：route 定主题后作为协作环种子事件之一注入（与 UserMessage 并列），触发 Curator 开局前置检查（§4.2）
+LoopExit                 [source: orchestrator]     Orchestrator 决定退出协作环
+PolicyTransition         [source: orchestrator]     融合循环模式切换（Socratic ↔ Feynman ↔ Analogy ↔ Regress）
+ActionRequested          [source: orchestrator]     Orchestrator 请求 Tutor/Retriever/Critic/Curator 做下一步；带 target 字段指定目标 Agent（如 target=critic 请求补语义评估）
+ConductorRequested       [source: orchestrator]     规则未覆盖，Orchestrator 召唤 Conductor 决策
+ConductorDecided         [source: conductor]        Conductor 输出决策（动作 + 理由），Orchestrator 将其转为 ActionRequested
+OrchestratorTick         [source: orchestrator]     内部哨兵：最低优先级，micro-turn 内观察事件静默后触发一次路由决策（实现回合屏障，§3.5.3）
 ```
 
 ### 3.3 Orchestrator 内部结构
@@ -235,8 +250,15 @@ Orchestrator（事件路由器）
    No
    ↓
 2. 落到 ConductorAgent（LLM 决策，500-2000ms）
-   输入：最近 N 条事件 + WorkspaceState 快照 + MasteryGraph 摘要
-   输出：下一动作 + 选择理由
+   输入：已有观察事件（Critic/Curator 产出）+ WorkspaceState 快照 + MasteryGraph 摘要
+   约束：Conductor 不可自产语义/结构观察（§2.3），只能基于已有观察路由
+   ↓
+   观察足够？
+     Yes → emit ConductorDecided(action, reason) → Orchestrator 转为 ActionRequested
+     No  → emit ConductorDecided(action=REQUEST_OBSERVATION,
+               target=critic|curator, reason="缺XX评估")
+           → Orchestrator 转为 ActionRequested(target=critic|curator)
+           → 补观察后下轮可能命中规则
    ↓
 3. 将本次决策记入 trace，喂给 EvalKernel 离线学习"该补什么规则"
 ```
@@ -246,8 +268,12 @@ Orchestrator（事件路由器）
 ```yaml
 # orchestrator_rules.yaml （热可换，在 §5 评估时作为对照实验变量）
 rules:
-  - when: GraphPrereqWeakDetected
-    action: REGRESS_TO_PREREQ        # 立即回退到前置点
+  - when: GraphPrereqWeakDetected.basis == "observed"
+    action: REGRESS_TO_PREREQ        # 本轮实测前置弱，直接回退到前置点
+    priority: 100
+
+  - when: GraphPrereqWeakDetected.basis == "historical"
+    action: TUTOR_PROBE_PREREQ       # 历史推断前置弱：先发探测问题确认，避免"按着会的人复习"；渐进启用（冷启动画像空时不触发）
     priority: 100
 
   - when: ContradictionDetected
@@ -271,7 +297,7 @@ rules:
     priority: 50
 
   - when: RAGQualityAssessed.score < threshold
-    action: RETRIEVER_EXPAND_QUERY   # 让 Retriever 重新检索
+    action: RETRIEVER_EXPAND_QUERY   # 让 Retriever 重新检索（质量信号来自 Critic，独立于 Retriever，杜绝自评）
     priority: 40
 
   - default:
@@ -295,6 +321,8 @@ rules:
 def collab_loop(workspace_state):
     queue = PriorityQueue()                    # 优先级队列
     queue.push(UserMessage(...))               # 用户输入作为种子事件
+    if route_set_new_topic:                    # 新主题/切主题时（route 已写 current_topic）
+        queue.push(TopicEntered(...))          # 种子之一，触发 Curator 开局前置检查（§3.2/§4.2）
     turn = 0
     while not queue.empty():
         turn += 1
@@ -351,6 +379,42 @@ ConfusionDetected / GraphPrereqWeakDetected / RAGQualityAssessed ...），
 
 进/出环点明确：`route` 节点决定是否进环（如纯 FAQ 可不进环直接答）；`LoopExit` 是唯一出环信号。
 
+### 3.6 证据评判流程（机械门槛 vs 语义质量 —— 职能正交第三例）
+
+证据"够不够好"被正交拆为两类判断：Retriever 只做**机械门槛**（确定性，无需语义），Critic 独占**语义质量**（唯一质量信号）。生成检索结果的人不评判自己的产出（同 §2.3 Conductor 限制、§2.4 复述检查归 Critic）。
+
+```
+ActionRequested(retriever_search, purpose=teaching|exploration)
+        │
+        ▼
+  ┌──────────────┐   只做机械层：向量检索 + 原始 similarity score
+  │  Retriever   │   不判"够不够好"（不自我裁判）
+  └──────┬───────┘
+         │ 机械门槛（确定性，无需语义）
+         ▼
+   retrieval_status?
+     ├─ empty / timeout / low_score ─► emit RetrievalFailed ─► Orchestrator 兜底
+     └─ ok ─► emit RetrievedEvidence(chunks, score, retrieval_status=ok)
+                  │
+                  ▼
+        purpose == teaching ?                  ← 成本优化：只在必要路径评
+          ├─ 否（纯探索检索）─► 跳过 Critic 评估（省 LLM 成本）
+          └─ 是（将用于教学）↓
+              ┌──────────────┐   语义层：唯一质量信号
+              │   Critic     │   "证据对当前教学够不够相关/充分"
+              └──────┬───────┘
+                     │ emit RAGQualityAssessed(score)
+                     ▼
+              score < threshold ?
+                ├─ 是 ─► Orchestrator: RETRIEVER_EXPAND_QUERY ─►（重检索，回 Retriever）
+                └─ 否 ─► 证据放行，进入教学（Tutor 使用）
+```
+
+职能边界：
+- **Retriever（生成）**：检索 + 原始 score + 机械状态 `retrieval_status`。不评语义质量。
+- **Critic（评估）**：`RAGQualityAssessed` = 唯一语义质量信号，驱动重检索；仅在 `purpose=teaching` 时触发。
+- **Orchestrator（路由）**：依 Critic 信号决定 `RETRIEVER_EXPAND_QUERY` 或放行。
+
 ---
 
 ## 4. 融合式教学循环（苏格拉底 ⋂ 费曼）
@@ -374,16 +438,19 @@ ConfusionDetected / GraphPrereqWeakDetected / RAGQualityAssessed ...），
 | Socratic | `MasteryAssessed=partial` | Feynman | 切入费曼，让用户复述检验 |
 | Socratic | `MasteryAssessed=weak` ∧ repeat<2 | Socratic | 换个角度重新引导（自环） |
 | Socratic | `ConfusionDetected` | Analogy | 概念混淆，用类比破解 |
-| Socratic | `GraphPrereqWeakDetected` | Regress | 前置薄弱，回退补根基 |
+| Socratic | `GraphPrereqWeakDetected`(observed) | Regress | 实测前置薄弱，直接回退补根基 |
+| Socratic | `GraphPrereqWeakDetected`(historical) | Socratic（探测） | 历史推断前置弱：先发 `TUTOR_PROBE_PREREQ` 探测问题确认，不直接回退；确认弱(转 observed)才进 Regress —— 渐进启用 |
 | Feynman | `MasteryAssessed=mastered` | Socratic | 复述达标，回苏格拉底收尾 |
 | Feynman | `ConfusionDetected` | Analogy | 复述暴露**概念混淆** → 类比 |
-| Feynman | `GraphPrereqWeakDetected` | Regress | 复述暴露**前置缺失** → 回退 |
+| Feynman | `GraphPrereqWeakDetected`(observed) | Regress | 复述暴露**前置缺失** → 回退 |
 | Feynman | `MasteryAssessed=weak`（无混淆无前置缺失） | Socratic | 单纯讲不清，回引导重讲 |
 | Analogy | `MasteryAssessed≥partial`（类比被理解） | Socratic | 类比奏效，回主线 |
 | Analogy | `MasteryAssessed=weak`（类比无效） | Regress | 类比也救不了 → 疑似前置问题，回退 |
 | Regress | 前置点 `MasteryAssessed=mastered` | Socratic | 前置补齐，回到原主题主线 |
-| Regress | 前置点仍 `GraphPrereqWeakDetected` | Regress | 前置的前置也弱 → 继续向下回退（自环） |
+| Regress | 前置点仍 `GraphPrereqWeakDetected`(observed) | Regress | 前置的前置也弱 → 继续向下回退（自环） |
 | 任意 | `turn > MAX_TURNS` | （LoopExit） | 熔断出环（§9） |
+
+**开局前置探测（双时机的开局分支）**：用户选定/切换主题时，`TopicEntered` 触发 Curator 基于历史画像检查前置。若历史显示前置弱，发 `basis=historical` 信号，Orchestrator 路由到 `TUTOR_PROBE_PREREQ`（Tutor 在 Socratic 模式发一个轻量前置探测问题），而非直接 Regress——避免历史画像过时导致"按着会的人复习"。探测后用户作答，Critic 实测：若确实弱，Curator 再发 `basis=observed` → 进 Regress；若其实已掌握，正常进入主题教学。historical 分支为**渐进启用**（冷启动画像为空时本就发不出信号，P4 先落 observed 分支，historical 待画像积累后启用）。
 
 **Feynman 失败分流的职能归属**（呼应 §2.4）：Feynman 复述失败时，"走 Analogy 还是 Regress"不由任何单一 Agent 二选一决定，而是 Critic（发 `ConfusionDetected`）与 Curator（发 `GraphPrereqWeakDetected`）各自从专业领域发观察，Orchestrator 在回合屏障后按优先级裁决（前置缺失优先）。
 
@@ -438,14 +505,15 @@ ConfusionDetected / GraphPrereqWeakDetected / RAGQualityAssessed ...），
 │   独立运行（CLI / API / CI 触发，不影响线上流量）         │
 │                                                          │
 │   ┌─ ComponentBench（部件级）                            │
-│   │   对每个 Agent / 每个 Infrastructure 组件单独跑      │
-│   │   benchmark，输出标准化指标                          │
+│   │   对每个 Agent / Infra 组件单独跑 benchmark          │
 │   ├─ SystemBench（系统级）                               │
 │   │   端到端跑预定义"学习场景"，输出产品级指标            │
-│   ├─ ABController（对照实验）                            │
-│   │   把同一 benchmark 在两套配置下并行跑，输出 diff      │
+│   ├─ CollaborationBench（协作级 ★新增）                  │
+│   │   测 5 Agent 协作质量（涌现），消费 parent_id 因果链 │
+│   ├─ ABController（对照实验 + 组件消融）                 │
+│   │   两套配置/架构并行跑输出 diff；支持关 Agent 消融     │
 │   └─ SelectionReporter（选型推荐）                       │
-│       基于 ABController 历史，输出 Markdown 报告         │
+│       基于 ABController/消融 历史，输出 Markdown 报告    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -465,7 +533,7 @@ ConfusionDetected / GraphPrereqWeakDetected / RAGQualityAssessed ...），
 - 凡用 LLM-as-judge 的指标（解释完整性、图谱连接合理性、Conductor 决策合理性等），**judge 模型必须与被评 Agent 的模型不同族**（如被评 Tutor 用 Claude，则 judge 用 GPT，反之亦然），杜绝"自己给自己打高分"。
 - judge 采用**盲评**：不告知 judge 哪个输出来自被评系统、哪个来自基线/对照。
 - judge 本身也要校准：judge 的打分与人类黄金标注的一致率（κ）须 ≥ 0.6 才采信该 judge；不达标则换 judge 模型或细化 rubric。
-- A/B 实验（§5.4）中 control 与 treatment 由**同一个 judge** 盲评，消除 judge 偏置对 diff 的影响。
+- A/B 实验（§5.5）中 control 与 treatment 由**同一个 judge** 盲评，消除 judge 偏置对 diff 的影响。
 
 ### 5.2 ComponentBench 部件级评估接口
 
@@ -500,6 +568,8 @@ class Evaluatable:
 | **MemoryStore** | 查询延迟、记忆召回准确率（合成测试集） |
 | **MasteryGraph** | 节点更新延迟、前置依赖推理准确率、图谱一致性 |
 
+**RAG 质量指标的分层归属（呼应 §3.6/§3.2）**：上表 Retriever 的"RAG 三件套"是 **L2 离线 benchmark**——由 EvalKernel 用黄金集 + 独立 judge（§5.1.1）客观考核 Retriever 部件的检索能力，**非 Retriever 自评**。在线的 `RAGQualityAssessed` 则由 Critic 发出，评判"当前这批证据够不够用"以驱动实时重检索。两者分层清晰、互不越权。
+
 ### 5.3 SystemBench 系统级评估
 
 预定义一组"标准学习场景"（黄金集），每个场景是一份多回合脚本：
@@ -511,9 +581,14 @@ scenarios:
     topic: "RAG"
     script: [...]              # 模拟用户的多轮回复
     expected:
+      # —— 结果断言 ——
       mastery_reached: mastered
       max_turns: 12
       cost_usd: < 0.05
+      # —— 过程断言（#21 黄金轨迹）——
+      expected_mode_path: [Socratic, Feynman, Analogy, Socratic]
+      must_contain_events: [ConfusionDetected, TutorOfferedAnalogy]
+      must_not_contain_events: [ConductorRequested]   # 简单场景不该惊动 Conductor
 
   - name: "有基础但有混淆"
     user_profile:
@@ -547,7 +622,35 @@ scenarios:
 - `conductor_trigger_rate` < 上限（默认 30%，过高说明规则集需补充，而非真长尾）
 - 每个场景设 `max_turns` 上限，超限视为"教不会"失败
 
-### 5.4 ABController 对照实验
+**过程断言（#21 黄金轨迹）**：场景 `expected` 除结果断言外可加过程断言，用于评"实际协作轨迹 vs 专家理想轨迹"的偏离度——不仅看结果对不对，也看过程是否合理：
+- `expected_mode_path`：期望的教学模式转移序列（如 Socratic→Feynman→Analogy）
+- `must_contain_events` / `must_not_contain_events`：必须出现 / 不应出现的事件类型
+- 偏离度作为 CollaborationBench（§5.4）"轨迹偏离"维度的输入
+
+### 5.4 CollaborationBench 协作级评估（新增 — 直接衡量协作质量）
+
+**定位**：部件级（§5.2，单个 Agent 考几分）与系统级（§5.3，端到端结果对不对）之间的**中间层**。协作质量是**涌现属性**——既 ≠ 各部件质量之和，也 ≠ 最终结果反推：系统可能每个部件单测全优、最终掌握度也达标，但协作过程是决策震荡 / 事件风暴 / 某 Agent 几乎不工作（角色冗余）。部件级与系统级都会给它满分，唯有协作级能识别。
+
+**数据源**：EventBus 事件流 + `parent_id` 因果链（§3.1 此前注明"用于评估"但无指标消费，本节补上）。在已运行场景产生的 trace 上做旁路分析，不影响在线流量。
+
+**六维协作指标**：
+
+| 协作维度 | 指标 | 数据来源 | 对应诉求 |
+|---|---|---|---|
+| **职能正交违约** | 跨域 emit 次数（应恒为 0）、Conductor 越权自判次数 | #14 白名单拦截日志 | 「不能跨职能范围操作」量化验证 |
+| **协作效率** | 每教学回合事件数、无效事件率（emit 但未触发任何决策）、Agent 利用率（有无角色摸鱼） | 因果链 | 「协调」 |
+| **决策稳定性** | 模式切换震荡频率、Orchestrator 反悔率（§4.2 自洽 ≠ 运行时不震荡） | PolicyTransition 序列 | 「协调且专业」 |
+| **冲突消解** | Critic/Curator 观察冲突率、优先级裁决是否真消解（§2.4 机制运行时验证） | 回合屏障日志 | 正交机制是否落地 |
+| **因果链质量** | 因果完整性（每动作可溯源到观察）、孤儿事件率（凭空行动）、因果树深度 | `parent_id` | 让闲置因果链服务评估 |
+| **轨迹偏离** | 实际模式路径 / 事件序列 vs 黄金轨迹（§5.3 过程断言）的偏离度 | 黄金轨迹（#21） | 过程合理性 |
+
+**与职能正交的一体两面**：本层多数指标**复用前面为职能正交付出的工程**——#14 白名单实现后"违约率"免费可得；§2.4 回合屏障实现后"冲突消解率"可算；§3.1 `parent_id` 实现后"因果链质量"可算。**职能正交的强制机制，同时就是协作质量的度量基础设施。**
+
+**输出**：协作质量报告（每场景一份）；异常项（违约率>0、模式震荡>阈值、孤儿事件>阈值等）标记为协作缺陷，供 SelectionReporter（§5.6）综合。
+
+### 5.5 ABController 对照实验（参数 A/B + 组件消融）
+
+**类型一：参数 A/B**（换模型 / 换配置 / 换规则集）
 
 ```yaml
 ab_experiment:
@@ -563,9 +666,25 @@ ab_experiment:
   significance: 95%
 ```
 
+**类型二：组件消融（#20 — 证明架构本身的价值）**
+
+参数 A/B 只能比"换零件"；**消融**才能回答"这套协作架构本身值多少增益"——这是「选型参考」诉求的核心。做法：禁用某组件，其产出由 stub 返回空/默认值，对比完整系统的 delta。
+
+```yaml
+ablation_experiment:
+  name: "Curator 价值消融"
+  control:   { all_agents: on }                 # 完整 5 Agent
+  treatment: { disable_agent: curator }         # 禁用 Curator，其事件由 stub 返回默认
+  scenarios: [prereq_weak_attention, ...]
+  metrics_to_compare: [regress_to_prereq 触发率, mastery_reached, mode_path 偏离]
+  # 可消融对象：任一 Agent / 回合屏障(§3.5.3) / Conductor(§2.3) / 某条规则
+```
+
+消融能回答的问题：Curator 砍掉行不行？回合屏障值不值那点延迟？Conductor 对长尾的真实贡献率？这些靠参数 A/B 永远答不了。
+
 执行结果写入 `eval_runs/` 目录，每次实验是不可变快照。
 
-### 5.5 SelectionReporter 输出形式
+### 5.6 SelectionReporter 输出形式
 
 ```markdown
 # 选型建议报告 — 2026-05-30
@@ -738,7 +857,8 @@ app/
     ├── kernel.py              # [新增] EvalKernel 入口
     ├── component_bench.py     # [新增] 部件级
     ├── system_bench.py        # [新增] 系统级
-    ├── ab_controller.py       # [新增] A/B 框架
+    ├── collaboration_bench.py # [新增] 协作级（§5.4，消费 parent_id 因果链）
+    ├── ab_controller.py       # [新增] A/B + 组件消融框架（§5.5）
     ├── selection_reporter.py  # [新增] 选型报告
     ├── scenarios/             # [新增] 预定义场景 YAML
     └── fixtures/              # [新增] 各部件的测试用例
@@ -766,8 +886,8 @@ superpowers/                   # [新增] 规划归档（dev-standards.md 要求
 | **P3** | 完整教学循环（Critic 评分 → 模式切换 → wrap_up） | 走通 1 个标准场景 | 模式切换不自洽（违反 §4.2 转移表）→ 回退 |
 | **P4** | RAG 扩展（OCR + 代码索引）+ MasteryGraph 集成 + 冷启动建图 | 场景"前置薄弱触发回退"通过 | 空图谱下 Regress 不触发 → 回退 §6.1 建图 |
 | **P5** | EvalKernel 部件级 ComponentBench + 5 Agent 各跑 1 fixture | 输出 JSON 报告 | judge 与黄金集 κ<0.6 → 换 judge/细化 rubric |
-| **P6** | EvalKernel 系统级 SystemBench + 4 预定义场景 | 输出 Markdown 报告 | 任一红线（§5.3）超限 → 标记 regression 不通过 |
-| **P7** | ABController + SelectionReporter | 跑通 "Tutor 模型升级" 对照实验 | 同 judge 盲评未生效（judge 偏置）→ 回退 §5.1.1 |
+| **P6** | 系统级 SystemBench + 4 场景 + **CollaborationBench 协作级（#19）+ 黄金轨迹过程断言（#21）** | 输出 Markdown 报告，协作六维指标可算 | 任一红线（§5.3）超限或违约率>0 → 标记 regression |
+| **P7** | ABController（参数 A/B + **组件消融 #20**）+ SelectionReporter | 跑通 "Tutor 模型升级" A/B + "Curator 价值消融" | judge 偏置未消除→回退 §5.1.1；消融无法禁用 Agent→回退 §5.5 |
 | **P8** | 老代码灰度切换：API feature flag 把 /chat 切新栈 | 灰度上线，新旧栈指标对齐 | 新栈关键指标劣于老栈 → 关 flag 回老栈 |
 | **P9** | 删除 `app/agent/`（含 multi_agent/system_eval） | 老代码下线，pytest 全绿 | 删除后有 import 断裂 → 回退，残留耦合未清 |
 
@@ -782,6 +902,8 @@ superpowers/                   # [新增] 规划归档（dev-standards.md 要求
 | 回合屏障判定"micro-turn 何时结束"出错 | 用优先级队列语义实现（队列无更高优先级观察事件即屏障），有专项单测（P2） |
 | EventBus 死循环 | default 规则保证总有动作；`MAX_TURNS` 熔断强制 `LoopExit`（§3.5.1/§4.2） |
 | Conductor LLM 决策延迟拖慢会话 | 规则覆盖高频路径，Conductor 仅长尾触发；`conductor_trigger_rate` 红线监控（§5.3） |
+| Conductor 补观察导致多轮 micro-turn 额外延迟 | 仅在规则未覆盖 + 观察不足时触发（双条件同时成立，概率低）；且补齐观察后下轮通常命中规则不再经 Conductor；额外延迟纳入 `p95_turn_latency` 红线监控（§5.3） |
+| Agent 职能越权（emit 不属于自己的事件） | 事件所有权白名单在 `EventBus.publish()` 层强制校验（§3.2），越权抛 `EmitViolationError`；纳入 P1 验收（EventBus 单测含越权拒绝测试） |
 | 老代码在重构期间回归 | 新代码全在新目录；老代码只读不改，保留至 P8 灰度稳定（基线 155 测试持续全绿） |
 | 评估体系工程量大 | 按 P5→P7 分阶段交付，先部件级后系统级后 A/B |
 | LLM-as-judge 自我裁判 | judge 与被评模型强制不同族 + 盲评 + judge 自身 κ 校准（§5.1.1） |
