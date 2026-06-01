@@ -52,3 +52,39 @@ def test_conductor_cannot_emit_mastery_or_confusion():
         ConductorAgent().emit(EventType.MASTERY_ASSESSED, ws)
     with pytest.raises(ValueError):
         ConductorAgent().emit(EventType.CONFUSION_DETECTED, ws)
+
+
+def test_conductor_observation_insufficient_requests_critic(mock_llm_invoke_json):
+    mock_llm_invoke_json({"conductor_decide": {
+        "action": "request_observation",
+        "target": "critic",
+        "reason": "缺掌握度评估",
+        "observation_enough": False,
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = ConductorAgent().handle(_request([]), ws)
+    assert len(out) == 1
+    assert out[0].payload["action"] == str(ActionKind.REQUEST_OBSERVATION)
+    assert out[0].payload["target"] == "critic"
+    assert out[0].payload["observation_enough"] is False
+
+
+def test_conductor_observation_insufficient_requests_curator(mock_llm_invoke_json):
+    mock_llm_invoke_json({"conductor_decide": {
+        "action": "request_observation",
+        "target": "curator",
+        "reason": "缺前置依赖结构观察",
+        "observation_enough": False,
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = ConductorAgent().handle(_request([
+        {"type": "MasteryAssessed", "level": "weak"},
+    ]), ws)
+    assert out[0].payload["target"] == "curator"
+
+
+def test_conductor_ignores_non_subscribed_event():
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ev = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
+               session_id="s1")
+    assert ConductorAgent().handle(ev, ws) == []
