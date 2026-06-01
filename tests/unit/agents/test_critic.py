@@ -108,3 +108,33 @@ def test_critic_emits_all_observations_in_single_handle(mock_llm_invoke_json):
         EventType.CONFUSION_DETECTED,
         EventType.LOW_CONFIDENCE_DETECTED,
     }
+
+
+def test_critic_emits_rag_quality_for_teaching_purpose(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_rag_quality": {
+        "score": 0.42, "relevance": 0.5, "sufficiency": 0.3,
+        "rationale": "证据偏离主题",
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1", current_topic="RAG")
+    ev = Event(type=EventType.RETRIEVED_EVIDENCE, source=EventSource.RETRIEVER,
+               session_id="s1",
+               payload={"chunks": [{"text": "..."}], "purpose": "teaching"})
+    out = CriticAgent().handle(ev, ws)
+    assert len(out) == 1
+    assert out[0].type == EventType.RAG_QUALITY_ASSESSED
+    assert out[0].payload["score"] == 0.42
+    assert out[0].parent_id == ev.id
+
+
+def test_critic_cannot_emit_tutor_event():
+    # 越权防御（#14）
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    with pytest.raises(ValueError):
+        CriticAgent().emit(EventType.TUTOR_ASKED, ws)
+
+
+def test_critic_cannot_emit_graph_prereq_weak():
+    # 越权防御：结构层归 Curator（#15 切分）
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    with pytest.raises(ValueError):
+        CriticAgent().emit(EventType.GRAPH_PREREQ_WEAK_DETECTED, ws)

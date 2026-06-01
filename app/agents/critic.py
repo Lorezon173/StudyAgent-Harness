@@ -80,8 +80,24 @@ class CriticAgent(AgentBase):
         return events
 
     def _assess_rag_quality(self, event: Event, ws: WorkspaceState) -> list[Event]:
-        # 在 Task 2.3 落地
-        return []
+        chunks = event.payload.get("chunks", [])
+        result = self._llm.invoke_json(
+            "你是融合式教学的 Critic，评估证据对当前教学是否相关、是否充分。"
+            "输出 JSON：score(0-1)、relevance(0-1)、sufficiency(0-1)、rationale。",
+            f"主题：{ws.current_topic or ''}\n证据条数：{len(chunks)}",
+            session_id=ws.session_id, node="critic", intent="critic_rag_quality",
+        )
+        if "score" not in result:
+            return []
+        return [self.emit(
+            EventType.RAG_QUALITY_ASSESSED, ws,
+            payload={
+                "score": result["score"],
+                "relevance": result.get("relevance"),
+                "sufficiency": result.get("sufficiency"),
+                "rationale": result.get("rationale", ""),
+            },
+            parent_id=event.id)]
 
     def evaluate(self, test_case) -> dict:
         raise NotImplementedError("Plan E 实装 Critic 部件级评估（§5.2）")
