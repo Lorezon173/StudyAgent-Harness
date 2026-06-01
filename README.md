@@ -131,7 +131,15 @@ SubGraph
 - `app/agents/base.py` — AgentBase 统一契约（source / subscriptions / emittable_types / handle / emit / evaluate）
 - `app/orchestration/{collab_loop,graph}.py` — 单线程事件循环骨架 + 4 节点主图骨架
 
-Wave 1（检索 / 记忆画像 / 教学编排，可 3 窗口并行）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
+**Wave 1 进展**：
+
+- **Plan B 记忆与画像**已落地（[Plan B](docs/superpowers/plans/2026-06-01-plan-b-memory-profile.md)，5 Task TDD，35 测试）：
+  - `app/harness/mastery_graph.py` — MasteryGraph 引擎（DOC_ORDER/LLM_INFER/INTERACTION 三来源冷启动建图 + 置信度加权前置薄弱检测）
+  - `app/harness/user_profile.py` — UserProfile 偏好与进度
+  - `app/agents/curator.py` — Curator Agent（MasteryAssessed 实测 / TopicEntered 历史画像 双时机；historical 分支渐进启用）
+  - `app/infrastructure/storage/mastery_graph_store.py` — aiosqlite 持久化
+
+Wave 1 其余（Plan A 检索 / Plan C 教学编排）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
 
 ## 技术栈
 
