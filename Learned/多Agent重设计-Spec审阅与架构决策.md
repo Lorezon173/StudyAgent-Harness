@@ -29,6 +29,7 @@
 19. [协作评估层缺失：测不出协作质量](#19)
 20. [消融实验缺失](#20)
 21. [黄金协作轨迹缺失](#21)
+22. [Plan C 测试的 LLM Mock 策略（fixture + monkeypatch）](#22)
 
 ---
 
@@ -408,6 +409,36 @@ Conductor 收到：
 **决策**：采纳场景加过程断言（黄金轨迹）。结果断言（mastery_reached/max_turns）只判结果对不对，过程断言判过程合不合理——评"实际协作轨迹 vs 专家理想轨迹"偏离度。字段：`expected_mode_path` / `must_contain_events` / `must_not_contain_events`。偏离度接入 §5.4 CollaborationBench"轨迹偏离"维度。落地节奏：成本低，并入 P6。
 
 **spec 改动点（已落地 🔧）**：§5.3 SystemBench 首个场景 expected 加过程断言示例（mode_path + must_contain/not_contain）+ 过程断言说明段；§8 P6 并入黄金轨迹。
+
+---
+
+### 22. Plan C 测试的 LLM Mock 策略：fixture + monkeypatch ✅（实施期决策）
+
+> 与 #1–#21（2026-05-29 spec 审阅期发现）不同，本条是 **Plan C writing-plans 阶段的实施层决策**（2026-06-01），记录在此以保持决策链完整、可追溯。
+
+**前因（为什么必须先定）**：Plan C 含 3 个依赖 LLM 的 Agent——Tutor（生成教学内容）、Critic（结构化语义评估）、Conductor（路由决策）。而 Plan C 硬约束要求「严格 TDD 每 Task 提交」。TDD 测试必须**快速、确定、离线**，**不能真调 LLM**（慢、贵、输出非确定），故所有涉及 LLM 的 Agent 测试都要 mock。但 Plan 0 冻结的 `AgentBase`（handle/emit/evaluate）**未内置任何 LLM mock 层**，且 `AgentBase` 无 `__init__` 注入点。因此在动手写 Plan C 测试前，必须先定「mock 放在哪一层」——这决定整个 Plan C 测试的架构。
+
+**三方案对比**：
+
+| 方案 | 机制 | 优点 | 缺点 |
+|---|---|---|---|
+| A 直接 patch | 每个测试内 `mocker.patch("...LLMService.call")` | 零侵入、控制极细、学习成本低 | patch 路径散落各测试、与内部调用细节紧耦合（改实现→测试全改）、"绿但假"风险 |
+| B 依赖注入 Fake | Agent `__init__(llm_service)`，测试注入 FakeLLMService | 低耦合、Fake 全局复用、接口契约强制、最接近集成测试 | **需改 Agent 构造签名（触碰 Plan 0 冻结边界，灰色地带）**、Fake 维护成本、30 测试规模下属过度工程 |
+| **C（采纳）fixture + monkeypatch** | `conftest.py` 提供 `mock_llm` fixture，monkeypatch 替换 `LLMService.call`，各测试传入「意图→响应」映射 | **不改 Plan 0 接口**、mock 入口收敛到 conftest 一处、三 Agent 测试共享、规模适配 | 仍是 patch 变体（耦合未根除）、monkeypatch 进程级（远期并行测试需注意） |
+
+**决策：采纳 C**，四条理由：
+1. **Plan 0 不容触碰**——方案 B 改 AgentBase 构造签名处于「是否算改冻结接口」的争议地带，不值得为此冒险；C 完全不动 Plan 0。
+2. **规模适配**——三 Agent 共约 30 个测试，不值得为方案 B 搭 DI + Fake 基础设施（基建代码可能比业务还多）。
+3. **集中管理**——conftest 一处 fixture，规避方案 A 的 patch 路径散落痛点；未来 LLMService 路径变动只改一处。
+4. **务实折中**——以最小代价获得可复用 mock 层，契合"30 测试"这一真实规模。
+
+**关键技巧（规避"绿但假"）**：三方案共有的隐患是「mock 的 LLM 文本格式 ≠ 真实 LLM 输出格式」——测试全绿但上线炸。根治办法：`mock_llm` fixture **不返回裸字符串，而直接返回 Agent.handle() 内部解析后的结构化 dict**（即把 mock 点放在「解析层之后」而非「LLM 裸文本层」）。这样单测聚焦于「给定结构化 LLM 结果 → Agent 产出正确事件」，绕开文本解析的格式漂移。真实 LLM 输出格式的正确性，交由 Plan E 的 ComponentBench（真实 LLM + 黄金集）兜底，与单测分层。
+
+**影响**：
+- `tests/`（Plan C 部分）新增 `conftest.py` 提供 `mock_llm` fixture（「意图→结构化响应」映射）。
+- Tutor/Critic/Conductor 三 Agent 测试统一经此 fixture 注入 LLM 结果，不在测试内散写 patch。
+- 不改 `app/agents/base.py` 等任何 Plan 0 冻结接口。
+- 与 §5.1.1 judge 独立性一致：单测层 mock LLM（测**逻辑**），真实 LLM 质量评估归 Plan E 离线 benchmark（测**能力**），两层不混。
 
 ---
 
