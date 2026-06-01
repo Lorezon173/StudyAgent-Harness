@@ -81,3 +81,78 @@ def test_non_observation_event_no_buffer_no_tick():
         type=EventType.TUTOR_ASKED, source=EventSource.TUTOR,
         session_id="s1"), ws)
     assert out == []                               # Tutor 产出不触发裁决
+
+
+def test_tick_with_partial_mastery_emits_request_recap():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                        source=EventSource.CRITIC, session_id="s1",
+                        payload={"level": "partial"}), ws)
+    out = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                              source=EventSource.ORCHESTRATOR,
+                              session_id="s1", payload={}), ws)
+    types = [e.type for e in out]
+    assert EventType.ACTION_REQUESTED in types
+    action_ev = next(e for e in out if e.type == EventType.ACTION_REQUESTED)
+    assert action_ev.payload["action"] == "tutor_request_recap"
+    assert action_ev.payload["target"] == "tutor"
+
+
+def test_tick_with_prereq_observed_emits_regress():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED,
+                        source=EventSource.CURATOR, session_id="s1",
+                        payload={"basis": "observed", "prereq_topic": "X"}), ws)
+    out = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                              source=EventSource.ORCHESTRATOR,
+                              session_id="s1", payload={}), ws)
+    action_ev = next(e for e in out if e.type == EventType.ACTION_REQUESTED)
+    assert action_ev.payload["action"] == "regress_to_prereq"
+
+
+def test_tick_with_priority_prereq_over_confusion():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.CONFUSION_DETECTED,
+                        source=EventSource.CRITIC, session_id="s1",
+                        payload={"concept_a": "A", "concept_b": "B"}), ws)
+    orch.on_event(Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED,
+                        source=EventSource.CURATOR, session_id="s1",
+                        payload={"basis": "observed"}), ws)
+    out = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                              source=EventSource.ORCHESTRATOR,
+                              session_id="s1", payload={}), ws)
+    action_ev = next(e for e in out if e.type == EventType.ACTION_REQUESTED)
+    assert action_ev.payload["action"] == "regress_to_prereq"
+
+
+def test_tick_emits_policy_transition_when_mode_changes():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                        source=EventSource.CRITIC, session_id="s1",
+                        payload={"level": "partial"}), ws)
+    out = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                              source=EventSource.ORCHESTRATOR,
+                              session_id="s1", payload={}), ws)
+    pt = [e for e in out if e.type == EventType.POLICY_TRANSITION]
+    assert len(pt) == 1
+    assert pt[0].payload["from"] == "Socratic"
+    assert pt[0].payload["to"] == "Feynman"
+
+
+def test_tick_clears_buffer_for_next_micro_turn():
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                        source=EventSource.CRITIC, session_id="s1",
+                        payload={"level": "partial"}), ws)
+    orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                        source=EventSource.ORCHESTRATOR, session_id="s1",
+                        payload={}), ws)
+    out = orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                              source=EventSource.CRITIC, session_id="s1",
+                              payload={"level": "weak"}), ws)
+    assert any(e.type == EventType.ORCHESTRATOR_TICK for e in out)
