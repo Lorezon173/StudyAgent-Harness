@@ -57,3 +57,58 @@ EVENT_PRIORITY: dict[EventType, int] = {
 def priority_of(event_type: EventType) -> int:
     """查事件出队优先级，未登记者取默认。"""
     return EVENT_PRIORITY.get(event_type, _DEFAULT)
+
+
+# 事件所有权白名单（§3.2）：每个 EventType 仅有唯一合法 source
+EVENT_OWNERSHIP: dict[EventType, EventSource] = {
+    # 用户
+    EventType.USER_MESSAGE: EventSource.USER,
+    EventType.USER_UPLOADED: EventSource.USER,
+    # Tutor
+    EventType.TUTOR_ASKED: EventSource.TUTOR,
+    EventType.TUTOR_EXPLAINED: EventSource.TUTOR,
+    EventType.TUTOR_REQUESTED_RECAP: EventSource.TUTOR,
+    EventType.TUTOR_OFFERED_ANALOGY: EventSource.TUTOR,
+    # Retriever
+    EventType.RETRIEVED_EVIDENCE: EventSource.RETRIEVER,
+    EventType.RETRIEVAL_FAILED: EventSource.RETRIEVER,
+    # Critic
+    EventType.MASTERY_ASSESSED: EventSource.CRITIC,
+    EventType.CONFUSION_DETECTED: EventSource.CRITIC,
+    EventType.CONTRADICTION_DETECTED: EventSource.CRITIC,
+    EventType.LOW_CONFIDENCE_DETECTED: EventSource.CRITIC,
+    EventType.RAG_QUALITY_ASSESSED: EventSource.CRITIC,
+    # Curator
+    EventType.PROFILE_UPDATED: EventSource.CURATOR,
+    EventType.GRAPH_NODE_STRENGTHENED: EventSource.CURATOR,
+    EventType.GRAPH_PREREQ_WEAK_DETECTED: EventSource.CURATOR,
+    # Conductor
+    EventType.CONDUCTOR_DECIDED: EventSource.CONDUCTOR,
+    # 控制类（Orchestrator）
+    EventType.TOPIC_ENTERED: EventSource.ORCHESTRATOR,
+    EventType.LOOP_EXIT: EventSource.ORCHESTRATOR,
+    EventType.POLICY_TRANSITION: EventSource.ORCHESTRATOR,
+    EventType.ACTION_REQUESTED: EventSource.ORCHESTRATOR,
+    EventType.CONDUCTOR_REQUESTED: EventSource.ORCHESTRATOR,
+    EventType.ORCHESTRATOR_TICK: EventSource.ORCHESTRATOR,
+}
+
+
+class EmitViolationError(Exception):
+    """Agent 越权发出不属于其职能的事件（§2.2 / §3.2 运行时强制）。"""
+
+    def __init__(self, source: EventSource, event_type: EventType):
+        self.source = source
+        self.event_type = event_type
+        owner = EVENT_OWNERSHIP.get(event_type)
+        super().__init__(
+            f"职能越权：source='{source}' 无权 emit '{event_type}'，"
+            f"该事件归 '{owner}'"
+        )
+
+
+def check_ownership(event: Event) -> None:
+    """校验事件来源是否合法（§3.2）。越权抛 EmitViolationError。"""
+    owner = EVENT_OWNERSHIP.get(event.type)
+    if owner is None or event.source != owner:
+        raise EmitViolationError(event.source, event.type)

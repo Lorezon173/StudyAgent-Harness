@@ -45,3 +45,40 @@ def test_event_priority_tick_is_lowest():
 
 def test_loop_exit_is_high_priority():
     assert EVENT_PRIORITY[EventType.LOOP_EXIT] < EVENT_PRIORITY[EventType.MASTERY_ASSESSED]
+
+
+import pytest
+from app.harness.events import EVENT_OWNERSHIP, EmitViolationError, check_ownership
+
+
+def test_ownership_covers_all_event_types():
+    # 白名单必须覆盖每一个 EventType（无遗漏，否则 publish 会误判越权）
+    for et in EventType:
+        assert et in EVENT_OWNERSHIP, f"{et} 未登记所有权"
+
+
+def test_ownership_correct_source_passes():
+    ev = Event(type=EventType.CONFUSION_DETECTED, source=EventSource.CRITIC,
+               session_id="s1")
+    check_ownership(ev)                # 不抛错
+
+
+def test_ownership_violation_raises():
+    # Tutor 越权发 Critic 的事件
+    ev = Event(type=EventType.CONFUSION_DETECTED, source=EventSource.TUTOR,
+               session_id="s1")
+    with pytest.raises(EmitViolationError) as exc:
+        check_ownership(ev)
+    assert exc.value.source == EventSource.TUTOR
+    assert exc.value.event_type == EventType.CONFUSION_DETECTED
+
+
+def test_ownership_orchestrator_controls():
+    for et in (EventType.ACTION_REQUESTED, EventType.LOOP_EXIT,
+               EventType.POLICY_TRANSITION, EventType.TOPIC_ENTERED,
+               EventType.ORCHESTRATOR_TICK, EventType.CONDUCTOR_REQUESTED):
+        assert EVENT_OWNERSHIP[et] == EventSource.ORCHESTRATOR
+
+
+def test_ownership_conductor_only_decided():
+    assert EVENT_OWNERSHIP[EventType.CONDUCTOR_DECIDED] == EventSource.CONDUCTOR
