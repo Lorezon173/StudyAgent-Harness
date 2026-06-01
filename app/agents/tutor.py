@@ -44,6 +44,28 @@ class TutorAgent(AgentBase):
             return self._explain(event, ws, intent="tutor_re_explain", mode="re_explain")
         if action == str(ActionKind.TUTOR_CORRECT):
             return self._explain(event, ws, intent="tutor_correct", mode="correct")
+        if action == str(ActionKind.TUTOR_REQUEST_RECAP):
+            result = self._llm.invoke_json(
+                "你是融合式教学的 Tutor，切入费曼模式让用户复述。",
+                f"主题：{ws.current_topic or ''}",
+                session_id=ws.session_id, node="tutor",
+                intent="tutor_request_recap",
+            )
+            return [self.emit(EventType.TUTOR_REQUESTED_RECAP, ws,
+                              payload={"content": result.get("content", "")},
+                              parent_id=event.id)]
+        if action == str(ActionKind.TUTOR_OFFER_ANALOGY):
+            result = self._llm.invoke_json(
+                "你是融合式教学的 Tutor，给出类比破除概念混淆。",
+                f"主题：{ws.current_topic or ''}",
+                session_id=ws.session_id, node="tutor",
+                intent="tutor_offer_analogy",
+            )
+            payload = {"content": result.get("content", "")}
+            if "analogy_target" in result:
+                payload["analogy_target"] = result["analogy_target"]
+            return [self.emit(EventType.TUTOR_OFFERED_ANALOGY, ws,
+                              payload=payload, parent_id=event.id)]
         return []
 
     def _ask(self, trigger: Event, ws: WorkspaceState, intent: str,

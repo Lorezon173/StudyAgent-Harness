@@ -81,3 +81,36 @@ def test_tutor_correct_for_contradiction(mock_llm_invoke_json):
     out = TutorAgent().handle(_action(ActionKind.TUTOR_CORRECT), ws)
     assert out[0].type == EventType.TUTOR_EXPLAINED
     assert out[0].payload["mode"] == "correct"
+
+
+def test_tutor_request_recap_emits(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_request_recap": {"content": "请用你的话描述 RAG 的流程"}})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = TutorAgent().handle(_action(ActionKind.TUTOR_REQUEST_RECAP), ws)
+    assert len(out) == 1
+    assert out[0].type == EventType.TUTOR_REQUESTED_RECAP
+
+
+def test_tutor_offer_analogy_emits(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_offer_analogy": {
+        "content": "RAG 就像考试时翻参考书…",
+        "analogy_target": "查字典",
+    }})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = TutorAgent().handle(_action(ActionKind.TUTOR_OFFER_ANALOGY), ws)
+    assert len(out) == 1
+    assert out[0].type == EventType.TUTOR_OFFERED_ANALOGY
+    assert out[0].payload["analogy_target"] == "查字典"
+
+
+def test_tutor_cannot_emit_confusion_detected():
+    # 越权防御（#14）：Tutor 不能 emit Critic 的事件
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    with pytest.raises(ValueError):
+        TutorAgent().emit(EventType.CONFUSION_DETECTED, ws)
+
+
+def test_tutor_cannot_emit_mastery_assessed():
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    with pytest.raises(ValueError):
+        TutorAgent().emit(EventType.MASTERY_ASSESSED, ws)
