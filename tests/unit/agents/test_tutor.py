@@ -55,3 +55,29 @@ def test_tutor_probe_prereq_emits_tutor_asked_with_kind(mock_llm_invoke_json):
     assert out[0].type == EventType.TUTOR_ASKED
     assert out[0].payload["kind"] == "probe_prereq"
     assert out[0].payload["prereq_topic"] == "向量乘法"
+
+
+def test_tutor_explain_emits_tutor_explained(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_explain": {"content": "RAG = Retrieval-Augmented Generation..."}})
+    ws = WorkspaceState(session_id="s1", user_id="u1", current_topic="RAG")
+    trigger = _action(ActionKind.TUTOR_EXPLAIN)
+    out = TutorAgent().handle(trigger, ws)
+    assert len(out) == 1
+    assert out[0].type == EventType.TUTOR_EXPLAINED
+    assert out[0].payload["mode"] == "explain"
+
+
+def test_tutor_re_explain_marks_repeat(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_re_explain": {"content": "换个角度："}})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = TutorAgent().handle(_action(ActionKind.TUTOR_RE_EXPLAIN), ws)
+    assert out[0].type == EventType.TUTOR_EXPLAINED
+    assert out[0].payload["mode"] == "re_explain"
+
+
+def test_tutor_correct_for_contradiction(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_correct": {"content": "你刚才说的 X 不对，正确的是 Y"}})
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+    out = TutorAgent().handle(_action(ActionKind.TUTOR_CORRECT), ws)
+    assert out[0].type == EventType.TUTOR_EXPLAINED
+    assert out[0].payload["mode"] == "correct"

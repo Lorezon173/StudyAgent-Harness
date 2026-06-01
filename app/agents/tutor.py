@@ -38,6 +38,12 @@ class TutorAgent(AgentBase):
             return self._ask(event, ws, intent="tutor_probe_prereq",
                              kind="probe_prereq",
                              extra={"prereq_topic": event.payload.get("prereq_topic")})
+        if action == str(ActionKind.TUTOR_EXPLAIN):
+            return self._explain(event, ws, intent="tutor_explain", mode="explain")
+        if action == str(ActionKind.TUTOR_RE_EXPLAIN):
+            return self._explain(event, ws, intent="tutor_re_explain", mode="re_explain")
+        if action == str(ActionKind.TUTOR_CORRECT):
+            return self._explain(event, ws, intent="tutor_correct", mode="correct")
         return []
 
     def _ask(self, trigger: Event, ws: WorkspaceState, intent: str,
@@ -51,6 +57,18 @@ class TutorAgent(AgentBase):
         if extra:
             payload.update({k: v for k, v in extra.items() if v is not None})
         return [self.emit(EventType.TUTOR_ASKED, ws, payload=payload,
+                          parent_id=trigger.id)]
+
+    def _explain(self, trigger: Event, ws: WorkspaceState, intent: str,
+                 mode: str) -> list[Event]:
+        result = self._llm.invoke_json(
+            "你是融合式教学的 Tutor，根据模式给出讲解。",
+            f"主题：{ws.current_topic or ''}\n模式：{mode}",
+            session_id=ws.session_id, node="tutor", intent=intent,
+        )
+        return [self.emit(EventType.TUTOR_EXPLAINED, ws,
+                          payload={"content": result.get("content", ""),
+                                   "mode": mode},
                           parent_id=trigger.id)]
 
     def evaluate(self, test_case) -> dict:
