@@ -118,6 +118,21 @@ SubGraph
   教学评估 → 编排评估 → 结果存储
 ```
 
+### 多 Agent 重设计（进行中 — 事件驱动新栈）
+
+正按[设计文档](docs/superpowers/specs/2026-05-29-multi-agent-redesign-design.md)将系统重设计为**事件驱动的 5-Agent 协作架构**（Tutor / Retriever / Critic / Curator / Conductor），核心原则是**职能正交**——每个 Agent 只发自己专业领域的事件，越权由 EventBus 白名单运行时拦截（`EmitViolationError`）。
+
+**进度**：Wave 0「核心契约地基」已落地（[Plan 0](docs/superpowers/plans/2026-06-01-plan-0-core-contracts.md)，10 Task TDD）：
+
+- `app/harness/events.py` — Event 模型 + 时序 ID + 事件所有权白名单
+- `app/harness/eventbus.py` — EventBus（publish 白名单校验 + 持久化 + 订阅）
+- `app/harness/workspace_state.py` — 会话内共享状态
+- `app/infrastructure/storage/event_store.py` — 同步 sqlite3 事件持久化 + 全序回放
+- `app/agents/base.py` — AgentBase 统一契约（source / subscriptions / emittable_types / handle / emit / evaluate）
+- `app/orchestration/{collab_loop,graph}.py` — 单线程事件循环骨架 + 4 节点主图骨架
+
+Wave 1（检索 / 记忆画像 / 教学编排，可 3 窗口并行）与 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
+
 ## 技术栈
 
 | 类别 | 技术 |
@@ -173,7 +188,7 @@ app/
 ├── ui/                         # Chainlit 前端 (存根)
 └── worker/                     # Celery 任务 (存根)
 
-tests/                          # 104个单元测试
+tests/                          # 189 个单元测试（含 Wave 0 新增 42）
 ```
 
 ## 快速开始
