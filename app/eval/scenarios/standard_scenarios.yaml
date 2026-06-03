@@ -1,0 +1,57 @@
+# spec §5.3 四标准场景 + §5.5 消融场景
+
+scenarios:
+  - name: "零基础学习RAG"
+    user_profile: {type: blank}
+    topic: "RAG"
+    script:
+      - {user_input: "RAG是什么？"}
+      - {user_input: "RAG是检索增强生成"}
+      - {user_input: "向量数据库在RAG中的作用是存储和检索相关文档"}
+    expected:
+      mastery_reached: mastered
+      max_turns: 12
+      cost_usd: 0.05
+      expected_mode_path: [Socratic, Feynman, Analogy]
+      must_contain_events: [TutorExplained, RetrievedEvidence]
+      must_not_contain_events: [ConductorRequested]
+
+  - name: "有基础但有混淆"
+    user_profile:
+      mastered: ["LLM基础"]
+      confused_pairs: [["retrieval", "fine-tuning"]]
+    topic: "RAG"
+    script:
+      - {user_input: "RAG是什么？"}
+      - {user_input: "RAG就是fine-tuning的一种"}
+    expected:
+      confusion_detected_within_turns: 3
+      mastery_reached: mastered
+
+  - name: "跨主题跳跃"
+    user_profile: {type: blank}
+    topic: "RAG"
+    script:
+      - {user_input: "什么是RAG？"}
+      - {user_input: "说到RAG，我觉得transformer的注意力机制更重要"}
+    expected:
+      conductor_triggered: true
+      no_loss_of_context: true
+
+  - name: "前置薄弱触发回退"
+    user_profile: {type: blank, mastered: []}
+    topic: "transformer 注意力机制"
+    script:
+      - {user_input: "我要学transformer注意力机制"}
+    expected:
+      regress_to_prereq: true
+      expected_mode_path: [Socratic, Regress]
+
+  - name: "消融场景_无Curator"
+    user_profile: {type: blank}
+    topic: "RAG"
+    script:
+      - {user_input: "RAG是什么？"}
+    expected:
+      mastery_reached: mastered
+      max_turns: 15
