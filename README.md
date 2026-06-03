@@ -155,6 +155,14 @@ SubGraph
   - API：`/chat`、`/chat/stream` 端点内按 flag 分支；新栈用 `asyncio.to_thread` 包裹同步协作环。
   - 指标对齐：`ChatResponse` 扩展 `turn_count` / `mode_path` / `cost_est_usd` / `stack`，新旧栈同 schema 可比。
   - 回退：关 flag 即走老栈，新栈代码零触及。
+- ✅ Plan E 评估体系（[Plan E](docs/superpowers/plans/2026-06-01-plan-e-eval.md)，11 Task TDD + 评审修复，49 测试）——纯旁路 L2，只读 EventStore / 调 Agent.evaluate() / 回放 `parent_id` 因果链，不触任何在线 Agent/编排代码：
+  - `app/eval/component_bench.py` — ComponentBench（§5.2，调各 Agent `evaluate()` 跑黄金用例）
+  - `app/eval/system_bench.py` — SystemBench（§5.3，scenarios YAML + 结果断言 mastery/max_turns + 过程断言 mode_path/must_contain/must_not_contain；兼容 Event 对象与 dict trace）
+  - `app/eval/collaboration_bench.py` — CollaborationBench（§5.4，消费 `parent_id` 因果链算六维：职能正交违约率「应恒 0」/ 协作效率 / 决策稳定 / 冲突消解 / 因果链质量 / 轨迹偏离）
+  - `app/eval/ab_controller.py` — ABController（§5.5，参数 A/B + 组件消融 `StubAgent`/`make_ablation_agent_map`，回答「架构本身值多少增益」）
+  - `app/eval/selection_reporter.py` — SelectionReporter（§5.6，聚合四层结果产出 Markdown 选型报告）
+  - `app/eval/kernel.py` — EvalKernel 薄编排层（统一委托各 bench）+ TestCase/EvalResult/ScenarioDefinition 数据类
+  - `tests/golden/` — 黄金集 + Cohen's κ≥0.6 一致性工具（§5.1.1）；`app/eval/scenarios/standard_scenarios.yaml` 四标准场景 + 消融场景
 
 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。新栈已通过 feature flag 接入 `/chat`、`/chat/stream`，默认仍回退老栈（14 节点主图），可灰度切换。
 
