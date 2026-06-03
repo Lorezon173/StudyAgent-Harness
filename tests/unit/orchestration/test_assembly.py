@@ -107,3 +107,6 @@ def test_run_new_agent_session_no_emit_violation(mock_llm_invoke_json):
     except EmitViolationError as e:
         raise AssertionError(f"出现越权 emit：{e}")
     assert result.reply  # 有回复
+    # mastered 经 Conductor 决策走到 loop_exit 末态（spec §4.3）
+    assert result.mastery_score == 95
+    assert any(e.type == EventType.LOOP_EXIT for e in result.events)

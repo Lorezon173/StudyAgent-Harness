@@ -63,6 +63,17 @@ def extract_mode_path(events: list[Event]) -> list[str]:
 _EMPTY_REPLY_FALLBACK = "（本轮未生成回复）"
 
 
+def _events_in_runtime_order(events: list[Event], event_ids: list[str]) -> list[Event]:
+    """按协作环发布顺序重排事件，避免存储层回放顺序影响提取结果。"""
+    by_id = {event.id: event for event in events}
+    ordered = [by_id[event_id] for event_id in event_ids if event_id in by_id]
+    if len(ordered) == len(events):
+        return ordered
+    seen = {event.id for event in ordered}
+    ordered.extend(event for event in events if event.id not in seen)
+    return ordered
+
+
 @dataclass
 class NewStackResult:
     """新栈一次会话的产出（供 API 层包成 ChatResponse）。"""
@@ -71,12 +82,14 @@ class NewStackResult:
     turn_count: int
     mode_path: list[str]
     cost_est_usd: float | None
-    events: list = field(default_factory=list)   # 完整事件链（调试/对齐用）
+    events: list[Event] = field(default_factory=list)
+    """完整事件链（仅供调试/灰度对齐分析；API 层不要透传给客户端）。"""
 
 
 def _read_cost(session_id: str) -> float | None:
     """best-effort：从 observability 读本会话累计 LLM 成本（无则 None）。"""
     try:
+        # 延迟 import：避免 observability 全局单例在模块加载期被提前初始化
         from app.harness.observability import get_observability
         stats = get_observability().session_summary(session_id)
         return round(stats.total_cost_usd, 6) if stats is not None else None
@@ -89,12 +102,16 @@ def build_new_stack(user_id: str):
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
     由调用方在用完后 close。
+
+    注：Curator.handle 只读写内存图（MasteryGraph），不触 MasteryGraphStore 的
+    异步方法，故 mg_store 构造即可、无需 await init/close。若 Curator 行为变更，
+    此处需相应补 init()。
     """
     store = EventStore(db_path=":memory:")
     store.init()
     bus = EventBus(store=store)
 
-    mg_store = MasteryGraphStore(db_path=":memory:")          # Curator.handle 不触其异步方法
+    mg_store = MasteryGraphStore(db_path=":memory:")  # Curator.handle 不触其异步方法
     graph = MasteryGraph(user_id=user_id, store=mg_store)
 
     agents = [
@@ -134,7 +151,7 @@ def run_new_agent_session(session_id: str, user_id: str, user_message: str,
                            "target": str(EventSource.TUTOR)}),
         ]
         run_collab_loop(bus, ws, seeds, orchestrator=orchestrator)
-        events = bus.replay(session_id)
+        events = _events_in_runtime_order(bus.replay(session_id), ws.event_ids)
         return NewStackResult(
             reply=extract_reply(events) or _EMPTY_REPLY_FALLBACK,
             mastery_score=extract_mastery_score(events),
