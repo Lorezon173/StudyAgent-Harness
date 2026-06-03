@@ -64,3 +64,35 @@ class TestDataClasses:
         )
         assert sc.expected.get("mastery_reached") == "mastered"
         assert "must_contain_events" in sc.expected
+
+
+class TestCohensKappa:
+    def test_perfect_agreement(self):
+        from tests.golden.cohens_kappa import cohens_kappa
+        a = ["mastered", "weak", "partial", "mastered"]
+        b = ["mastered", "weak", "partial", "mastered"]
+        k = cohens_kappa(a, b)
+        assert k == pytest.approx(1.0, abs=0.01)
+
+    def test_no_agreement(self):
+        from tests.golden.cohens_kappa import cohens_kappa
+        a = ["mastered", "mastered", "mastered"]
+        b = ["weak", "weak", "weak"]
+        k = cohens_kappa(a, b)
+        assert k == pytest.approx(0.0, abs=0.01)
+
+    def test_partial_agreement(self):
+        from tests.golden.cohens_kappa import cohens_kappa
+        a = ["mastered", "weak", "partial", "mastered", "weak"]
+        b = ["mastered", "weak", "mastered", "partial", "weak"]
+        k = cohens_kappa(a, b)
+        assert 0.0 < k < 1.0
+
+    def test_kappa_threshold_06(self):
+        from tests.golden.cohens_kappa import cohens_kappa
+        a = ["mastered", "weak", "partial", "mastered", "weak",
+             "mastered", "weak", "partial", "mastered", "weak"]
+        b = ["mastered", "weak", "partial", "mastered", "weak",
+             "mastered", "weak", "mastered", "partial", "weak"]
+        k = cohens_kappa(a, b)
+        assert k >= 0.6, f"κ={k} should be >= 0.6 for 80% agreement"
