@@ -59,3 +59,18 @@ class TestABController:
             config=config, control_sys=sys, treatment_sys=sys,
             scenarios=["dummy"])
         assert result["recommendation"] == "keep"
+
+    def test_make_ablation_agent_map_disables_agent(self):
+        from app.eval.ab_controller import make_ablation_agent_map, StubAgent
+
+        class _RealAgent:
+            source = "curator"
+            def handle(self, e, ws):
+                return ["something"]
+
+        agent_map = {"curator": _RealAgent(), "tutor": _RealAgent()}
+        ablated = make_ablation_agent_map(agent_map, "curator")
+        assert isinstance(ablated["curator"], StubAgent)
+        assert ablated["curator"].handle(None, None) == []
+        assert ablated["curator"].evaluate({}) == {}
+        assert not isinstance(ablated["tutor"], StubAgent)  # 其他不受影响

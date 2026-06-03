@@ -100,3 +100,24 @@ class TestSystemBench:
         result = bench.assess(sc, trace)
         assert result["passed"] is False
         assert "偏离" in str(result["errors"])
+
+    def test_assess_accepts_event_objects(self):
+        from app.harness.events import Event
+        from app.harness.enums import EventType, EventSource
+        bench = SystemBench()
+        trace = [
+            Event(type=EventType.TUTOR_EXPLAINED, source=EventSource.TUTOR,
+                  session_id="s", id="a1"),
+            Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
+                  session_id="s", id="a2", payload={"level": "mastered"}),
+            Event(type=EventType.POLICY_TRANSITION, source=EventSource.ORCHESTRATOR,
+                  session_id="s", id="a3", payload={"from": "Socratic", "to": "Feynman"}),
+        ]
+        sc = ScenarioDefinition(
+            name="t",
+            expected={"mastery_reached": "mastered",
+                      "must_contain_events": ["TutorExplained"],
+                      "expected_mode_path": ["Socratic", "Feynman"]})
+        result = bench.assess(sc, trace)
+        assert result["result_assertions"]["mastery_reached"] is True
+        assert result["passed"] is True

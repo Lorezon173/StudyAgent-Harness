@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Any
 
 
 @dataclass
@@ -49,110 +48,45 @@ class ScenarioDefinition:
 
 
 class EvalKernel:
-    """评估内核 —— 统一编排三层次评估 + A/B 消融（§5）。
+    """评估内核 —— 薄编排层，统一委托各 bench（§5）。
 
-    agent_map: {component_name: AgentBase_instance}
+    agent_map: {component_name: AgentBase 实例}
     """
 
-    def __init__(self, agent_map: dict[str, "AgentBase"] | None = None):
+    def __init__(self, agent_map: dict | None = None):
+        from app.eval.component_bench import ComponentBench
+        from app.eval.system_bench import SystemBench
         self._agent_map = agent_map or {}
+        self._component_bench = ComponentBench(self._agent_map)
+        self._system_bench = SystemBench()
 
-    # ---- ComponentBench（§5.2）----
+    def run_component_bench(self, component: str, test_cases: list) -> list:
+        """委托 ComponentBench（§5.2）。未注册组件返回失败结果（不抛异常）。"""
+        return self._component_bench.run(component, test_cases)
 
-    def run_component_bench(self, component: str,
-                            test_cases: list[TestCase]) -> list[EvalResult]:
-        if component not in self._agent_map:
-            raise ValueError(
-                f"ComponentBench 无注册 Agent：{component}")
-        agent = self._agent_map[component]
-        results: list[EvalResult] = []
-        for tc in test_cases:
-            try:
-                metrics = agent.evaluate(tc.input)
-            except NotImplementedError as e:
-                results.append(EvalResult(
-                    test_name=tc.name, component=component,
-                    passed=False, errors=[str(e)]))
-                continue
-            passed = self._check_expected(tc.expected, metrics)
-            errors = []
-            if not passed:
-                for key, threshold in tc.expected.items():
-                    actual = metrics.get(key)
-                    if actual is None or (
-                            isinstance(threshold, (int, float))
-                            and actual < threshold):
-                        errors.append(
-                            f"{key}: expected>={threshold}, got={actual}")
-            results.append(EvalResult(
-                test_name=tc.name, component=component,
-                passed=passed, metrics=metrics, errors=errors))
-        return results
-
-    @staticmethod
-    def _check_expected(expected: dict, actual: dict) -> bool:
-        for key, threshold in expected.items():
-            val = actual.get(key)
-            if val is None:
-                return False
-            if isinstance(threshold, (int, float)):
-                if val < threshold:
-                    return False
-            elif val != threshold:
-                return False
-        return True
-
-    # ---- SystemBench（§5.3）----
-
-    def run_system_bench(self, scenarios: list[ScenarioDefinition],
-                         event_store=None) -> list[dict]:
-        """运行系统级场景评估。
-
-        实际运行时 event_store 为 EventStore 实例，用于 replay 已运行场景。
-        返回每个场景的评估摘要。Task 5 会把 _assess_scenario 委托给 SystemBench。
-        """
-        results: list[dict] = []
+    def run_system_bench(self, scenarios: list, event_store=None) -> list:
+        """委托 SystemBench（§5.3）。event_store 给定则 replay 取 trace。"""
+        results = []
         for sc in scenarios:
-            trace = None
-            if event_store is not None:
-                trace = event_store.replay(sc.name)
-            results.append(self._assess_scenario(sc, trace))
+            trace = event_store.replay(sc.name) if event_store is not None else []
+            results.append(self._system_bench.assess(sc, trace))
         return results
 
-    def _assess_scenario(self, sc: ScenarioDefinition,
-                         trace: list | None) -> dict:
-        """占位：Task 5 用真正的 SystemBench.assess 替换。"""
-        return {
-            "scenario": sc.name,
-            "result_assertions": {},
-            "process_assertions": {},
-            "passed": True,
-            "errors": [],
-        }
-
-    # ---- CollaborationBench（§5.4）—— 惰性委托，Task 6 落地 ----
-
-    def run_collaboration_bench(self, session_id: str,
-                                event_store=None) -> dict:
-        """对一次会话回放计算六维协作指标（委托 collaboration_bench，Task 6）。"""
-        from app.eval.collaboration_bench import collaboration_report_from_store
+    def run_collaboration_bench(self, session_id: str, event_store=None) -> dict:
+        """委托 CollaborationBench（§5.4）。"""
+        from app.eval.collaboration_bench import (
+            collaboration_report_from_store, compute_collaboration_metrics)
         if event_store is None:
-            from app.eval.collaboration_bench import compute_collaboration_metrics
             return compute_collaboration_metrics(session_id, events=[])
         return collaboration_report_from_store(event_store, session_id)
 
-    # ---- ABController（§5.5）—— 惰性委托，Task 8 落地 ----
-
-    def run_ablation(self, config, scenarios, event_store=None) -> dict:
-        """运行消融实验（委托 ab_controller，Task 8）。"""
+    def run_ablation(self, config, control_sys, treatment_sys, scenarios) -> dict:
+        """委托 ABController 组件消融（§5.5）。config 可为 dict 或 AblationConfig。"""
         from app.eval.ab_controller import run_ablation_experiment, AblationConfig
         if isinstance(config, dict):
             config = AblationConfig(
                 name=config.get("name", "ablation"),
                 control=config.get("control", {}),
                 treatment=config.get("treatment", {}),
-                metrics_to_compare=config.get("metrics_to_compare", []),
-            )
-        # control/treatment 系统对象由调用方在 Task 8/10 装配；此处仅占位委托
-        raise NotImplementedError(
-            "run_ablation 需 Task 8 的 ab_controller + 装配好的系统对象")
+                metrics_to_compare=config.get("metrics_to_compare", []))
+        return run_ablation_experiment(config, control_sys, treatment_sys, scenarios)

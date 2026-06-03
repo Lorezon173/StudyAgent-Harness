@@ -5,12 +5,24 @@ import yaml
 from app.eval.kernel import ScenarioDefinition
 
 
+def _ev_type(ev) -> str:
+    """规整事件类型为字符串，兼容 Event 对象与 dict trace。"""
+    t = ev["type"] if isinstance(ev, dict) else ev.type
+    return str(t)
+
+
+def _ev_payload(ev) -> dict:
+    """规整事件 payload，兼容 Event 对象与 dict trace。"""
+    p = ev.get("payload", {}) if isinstance(ev, dict) else ev.payload
+    return p or {}
+
+
 class SystemBench:
     """系统级场景运行器（§5.3）。
 
     加载 YAML 场景定义，对已运行的 trace 做结果断言 + 过程断言。
-    trace 是一组 dict（每个含 'type'，可选 'payload'），通常来自
-    EventStore.replay 后转 dict，或测试构造。
+    trace 元素可为 Event 对象（来自 EventStore.replay）或 dict（每个含
+    'type'，可选 'payload'，通常由测试构造）。
     """
 
     @staticmethod
@@ -18,8 +30,11 @@ class SystemBench:
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
         return [ScenarioDefinition(**sc) for sc in data.get("scenarios", [])]
 
-    def assess(self, sc: ScenarioDefinition, trace: list[dict]) -> dict:
-        """依据 trace 做结果断言 + 过程断言。"""
+    def assess(self, sc: ScenarioDefinition, trace: list) -> dict:
+        """依据 trace 做结果断言 + 过程断言。
+
+        trace 元素可为 Event 对象（来自 EventStore.replay）或 dict。
+        """
         summary = {
             "scenario": sc.name,
             "result_assertions": {},
@@ -28,7 +43,7 @@ class SystemBench:
             "errors": [],
         }
         expected = sc.expected
-        trace_types = [ev["type"] for ev in trace]
+        trace_types = [_ev_type(ev) for ev in trace]
 
         self._assess_result(expected, trace, summary)
 
@@ -70,7 +85,7 @@ class SystemBench:
         return summary
 
     @staticmethod
-    def _assess_result(expected: dict, trace: list[dict],
+    def _assess_result(expected: dict, trace: list,
                        summary: dict) -> None:
         result = summary["result_assertions"]
 
@@ -78,8 +93,8 @@ class SystemBench:
         if expected_mastery:
             actual = None
             for ev in reversed(trace):
-                if ev.get("type") == "MasteryAssessed":
-                    actual = ev.get("payload", {}).get("level")
+                if _ev_type(ev) == "MasteryAssessed":
+                    actual = _ev_payload(ev).get("level")
                     break
             ok = actual == expected_mastery
             result["mastery_reached"] = ok
@@ -99,11 +114,11 @@ class SystemBench:
                 summary["passed"] = False
 
     @staticmethod
-    def _extract_mode_path(trace: list[dict]) -> list[str]:
+    def _extract_mode_path(trace: list) -> list[str]:
         path: list[str] = []
         for ev in trace:
-            if ev.get("type") == "PolicyTransition":
-                p = ev.get("payload", {})
+            if _ev_type(ev) == "PolicyTransition":
+                p = _ev_payload(ev)
                 frm, to = p.get("from"), p.get("to")
                 if frm and not path:
                     path.append(frm)

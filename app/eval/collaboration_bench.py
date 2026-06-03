@@ -80,7 +80,12 @@ def compute_decision_stability(events: list[Event]) -> dict:
 # ---- 维度4：冲突消解 ----
 
 def compute_conflict_resolution(events: list[Event]) -> dict:
-    """掌握度评估短时大幅波动（>50/100）视为冲突。"""
+    """维度4：冲突消解（代理指标）。
+
+    注：spec §5.4 原指"Critic/Curator 观察冲突率 + 回合屏障日志是否真消解"。
+    桩期用"掌握度评分短时大幅波动（>50/100）"作为冲突的代理信号，待回合屏障日志
+    可得后替换为精确信号。
+    """
     mastery_events = [ev for ev in events if ev.type == EventType.MASTERY_ASSESSED]
     conflicts = 0
     for i in range(1, len(mastery_events)):

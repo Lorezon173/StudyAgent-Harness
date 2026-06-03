@@ -72,3 +72,35 @@ def run_ablation_experiment(config: AblationConfig, control_sys, treatment_sys,
     ab_result["recommendation"] = recommendation
     ab_result["reason"] = reason
     return ab_result
+
+
+class StubAgent:
+    """消融用桩 Agent（§5.5）：被禁用组件的产出由桩返回空/默认值。
+
+    handle 永远返回 []（不 emit 任何事件），evaluate 返回 {}。用于"禁用某组件，
+    其产出由 stub 返回默认值"的消融对照（design §5.5）。
+    """
+
+    def __init__(self, source=None):
+        self.source = source
+        self.subscriptions: list = []
+        self.emittable_types: set = set()
+
+    def handle(self, event, ws) -> list:
+        return []
+
+    def evaluate(self, test_case) -> dict:
+        return {}
+
+
+def make_ablation_agent_map(agent_map: dict, disable: str) -> dict:
+    """返回禁用 `disable` 组件后的 agent_map（该组件替换为 StubAgent）。§5.5。
+
+    这是消融的载荷原语：把被消融 Agent 换成桩，再由调用方在实际系统上跑场景对比
+    delta。纯旁路侧只提供桩与替换；live 执行由集成层（Plan D 在线栈）驱动。
+    """
+    ablated = dict(agent_map)
+    if disable in ablated:
+        original = ablated[disable]
+        ablated[disable] = StubAgent(source=getattr(original, "source", None))
+    return ablated

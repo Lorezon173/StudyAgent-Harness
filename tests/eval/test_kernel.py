@@ -109,10 +109,13 @@ class TestCohensKappa:
 
 
 class TestEvalKernel:
-    def test_run_component_bench_requires_agent_map(self):
+    def test_run_component_bench_unregistered_returns_failure(self):
         kernel = EvalKernel(agent_map={})
-        with pytest.raises(ValueError, match="ComponentBench 无注册 Agent"):
-            kernel.run_component_bench("tutor", [])
+        results = kernel.run_component_bench(
+            "tutor", [TestCase(name="x", component="tutor", input={})])
+        assert len(results) == 1
+        assert results[0].passed is False
+        assert "未注册" in results[0].errors[0]
 
     def test_run_component_bench_returns_results(self):
         from app.agents.tutor import TutorAgent
@@ -139,6 +142,20 @@ class TestEvalKernel:
         ]
         results = kernel.run_system_bench(scenarios, event_store=None)
         assert len(results) == 1
+
+    def test_run_ablation_delegates(self):
+        kernel = EvalKernel(agent_map={})
+
+        class _FakeSys:
+            def run_scenario(self, name):
+                return {"turns": 8, "cost_usd": 0.04}
+
+        result = kernel.run_ablation(
+            {"name": "k-ablation", "metrics_to_compare": ["turns"]},
+            control_sys=_FakeSys(), treatment_sys=_FakeSys(),
+            scenarios=["s1"])
+        assert result["experiment_name"] == "k-ablation"
+        assert result["recommendation"] in ("keep", "review")
 
 
 class FakeAllAgent:
@@ -236,3 +253,13 @@ class TestEndToEnd:
         assert len(markdown) > 100
         print("\n=== 选型建议报告样例 ===\n")
         print(markdown)
+
+
+class TestGoldenTraceWiring:
+    def test_golden_trace_consumable(self):
+        from tests.golden.golden_traces import GOLDEN_TRACES, GOLDEN_TRACE_ZERO_RAG
+        assert "zero_rag" in GOLDEN_TRACES
+        assert GOLDEN_TRACE_ZERO_RAG["expected_mode_path"] == \
+            ["Socratic", "Feynman", "Analogy"]
+        # 黄金轨迹可作为 SystemBench 过程断言的 expected_mode_path 参考来源
+        assert GOLDEN_TRACE_ZERO_RAG["expected_assessments"]["mastery_reached"] == "mastered"
