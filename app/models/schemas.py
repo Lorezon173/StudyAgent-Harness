@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -11,6 +13,11 @@ class ChatResponse(BaseModel):
     reply: str
     session_id: str
     mastery_score: int | None = None
+    # —— Plan D 灰度对齐指标（向后兼容，老栈仅填 stack/mastery_score）——
+    turn_count: int | None = None          # 协作环回合数（新栈）
+    mode_path: list[str] | None = None     # 教学模式路径（新栈，来自 PolicyTransition）
+    cost_est_usd: float | None = None       # 本会话 LLM 估算成本（best-effort）
+    stack: Literal["new", "legacy"] | None = None   # 标识本次走哪条栈
 
 
 class AuthRegisterRequest(BaseModel):
