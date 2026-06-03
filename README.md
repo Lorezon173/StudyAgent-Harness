@@ -147,8 +147,16 @@ SubGraph
   - `app/infrastructure/storage/mastery_graph_store.py` — aiosqlite 持久化
 - ✅ Plan C 教学与编排（Tutor / Critic / Conductor + Orchestrator 规则引擎 +
   TeachingPolicy 状态机 + 回合屏障 + graph 协作环接入；spec §4.3 场景可复现）
+- ✅ Plan D 集成与灰度（[Plan D](docs/superpowers/plans/2026-06-01-plan-d-integration.md)，8 Task TDD，23 测试）：
+  - Feature flag `FEATURE_USE_NEW_AGENT_GRAPH`（环境变量，运行时切换、一键回退）：
+    `true/1/yes/on` → 新栈（事件驱动 5 Agent 协作环）；未设/其他值 → 老栈（app_old LangGraph 图）。
+  - 装配线 `app/orchestration/assembly.py`：EventBus + Tutor / Critic / Retriever / Curator / Conductor +
+    Orchestrator 一次同步 `run_collab_loop`，从事件流提取 reply / mastery / mode_path。
+  - API：`/chat`、`/chat/stream` 端点内按 flag 分支；新栈用 `asyncio.to_thread` 包裹同步协作环。
+  - 指标对齐：`ChatResponse` 扩展 `turn_count` / `mode_path` / `cost_est_usd` / `stack`，新旧栈同 schema 可比。
+  - 回退：关 flag 即走老栈，新栈代码零触及。
 
-Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。**当前主路径仍是上述老栈**（14 节点主图），新栈待 Plan D 灰度切换。
+Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。新栈已通过 feature flag 接入 `/chat`、`/chat/stream`，默认仍回退老栈（14 节点主图），可灰度切换。
 
 ## 技术栈
 
@@ -167,46 +175,38 @@ Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/
 
 ## 项目结构
 
-```
-app/
-├── agent/                      # 编排层
-│   ├── graph.py                # 主图定义 (14节点)
-│   ├── routers.py              # 条件边路由函数
-│   ├── node_wrapper.py         # safe_node 装饰器
-│   ├── spec_loader.py          # 渐进式规范加载引擎
-│   ├── spec_decorator.py       # @with_spec 装饰器
-│   ├── specs/                  # 规范仓库
-│   │   ├── _root.md / .prompt.md
-│   │   ├── intent_map.yaml
-│   │   ├── agents/             # Agent 角色规范 (4个)
-│   │   └── prompts/            # 节点指令规范 (14个)
-│   ├── nodes/                  # 14个薄壳节点
-│   ├── multi_agent/            # SubGraph 定义
-│   └── system_eval/            # 系统评估图
-├── harness/                    # 业务核心层
-│   ├── enums.py                # 所有 StrEnum 定义
-│   ├── state/                  # 分层状态模型 (7个文件)
-│   ├── intent_router.py        # 规则优先 + LLM 兜底路由
-│   ├── error_handler.py        # 错误分类与恢复策略
-│   ├── observability.py        # Observability ABC + Langfuse/Console/Fake
-│   ├── memory.py               # 短期(LRU+TTL) + 长期(SQLite) 双层记忆
-│   ├── tool_registry.py        # 工具注册与执行
-│   ├── guardrails.py           # 输入/工具/输出护栏
-│   └── state_manager.py        # 状态转换/快照/恢复
-├── infrastructure/             # 基础设施层
-│   ├── llm.py                  # LLMService (重试/回退/流式) + LLMConfig + FakeLLM
-│   ├── rag/                    # RAGCoordinator + FakeRAGStore
-│   ├── storage/                # 会话/用户/评估/知识库/记忆存储
-│   ├── extraction/             # 文件提取 (pdf/txt/md/csv)
-│   └── external/               # OCR / Web搜索 / Redis
-├── api/                        # API 层 (8个路由模块)
-├── core/                       # 配置 / 数据库 / Prompt模板
-├── models/                     # Pydantic Schema + ORM Table
-├── ui/                         # Chainlit 前端 (存根)
-└── worker/                     # Celery 任务 (存根)
+> **2026-06-02 重构归档**：旧 LangGraph 栈（`app/agent/`）及其专属的旧 harness/infra 模块已整体迁移至 **`app_old/`**（详见 [docs/app_old_migration_plan.md](docs/app_old_migration_plan.md)）。`app/` 现以**事件驱动 5-Agent 新栈**为主体；新栈对旧代码的真实依赖闭包仅 6 个文件（`llm.py`/`observability.py`/`rag.store`/`rag.__init__`/`enums.py`/`coordinator.py`），均保留在 `app/`。
 
-tests/                          # 189 个单元测试（含 Wave 0 新增 42）
 ```
+app/                            # 事件驱动新栈（主体）
+├── agents/                     # 🆕 5-Agent + 基类
+│   ├── base.py                 # AgentBase 统一契约
+│   ├── retriever.py / curator.py / tutor.py / critic.py / conductor.py
+├── orchestration/              # 🆕 编排层
+│   ├── collab_loop.py          # 单线程事件循环 + 优先级队列 + 回合屏障
+│   ├── graph.py                # 4 节点主图 + _collab_loop_node 装配
+│   └── orchestrator_rules.yaml # 规则 DSL
+├── harness/                    # 契约 + 必留共享
+│   ├── enums.py                # 全部 StrEnum（旧枚举 + Plan0 新增 4 类，新旧共用）
+│   ├── events.py / eventbus.py / workspace_state.py   # 🆕 事件契约
+│   ├── mastery_graph.py / user_profile.py             # 🆕 L3 画像记忆
+│   ├── orchestrator.py / teaching_policy.py           # 🆕 路由器 + 教学状态机
+│   └── observability.py        # 必留（被 llm.py 传递依赖）
+├── infrastructure/
+│   ├── llm.py                  # LLMService（被 tutor/critic/conductor 依赖）
+│   ├── rag/                    # RAGCoordinator(多Provider) + store + ocr/code_index/extractors 🆕
+│   └── storage/                # event_store/mastery_graph_store 🆕 + session/user/eval/knowledge(API复用)
+├── api/                        # API 层（chat/chat_stream 已改指 app_old.agent.graph）
+├── core/ · models/ · ui/ · worker/
+
+app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可运行）
+├── agent/                      # 旧 LangGraph 栈：graph/routers/node_wrapper/spec_*/nodes(15)/multi_agent(7)/system_eval(5)/specs(34)
+├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
+└── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
+
+tests/                          # 366 收集 / 362 通过（4 个 test_stores.py 为预存失败，与重构无关）
+```
+
 
 ## 快速开始
 
