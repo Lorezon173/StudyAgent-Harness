@@ -4,6 +4,7 @@ from dataclasses import asdict
 import pytest
 
 from app.eval.kernel import TestCase, EvalResult, ScenarioDefinition
+from app.eval.kernel import EvalKernel
 
 
 class TestDataClasses:
@@ -96,3 +97,36 @@ class TestCohensKappa:
              "mastered", "weak", "mastered", "partial", "weak"]
         k = cohens_kappa(a, b)
         assert k >= 0.6, f"κ={k} should be >= 0.6 for 80% agreement"
+
+
+class TestEvalKernel:
+    def test_run_component_bench_requires_agent_map(self):
+        kernel = EvalKernel(agent_map={})
+        with pytest.raises(ValueError, match="ComponentBench 无注册 Agent"):
+            kernel.run_component_bench("tutor", [])
+
+    def test_run_component_bench_returns_results(self):
+        from app.agents.tutor import TutorAgent
+        tutor = TutorAgent.__new__(TutorAgent)
+        kernel = EvalKernel(agent_map={"tutor": tutor})
+        test_cases = [
+            TestCase(name="dummy", component="tutor", input={}),
+        ]
+        results = kernel.run_component_bench("tutor", test_cases)
+        assert len(results) == 1
+        assert results[0].test_name == "dummy"
+        assert results[0].component == "tutor"
+
+    def test_run_system_bench(self):
+        kernel = EvalKernel(agent_map={})
+        scenarios = [
+            ScenarioDefinition(
+                name="dummy_scenario",
+                user_profile={"type": "blank"},
+                topic="test",
+                script=[{"user_input": "hello"}],
+                expected={},
+            ),
+        ]
+        results = kernel.run_system_bench(scenarios, event_store=None)
+        assert len(results) == 1
