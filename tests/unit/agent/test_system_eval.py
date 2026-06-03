@@ -1,7 +1,7 @@
-from app.agent.system_eval.teaching_eval import TeachingEval
-from app.agent.system_eval.orchestrator_eval import OrchestratorEval
-from app.agent.system_eval.eval_store import EvalStore as SystemEvalStore
-from app.agent.system_eval.eval_graph import build_system_eval_graph
+from app_old.agent.system_eval.teaching_eval import TeachingEval
+from app_old.agent.system_eval.orchestrator_eval import OrchestratorEval
+from app_old.agent.system_eval.eval_store import EvalStore as SystemEvalStore
+from app_old.agent.system_eval.eval_graph import build_system_eval_graph
 from app.harness.enums import Stage
 
 

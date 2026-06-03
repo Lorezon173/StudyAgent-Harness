@@ -1,5 +1,5 @@
 from typing import TypedDict
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 class MultiAgentState(LearningState, total=False):

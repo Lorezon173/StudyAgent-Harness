@@ -1,5 +1,5 @@
 from app.harness.enums import Intent
-from app.harness.state.routing import RoutingState
+from app_old.harness.state.routing import RoutingState
 
 RULE_MAP: list[tuple[list[str], str, float]] = [
     (["评估", "理解程度", "是什么", "怎么用"], Intent.QA_DIRECT, 0.95),

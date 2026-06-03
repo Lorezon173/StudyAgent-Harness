@@ -1,8 +1,8 @@
 from langgraph.graph import END, StateGraph
 
-from app.agent.multi_agent.state import MultiAgentState
-from app.agent.node_wrapper import safe_node
-from app.agent.nodes.knowledge_retrieval import knowledge_retrieval_node
+from app_old.agent.multi_agent.state import MultiAgentState
+from app_old.agent.node_wrapper import safe_node
+from app_old.agent.nodes.knowledge_retrieval import knowledge_retrieval_node
 
 
 def build_retrieval_agent():

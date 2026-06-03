@@ -1,5 +1,5 @@
 from app.harness.enums import ErrorKind, RecoveryAction
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 class ErrorHandler:

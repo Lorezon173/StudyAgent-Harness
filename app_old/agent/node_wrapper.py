@@ -1,6 +1,6 @@
-from app.harness.error_handler import get_error_handler
+from app_old.harness.error_handler import get_error_handler
 from app.harness.observability import get_observability
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def safe_node(func):

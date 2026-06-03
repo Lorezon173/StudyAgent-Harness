@@ -1,6 +1,6 @@
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 from app.harness.enums import Stage
-from app.agent.spec_decorator import with_spec
+from app_old.agent.spec_decorator import with_spec
 
 
 @with_spec(intent="qa_direct", node="rag_first")

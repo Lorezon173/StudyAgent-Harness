@@ -2,7 +2,8 @@
 
 > **生成日期**：2026-06-01
 > **用途**：项目整体整理时的脚本对照地图，列出本轮重构涉及的全部新建脚本及其依赖的老脚本
-> **当前状态**：Wave 0（Plan 0）✅ 完成 · Wave 1（Plan A/B）✅ 完成 · Plan C 进行中 · Wave 2（Plan D/E）待开始
+> **当前状态**：Wave 0（Plan 0）✅ · Wave 1（Plan A/B/C）✅ 完成 · Wave 2（Plan D/E）待开始
+> **Plan C 迁移判定**：详见 `docs/app_old_migration_plan.md` 第 2.C 节（新代码保留 / 依赖旧文件 / 库缺口）
 
 ---
 
@@ -146,29 +147,53 @@
 
 ---
 
-## 4. Wave 1 · Plan C：教学与编排（进行中）
+## 4. Wave 1 · Plan C：教学与编排（已完成）
 
 **用途**：Tutor/Critic/Conductor Agent + Orchestrator 规则引擎 + 回合屏障 + TeachingPolicy + 主图接入。
+**迁移判定（保留/依赖/库缺口）详见 `docs/app_old_migration_plan.md` 第 2.C 节。**
 
-### 4.1 已落地文件（截至本盘点时）
+### 4.1 新建文件
 
-| 路径 | 职责 |
+| 路径 | 职责 | 依赖 |
+|------|------|------|
+| 🆕 [app/agents/tutor.py](app/agents/tutor.py) | TutorAgent：教学生成（提问/讲解/重讲/纠正/发起复述/类比/前置探测），只生成不评判 | base, events, enums, workspace_state, **llm.py(旧)** |
+| 🆕 [app/agents/critic.py](app/agents/critic.py) | CriticAgent：只判文本语义，单次 LLM 拆多观察（Mastery/Confusion/Contradiction/LowConfidence/RAGQuality）；复述检查归此(#15)、RAG 仅 teaching(#18) | base, events, enums, workspace_state, **llm.py(旧)** |
+| 🆕 [app/agents/conductor.py](app/agents/conductor.py) | ConductorAgent：规则未覆盖时 LLM 兜底，只 emit ConductorDecided，观察不足→REQUEST_OBSERVATION(#16) | base, events, enums, workspace_state, **llm.py(旧)** |
+| 🆕 [app/harness/teaching_policy.py](app/harness/teaching_policy.py) | TeachingPolicy + ObservationSet：§4.2 完整状态机 + 模式历史；纯函数（无 LLM/无订阅） | enums |
+| 🆕 [app/harness/orchestrator.py](app/harness/orchestrator.py) | RuleEngine + load_rules + Orchestrator：规则引擎 + 回合屏障(Tick 哨兵) + Conductor 召唤 + ConductorDecided 转译 | **yaml(pyyaml)**, enums, events, workspace_state, teaching_policy |
+| 🆕 [app/orchestration/orchestrator_rules.yaml](app/orchestration/orchestrator_rules.yaml) | §3.4 规则 DSL（9 条，priority 降序，default→conductor_decide 兜底） | — |
+
+### 4.2 扩展/改动文件
+
+| 路径 | 改动 |
 |------|------|
-| 🆕 [app/agents/tutor.py](app/agents/tutor.py) | Tutor Agent：教学生成（讲解/提问/发起复述/类比） |
-| 🆕 [app/agents/critic.py](app/agents/critic.py) | Critic Agent：只判文本语义（MasteryAssessed/ConfusionDetected/...） |
-| 🆕 [tests/unit/agents/test_tutor.py](tests/unit/agents/test_tutor.py) | Tutor 单测 |
-| 🆕 [tests/unit/agents/test_critic.py](tests/unit/agents/test_critic.py) | Critic 单测 |
-| 🆕 [tests/unit/agents/test_mock_llm_fixture.py](tests/unit/agents/test_mock_llm_fixture.py) | LLM Mock 公用 fixture |
+| 🔄 [app/orchestration/graph.py](app/orchestration/graph.py) | `_collab_loop_node` 接入 `run_collab_loop` + 新增 `CollabRuntime`/`build_collab_runtime`/`_TolerantSerde`；零参数 `build_main_graph()` 保持 Plan 0 兼容 |
+| 🔄 [tests/conftest.py](tests/conftest.py) | 追加 `mock_llm_invoke_json` fixture（决策 #22）|
 
-### 4.2 计划但未落地（Plan C 待补）
+### 4.3 复用（不改）
 
-| 路径 | 职责 |
+| 路径 | 用途 |
 |------|------|
-| ⏳ `app/agents/conductor.py` | Conductor Agent：规则未覆盖时 LLM 兜底，只能基于已有观察路由 |
-| ⏳ `app/harness/orchestrator.py` | 事件路由器（RuleEngine + Conductor 召唤 + 回合屏障实现） |
-| ⏳ `app/harness/teaching_policy.py` | 融合循环状态机（§4.2 转移表） |
-| ⏳ `app/orchestration/orchestrator_rules.yaml` | 规则 DSL |
-| ⏳ `app/orchestration/graph.py` 的 `_collab_loop_node` 实装 | 接入 EventBus + 5 Agent |
+| 📛 [app/infrastructure/llm.py](app/infrastructure/llm.py) | `LLMService.invoke_json` — Tutor/Critic/Conductor 三 Agent 实时调用（纯旧文件，c3318ce 后未改）|
+
+### 4.4 测试文件
+
+| 路径 | 覆盖 |
+|------|------|
+| 🆕 [tests/unit/agents/test_tutor.py](tests/unit/agents/test_tutor.py) | 7 动作 + 越权防御（11）|
+| 🆕 [tests/unit/agents/test_critic.py](tests/unit/agents/test_critic.py) | 多观察拆分 + RAG teaching-only + 越权（11）|
+| 🆕 [tests/unit/agents/test_conductor.py](tests/unit/agents/test_conductor.py) | 观察足够/不足两分支 + 越权（7）|
+| 🆕 [tests/unit/agents/test_mock_llm_fixture.py](tests/unit/agents/test_mock_llm_fixture.py) | LLM Mock 公用 fixture（2）|
+| 🆕 [tests/unit/harness/test_teaching_policy.py](tests/unit/harness/test_teaching_policy.py) | §4.2 全转移 + 优先级 + 熔断（19）|
+| 🆕 [tests/unit/harness/test_orchestrator.py](tests/unit/harness/test_orchestrator.py) | 规则匹配 + Tick 裁决 + **回合屏障专项** + Conductor 转译（19）|
+| 🆕 [tests/unit/orchestration/test_graph_collab_loop_integration.py](tests/unit/orchestration/test_graph_collab_loop_integration.py) | 运行时工厂 + 节点接入（Plan 0 graph 测试保持全绿）（2）|
+| 🆕 [tests/integration/test_plan_c_e2e_scenario.py](tests/integration/test_plan_c_e2e_scenario.py) | 端到端复现 spec §4.3（Socratic→Feynman→Analogy→mastered→LoopExit）|
+
+### 4.5 依赖库缺口
+
+| 库 | 状态 |
+|----|------|
+| `pyyaml`（orchestrator.py `import yaml`）| ❌ pyproject 未显式声明（经 langfuse 等传递依赖可用，建议显式登记到主依赖）|
 
 ---
 
@@ -415,8 +440,8 @@ tests/
 | Wave 0 新增 | ~30 测试 |
 | Plan A 新增 | ~68 测试 |
 | Plan B 新增 | 35 测试 |
-| Plan C 新增（截至现在） | ~25 测试 |
-| **全量 pytest passed** | 258（顺序无关跑） |
+| Plan C 新增 | ~73 测试（tutor 11 + critic 11 + conductor 7 + fixture 2 + policy 19 + orchestrator 19 + graph 集成 2 + e2e 2）|
+| **全量 pytest passed** | 362（4 个 pre-existing 异步 store 失败与本轮无关，详见下）|
 
 **已知问题**：`tests/unit/infrastructure/test_stores.py` 4 个测试在全量跑时失败，单独跑通过 — pre-existing baseline 顺序敏感问题（老测试用 `asyncio.get_event_loop().run_until_complete()`，与新 `asyncio.run()` 冲突）。不归本轮重构修复，建议主窗口统筹。
 
@@ -426,9 +451,10 @@ tests/
 
 | 类别 | 数量 |
 |------|------|
-| 🆕 新建源码（含 __init__.py 不计） | 22 |
+| 🆕 新建源码（含 __init__.py 不计） | 27（Plan C +5：tutor / critic / conductor / orchestrator / teaching_policy） |
+| 🆕 新建配置（规则 DSL） | 1（orchestrator_rules.yaml） |
 | 🔄 扩展老源码 | 2（enums.py + rag/coordinator.py） |
-| 📛 复用老源码（明确依赖） | ~20 |
+| 📛 复用老源码（明确依赖） | ~20（含 Plan C 依赖的 llm.py） |
 | ⛔ 待下线老源码 | ~35（app/agent/ 全部 + 部分 harness 老文件） |
-| 🆕 新建测试 | 17 |
+| 🆕 新建测试 | 25（Plan C +8） |
 | 📛 复用老测试 | ~25 |

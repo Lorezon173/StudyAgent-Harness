@@ -1,5 +1,5 @@
 from app.harness.enums import Intent, GateStatus
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def route_by_intent(state: LearningState) -> str:

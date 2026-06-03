@@ -1,7 +1,7 @@
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 from app.infrastructure.llm import FakeLLM
 from app.harness.enums import Stage, MasteryLevel
-from app.agent.spec_decorator import with_spec
+from app_old.agent.spec_decorator import with_spec
 
 _llm = FakeLLM()
 

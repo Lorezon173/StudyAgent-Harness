@@ -1,4 +1,4 @@
-from app.harness.intent_router import IntentRouter
+from app_old.harness.intent_router import IntentRouter
 from app.harness.enums import Intent
 
 

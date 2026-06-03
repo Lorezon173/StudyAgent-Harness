@@ -1,8 +1,8 @@
 """@with_spec 装饰器：声明节点的规范来源，自动注入 system_prompt"""
 
 from functools import wraps
-from app.agent.spec_loader import SpecLoader
-from app.harness.state import LearningState
+from app_old.agent.spec_loader import SpecLoader
+from app_old.harness.state import LearningState
 
 
 _default_loader: SpecLoader | None = None

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 @dataclass

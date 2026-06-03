@@ -1,6 +1,6 @@
 import pytest
 from app.harness.enums import Stage, Intent
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 @pytest.fixture

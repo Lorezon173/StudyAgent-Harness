@@ -6,7 +6,7 @@ from pathlib import Path
 import aiosqlite
 
 from app.harness.enums import MemoryScope
-from app.harness.memory import MemoryItem
+from app_old.harness.memory import MemoryItem
 
 
 class MemoryStore:

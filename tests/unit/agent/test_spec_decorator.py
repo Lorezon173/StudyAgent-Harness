@@ -1,11 +1,11 @@
 import pytest
 from pathlib import Path
-from app.agent.spec_loader import SpecLoader
-from app.agent.spec_decorator import with_spec, set_spec_loader, get_spec_loader
-from app.harness.state import LearningState
+from app_old.agent.spec_loader import SpecLoader
+from app_old.agent.spec_decorator import with_spec, set_spec_loader, get_spec_loader
+from app_old.harness.state import LearningState
 
 
-SPEC_DIR = Path(__file__).parent.parent.parent.parent / "app" / "agent" / "specs"
+SPEC_DIR = Path(__file__).parent.parent.parent.parent / "app_old" / "agent" / "specs"
 
 
 class TestWithSpecDecorator:

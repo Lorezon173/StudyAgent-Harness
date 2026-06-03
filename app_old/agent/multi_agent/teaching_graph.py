@@ -1,12 +1,12 @@
 from langgraph.graph import END, StateGraph
 
-from app.agent.multi_agent.state import MultiAgentState
-from app.agent.node_wrapper import safe_node
-from app.agent.nodes.diagnose import diagnose_node
-from app.agent.nodes.explain import explain_node
-from app.agent.nodes.restate_check import restate_check_node
-from app.agent.nodes.followup import followup_node
-from app.agent.routers import route_after_restate
+from app_old.agent.multi_agent.state import MultiAgentState
+from app_old.agent.node_wrapper import safe_node
+from app_old.agent.nodes.diagnose import diagnose_node
+from app_old.agent.nodes.explain import explain_node
+from app_old.agent.nodes.restate_check import restate_check_node
+from app_old.agent.nodes.followup import followup_node
+from app_old.agent.routers import route_after_restate
 
 
 def build_teaching_agent():
