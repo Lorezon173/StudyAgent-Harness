@@ -1,6 +1,7 @@
 from app.orchestration.assembly import (
     extract_reply, extract_mastery_score, extract_mode_path,
 )
+from app.orchestration.assembly import run_new_agent_session, NewStackResult
 from app.harness.events import Event
 from app.harness.enums import EventType, EventSource
 
@@ -56,3 +57,53 @@ def test_extract_mode_path_starts_socratic_and_follows_transitions():
 
 def test_extract_mode_path_default_socratic_when_no_transition():
     assert extract_mode_path([]) == ["Socratic"]
+
+
+def test_run_new_agent_session_partial_drives_socratic_to_feynman(mock_llm_invoke_json):
+    """端到端：partial → Orchestrator 切 Feynman → Tutor 发 recap；
+    队列自然耗尽结束。验证 reply/mastery/mode_path/turn_count 提取。"""
+    mock_llm_invoke_json({
+        "tutor_ask": {"content": "你怎么理解 RAG？"},
+        "critic_assess": {"mastery_level": "partial", "mastery_score": 55,
+                          "rationale": "基础有，细节缺"},
+        "tutor_request_recap": {"content": "请用你的话复述 RAG"},
+    })
+    result = run_new_agent_session(
+        session_id="asm-1", user_id="u1", user_message="帮我理解 RAG")
+
+    assert isinstance(result, NewStackResult)
+    # 最后一个 Tutor 事件是 recap（partial 触发 Socratic→Feynman→request_recap）
+    assert result.reply == "请用你的话复述 RAG"
+    assert result.mastery_score == 55
+    assert result.turn_count > 0
+    assert result.mode_path[0] == "Socratic"
+    assert "Feynman" in result.mode_path
+
+
+def test_run_new_agent_session_no_observation_still_replies(mock_llm_invoke_json):
+    """Critic 无观察（{}）时，注入的 tutor_ask 种子仍保证有首条引导问题。"""
+    mock_llm_invoke_json({
+        "tutor_ask": {"content": "开场引导问题"},
+        "critic_assess": {},
+    })
+    result = run_new_agent_session(
+        session_id="asm-2", user_id="u2", user_message="随便聊聊")
+    assert result.reply == "开场引导问题"
+    assert result.mastery_score is None
+    assert result.mode_path == ["Socratic"]
+
+
+def test_run_new_agent_session_no_emit_violation(mock_llm_invoke_json):
+    """装配跑完不应抛 EmitViolationError（职能正交 #14 全局不变量）。"""
+    from app.harness.events import EmitViolationError
+    mock_llm_invoke_json({
+        "tutor_ask": {"content": "Q"},
+        "critic_assess": {"mastery_level": "mastered", "mastery_score": 95},
+        "conductor_decide": {"action": "loop_exit", "reason": "done"},
+    })
+    try:
+        result = run_new_agent_session(
+            session_id="asm-3", user_id="u3", user_message="我已经懂了")
+    except EmitViolationError as e:
+        raise AssertionError(f"出现越权 emit：{e}")
+    assert result.reply  # 有回复
