@@ -178,3 +178,23 @@ def compute_collaboration_metrics(
         **compute_causal_chain_quality(events),
         **compute_trajectory_deviation(events, expected_mode_path),
     }
+
+
+# ---- EventStore 集成入口（旁路读取已运行会话）----
+
+def collaboration_report_from_store(
+    store,
+    session_id: str,
+    violation_log: list[str] | None = None,
+    expected_mode_path: list[str] | None = None,
+) -> dict:
+    """从 EventStore 回放 trace 并计算六维协作指标（Plan E 主入口之一）。"""
+    events = store.replay(session_id)
+    return compute_collaboration_metrics(
+        session_id=session_id,
+        events=events,
+        violation_log=violation_log or [],
+        expected_mode_path=expected_mode_path or [],
+        num_teaching_turns=max(
+            1, len([e for e in events if e.type == EventType.ORCHESTRATOR_TICK])),
+    )

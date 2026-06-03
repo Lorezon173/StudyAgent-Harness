@@ -113,3 +113,37 @@ class TestCollaborationMetrics:
         assert "max_depth" in result
         assert "deviation_score" in result
         assert result["violation_count"] == 0
+
+
+class TestCollaborationEventStore:
+    def test_from_event_store(self, tmp_path):
+        from app.infrastructure.storage.event_store import EventStore
+        from app.eval.collaboration_bench import collaboration_report_from_store
+
+        store = EventStore(str(tmp_path / "test_events.db"))
+        store.init()
+        ev = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
+                   session_id="sess_integration", id="int_e1")
+        store.append(ev)
+
+        result = collaboration_report_from_store(
+            store=store, session_id="sess_integration")
+        assert result["session_id"] == "sess_integration"
+        assert result["violation_count"] == 0
+        store.close()
+
+    def test_from_store_with_violations(self, tmp_path):
+        from app.infrastructure.storage.event_store import EventStore
+        from app.eval.collaboration_bench import collaboration_report_from_store
+
+        store = EventStore(str(tmp_path / "test_violations.db"))
+        store.init()
+        ev = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
+                   session_id="s2", id="v_e1")
+        store.append(ev)
+
+        result = collaboration_report_from_store(
+            store=store, session_id="s2", violation_log=["v_violation_1"])
+        assert result["violation_count"] == 1
+        assert isinstance(result, dict)
+        store.close()
