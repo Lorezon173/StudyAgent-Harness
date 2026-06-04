@@ -85,6 +85,8 @@ SpecLoader.compose(intent="teach_loop", node="diagnose")
 
 **双文件规范**：每个规范由 `.md`（开发者文档）+ `.prompt.md`（LLM 运行时 Prompt）组成，修改规范时必须同步修改对应 Prompt。
 
+**新栈 specs 体系**（事件驱动 5-Agent）：`app/specs/` 下为 Tutor / Critic / Conductor / Retriever / Curator 各建双文件规范，`SpecLoader.compose(agent, intent)` 按「根规范 + Agent 角色 + intent 子指令」三层组装注入；合并标题（`### a / b / c`）让语义相近的 intent 共享指令段。`event_map.yaml` 取代旧 `intent_map.yaml` 记录事件→Agent→产出映射。Tutor / Critic / Conductor 的 system prompt 已从硬编码迁移到此体系按需加载。
+
 ## 状态模型
 
 采用分层 TypedDict，每个子状态对应一个命名空间：
@@ -166,6 +168,13 @@ SubGraph
 
 Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。新栈已通过 feature flag 接入 `/chat`、`/chat/stream`，默认仍回退老栈（14 节点主图），可灰度切换。
 
+**P0 / P1 修复（2026-06-04）**（[修复计划](docs/superpowers/plans/2026-06-04-p1-fixes.md)）：审阅对齐后补齐的缺口——
+
+- **P0**：Orchestrator 补 `topic_complete`（mastered 且非 Regress 模式时置真，使 `LOOP_EXIT` 规则可触发）与 `repeat_count`（跨 micro-turn 维护连续 weak 计数，2 次重讲后穿透 Conductor），修复规则永不命中 / 恒久命中两处缺陷。
+- **P1-1**：补齐 Tutor / Critic / Conductor 的 `evaluate()`（§5.2），ComponentBench 现可对全部 5 Agent 跑部件级基准。
+- **P1-2**：提取 `app/orchestration/routers.py`（对齐 spec §7 主图条件边）。
+- **P1-3**：建立新栈 `app/specs/` 渐进式 Prompt 体系（5 Agent 双文件 + `event_map.yaml` + `SpecLoader`），移除 3 个 Agent 的硬编码 prompt（§10）。
+
 ## 技术栈
 
 | 类别 | 技术 |
@@ -212,7 +221,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可
 ├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
 └── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
 
-tests/                          # 366 收集 / 362 通过（4 个 test_stores.py 为预存失败，与重构无关）
+tests/                          # 461 收集 / 457 通过（4 个 test_stores.py 为预存失败，与重构无关）
 ```
 
 
@@ -284,10 +293,15 @@ store = SessionStore(db=None)  # 自动使用内存字典
 ## 测试
 
 ```
-147 个测试覆盖全部模块
+461 收集 / 457 通过（4 个 test_stores.py 预存失败，与重构无关）
 
-tests/unit/harness/         枚举、状态、路由、错误处理、护栏、记忆、可观测 (58个)
-tests/unit/infrastructure/  LLM、RAG、存储、记忆存储 (23个)
-tests/unit/agent/           图执行、节点、多Agent、系统评估、SpecLoader (48个)
-tests/unit/api/             API 端点 (6个)
+tests/unit/harness/         枚举、状态、事件总线、编排器、教学策略、画像图谱
+tests/unit/agents/          5 Agent（tutor/critic/retriever/curator/conductor）契约与行为
+tests/unit/orchestration/   协作环、主图、路由、装配线
+tests/unit/specs/           SpecLoader 渐进式加载
+tests/unit/infrastructure/  LLM、RAG、存储、事件存储
+tests/eval/                 ComponentBench / SystemBench / CollaborationBench / ABController
+tests/golden/               黄金集 + Cohen's κ 一致性
+tests/integration/          端到端场景与新旧栈对齐
+tests/unit/agent/           老栈（app_old）图执行、节点、SpecLoader
 ```
