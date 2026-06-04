@@ -149,8 +149,9 @@ def test_critic_evaluate_returns_mastery_level(mock_llm_invoke_json):
     critic = CriticAgent()
     result = critic.evaluate({"user_text": "RAG是检索增强生成", "topic": "RAG"})
     assert result["mastery_level"] == "partial"
-    assert "confusion_detected" in result
-    assert "contradiction_detected" in result
+    assert result["mastery_score"] == 55
+    assert result["confusion_detected"] is False
+    assert result["contradiction_detected"] is False
 
 
 def test_critic_evaluate_detects_confusion(mock_llm_invoke_json):
