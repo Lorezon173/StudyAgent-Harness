@@ -3,6 +3,7 @@ from app.harness.events import Event
 from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
+from app.specs.loader import SpecLoader
 
 
 class ConductorAgent(AgentBase):
@@ -20,17 +21,17 @@ class ConductorAgent(AgentBase):
     subscriptions = [EventType.CONDUCTOR_REQUESTED]
     emittable_types = {EventType.CONDUCTOR_DECIDED}
 
-    def __init__(self, llm: LLMService | None = None):
+    def __init__(self, llm: LLMService | None = None,
+                 spec_loader: SpecLoader | None = None):
         self._llm = llm or LLMService()
+        self._spec = spec_loader or SpecLoader()
 
     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
         if event.type != EventType.CONDUCTOR_REQUESTED:
             return []
         observations = event.payload.get("observations", [])
         result = self._llm.invoke_json(
-            "你是融合式教学的 Conductor。只能基于已有观察事件做路由决策，"
-            "禁止自产语义/结构观察。若观察不足，输出 "
-            "action=request_observation + target=critic|curator。",
+            self._spec.compose("conductor", "conductor_decide"),
             f"观察集：{observations}\n当前模式：{ws.current_mode}",
             session_id=ws.session_id, node="conductor",
             intent="conductor_decide",

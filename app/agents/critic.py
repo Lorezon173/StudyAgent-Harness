@@ -3,6 +3,7 @@ from app.harness.events import Event
 from app.harness.enums import EventType, EventSource, MasteryLevel
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
+from app.specs.loader import SpecLoader
 
 
 class CriticAgent(AgentBase):
@@ -24,8 +25,10 @@ class CriticAgent(AgentBase):
         EventType.RAG_QUALITY_ASSESSED,
     }
 
-    def __init__(self, llm: LLMService | None = None):
+    def __init__(self, llm: LLMService | None = None,
+                 spec_loader: SpecLoader | None = None):
         self._llm = llm or LLMService()
+        self._spec = spec_loader or SpecLoader()
 
     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
         if event.type == EventType.USER_MESSAGE:
@@ -39,10 +42,7 @@ class CriticAgent(AgentBase):
     def _assess_user_message(self, event: Event, ws: WorkspaceState) -> list[Event]:
         text = event.payload.get("text", "")
         result = self._llm.invoke_json(
-            "你是融合式教学的 Critic，对用户回答做语义评估。"
-            "输出 JSON：mastery_level(weak|partial|mastered)、mastery_score(0-100)、"
-            "rationale、confusion(可选: {concept_a, concept_b})、"
-            "contradiction(可选: {description})、low_confidence(可选: bool)。",
+            self._spec.compose("critic", "critic_assess"),
             f"主题：{ws.current_topic or ''}\n用户回答：{text}",
             session_id=ws.session_id, node="critic", intent="critic_assess",
         )
@@ -82,8 +82,7 @@ class CriticAgent(AgentBase):
     def _assess_rag_quality(self, event: Event, ws: WorkspaceState) -> list[Event]:
         chunks = event.payload.get("chunks", [])
         result = self._llm.invoke_json(
-            "你是融合式教学的 Critic，评估证据对当前教学是否相关、是否充分。"
-            "输出 JSON：score(0-1)、relevance(0-1)、sufficiency(0-1)、rationale。",
+            self._spec.compose("critic", "critic_rag_quality"),
             f"主题：{ws.current_topic or ''}\n证据条数：{len(chunks)}",
             session_id=ws.session_id, node="critic", intent="critic_rag_quality",
         )

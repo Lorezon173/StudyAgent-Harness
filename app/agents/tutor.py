@@ -3,6 +3,7 @@ from app.harness.events import Event
 from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
+from app.specs.loader import SpecLoader
 
 
 class TutorAgent(AgentBase):
@@ -23,8 +24,10 @@ class TutorAgent(AgentBase):
         EventType.TUTOR_OFFERED_ANALOGY,
     }
 
-    def __init__(self, llm: LLMService | None = None):
+    def __init__(self, llm: LLMService | None = None,
+                 spec_loader: SpecLoader | None = None):
         self._llm = llm or LLMService()
+        self._spec = spec_loader or SpecLoader()
 
     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
         if event.type != EventType.ACTION_REQUESTED:
@@ -46,7 +49,7 @@ class TutorAgent(AgentBase):
             return self._explain(event, ws, intent="tutor_correct", mode="correct")
         if action == str(ActionKind.TUTOR_REQUEST_RECAP):
             result = self._llm.invoke_json(
-                "你是融合式教学的 Tutor，切入费曼模式让用户复述。",
+                self._spec.compose("tutor", "tutor_request_recap"),
                 f"主题：{ws.current_topic or ''}",
                 session_id=ws.session_id, node="tutor",
                 intent="tutor_request_recap",
@@ -56,7 +59,7 @@ class TutorAgent(AgentBase):
                               parent_id=event.id)]
         if action == str(ActionKind.TUTOR_OFFER_ANALOGY):
             result = self._llm.invoke_json(
-                "你是融合式教学的 Tutor，给出类比破除概念混淆。",
+                self._spec.compose("tutor", "tutor_offer_analogy"),
                 f"主题：{ws.current_topic or ''}",
                 session_id=ws.session_id, node="tutor",
                 intent="tutor_offer_analogy",
@@ -71,7 +74,7 @@ class TutorAgent(AgentBase):
     def _ask(self, trigger: Event, ws: WorkspaceState, intent: str,
              kind: str, extra: dict | None = None) -> list[Event]:
         result = self._llm.invoke_json(
-            "你是融合式教学的 Tutor，在 Socratic 模式下抛出引导问题。",
+            self._spec.compose("tutor", intent),
             f"主题：{ws.current_topic or ''}",
             session_id=ws.session_id, node="tutor", intent=intent,
         )
@@ -84,7 +87,7 @@ class TutorAgent(AgentBase):
     def _explain(self, trigger: Event, ws: WorkspaceState, intent: str,
                  mode: str) -> list[Event]:
         result = self._llm.invoke_json(
-            "你是融合式教学的 Tutor，根据模式给出讲解。",
+            self._spec.compose("tutor", intent),
             f"主题：{ws.current_topic or ''}\n模式：{mode}",
             session_id=ws.session_id, node="tutor", intent=intent,
         )
