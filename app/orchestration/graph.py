@@ -13,6 +13,7 @@ from app.harness.enums import EventType
 from app.harness.eventbus import EventBus
 from app.harness.orchestrator import Orchestrator
 from app.orchestration.collab_loop import run_collab_loop
+from app.orchestration.routers import route_decision
 
 
 class MainState(TypedDict, total=False):
@@ -80,10 +81,6 @@ def _route(state: MainState) -> dict:
     return {"visited": ["route"], "stage": "route"}
 
 
-def _route_decision(state: MainState) -> str:
-    return "collab_loop" if state.get("enter_loop", True) else "wrap_up"
-
-
 def _collab_loop_node(state: MainState) -> dict:
     """Plan C 接入点（§3.5.4）：若注入运行时则跑真实协作环；否则 stub 兜底。"""
     runtime_bundle = state.get("_runtime")
@@ -112,7 +109,7 @@ def build_main_graph():
     g.add_node("wrap_up", _wrap_up)
     g.set_entry_point("ingest")
     g.add_edge("ingest", "route")
-    g.add_conditional_edges("route", _route_decision,
+    g.add_conditional_edges("route", route_decision,
                             {"collab_loop": "collab_loop", "wrap_up": "wrap_up"})
     g.add_edge("collab_loop", "wrap_up")
     g.add_edge("wrap_up", END)
