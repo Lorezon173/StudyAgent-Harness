@@ -123,10 +123,9 @@ def test_tutor_evaluate_returns_completeness(mock_llm_invoke_json):
     }})
     tutor = TutorAgent()
     result = tutor.evaluate({"topic": "RAG", "action": "tutor_explain"})
-    assert "explanation_completeness" in result
-    assert result["explanation_completeness"] > 0
-    assert "response_length" in result
-    assert result["response_length"] > 0
+    # content 长度 69 → min(69/50, 1.0) 截顶为 1.0；锁定长度与截顶逻辑
+    assert result["response_length"] == 69
+    assert result["explanation_completeness"] == 1.0
 
 
 def test_tutor_evaluate_with_golden_response(mock_llm_invoke_json):
@@ -137,4 +136,6 @@ def test_tutor_evaluate_with_golden_response(mock_llm_invoke_json):
         "golden_response": "RAG 是 Retrieval Augmented Generation，检索增强生成",
     })
     assert "explanation_completeness" in result
+    # 字符多重集 Jaccard：交集 11 / 并集 45 = 0.2444（独立计算锁定）
+    assert result["explanation_completeness"] == 0.2444
     assert 0 <= result["explanation_completeness"] <= 1.0
