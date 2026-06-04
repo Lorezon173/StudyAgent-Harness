@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from app.harness.enums import ActionKind, EventType, EventSource
+from app.harness.enums import ActionKind, EventType, EventSource, TeachingMode
 from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
 from app.harness.teaching_policy import TeachingPolicy, ObservationSet
@@ -75,6 +75,7 @@ class Orchestrator:
         self._policy = policy or TeachingPolicy()
         self._pending_obs: list[Event] = []
         self._tick_pending: bool = False
+        self._weak_count: int = 0
 
     def on_event(self, event: Event, ws: WorkspaceState) -> list[Event]:
         if event.type in _OBSERVATION_TYPES:
@@ -101,7 +102,23 @@ class Orchestrator:
         self._pending_obs = []
         self._tick_pending = False
 
+        # P0 fix: 注入跨 micro-turn 的 repeat_count（连续 weak 计数）
+        obs["repeat_count"] = self._weak_count
+
+        # P0 fix: topic_complete — 非 Regress 前置小循环中 mastered 即视为主题完成
+        # Regress 中 mastered 的是前置点，不是主题本身（§4.2 Regress+mastered→Socratic）
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+
         action = self._engine.match(obs)
+
+        # P0 fix: 规则匹配后更新 weak 计数
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
         if action == ActionKind.CONDUCTOR_DECIDE:
             return [Event(type=EventType.CONDUCTOR_REQUESTED,
                           source=EventSource.ORCHESTRATOR,

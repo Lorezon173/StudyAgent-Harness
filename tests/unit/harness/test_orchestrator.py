@@ -3,7 +3,9 @@ from pathlib import Path
 import pytest
 
 from app.harness.orchestrator import RuleEngine, load_rules, Orchestrator
-from app.harness.enums import ActionKind, MasteryLevel, EventType, EventSource
+from app.harness.enums import (
+    ActionKind, MasteryLevel, EventType, EventSource, TeachingMode,
+)
 from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
 
@@ -249,3 +251,82 @@ def test_barrier_handles_single_observation_correctly():
                                payload={"level": "mastered"}), ws)
     # 仍只产 Tick，不直接路由
     assert all(e.type != EventType.ACTION_REQUESTED for e in out1)
+
+
+# === P0 修复：topic_complete 信号 ===
+
+def _feed_mastery_and_tick(orch, ws, level="mastered"):
+    """辅助：发送 MasteryAssessed + OrchestratorTick，返回 Tick 产出事件。"""
+    orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
+                        source=EventSource.CRITIC, session_id=ws.session_id,
+                        payload={"level": level}), ws)
+    return orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK,
+                               source=EventSource.ORCHESTRATOR,
+                               session_id=ws.session_id, payload={}), ws)
+
+
+def test_mastered_in_socratic_emits_loop_exit():
+    """Socratic + mastered → topic_complete=True → LoopExit（§4.2 第一行）。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1",
+                        current_mode=TeachingMode.SOCRATIC)
+    out = _feed_mastery_and_tick(orch, ws, "mastered")
+    assert any(e.type == EventType.LOOP_EXIT for e in out), \
+        "Socratic + mastered 应触发 LoopExit"
+
+
+def test_mastered_in_regress_does_not_exit():
+    """Regress + mastered → 前置补齐回 Socratic，不出环（§4.2 Regress 行）。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1",
+                        current_mode=TeachingMode.REGRESS)
+    out = _feed_mastery_and_tick(orch, ws, "mastered")
+    assert not any(e.type == EventType.LOOP_EXIT for e in out), \
+        "Regress + mastered 不应出环，应回 Socratic 继续主题"
+
+
+def test_mastered_in_feynman_exits():
+    """Feynman + mastered → topic_complete=True → 可直接出环（§4.3 示例简化）。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1",
+                        current_mode=TeachingMode.FEYNMAN)
+    out = _feed_mastery_and_tick(orch, ws, "mastered")
+    assert any(e.type == EventType.LOOP_EXIT for e in out), \
+        "Feynman + mastered 应触发 LoopExit"
+
+
+# === P0 修复：repeat_count 递增 ===
+
+def test_repeat_count_allows_two_re_explains_then_falls_through():
+    """连续 3 次 weak：前两次 re_explain，第三次穿透到 conductor（§3.4 规则）。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+
+    # 第 1 次 weak → repeat_count=0 < 2 → re_explain
+    out1 = _feed_mastery_and_tick(orch, ws, "weak")
+    a1 = [e for e in out1 if e.type == EventType.ACTION_REQUESTED]
+    assert a1 and a1[0].payload["action"] == "tutor_re_explain", "第 1 次 weak 应重讲"
+
+    # 第 2 次 weak → repeat_count=1 < 2 → re_explain
+    out2 = _feed_mastery_and_tick(orch, ws, "weak")
+    a2 = [e for e in out2 if e.type == EventType.ACTION_REQUESTED]
+    assert a2 and a2[0].payload["action"] == "tutor_re_explain", "第 2 次 weak 应重讲"
+
+    # 第 3 次 weak → repeat_count=2 ≥ 2 → 穿透到 conductor
+    out3 = _feed_mastery_and_tick(orch, ws, "weak")
+    assert any(e.type == EventType.CONDUCTOR_REQUESTED for e in out3), \
+        "第 3 次 weak 应穿透到 Conductor（repeat_count=2 不满足 <2）"
+
+
+def test_repeat_count_resets_on_non_weak_mastery():
+    """weak → weak → partial → weak：partial 重置计数，第 3 个 weak 视为新的第 1 次。"""
+    orch = Orchestrator()
+    ws = WorkspaceState(session_id="s1", user_id="u1")
+
+    _feed_mastery_and_tick(orch, ws, "weak")    # count 0 → 1
+    _feed_mastery_and_tick(orch, ws, "weak")    # count 1 → 2
+    _feed_mastery_and_tick(orch, ws, "partial")  # reset → 0
+    out = _feed_mastery_and_tick(orch, ws, "weak")  # count 0 → 应是 re_explain
+    a = [e for e in out if e.type == EventType.ACTION_REQUESTED]
+    assert a and a[0].payload["action"] == "tutor_re_explain", \
+        "partial 后 weak 计数应重置，重新允许 re_explain"
