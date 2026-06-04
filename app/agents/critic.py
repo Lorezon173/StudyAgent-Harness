@@ -99,5 +99,36 @@ class CriticAgent(AgentBase):
             },
             parent_id=event.id)]
 
-    def evaluate(self, test_case) -> dict:
-        raise NotImplementedError("Plan E 实装 Critic 部件级评估（§5.2）")
+    def evaluate(self, test_case: dict) -> dict:
+        """部件级评估（§5.2）：对给定用户文本做语义评估，返回标准化指标。
+
+        test_case: {"user_text": str, "topic": str}
+        返回: {"mastery_level": str, "mastery_score": int|None,
+               "confusion_detected": bool, "contradiction_detected": bool,
+               "low_confidence_detected": bool}
+        """
+        ws = WorkspaceState(session_id="__eval__", user_id="__eval__",
+                            current_topic=test_case.get("topic", ""))
+        fake_event = Event(
+            type=EventType.USER_MESSAGE, source=EventSource.USER,
+            session_id="__eval__",
+            payload={"text": test_case.get("user_text", "")})
+        produced = self._assess_user_message(fake_event, ws)
+        result: dict = {
+            "mastery_level": None,
+            "mastery_score": None,
+            "confusion_detected": False,
+            "contradiction_detected": False,
+            "low_confidence_detected": False,
+        }
+        for ev in produced:
+            if ev.type == EventType.MASTERY_ASSESSED:
+                result["mastery_level"] = ev.payload.get("level")
+                result["mastery_score"] = ev.payload.get("score")
+            elif ev.type == EventType.CONFUSION_DETECTED:
+                result["confusion_detected"] = True
+            elif ev.type == EventType.CONTRADICTION_DETECTED:
+                result["contradiction_detected"] = True
+            elif ev.type == EventType.LOW_CONFIDENCE_DETECTED:
+                result["low_confidence_detected"] = True
+        return result

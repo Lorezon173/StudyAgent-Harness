@@ -138,3 +138,29 @@ def test_critic_cannot_emit_graph_prereq_weak():
     ws = WorkspaceState(session_id="s1", user_id="u1")
     with pytest.raises(ValueError):
         CriticAgent().emit(EventType.GRAPH_PREREQ_WEAK_DETECTED, ws)
+
+
+def test_critic_evaluate_returns_mastery_level(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "partial",
+        "mastery_score": 55,
+        "rationale": "基本概念正确但不完整",
+    }})
+    critic = CriticAgent()
+    result = critic.evaluate({"user_text": "RAG是检索增强生成", "topic": "RAG"})
+    assert result["mastery_level"] == "partial"
+    assert "confusion_detected" in result
+    assert "contradiction_detected" in result
+
+
+def test_critic_evaluate_detects_confusion(mock_llm_invoke_json):
+    mock_llm_invoke_json({"critic_assess": {
+        "mastery_level": "weak",
+        "mastery_score": 30,
+        "rationale": "混淆概念",
+        "confusion": {"concept_a": "retrieval", "concept_b": "fine-tuning"},
+    }})
+    critic = CriticAgent()
+    result = critic.evaluate({"user_text": "RAG就是微调", "topic": "RAG"})
+    assert result["mastery_level"] == "weak"
+    assert result["confusion_detected"] is True
