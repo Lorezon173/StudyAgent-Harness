@@ -93,5 +93,45 @@ class TutorAgent(AgentBase):
                                    "mode": mode},
                           parent_id=trigger.id)]
 
-    def evaluate(self, test_case) -> dict:
-        raise NotImplementedError("Plan E 实装 Tutor 部件级评估（§5.2）")
+    def evaluate(self, test_case: dict) -> dict:
+        """部件级评估（§5.2）：生成教学内容并计算质量指标。
+
+        test_case: {"topic": str, "action": str, "golden_response"?: str}
+        返回: {"explanation_completeness": float, "response_length": int}
+        """
+        from collections import Counter
+
+        topic = test_case.get("topic", "")
+        action = test_case.get("action", "tutor_explain")
+        golden = test_case.get("golden_response", "")
+
+        ws = WorkspaceState(session_id="__eval__", user_id="__eval__",
+                            current_topic=topic)
+        trigger = Event(
+            type=EventType.ACTION_REQUESTED, source=EventSource.ORCHESTRATOR,
+            session_id="__eval__",
+            payload={"action": action, "target": str(EventSource.TUTOR)})
+        produced = self.handle(trigger, ws)
+
+        content = ""
+        for ev in produced:
+            content = ev.payload.get("content", "")
+            if content:
+                break
+
+        response_length = len(content)
+        if golden and content:
+            gc = Counter(golden)
+            cc = Counter(content)
+            intersection = sum((gc & cc).values())
+            union = sum((gc | cc).values())
+            completeness = intersection / union if union else 0.0
+        elif content:
+            completeness = min(response_length / 50, 1.0)
+        else:
+            completeness = 0.0
+
+        return {
+            "explanation_completeness": round(completeness, 4),
+            "response_length": response_length,
+        }

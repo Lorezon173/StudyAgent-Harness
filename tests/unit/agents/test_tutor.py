@@ -114,3 +114,27 @@ def test_tutor_cannot_emit_mastery_assessed():
     ws = WorkspaceState(session_id="s1", user_id="u1")
     with pytest.raises(ValueError):
         TutorAgent().emit(EventType.MASTERY_ASSESSED, ws)
+
+
+def test_tutor_evaluate_returns_completeness(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_explain": {
+        "content": "RAG 是 Retrieval-Augmented Generation，即检索增强生成。"
+                   "它通过检索外部知识库来增强 LLM 的回答质量。",
+    }})
+    tutor = TutorAgent()
+    result = tutor.evaluate({"topic": "RAG", "action": "tutor_explain"})
+    assert "explanation_completeness" in result
+    assert result["explanation_completeness"] > 0
+    assert "response_length" in result
+    assert result["response_length"] > 0
+
+
+def test_tutor_evaluate_with_golden_response(mock_llm_invoke_json):
+    mock_llm_invoke_json({"tutor_explain": {"content": "RAG 是检索增强生成技术"}})
+    tutor = TutorAgent()
+    result = tutor.evaluate({
+        "topic": "RAG", "action": "tutor_explain",
+        "golden_response": "RAG 是 Retrieval Augmented Generation，检索增强生成",
+    })
+    assert "explanation_completeness" in result
+    assert 0 <= result["explanation_completeness"] <= 1.0
