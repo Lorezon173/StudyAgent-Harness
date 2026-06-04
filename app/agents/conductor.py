@@ -45,5 +45,28 @@ class ConductorAgent(AgentBase):
         return [self.emit(EventType.CONDUCTOR_DECIDED, ws,
                           payload=payload, parent_id=event.id)]
 
-    def evaluate(self, test_case) -> dict:
-        raise NotImplementedError("Plan E 实装 Conductor 部件级评估（§5.2）")
+    def evaluate(self, test_case: dict) -> dict:
+        """部件级评估（§5.2）：给定观察集做决策，返回决策结果指标。
+
+        test_case: {"observations": list[dict], "current_mode": str}
+        返回: {"action": str, "observation_enough": bool, "reason": str}
+        """
+        ws = WorkspaceState(
+            session_id="__eval__", user_id="__eval__",
+            current_mode=test_case.get("current_mode", "Socratic"))
+        trigger = Event(
+            type=EventType.CONDUCTOR_REQUESTED, source=EventSource.ORCHESTRATOR,
+            session_id="__eval__",
+            payload={
+                "observations": test_case.get("observations", []),
+                "reason": "evaluate",
+            })
+        produced = self.handle(trigger, ws)
+        if not produced:
+            return {"action": "", "observation_enough": False, "reason": "no output"}
+        ev = produced[0]
+        return {
+            "action": ev.payload.get("action", ""),
+            "observation_enough": ev.payload.get("observation_enough", False),
+            "reason": ev.payload.get("reason", ""),
+        }

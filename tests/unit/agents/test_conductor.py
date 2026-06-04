@@ -88,3 +88,34 @@ def test_conductor_ignores_non_subscribed_event():
     ev = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                session_id="s1")
     assert ConductorAgent().handle(ev, ws) == []
+
+
+def test_conductor_evaluate_empty_observations(mock_llm_invoke_json):
+    mock_llm_invoke_json({"conductor_decide": {
+        "action": "request_observation",
+        "reason": "观察不足",
+        "observation_enough": False,
+        "target": "critic",
+    }})
+    conductor = ConductorAgent()
+    result = conductor.evaluate({
+        "observations": [],
+        "current_mode": "Socratic",
+    })
+    assert result["action"] == "request_observation"
+    assert result["observation_enough"] is False
+
+
+def test_conductor_evaluate_with_observations(mock_llm_invoke_json):
+    mock_llm_invoke_json({"conductor_decide": {
+        "action": "tutor_offer_analogy",
+        "reason": "混淆需要类比",
+        "observation_enough": True,
+    }})
+    conductor = ConductorAgent()
+    result = conductor.evaluate({
+        "observations": [{"type": "ConfusionDetected"}],
+        "current_mode": "Socratic",
+    })
+    assert result["action"] == "tutor_offer_analogy"
+    assert result["observation_enough"] is True
