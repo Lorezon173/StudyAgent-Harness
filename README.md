@@ -221,7 +221,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可
 ├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
 └── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
 
-tests/                          # 461 收集 / 457 通过（4 个 test_stores.py 为预存失败，与重构无关）
+tests/                          # 461 收集 / 457 通过（test_stores.py 的 4 个为测试写法陈旧：用了 get_event_loop，单独跑全绿）
 ```
 
 
@@ -298,7 +298,7 @@ store = SessionStore(db=None)  # 自动使用内存字典
 ## 测试
 
 ```
-461 收集 / 457 通过（4 个 test_stores.py 预存失败，与重构无关）
+461 收集 / 457 通过（test_stores.py 的 4 个：测试写法陈旧，非 Store bug）
 
 tests/unit/harness/         枚举、状态、事件总线、编排器、教学策略、画像图谱
 tests/unit/agents/          5 Agent（tutor/critic/retriever/curator/conductor）契约与行为
@@ -310,3 +310,5 @@ tests/golden/               黄金集 + Cohen's κ 一致性
 tests/integration/          端到端场景与新旧栈对齐
 tests/unit/agent/           老栈（app_old）图执行、节点、SpecLoader
 ```
+
+> **关于 test_stores.py 的 4 个失败**：这 4 个测试用了 `asyncio.get_event_loop().run_until_complete(...)` 的过时写法——单独跑全绿，全量跑时因前序 async 测试已关闭全局 event loop 而报 `Event loop is closed`。EvalStore / KnowledgeStore 本身工作正常（单测证明），改用 `asyncio.run()` 或 pytest-asyncio fixture 即可修复，非 Store bug、非 DB 兼容问题。

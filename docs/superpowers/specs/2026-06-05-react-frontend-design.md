@@ -67,14 +67,14 @@ web/                              # 建在项目根，与 main.py:40 的 web/dis
 
 | 模式 | 命令 | 端口 | 跨域处理 |
 |---|---|---|---|
-| 开发 | `npm run dev` | vite :5173 | vite proxy：`/api/*` → `http://127.0.0.1:8001` |
+| 开发 | `npm run dev` | vite :5173 | vite proxy：`/api/*` → `http://127.0.0.1:8000` |
 | 生产 | `npm run build` | 产物落 `web/dist` | FastAPI 同源伺服（main.py:40 已挂载），无跨域 |
 
 ### 1.3 与后端的依赖
 
 - 前端**只依赖 HTTP API**，不依赖后端任何内部实现
 - 后端**零改动**（main.py 的 web/dist 挂载是既有预留逻辑）
-- 后端需以 `set -a && source .env && set +a` 启动（确保新栈 flag 生效），端口 8001（或 8000，前端 proxy 配置对应）
+- 后端需以 `set -a && source .env && set +a` 启动（确保新栈 flag 生效），**端口 8000**（跟随 README 默认 `uvicorn app.main:app` 无 `--port`）。vite proxy target 与验收均钉死 8000。若本机 8000 被占（如遗留进程），用 `--port` 指定其他端口并同步改 proxy target。
 
 ---
 
@@ -108,7 +108,7 @@ web/                              # 建在项目根，与 main.py:40 的 web/dis
 - **职责**：知识库的增删查
 - **端点**：`GET /api/knowledge`（列表）、`POST /api/knowledge {name, description}`（创建）、`DELETE /api/knowledge/{id}`（删除）
 - **数据流**：进入加载列表 → 表格展示 → 新建表单提交后刷新列表 → 删除按钮调 DELETE 后刷新
-- **备注**：KnowledgeStore 在 test_stores.py 有预存失败（DB 兼容问题），真跑不通时需后端排查，不属前端范围
+- **备注**：KnowledgeStore 单测单独跑通过、CRUD 真实可用（默认 sqlite+aiosqlite 持久化）。test_stores.py 在全量跑时的失败是测试自身 event-loop 写法陈旧所致，非 Store bug，不影响知识库页对接
 
 ### 2.2 占位骨架页（后端暂无数据）
 
@@ -129,7 +129,11 @@ web/                              # 建在项目根，与 main.py:40 的 web/dis
 ### 2.3 统一数据流原则
 
 - 所有请求经 `api/client.ts`：自动从 AuthContext 注入 user_id、统一错误处理（401 → 跳登录、5xx → 抛给调用方显示）
-- TS 类型（`types.ts`）与后端 `schemas.py` 对应：`ChatRequest/ChatResponse/AuthResponse/KnowledgeResponse/SessionResponse`
+- TS 类型（`types.ts`）与后端 `schemas.py` 对应，**注意以下字段精度**：
+  - `ChatResponse` 含 `session_id`（勿漏）、`reply`、`mastery_score?: number`、`turn_count?: number`、`mode_path?: string[]`、`cost_est_usd?: number`、`stack?: "new"|"legacy"`
+  - `AuthResponse` 含 `token?: string | null`（字段存在但端点不填，恒为 null）
+  - `user_id` 是 **number**（非 string）。localStorage 只存字符串，`client.ts` 注入请求时须 `Number(...)` 转回，AuthContext 读取时同理——这是必须显式处理的类型转换点
+  - `SessionResponse` 仅 `{session_id, user_id, state_json}`，**无** title/created_at。占位侧栏无碍；§4 持久化项解锁真实侧栏时，后端需先补这些字段
 
 ---
 
@@ -177,13 +181,13 @@ web/                              # 建在项目根，与 main.py:40 的 web/dis
 | 项目 | 范围 | 解锁什么 |
 |---|---|---|
 | 后端真流式改造 | 改 collab_loop 支持 Tutor token 透传 + SSE，与 spec §3.5 协调 | 聊天打字机效果 |
-| 后端新栈持久化 | chat 后写 session_store + user_profile | 画像页/会话侧栏的真实数据 |
+| 后端新栈持久化 | chat 后写 session_store + user_profile；并为 SessionResponse 补 title/created_at 字段 | 画像页/会话侧栏的真实数据 |
 
 ---
 
 ## 5. 验收标准
 
-1. `npm run dev` 启动前端，vite proxy 正常转发到后端 8001
+1. `npm run dev` 启动前端，vite proxy 正常转发到后端 8000
 2. 登录页能注册/登录，user_id 存入 localStorage
 3. 聊天页能多轮对话，AI 回复 markdown 渲染，教学状态（mastery/mode_path/turn_count）正确显示
 4. 知识库页能创建/列出/删除知识库
