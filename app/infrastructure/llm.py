@@ -90,8 +90,24 @@ class LLMService:
 
     def __init__(self, config: LLMConfig | None = None):
         self.config = config or LLMConfig()
+        self._apply_settings_fallback()
         self._llm = None
         self._fallback_llm = None
+
+    def _apply_settings_fallback(self):
+        """空字段从 settings/.env 兜底，避免空 api_key 覆盖 ChatOpenAI 的环境读取。
+
+        只在字段为空 / 仍是默认值时填充，故显式传入的 config（测试、A/B 实验）不受影响。
+        """
+        from app.core.config import settings
+        if not self.config.api_key:
+            self.config.api_key = settings.openai_api_key
+        if not self.config.base_url:
+            self.config.base_url = settings.openai_base_url
+        if self.config.primary_model == LLMConfig.primary_model and settings.openai_model:
+            self.config.primary_model = settings.openai_model
+        if self.config.fallback_model == LLMConfig.fallback_model and settings.openai_model:
+            self.config.fallback_model = settings.openai_model
 
     @property
     def llm(self):

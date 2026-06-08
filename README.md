@@ -239,14 +239,19 @@ uv sync --extra ui       # Chainlit 界面
 
 # 配置环境变量
 cp .env.example .env
-# 编辑 .env 填入 OPENAI_API_KEY 等
+# 编辑 .env 填入真实 OPENAI_API_KEY（用第三方网关再填 OPENAI_BASE_URL / OPENAI_MODEL）
 
-# 启动服务
+# 启动服务（新栈需先把 .env 导出为环境变量，否则 feature flag 读不到、会回退老栈）
+set -a && source .env && set +a
 uv run uvicorn app.main:app --reload
 
 # 运行测试
 uv run pytest tests/ -v
 ```
+
+> **新栈 vs 老栈**：`.env` 中 `FEATURE_USE_NEW_AGENT_GRAPH=true` 启用新栈（事件驱动 5-Agent，调真实 LLM）。
+> 老栈（关 flag）所有节点用 `FakeLLM` 返回固定假数据，仅作流程演示，无真实教学能力——手动体验真实教学请走新栈。
+> LLM 配置经 `app/core/config.py` 的 `settings` 注入 `LLMService`：`.env` 的 `OPENAI_API_KEY` 为空时不覆盖 `ChatOpenAI` 的环境读取。
 
 ## API 端点
 
