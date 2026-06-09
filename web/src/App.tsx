@@ -1,29 +1,14 @@
-import { Routes, Route, Navigate, Link } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./store/auth";
 import { ReactNode } from "react";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import Knowledge from "./pages/Knowledge";
+import Profile from "./pages/Profile";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { userId } = useAuth();
   return userId === null ? <Navigate to="/login" replace /> : <>{children}</>;
-}
-
-function Placeholder({ name }: { name: string }) {
-  const { username, logout } = useAuth();
-  return (
-    <div className="container">
-      <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <Link to="/chat">聊天</Link>
-        <Link to="/knowledge">知识库</Link>
-        <Link to="/profile">画像</Link>
-        <span style={{ marginLeft: "auto" }}>{username}</span>
-        <button onClick={logout}>退出</button>
-      </nav>
-      <h2>{name}（占位，Task 6-10 实装）</h2>
-    </div>
-  );
 }
 
 export default function App() {
@@ -32,7 +17,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/chat" element={<RequireAuth><Chat /></RequireAuth>} />
       <Route path="/knowledge" element={<RequireAuth><Knowledge /></RequireAuth>} />
-      <Route path="/profile" element={<RequireAuth><Placeholder name="画像" /></RequireAuth>} />
+      <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>
   );
