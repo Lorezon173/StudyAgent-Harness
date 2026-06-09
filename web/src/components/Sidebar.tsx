@@ -1,3 +1,4 @@
+// 预留组件：会话历史侧栏。当前未集成到 Chat 页面，待后续增强时挂入。
 import { useState, useEffect } from "react";
 import { apiGet } from "../api/client";
 import { useAuth } from "../store/auth";
