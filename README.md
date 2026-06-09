@@ -195,6 +195,14 @@ cp .env.example .env
 # 启动服务
 uv run uvicorn app.main:app --reload
 
+# —— 前端（React，可选）——
+cd web && npm install
+npm run dev          # 开发：localhost:5173，proxy 转发 /api 到后端
+# 若后端不在 8000（如 8000 被占用 8001）：
+#   VITE_API_TARGET=http://127.0.0.1:8001 npm run dev
+npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（重启后端加载）
+cd ..
+
 # 运行测试
 uv run pytest tests/ -v
 ```
