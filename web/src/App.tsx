@@ -3,6 +3,7 @@ import { useAuth } from "./store/auth";
 import { ReactNode } from "react";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+import Knowledge from "./pages/Knowledge";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { userId } = useAuth();
@@ -30,7 +31,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/chat" element={<RequireAuth><Chat /></RequireAuth>} />
-      <Route path="/knowledge" element={<RequireAuth><Placeholder name="知识库" /></RequireAuth>} />
+      <Route path="/knowledge" element={<RequireAuth><Knowledge /></RequireAuth>} />
       <Route path="/profile" element={<RequireAuth><Placeholder name="画像" /></RequireAuth>} />
       <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>
