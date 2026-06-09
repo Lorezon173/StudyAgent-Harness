@@ -1,0 +1,5 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f6f8; color: #1a1a1a; }
+button { cursor: pointer; }
+.container { max-width: 960px; margin: 0 auto; padding: 16px; }
