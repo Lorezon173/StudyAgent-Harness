@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import { useAuth } from "./store/auth";
 import { ReactNode } from "react";
+import Login from "./pages/Login";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { userId } = useAuth();
@@ -26,7 +27,7 @@ function Placeholder({ name }: { name: string }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Placeholder name="登录" />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/chat" element={<RequireAuth><Placeholder name="聊天" /></RequireAuth>} />
       <Route path="/knowledge" element={<RequireAuth><Placeholder name="知识库" /></RequireAuth>} />
       <Route path="/profile" element={<RequireAuth><Placeholder name="画像" /></RequireAuth>} />
