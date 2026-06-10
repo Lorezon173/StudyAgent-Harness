@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel
 
@@ -60,3 +60,15 @@ class SessionResponse(BaseModel):
     session_id: str
     user_id: int | None = None
     state_json: str = "{}"
+
+
+class SessionSummary(BaseModel):
+    session_id: str
+    title: str
+    updated_at: Any = None  # datetime | None — Any to avoid serialization issues with int (memory mode _updated_seq)
+
+
+class MessageItem(BaseModel):
+    role: str
+    content: str
+    created_at: Any = None  # datetime | None
