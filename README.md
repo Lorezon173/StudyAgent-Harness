@@ -212,8 +212,8 @@ app/                            # 事件驱动新栈（主体）
 ├── infrastructure/
 │   ├── llm.py                  # LLMService（被 tutor/critic/conductor 依赖）
 │   ├── rag/                    # RAGCoordinator(多Provider) + store + ocr/code_index/extractors 🆕
-│   └── storage/                # event_store/mastery_graph_store 🆕 + session/user/eval/knowledge(API复用)
-├── api/                        # API 层（chat/chat_stream 已改指 app_old.agent.graph）
+│   └── storage/                # event_store/mastery_graph_store 🆕 + message_store(对话历史) 🆕 + session/user/eval/knowledge(API复用)
+├── api/                        # API 层（chat 已接持久化落库，sessions 已接 db 注入）
 ├── core/ · models/ · ui/ · worker/
 
 app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可运行）
@@ -222,6 +222,9 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可
 └── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
 
 tests/                          # 504 收集 / 500 通过（test_stores.py 的 4 个为测试写法陈旧：用了 get_event_loop，单独跑全绿）
+
+alembic/                        # 数据库迁移（PG 生产环境唯一建表源）
+docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
 ```
 
 
