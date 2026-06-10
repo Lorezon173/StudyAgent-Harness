@@ -221,7 +221,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可
 ├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
 └── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
 
-tests/                          # 461 收集 / 457 通过（test_stores.py 的 4 个为测试写法陈旧：用了 get_event_loop，单独跑全绿）
+tests/                          # 504 收集 / 500 通过（test_stores.py 的 4 个为测试写法陈旧：用了 get_event_loop，单独跑全绿）
 ```
 
 
@@ -282,7 +282,8 @@ uv run pytest tests/ -v
 | GET | `/api/eval/{session_id}` | 查询评估结果 |
 | POST | `/api/knowledge` | 创建知识库 |
 | GET | `/api/knowledge` | 列出知识库 |
-| GET | `/api/sessions` | 列出会话 |
+| GET | `/api/sessions` | 列出会话（含 title，按 updated_at 倒序） |
+| GET | `/api/sessions/{id}/messages` | 获取会话对话历史 |
 | GET | `/api/profile/{user_id}` | 用户画像 |
 | GET | `/health` | 健康检查 |
 
@@ -321,7 +322,7 @@ store = SessionStore(db=None)  # 自动使用内存字典
 ## 测试
 
 ```
-461 收集 / 457 通过（test_stores.py 的 4 个：测试写法陈旧，非 Store bug）
+504 收集 / 500 通过（test_stores.py 的 4 个：测试写法陈旧，非 Store bug）
 
 tests/unit/harness/         枚举、状态、事件总线、编排器、教学策略、画像图谱
 tests/unit/agents/          5 Agent（tutor/critic/retriever/curator/conductor）契约与行为
