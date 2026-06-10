@@ -241,6 +241,14 @@ uv sync --extra ui       # Chainlit 界面
 cp .env.example .env
 # 编辑 .env 填入真实 OPENAI_API_KEY（用第三方网关再填 OPENAI_BASE_URL / OPENAI_MODEL）
 
+# 数据库迁移（首次或拉取新代码后）
+uv run alembic upgrade head
+
+# 启动 PostgreSQL（可选，生产环境用；开发环境默认 sqlite 无需此步）
+docker compose up -d
+# 然后在 .env 中取消注释 PG 连接串：
+# DATABASE_URL=postgresql+asyncpg://studyagent:studyagent@localhost:5432/studyagent
+
 # 启动服务（新栈需先把 .env 导出为环境变量，否则 feature flag 读不到、会回退老栈）
 set -a && source .env && set +a
 uv run uvicorn app.main:app --reload
