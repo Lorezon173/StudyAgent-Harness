@@ -16,8 +16,19 @@ class SessionTable(Base):
     id = Column(String(64), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     state_json = Column(Text, nullable=False)
+    title = Column(String(128), default="")
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class MessageTable(Base):
+    __tablename__ = "messages"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(String(64), ForeignKey("sessions.id"), index=True, nullable=False)
+    role = Column(String(16), nullable=False)
+    content = Column(Text, nullable=False)
+    turn_index = Column(Integer, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
 
 
 class KnowledgeTable(Base):
