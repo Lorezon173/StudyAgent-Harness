@@ -283,12 +283,19 @@ uv run pytest tests/ -v
 所有 Store 支持两种运行模式，无需真实数据库即可测试：
 
 ```python
-# 生产模式: SQLAlchemy async
+# 生产模式: SQLAlchemy async（C3: 由调用方 commit）
 store = SessionStore(db=session)
+await store.save("sid", state, user_id=1, title="学习会话")
+await session.commit()  # 调用方负责提交
 
 # 测试模式: 内存 fallback
 store = SessionStore(db=None)  # 自动使用内存字典
 ```
+
+**SessionStore 契约**：
+- `title` 首次写入生效，后续更新不覆盖（first-write-wins）
+- `save()` 不内部 commit（C3），由调用方决定事务边界
+- `list_by_user()` 两分支返回统一 `{session_id, title, updated_at}` 形状，按 `updated_at` 降序
 
 ## 关键枚举
 
