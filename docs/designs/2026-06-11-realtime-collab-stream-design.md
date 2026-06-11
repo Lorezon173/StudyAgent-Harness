@@ -55,7 +55,7 @@
 | 回合数语义 | **教学回合 = 一问一答**（`turn_index + 1`） | 与用户直觉一致；事件循环次数仅留灰度调试 |
 | chat_stream 落库 | **复用落库到 chat_stream**（抽共享函数，两端复用） | 防子项目① N2 标注的「需求 2/5 退化」 |
 | 掌握度落库路径（Q1） | **chat + stream 都接** | 否则④ 前 profile 仍空，违反「每个子项目可独立验证」 |
-| avg_mastery 口径（Q2） | **0-100 整数**（0-1 float ×100 取整） | 与 `ChatResponse.mastery_score` 0-100 口径一致 |
+| avg_mastery 口径（Q2，**已修正**） | **0-100 整数**（`round(avg(mastery))`，**不乘 100**） | `mastery` 字段本就是 0-100 百分制（`mastery_graph.py:27` 注释 + `update_mastery` `min(100.0,...)`），与 `mastery_score` 同口径；**×100 会得 0-10000，是 review 修正前的错误** |
 | SSE 格式变更（Q3） | **结构化 JSON SSE**，前端解析错位是已知过渡态 | 思考抽屉需 agent/type 字段；前端解析由④ 收口 |
 
 ## 3. 子模块与接口契约
@@ -103,7 +103,7 @@
 
 | 表 | 字段 |
 |---|---|
-| `MasteryNodeTable` | `(user_id String(64), topic_id String(128))` 复合主键、`topic_name String(128)`、`mastery Float default 0`、`last_practiced_at Float default 0`、`practice_count Integer default 0`、`confusion_with JSON default list` |
+| `MasteryNodeTable` | `(user_id String(64), topic_id String(128))` 复合主键、`topic_name String(128)`、`mastery Float default 0`、`last_practiced_at Float default 0`、`practice_count Integer default 0`、`confusion_with JSON default list`、`rationale Text default ""` |
 | `MasteryEdgeTable` | `id Integer PK autoincrement`、`user_id String(64) index`、`from_topic`/`to_topic String(128)`、`type String(16) default "PREREQ"`、`weight Float default 1`、`confidence Float default 0.5`、`source String(16) default "LLM_INFER"`、`UniqueConstraint(user_id, from_topic, to_topic, type)` |
 
 **新建 `storage/sqlalchemy_mastery_store.py`**（P1：复刻契约而非替代）：
@@ -114,6 +114,9 @@
 - `save_edges(user_id: str, edges: list[dict]) -> None`：按 unique key upsert，不 commit。
 - `load_edges(user_id: str) -> list[dict]`。
 - **4 个方法签名逐字对齐旧 `MasteryGraphStore`**，使 `MasteryGraph.save/load`（mastery_graph.py:163-199）内部调用无需改。
+- **`rationale` 字段处理（review 核实）**：当前 `MasteryGraph.save()` 传的 nodes_data **含 `rationale`**（mastery_graph.py:31 字段 + save 拼入），但旧 aiosqlite store 用 `n.get(...)` 静默忽略它（旧行为 = rationale 不持久化）。新表已加 `rationale` 列（见上），新 store 的 `save_nodes`/`load_nodes` **应真正读写 rationale**（比旧行为更完整，不丢 Critic 评分依据）；`load_nodes` 返回 dict 补 `rationale` 键，`MasteryGraph.load` 已能接收（dataclass 有该字段）。
+
+**新旧表同名 → 库必须隔离（review 提示）**：新 SQLAlchemy 表与旧 aiosqlite store 表**同名** `mastery_nodes`/`mastery_edges`（mastery_graph_store.py:24/34）。二者走不同库（新=业务 PG/SQLite，旧=独立 aiosqlite）本不冲突；但**测试时严禁让新表与旧 store 指向同一 SQLite 文件**，否则 schema 冲突。测试用独立临时库隔离。
 
 **`MasteryGraph.__init__` 类型标注放宽**：`store: MasteryGraphStore` → 去硬标注（无标注或定义 `MasteryStoreProtocol` 含 4 方法）。Curator/UserProfile 标注本子项目不动（运行时鸭子类型成立）。
 
@@ -127,6 +130,8 @@
 - 参数含可选 `graph=None`；若 `graph is not None`，在同一 try 块内 `await graph.save()`，与消息落库**同一次 commit**（原子）。
 - 失败 `rollback` + observability 记日志，仍返回（对齐① 容错）。
 - **chat.py 改为调用此共享函数**（P2/Q1：非流式路径也接掌握度）。
+
+**`chat_stream.chat_stream` 签名加 db 注入**（review 修正）：当前 `async def chat_stream(req: ChatRequest)`（chat_stream.py:15）**无 db 参数**，本子项目须改为 `async def chat_stream(req: ChatRequest, db: AsyncSession = Depends(get_db))`，与 chat.py:18 对齐——否则 graph load/save 与 persist_turn 无 db 可用。
 
 **`chat_stream.generate_new` 重写为真流式**（数据流见 §4）：
 
@@ -142,6 +147,8 @@
 
 **user_id 处理**：与 chat.py 一致 `str(req.user_id) if not None else "anonymous"`，graph key 用此字符串（Q1 对齐 profile 读取）。
 
+**⚠ db 会话生命周期（review pre-mortem，实现时必测）**：`StreamingResponse` 下，`Depends(get_db)` 的 yield 型依赖在生成器迭代期间必须保持有效。graph.load（步骤2）和 persist_turn（步骤8）分别在流的**头尾**用同一个 `db`——须实测整个流期间 session 不被提前关闭。这是 FastAPI StreamingResponse + 依赖注入的已知易错点，是本子项目**最可能崩的点**。若实测发现 session 提前关，退路：在 generate_new 内自行用 `async_session()` 上下文管理器开独立 session，不依赖 `Depends(get_db)` 的生命周期。
+
 ### 3.6 子模块 F · turn_count 修复
 
 - **教学回合数 = `turn_index + 1`**，`turn_index = len(existing_messages) // 2`（落库前查到的本会话已有消息数；与① chat.py:31-32 同源）。
@@ -153,7 +160,7 @@
 
 - **`GET /profile/{user_id}` 注入 `db: AsyncSession = Depends(get_db)`**。
 - `sessions = SELECT count(*) FROM sessions WHERE user_id = :uid`（int）。
-- `avg_mastery`：`SELECT avg(mastery) FROM mastery_nodes WHERE user_id = :uid_str`（**`str(user_id)`**，Q1 对齐 graph key）。0-1 float **×100 取整**（Q2）；无节点返回 0。
+- `avg_mastery`：`SELECT round(coalesce(avg(mastery), 0)) FROM mastery_nodes WHERE user_id = :uid_str`（**`str(user_id)`**，Q1 对齐 graph key）。`mastery` 本就是 0-100 百分制（`mastery_graph.py:27`），**直接取整、不乘 100**（Q2 修正）；无节点时 `coalesce` 返回 0。
 - 返回结构不变 `{"user_id":..., "stats":{"sessions":int,"avg_mastery":int}}`，前端 Profile.tsx 无需改。
 
 ## 4. 数据流
@@ -200,7 +207,7 @@ POST /api/chat → chat() 注入 db
 ```
 GET /api/profile/{user_id} → 注入 db
   → sessions   = count(sessions WHERE user_id=:uid)
-  → avg_mastery= round(avg(mastery_nodes.mastery WHERE user_id=str(uid)) * 100)
+  → avg_mastery= round(coalesce(avg(mastery_nodes.mastery WHERE user_id=str(uid)), 0))  # 已是0-100，不×100
   → {"user_id":uid, "stats":{"sessions":..., "avg_mastery":...}}
 ```
 
@@ -250,3 +257,17 @@ GET /api/profile/{user_id} → 注入 db
 | Q3 | SSE 结构化 JSON，前端解析错位是**已知过渡态**，④ 收口 | §2 §7 | 用户确认 |
 
 review 已核实的源码事实：`MasteryGraphStore` 3 个类型标注消费者（mastery_graph.py:54 / curator.py:33 / user_profile.py:22）+ 4 个测试构造点；`run_new_agent_session` 3 类调用点（chat.py:22 / chat_stream.py:21 / test_assembly.py）；Curator.handle 尾部只调 `self.graph` 同步方法、不碰 `self._store`（curator.py 全文核实）；chat_stream 当前 yield 纯文本 `data: {reply}`（chat_stream.py:27）。
+
+### 8.1 隔离式独立评审修订（2026-06-11，subagent 评审）
+
+进编码前用全新上下文 subagent 做隔离评审（reviewing-plans-isolated），抓出并已修正：
+
+| 编号 | 问题 | 核实 | 落在 |
+|---|---|---|---|
+| R-A | **avg_mastery ×100 错误** | `mastery` 是 0-100 百分制（mastery_graph.py:27 注释 + `update_mastery` `min(100.0,...)` line 88 + `extract_mastery_score` 0-100，assembly.py:45）；×100 得 0-10000。**首版 spec 误称「0-1 float」是探索读错源码** | §2 §3.7 §4.3 |
+| R-B | **chat_stream 缺 db 注入** | 当前 `async def chat_stream(req: ChatRequest)`（chat_stream.py:15）无 db；graph/persist_turn 需 db | §3.5 |
+| R-C | **rationale 字段** | `MasteryGraph.save()` 传 rationale（mastery_graph.py:31 字段），旧 aiosqlite store `n.get` 静默忽略（旧行为=不持久化）；新表补 `rationale` 列、新 store 真正读写 | §3.4 |
+| R-D | **新旧表同名库隔离** | 新 SQLAlchemy 表与旧 store 表同名 `mastery_nodes/edges`；测试须独立库隔离 | §3.4 |
+| R-E | **StreamingResponse + get_db 生命周期** | evaluator pre-mortem 标为最可能崩点；流头尾共用 db，须实测 session 不提前关，附退路 | §3.5 |
+
+评审者独立复算确认：决策 1（回调+队列）、3（主协程 load/save，Curator 不触 store 前提成立）、5（turn_index+1）、6（共享 persist_turn）均成立。SSE 白名单 12 个事件名经 enums.py 逐条核对存在（评审者盲区已排除）。
