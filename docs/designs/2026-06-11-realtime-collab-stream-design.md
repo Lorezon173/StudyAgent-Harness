@@ -103,8 +103,10 @@
 
 | 表 | 字段 |
 |---|---|
-| `MasteryNodeTable` | `(user_id String(64), topic_id String(128))` 复合主键、`topic_name String(128)`、`mastery Float default 0`、`last_practiced_at Float default 0`、`practice_count Integer default 0`、`confusion_with JSON default list`、`rationale Text default ""` |
-| `MasteryEdgeTable` | `id Integer PK autoincrement`、`user_id String(64) index`、`from_topic`/`to_topic String(128)`、`type String(16) default "PREREQ"`、`weight Float default 1`、`confidence Float default 0.5`、`source String(16) default "LLM_INFER"`、`UniqueConstraint(user_id, from_topic, to_topic, type)` |
+| `MasteryNodeTable` | `(user_id String(64), topic_id String(512))` 复合主键、`topic_name String(512)`、`mastery Float default 0`、`last_practiced_at Float default 0`、`practice_count Integer default 0`、`confusion_with JSON default list`、`rationale Text default ""` |
+| `MasteryEdgeTable` | `id Integer PK autoincrement`、`user_id String(64) index`、`from_topic`/`to_topic String(512)`、`type String(16) default "PREREQ"`、`weight Float default 1`、`confidence Float default 0.5`、`source String(16) default "LLM_INFER"`、`UniqueConstraint(user_id, from_topic, to_topic, type)` |
+
+> **⚠ topic_id 列宽（二轮 review 阻断项）**：`topic_id` 实际来源是 `topic = current_topic or user_message`（assembly.py:137）——**整条用户消息**。旧 aiosqlite schema 用 `TEXT`（无长度限制）；若新表收窄成 `String(128)`，PG（varchar(128)）遇长消息会 `DataError` → persist_turn 捕获 rollback → 掌握度永不落库、profile 恒 0，且**只在 PG 暴露、SQLite 测试发现不了**。故 topic 相关列用 `String(512)`（够容纳整条消息，且作复合主键/索引比无界 `Text` 在 PG 上更安全）。
 
 **新建 `storage/sqlalchemy_mastery_store.py`**（P1：复刻契约而非替代）：
 
@@ -128,10 +130,11 @@
 
 - 把 `chat.py:29-62` 现有「算 turn_index → save session → add user/assistant message → commit」逻辑抽出。
 - 参数含可选 `graph=None`；若 `graph is not None`，在同一 try 块内 `await graph.save()`，与消息落库**同一次 commit**（原子）。
+- **返回 `turn_index`（二轮 review 补）**：API 层需 `turn_count = turn_index + 1` 回填 ChatResponse（§3.6），故 persist_turn 必须把算出的 turn_index 返回给调用方（失败容错路径返回 None 或 0，由调用方兜底）。
 - 失败 `rollback` + observability 记日志，仍返回（对齐① 容错）。
 - **chat.py 改为调用此共享函数**（P2/Q1：非流式路径也接掌握度）。
 
-**`chat_stream.chat_stream` 签名加 db 注入**（review 修正）：当前 `async def chat_stream(req: ChatRequest)`（chat_stream.py:15）**无 db 参数**，本子项目须改为 `async def chat_stream(req: ChatRequest, db: AsyncSession = Depends(get_db))`，与 chat.py:18 对齐——否则 graph load/save 与 persist_turn 无 db 可用。
+**`chat_stream` 的 db 来源**（review R-B + R-E 合并定调）：当前 `async def chat_stream(req: ChatRequest)`（chat_stream.py:15）无 db。**不走 `Depends(get_db)` 主注入**（StreamingResponse 下会提前关闭，见下「db 会话生命周期」）；而是在 `generate_new` 内部用 `async with async_session() as db:` 自开独立 session，包裹 graph.load → 流式 → persist_turn 全程。`async_session` 从 `app/core/database.py:31` 导入。
 
 **`chat_stream.generate_new` 重写为真流式**（数据流见 §4）：
 
@@ -147,7 +150,7 @@
 
 **user_id 处理**：与 chat.py 一致 `str(req.user_id) if not None else "anonymous"`，graph key 用此字符串（Q1 对齐 profile 读取）。
 
-**⚠ db 会话生命周期（review pre-mortem，实现时必测）**：`StreamingResponse` 下，`Depends(get_db)` 的 yield 型依赖在生成器迭代期间必须保持有效。graph.load（步骤2）和 persist_turn（步骤8）分别在流的**头尾**用同一个 `db`——须实测整个流期间 session 不被提前关闭。这是 FastAPI StreamingResponse + 依赖注入的已知易错点，是本子项目**最可能崩的点**。若实测发现 session 提前关，退路：在 generate_new 内自行用 `async_session()` 上下文管理器开独立 session，不依赖 `Depends(get_db)` 的生命周期。
+**⚠ db 会话生命周期（review pre-mortem，已定调走退路）**：`StreamingResponse` 下 `Depends(get_db)` 的 yield 依赖会在响应体开始流式发送时就进入清理、**大概率在生成器迭代完成前关闭 session**——这是 FastAPI 明确的已知坑。graph.load（流头）与 persist_turn（流尾）共用 db，若 session 中途关闭则 persist_turn 落库失败。**二轮 review 定调：直接默认走退路，不保留脆弱主路径**——`chat_stream` 仍可保留 `Depends(get_db)` 仅用于「流开始前」的早期操作（或干脆不注入），但 graph.load/save + persist_turn 所用的 db **在 `generate_new` 内部用 `async_session()` 上下文管理器自开独立 session**（`app/core/database.py:31` 的 `async_session` 公开可导入），其生命周期与生成器一致、不受 StreamingResponse 清理影响。避免主/退两路各开 session 造成浪费与混淆。
 
 ### 3.6 子模块 F · turn_count 修复
 
@@ -160,7 +163,7 @@
 
 - **`GET /profile/{user_id}` 注入 `db: AsyncSession = Depends(get_db)`**。
 - `sessions = SELECT count(*) FROM sessions WHERE user_id = :uid`（int）。
-- `avg_mastery`：`SELECT round(coalesce(avg(mastery), 0)) FROM mastery_nodes WHERE user_id = :uid_str`（**`str(user_id)`**，Q1 对齐 graph key）。`mastery` 本就是 0-100 百分制（`mastery_graph.py:27`），**直接取整、不乘 100**（Q2 修正）；无节点时 `coalesce` 返回 0。
+- `avg_mastery`：`SELECT avg(mastery) FROM mastery_nodes WHERE user_id = :uid_str`（**`str(user_id)`**，Q1 对齐 graph key）。`mastery` 本就是 0-100 百分制（`mastery_graph.py:27`），**直接取均值、不乘 100**（Q2 修正）；**取整收口到 Python**（二轮 review）——SQL 的 `round()` 返回 float（如 75.0），故在 Python 侧 `int(round(avg or 0))` 保证返回 int，无节点（avg 为 None）时返回 0。
 - 返回结构不变 `{"user_id":..., "stats":{"sessions":int,"avg_mastery":int}}`，前端 Profile.tsx 无需改。
 
 ## 4. 数据流
@@ -207,7 +210,7 @@ POST /api/chat → chat() 注入 db
 ```
 GET /api/profile/{user_id} → 注入 db
   → sessions   = count(sessions WHERE user_id=:uid)
-  → avg_mastery= round(coalesce(avg(mastery_nodes.mastery WHERE user_id=str(uid)), 0))  # 已是0-100，不×100
+  → avg_mastery= int(round(avg(mastery_nodes.mastery WHERE user_id=str(uid)) or 0))  # 已是0-100，不×100，Python 取整
   → {"user_id":uid, "stats":{"sessions":..., "avg_mastery":...}}
 ```
 
@@ -270,4 +273,18 @@ review 已核实的源码事实：`MasteryGraphStore` 3 个类型标注消费者
 | R-D | **新旧表同名库隔离** | 新 SQLAlchemy 表与旧 store 表同名 `mastery_nodes/edges`；测试须独立库隔离 | §3.4 |
 | R-E | **StreamingResponse + get_db 生命周期** | evaluator pre-mortem 标为最可能崩点；流头尾共用 db，须实测 session 不提前关，附退路 | §3.5 |
 
-评审者独立复算确认：决策 1（回调+队列）、3（主协程 load/save，Curator 不触 store 前提成立）、5（turn_index+1）、6（共享 persist_turn）均成立。SSE 白名单 12 个事件名经 enums.py 逐条核对存在（评审者盲区已排除）。
+评审者独立复算确认：决策 1（回调+队列）、3（主协程 load/save，Curator 不触 store 前提成立）、5（turn_index+1）、6（共享 persist_turn）均成立。SSE 白名单 **15** 个事件名经 enums.py 逐条核对存在（Tutor 4 + Critic 评估 5 + Retriever 2 + Curator 2 + Conductor 1 + PolicyTransition 1；评审者盲区已排除）。
+
+### 8.2 第二轮隔离式独立评审修订（2026-06-11，subagent 二轮）
+
+修订后 spec 再过一轮全新上下文 subagent 评审：**5 项修正全部复核到位**（R-A 三处证实 0-100、无残留 ×100；R-B 签名确无 db；R-C save 写 load 读 rationale 闭环成立；R-D 同名表判断成立；R-E 退路 `async_session` 经 database.py:31 证实可用）。新发现并已修正：
+
+| 编号 | 问题 | 核实 | 落在 |
+|---|---|---|---|
+| R2-A | **【阻断】topic_id/topic_name 列宽收窄**：`topic = current_topic or user_message`（assembly.py:137）= 整条用户消息；旧 schema 是无界 `TEXT`（mastery_graph_store.py:26-27），收窄成 `String(128)` 在 PG 上长消息 `DataError`→rollback→掌握度永不落库、profile 恒 0，且 SQLite 测试发现不了 | §3.4 改 `String(512)` |
+| R2-B | SSE 白名单计数自相矛盾：§8.1 称「12」，§3.3 实列 **15**（Tutor 4 + Critic 5 + Retriever 2 + Curator 2 + Conductor 1 + PolicyTransition 1，名字经 enums.py 全核对存在） | §8.1 改 15 |
+| R2-C | persist_turn 未声明返回 turn_index，API 层 `turn_count=turn_index+1` 拿不到 | §3.5 补返回 turn_index |
+| R2-D | profile `round()` 返 float（75.0），需 0-100 整数 | §3.7/§4.3 取整收口 Python `int(round(...))` |
+| R2-E | R-E 主路径（Depends(get_db)）StreamingResponse 下大概率提前关 session，「先试再退」浪费 | §3.5 定调**直接默认走退路** `async_session()` 自开 |
+
+二轮评审者独立复核确认：决策 1/3/5/6 成立；Curator.handle（curator.py:37-136）全程只调 `self.graph.*` 不碰 `self._store`（决策3 安全前提再次证实）；R-C 的 `MasteryGraph.load()` 用 `.get("rationale","")` 读取（mastery_graph.py:195），save 写 load 读闭环成立。
