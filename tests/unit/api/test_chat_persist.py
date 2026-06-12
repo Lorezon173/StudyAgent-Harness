@@ -53,7 +53,8 @@ def _patch_new_stack(monkeypatch, result=None):
     if result is None:
         result = FakeNewStackResult()
 
-    def fake_run(session_id, user_id, user_message, current_topic=None):
+    def fake_run(session_id, user_id, user_message, *args, **kwargs):
+        # *args 吸收 chat.py 透传的 current_topic / graph 位置参数
         return result
 
     monkeypatch.setattr(
@@ -227,4 +228,31 @@ def test_chat_persist_error_resilience(monkeypatch, db_fixture):
         finally:
             await engine.dispose()
 
+    db_fixture.run(_test())
+
+
+def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
+    # 第一轮 turn_count 应为 1（turn_index 0 + 1），非事件循环次数
+    async def _test():
+        engine, session_factory = await db_fixture.setup_db()
+        try:
+            from app.orchestration.assembly import NewStackResult
+            import app.api.chat as chat_mod
+            from app.api.chat import chat
+            from app.models.schemas import ChatRequest
+
+            # fake_run 接收 chat.py 透传的 5 个位置参数
+            # (session_id, user_id, message, current_topic, graph)，
+            # *args 吸收 current_topic / graph，避免 TypeError。
+            def fake_run(session_id, user_id, message, *args, **kw):
+                return NewStackResult(reply="R", mastery_score=80, turn_count=11,
+                                      mode_path=["socratic"], cost_est_usd=None, events=[])
+            monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run)
+            monkeypatch.setattr(chat_mod, "use_new_agent_graph", lambda: True)
+
+            async with session_factory() as db:
+                resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1), db=db)
+            assert resp.turn_count == 1   # 不是 11
+        finally:
+            await engine.dispose()
     db_fixture.run(_test())

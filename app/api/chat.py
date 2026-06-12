@@ -6,8 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.schemas import ChatRequest, ChatResponse
 from app.core.feature_flags import use_new_agent_graph
 from app.core.database import get_db
-from app.infrastructure.storage.session_store import SessionStore
-from app.infrastructure.storage.message_store import MessageStore
+from app.api._persist import persist_turn
+from app.harness.mastery_graph import MasteryGraph
+from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
 from app_old.agent.graph import build_learning_graph
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -18,54 +19,27 @@ _graph = build_learning_graph()
 async def chat(req: ChatRequest, db: AsyncSession = Depends(get_db)):
     if use_new_agent_graph():
         from app.orchestration.assembly import run_new_agent_session
+        uid_str = str(req.user_id) if req.user_id is not None else "anonymous"
+
+        graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(db))
+        await graph.load()
+
         result = await asyncio.to_thread(
-            run_new_agent_session,
-            req.session_id,
-            str(req.user_id) if req.user_id is not None else "anonymous",
-            req.message,
+            run_new_agent_session, req.session_id, uid_str, req.message,
+            None, graph,        # current_topic=None, graph=graph
         )
 
-        # ── 持久化：session + messages（C3: 原子提交）──
-        try:
-            # 1. 计算 turn_index
-            existing_messages = await MessageStore(db).list_by_session(req.session_id)
-            turn_index = len(existing_messages) // 2
-
-            # 2. 生成 title（仅首轮）
-            title = None
-            if len(existing_messages) == 0:
-                title = req.message.strip()[:24] if req.message.strip() else "新会话"
-
-            # 3. 保存 session (upsert)
-            await SessionStore(db).save(
-                req.session_id,
-                state={},
-                user_id=req.user_id,
-                title=title,
-            )
-
-            # 4. 添加 user message
-            await MessageStore(db).add(req.session_id, "user", req.message, turn_index)
-
-            # 5. 添加 assistant message
-            await MessageStore(db).add(req.session_id, "assistant", result.reply, turn_index)
-
-            # 6. 单次 commit（C3: all-or-nothing）
-            await db.commit()
-        except Exception as e:
-            await db.rollback()
-            # 通过 observability 记录错误；延迟 import 避免模块加载期初始化
-            try:
-                from app.harness.observability import get_observability
-                get_observability().log_event("persist_error", {"session_id": req.session_id, "error": str(e)})
-            except Exception:
-                pass
+        turn_index = await persist_turn(
+            db, session_id=req.session_id, user_id=req.user_id,
+            user_message=req.message, reply=result.reply, graph=graph,
+        )
+        turn_count = (turn_index + 1) if turn_index is not None else None
 
         return ChatResponse(
             reply=result.reply,
             session_id=req.session_id,
             mastery_score=result.mastery_score,
-            turn_count=result.turn_count,
+            turn_count=turn_count,
             mode_path=result.mode_path,
             cost_est_usd=result.cost_est_usd,
             stack="new",
