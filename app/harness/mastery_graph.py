@@ -24,10 +24,11 @@ class MasteryNode:
     """知识点节点（§6）。"""
     topic_id: str
     topic_name: str = ""
-    mastery: float = 0.0          # 0-1 掌握度
+    mastery: float = 0.0          # 0-100 掌握度（百分制）
     last_practiced_at: float = 0.0  # epoch seconds
     practice_count: int = 0
     confusion_with: list[str] = field(default_factory=list)
+    rationale: str = ""           # 最近一次掌握度评分的依据（来自 Critic）
 
 
 @dataclass
@@ -51,7 +52,7 @@ class MasteryGraph:
     - load / save：与 MasteryGraphStore 交互持久化
     """
 
-    def __init__(self, user_id: str, store: MasteryGraphStore):
+    def __init__(self, user_id: str, store):
         self.user_id = user_id
         self._store = store
         self.nodes: dict[str, MasteryNode] = {}
@@ -78,12 +79,15 @@ class MasteryGraph:
         self.edges.append(edge)
         return edge
 
-    def update_mastery(self, topic_id: str, mastery: float) -> MasteryNode | None:
+    def update_mastery(self, topic_id: str, mastery: float,
+                       rationale: str = "") -> MasteryNode | None:
         """更新掌握度（从 MasteryAssessed 触发）。自增 practice_count。"""
         node = self.nodes.get(topic_id)
         if node is None:
             return None
-        node.mastery = max(0.0, min(1.0, mastery))
+        node.mastery = max(0.0, min(100.0, mastery))
+        if rationale:
+            node.rationale = rationale
         node.last_practiced_at = time.time()
         node.practice_count += 1
         return node
@@ -123,13 +127,13 @@ class MasteryGraph:
     # ---- 前置薄弱检测（§2.4）----
 
     def find_weak_prereqs(self, topic_id: str,
-                          mastery_threshold: float = 0.5) -> list[dict]:
+                          mastery_threshold: float = 50.0) -> list[dict]:
         """检测 topic_id 的前置薄弱节点。
 
         低置信边更严格：adjusted = mastery_threshold / (1 + (1-confidence)*0.5)
-          confidence=0.8 → adjusted≈0.4545（宽松）
-          confidence=0.5 → adjusted=0.40（中等）
-          confidence=0.3 → adjusted≈0.3704（严格）
+          confidence=0.8 → adjusted≈45.45（宽松）
+          confidence=0.5 → adjusted=40（中等）
+          confidence=0.3 → adjusted≈37.04（严格）
         前置节点 mastery < adjusted → 判为前置薄弱。
         """
         results = []
@@ -165,7 +169,8 @@ class MasteryGraph:
             {"topic_id": n.topic_id, "topic_name": n.topic_name,
              "mastery": n.mastery, "last_practiced_at": n.last_practiced_at,
              "practice_count": n.practice_count,
-             "confusion_with": n.confusion_with}
+             "confusion_with": n.confusion_with,
+             "rationale": n.rationale}
             for n in self.nodes.values()
         ]
         await self._store.save_nodes(self.user_id, nodes_data)
@@ -187,6 +192,7 @@ class MasteryGraph:
                 last_practiced_at=n_data["last_practiced_at"],
                 practice_count=n_data["practice_count"],
                 confusion_with=n_data.get("confusion_with", []),
+                rationale=n_data.get("rationale", ""),
             )
         edges_data = await self._store.load_edges(self.user_id)
         self.edges = [

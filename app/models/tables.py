@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, JSON, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, JSON, ForeignKey, UniqueConstraint
 from sqlalchemy.sql import func
 from app.core.database import Base
 
@@ -53,3 +53,31 @@ class EvalTable(Base):
     ragas_context_precision = Column(Float, nullable=True)
     eval_data = Column(JSON, default=dict)
     created_at = Column(DateTime, server_default=func.now())
+
+
+class MasteryNodeTable(Base):
+    __tablename__ = "mastery_nodes"
+    user_id = Column(String(64), primary_key=True)
+    topic_id = Column(String(512), primary_key=True)
+    topic_name = Column(String(512), nullable=False, default="")
+    mastery = Column(Float, nullable=False, default=0.0)
+    last_practiced_at = Column(Float, nullable=False, default=0.0)
+    practice_count = Column(Integer, nullable=False, default=0)
+    confusion_with = Column(JSON, nullable=False, default=list)
+    rationale = Column(Text, nullable=False, default="")
+
+
+class MasteryEdgeTable(Base):
+    __tablename__ = "mastery_edges"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(64), nullable=False, index=True)
+    from_topic = Column(String(512), nullable=False)
+    to_topic = Column(String(512), nullable=False)
+    type = Column(String(16), nullable=False, default="PREREQ")
+    weight = Column(Float, nullable=False, default=1.0)
+    confidence = Column(Float, nullable=False, default=0.5)
+    source = Column(String(16), nullable=False, default="LLM_INFER")
+    __table_args__ = (
+        UniqueConstraint("user_id", "from_topic", "to_topic", "type",
+                         name="uq_mastery_edge"),
+    )
