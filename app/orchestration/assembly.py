@@ -97,7 +97,7 @@ def _read_cost(session_id: str) -> float | None:
         return None
 
 
-def build_new_stack(user_id: str):
+def build_new_stack(user_id: str, graph=None):
     """装配 EventBus + 5 Agent + Orchestrator。返回 (bus, orchestrator, store)。
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
@@ -111,15 +111,16 @@ def build_new_stack(user_id: str):
     store.init()
     bus = EventBus(store=store)
 
-    mg_store = MasteryGraphStore(db_path=":memory:")  # Curator.handle 不触其异步方法
-    graph = MasteryGraph(user_id=user_id, store=mg_store)
+    if graph is None:
+        mg_store = MasteryGraphStore(db_path=":memory:")  # Curator.handle 不触其异步方法
+        graph = MasteryGraph(user_id=user_id, store=mg_store)
 
     agents = [
         TutorAgent(),
         CriticAgent(),
         RetrieverAgent(),
         ConductorAgent(),
-        Curator(graph=graph, store=mg_store),
+        Curator(graph=graph, store=graph._store),
     ]
     for agent in agents:
         bus.subscribe(agent, agent.subscriptions)
@@ -129,13 +130,14 @@ def build_new_stack(user_id: str):
 
 
 def run_new_agent_session(session_id: str, user_id: str, user_message: str,
-                          current_topic: str | None = None) -> NewStackResult:
+                          current_topic: str | None = None,
+                          graph=None, on_event=None) -> NewStackResult:
     """新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。
 
     同步函数；API 层用 asyncio.to_thread 调用。
     """
     topic = current_topic or user_message
-    bus, orchestrator, store = build_new_stack(user_id)
+    bus, orchestrator, store = build_new_stack(user_id, graph=graph)
     try:
         ws = WorkspaceState(session_id=session_id, user_id=user_id,
                             current_topic=topic)
@@ -150,7 +152,8 @@ def run_new_agent_session(session_id: str, user_id: str, user_message: str,
                   payload={"action": str(ActionKind.TUTOR_ASK),
                            "target": str(EventSource.TUTOR)}),
         ]
-        run_collab_loop(bus, ws, seeds, orchestrator=orchestrator)
+        run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+                        on_event=on_event)
         events = _events_in_runtime_order(bus.replay(session_id), ws.event_ids)
         return NewStackResult(
             reply=extract_reply(events) or _EMPTY_REPLY_FALLBACK,

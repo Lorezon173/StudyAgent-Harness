@@ -110,3 +110,25 @@ def test_run_new_agent_session_no_emit_violation(mock_llm_invoke_json):
     # mastered 经 Conductor 决策走到 loop_exit 末态（spec §4.3）
     assert result.mastery_score == 95
     assert any(e.type == EventType.LOOP_EXIT for e in result.events)
+
+
+def test_run_new_agent_session_invokes_on_event(mock_llm_invoke_json):
+    mock_llm_invoke_json({})
+    seen = []
+    result = run_new_agent_session(
+        "sess-onev", "u-onev", "什么是二分查找",
+        on_event=lambda ev: seen.append(ev.type),
+    )
+    assert isinstance(result, NewStackResult)
+    assert len(seen) >= 1  # 回调被逐事件调用
+
+
+def test_run_new_agent_session_accepts_external_graph(mock_llm_invoke_json):
+    mock_llm_invoke_json({})
+    from app.harness.mastery_graph import MasteryGraph
+    from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
+    graph = MasteryGraph(user_id="u-ext", store=MasteryGraphStore(db_path=":memory:"))
+    result = run_new_agent_session(
+        "sess-ext", "u-ext", "二分查找", graph=graph,
+    )
+    assert isinstance(result, NewStackResult)
