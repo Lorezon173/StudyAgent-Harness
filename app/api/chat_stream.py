@@ -1,30 +1,73 @@
 import asyncio
+import json
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
 from app.models.schemas import ChatRequest
 from app.core.feature_flags import use_new_agent_graph
+from app.core.database import async_session
+from app.api._sse_projection import project_event
+from app.api._persist import persist_turn
+from app.harness.mastery_graph import MasteryGraph
+from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
 from app_old.agent.graph import build_learning_graph
 
 router = APIRouter(prefix="/chat", tags=["chat-stream"])
 _graph = build_learning_graph()
+
+_SENTINEL = object()
 
 
 @router.post("/stream")
 async def chat_stream(req: ChatRequest):
     if use_new_agent_graph():
         from app.orchestration.assembly import run_new_agent_session
+        uid_str = str(req.user_id) if req.user_id is not None else "anonymous"
 
         async def generate_new():
-            result = await asyncio.to_thread(
-                run_new_agent_session,
-                req.session_id,
-                str(req.user_id) if req.user_id is not None else "anonymous",
-                req.message,
-            )
-            if result.reply:
-                yield f"data: {result.reply}\n\n"
+            loop = asyncio.get_running_loop()
+            queue: asyncio.Queue = asyncio.Queue()
+
+            # 自开独立 session，生命周期贯穿整个流（R2-E：不依赖 Depends(get_db)）
+            async with async_session() as db:
+                graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(db))
+                await graph.load()
+
+                def cb(ev):  # 工作线程内执行 → 跨线程投递
+                    loop.call_soon_threadsafe(queue.put_nowait, ev)
+
+                task = asyncio.create_task(asyncio.to_thread(
+                    run_new_agent_session, req.session_id, uid_str, req.message,
+                    None, graph, cb,
+                ))
+                task.add_done_callback(
+                    lambda _: loop.call_soon_threadsafe(queue.put_nowait, _SENTINEL))
+
+                while True:
+                    item = await queue.get()
+                    if item is _SENTINEL:
+                        break
+                    sse = project_event(item)
+                    if sse is not None:
+                        yield f"data: {json.dumps(sse, ensure_ascii=False)}\n\n"
+
+                result = await task   # 取结果 + re-raise 工作线程异常
+
+                turn_index = await persist_turn(
+                    db, session_id=req.session_id, user_id=req.user_id,
+                    user_message=req.message, reply=result.reply, graph=graph,
+                )
+                turn_count = (turn_index + 1) if turn_index is not None else None
+
+                final = {
+                    "type": "final",
+                    "reply": result.reply,
+                    "turn_count": turn_count,
+                    "mastery_score": result.mastery_score,
+                    "mode_path": result.mode_path,
+                }
+                yield f"data: {json.dumps(final, ensure_ascii=False)}\n\n"
 
         return StreamingResponse(generate_new(), media_type="text/event-stream")
 

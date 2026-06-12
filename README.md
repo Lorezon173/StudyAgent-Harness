@@ -155,6 +155,9 @@ SubGraph
   - 装配线 `app/orchestration/assembly.py`：EventBus + Tutor / Critic / Retriever / Curator / Conductor +
     Orchestrator 一次同步 `run_collab_loop`，从事件流提取 reply / mastery / mode_path。
   - API：`/chat`、`/chat/stream` 端点内按 flag 分支；新栈用 `asyncio.to_thread` 包裹同步协作环。
+    `/chat/stream` 新栈为真流式：协作环 `on_event` 回调经 `loop.call_soon_threadsafe` 跨线程投递到 `asyncio.Queue`，
+    主协程逐事件 `project_event` 投影成 SSE（`agent_event`）实时下发，工作线程结束后再发 `final` 事件（含落库后的 `turn_count`）；
+    自开独立 DB session（`async with async_session()`）贯穿整个流，不依赖 `Depends(get_db)`，避免 StreamingResponse 提前关 session。
   - 指标对齐：`ChatResponse` 扩展 `turn_count` / `mode_path` / `cost_est_usd` / `stack`，新旧栈同 schema 可比。
   - 回退：关 flag 即走老栈，新栈代码零触及。
 - ✅ Plan E 评估体系（[Plan E](docs/superpowers/plans/2026-06-01-plan-e-eval.md)，11 Task TDD + 评审修复，49 测试）——纯旁路 L2，只读 EventStore / 调 Agent.evaluate() / 回放 `parent_id` 因果链，不触任何在线 Agent/编排代码：
