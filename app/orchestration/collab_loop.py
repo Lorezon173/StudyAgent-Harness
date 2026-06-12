@@ -29,7 +29,8 @@ class PriorityEventQueue:
 
 
 def run_collab_loop(bus: EventBus, ws: WorkspaceState, seed_events: list[Event],
-                    orchestrator=None, max_turns: int = MAX_TURNS) -> WorkspaceState:
+                    orchestrator=None, max_turns: int = MAX_TURNS,
+                    on_event=None) -> WorkspaceState:
     """单线程事件循环（§3.5.1）。
 
     seed_events：协作环种子，通常是 UserMessage（+ 新主题时的 TopicEntered）。
@@ -40,6 +41,8 @@ def run_collab_loop(bus: EventBus, ws: WorkspaceState, seed_events: list[Event],
 
     def _publish_and_enqueue(ev: Event) -> None:
         bus.publish(ev)                 # §3.2 白名单校验 + 持久化
+        if on_event is not None:        # 子模块A：透出已落库的合法事件
+            on_event(ev)
         ws.event_ids.append(ev.id)
         queue.push(ev)
 

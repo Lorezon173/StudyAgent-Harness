@@ -149,3 +149,37 @@ def test_loop_exit_preempts_queued_events():
         q.push(Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC, session_id="s"))
     q.push(Event(type=EventType.LOOP_EXIT, source=EventSource.ORCHESTRATOR, session_id="s"))
     assert q.pop().type == EventType.LOOP_EXIT   # 穿透所有已排队事件
+
+
+def test_on_event_callback_receives_every_published_event():
+    """on_event 回调在每次 bus.publish 之后立即调用，收到所有已落库事件。"""
+    bus, store, path = _bus()
+    try:
+        bus.subscribe(_AskOnce(), [EventType.USER_MESSAGE])
+        ws = WorkspaceState(session_id="s", user_id="u")
+        seen = []
+        seeds = [Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
+                       session_id="s", payload={"text": "hi"})]
+        run_collab_loop(bus, ws, seeds, orchestrator=None, on_event=seen.append)
+        # 至少收到种子事件 + agent 产出的 TUTOR_ASKED
+        assert len(seen) >= 2
+        assert seen[0].type == EventType.USER_MESSAGE
+        assert seen[1].type == EventType.TUTOR_ASKED
+    finally:
+        store.close()
+        os.unlink(path)
+
+
+def test_on_event_none_is_noop():
+    """on_event 缺省为 None 时不报错、行为不变。"""
+    bus, store, path = _bus()
+    try:
+        bus.subscribe(_AskOnce(), [EventType.USER_MESSAGE])
+        ws = WorkspaceState(session_id="s", user_id="u")
+        seeds = [Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
+                       session_id="s", payload={"text": "hi"})]
+        out = run_collab_loop(bus, ws, seeds, orchestrator=None)
+        assert out is ws
+    finally:
+        store.close()
+        os.unlink(path)
