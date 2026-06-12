@@ -160,6 +160,16 @@ SubGraph
     自开独立 DB session（`async with async_session()`）贯穿整个流，不依赖 `Depends(get_db)`，避免 StreamingResponse 提前关 session。
   - 指标对齐：`ChatResponse` 扩展 `turn_count` / `mode_path` / `cost_est_usd` / `stack`，新旧栈同 schema 可比。
   - 回退：关 flag 即走老栈，新栈代码零触及。
+  - ✅ **子项目② 实时协作流**（[spec](docs/designs/2026-06-11-realtime-collab-stream-design.md)，[实现计划](docs/superpowers/plans/2026-06-11-realtime-collab-stream.md)，10 Task TDD）：
+    - `app/api/_persist.py` — `persist_turn` 共享落库（会话+消息+掌握度原子提交，返回 turn_index）
+    - `app/api/_sse_projection.py` — `project_event` 语义事件白名单（15 EventType）→ 前端友好 SSE payload
+    - `app/api/profile.py` — 读真实 sessions 计数 + avg_mastery（0-100 整数，`mastery_nodes` 均值）
+    - `app/models/tables.py` — 新增 `MasteryNodeTable`（含 rationale）/ `MasteryEdgeTable`（topic_id `String(512)` 防 PG 长消息丢库）
+    - `app/infrastructure/storage/sqlalchemy_mastery_store.py` — SQLAlchemy 掌握度 store（复刻旧 aiosqlite store 4 方法契约，PG/SQLite 双模）
+    - `app/orchestration/collab_loop.py` — `run_collab_loop` 加 `on_event` 回调钩子（`None` 时向后兼容）
+    - `app/orchestration/assembly.py` — `build_new_stack`/`run_new_agent_session` 加可选 `graph`/`on_event` 参数
+    - 回合数修复：`turn_count` 改为教学回合（`persist_turn` 返回的 `turn_index + 1`），不再透传事件循环迭代次数
+
 - ✅ Plan E 评估体系（[Plan E](docs/superpowers/plans/2026-06-01-plan-e-eval.md)，11 Task TDD + 评审修复，49 测试）——纯旁路 L2，只读 EventStore / 调 Agent.evaluate() / 回放 `parent_id` 因果链，不触任何在线 Agent/编排代码：
   - `app/eval/component_bench.py` — ComponentBench（§5.2，调各 Agent `evaluate()` 跑黄金用例）
   - `app/eval/system_bench.py` — SystemBench（§5.3，scenarios YAML + 结果断言 mastery/max_turns + 过程断言 mode_path/must_contain/must_not_contain；兼容 Event 对象与 dict trace）
@@ -224,7 +234,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可
 ├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
 └── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
 
-tests/                          # 504 收集 / 500 通过（test_stores.py 的 4 个为测试写法陈旧：用了 get_event_loop，单独跑全绿）
+tests/                          # 524 收集 / 524 通过
 
 alembic/                        # 数据库迁移（PG 生产环境唯一建表源）
 docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
@@ -328,7 +338,7 @@ store = SessionStore(db=None)  # 自动使用内存字典
 ## 测试
 
 ```
-504 收集 / 500 通过（test_stores.py 的 4 个：测试写法陈旧，非 Store bug）
+524 收集 / 524 通过
 
 tests/unit/harness/         枚举、状态、事件总线、编排器、教学策略、画像图谱
 tests/unit/agents/          5 Agent（tutor/critic/retriever/curator/conductor）契约与行为
