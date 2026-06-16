@@ -1,6 +1,6 @@
-from app.agent.graph import build_learning_graph
+from app_old.agent.graph import build_learning_graph
 from app.harness.enums import Intent, Stage
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def test_teach_loop_full_flow():

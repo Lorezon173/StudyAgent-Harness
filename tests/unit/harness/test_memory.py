@@ -2,7 +2,7 @@ import asyncio
 import time
 from datetime import datetime, timedelta
 
-from app.harness.memory import MemoryItem, ShortTermStore, MemoryManager
+from app_old.harness.memory import MemoryItem, ShortTermStore, MemoryManager
 from app.harness.enums import MemoryScope
 
 

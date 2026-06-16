@@ -1,0 +1,59 @@
+# §3.4 规则 DSL — 热可换。priority 数值越大越优先；同优先级按表序。
+# 命中条件用扁平 key 表达观察集字段（与 RuleEngine 字典 key 对应）。
+rules:
+  - name: prereq_weak_observed
+    when:
+      prereq_weak: true
+      prereq_basis: observed
+    action: regress_to_prereq
+    priority: 100
+
+  - name: prereq_weak_historical
+    when:
+      prereq_weak: true
+      prereq_basis: historical
+    action: tutor_probe_prereq
+    priority: 100
+
+  - name: contradiction
+    when:
+      contradiction: true
+    action: tutor_correct
+    priority: 90
+
+  - name: confusion
+    when:
+      confusion: true
+    action: tutor_offer_analogy
+    priority: 80
+
+  - name: weak_within_repeat
+    when:
+      mastery: weak
+      repeat_lt: 2
+    action: tutor_re_explain
+    priority: 70
+
+  - name: partial
+    when:
+      mastery: partial
+    action: tutor_request_recap
+    priority: 60
+
+  - name: mastered_topic_complete
+    when:
+      mastery: mastered
+      topic_complete: true
+    action: loop_exit
+    priority: 50
+
+  - name: rag_quality_low
+    when:
+      rag_quality_low: true
+    action: retriever_expand_query
+    priority: 40
+
+  - name: default
+    when: {}
+    action: conductor_decide
+    priority: 0

@@ -1,9 +1,9 @@
 import pytest
 from pathlib import Path
-from app.agent.spec_loader import SpecLoader
+from app_old.agent.spec_loader import SpecLoader
 
 
-SPEC_DIR = Path(__file__).parent.parent.parent.parent / "app" / "agent" / "specs"
+SPEC_DIR = Path(__file__).parent.parent.parent.parent / "app_old" / "agent" / "specs"
 
 
 class TestSpecLoader:

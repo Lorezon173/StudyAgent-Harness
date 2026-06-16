@@ -1,6 +1,6 @@
-from app.harness.tool_registry import ToolRegistry, ToolSchema, ToolResult
+from app_old.harness.tool_registry import ToolRegistry, ToolSchema, ToolResult
 from app.harness.enums import Stage
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def test_register_and_list():

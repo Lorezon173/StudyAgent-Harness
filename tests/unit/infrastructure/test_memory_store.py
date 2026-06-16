@@ -2,8 +2,8 @@ import asyncio
 import tempfile
 import os
 
-from app.infrastructure.storage.memory_store import MemoryStore
-from app.harness.memory import MemoryItem
+from app_old.infrastructure.storage.memory_store import MemoryStore
+from app_old.harness.memory import MemoryItem
 from app.harness.enums import MemoryScope
 
 

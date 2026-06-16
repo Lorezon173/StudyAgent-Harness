@@ -1,4 +1,4 @@
-from app.harness.guardrails import Guardrails
+from app_old.harness.guardrails import Guardrails
 
 
 def test_check_input_pass():
@@ -29,7 +29,7 @@ def test_check_tool_result_pass():
 
 
 def test_check_tool_result_fail():
-    from app.harness.tool_registry import ToolResult
+    from app_old.harness.tool_registry import ToolResult
     g = Guardrails()
     result = g.check_tool_result("test", ToolResult(success=False, output=None, error="fail"))
     assert not result.passed

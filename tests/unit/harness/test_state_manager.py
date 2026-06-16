@@ -1,6 +1,6 @@
-from app.harness.state_manager import StateManager
+from app_old.harness.state_manager import StateManager
 from app.harness.enums import Stage
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def test_transition_merges_sub_state():

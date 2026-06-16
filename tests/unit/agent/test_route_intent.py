@@ -1,7 +1,7 @@
-from app.agent.nodes.route_intent import route_intent_node
+from app_old.agent.nodes.route_intent import route_intent_node
 from app.harness.enums import Intent, Stage
-from app.harness.state import LearningState
-from app.agent.node_wrapper import safe_node
+from app_old.harness.state import LearningState
+from app_old.agent.node_wrapper import safe_node
 
 
 def test_route_intent_returns_routing_state():

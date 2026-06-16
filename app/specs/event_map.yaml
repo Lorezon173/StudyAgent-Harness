@@ -1,0 +1,32 @@
+# 事件→Agent 映射（取代旧 intent_map.yaml，§10）
+# 格式：EventType → 订阅者 Agent → 产出的 EventType
+
+subscriptions:
+  ActionRequested:
+    - agent: tutor
+      filter: "payload.target == tutor"
+      emits: [TutorAsked, TutorExplained, TutorRequestedRecap, TutorOfferedAnalogy]
+    - agent: retriever
+      filter: "payload.target == retriever"
+      emits: [RetrievedEvidence, RetrievalFailed]
+
+  UserMessage:
+    - agent: critic
+      emits: [MasteryAssessed, ConfusionDetected, ContradictionDetected, LowConfidenceDetected]
+
+  RetrievedEvidence:
+    - agent: critic
+      filter: "payload.purpose == teaching"
+      emits: [RAGQualityAssessed]
+
+  MasteryAssessed:
+    - agent: curator
+      emits: [ProfileUpdated, GraphNodeStrengthened, GraphPrereqWeakDetected]
+
+  TopicEntered:
+    - agent: curator
+      emits: [GraphPrereqWeakDetected]
+
+  ConductorRequested:
+    - agent: conductor
+      emits: [ConductorDecided]

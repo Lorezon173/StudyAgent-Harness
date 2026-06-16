@@ -1,6 +1,6 @@
-from app.harness.error_handler import ErrorHandler, get_error_handler
+from app_old.harness.error_handler import ErrorHandler, get_error_handler
 from app.harness.enums import ErrorKind, RecoveryAction
-from app.harness.state import LearningState
+from app_old.harness.state import LearningState
 
 
 def test_rag_timeout():
