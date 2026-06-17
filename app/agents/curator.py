@@ -50,11 +50,12 @@ class Curator(AgentBase):
         topic_id = payload.get("topic_id") or ws.current_topic
         score = payload.get("score", 0.0)
         level = payload.get("level", "partial")
+        rationale = payload.get("rationale", "")
 
         if self.graph.get_node(topic_id) is None:
             self.graph.add_node(topic_id, topic_id, mastery=0.0)
         old_mastery = self.graph.get_node(topic_id).mastery
-        self.graph.update_mastery(topic_id, score)
+        self.graph.update_mastery(topic_id, score, rationale=rationale)
         node = self.graph.get_node(topic_id)
 
         results.append(self.emit(
@@ -65,6 +66,7 @@ class Curator(AgentBase):
                 "previous_mastery": old_mastery,
                 "level": level,
                 "practice_count": node.practice_count,
+                "rationale": rationale,
             },
             parent_id=event.id,
         ))

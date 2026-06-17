@@ -59,9 +59,9 @@ def test_update_mastery():
     async def _test():
         graph, store, path = await _make_graph()
         graph.add_node("attention", "注意力机制")
-        graph.update_mastery("attention", mastery=0.7)
+        graph.update_mastery("attention", mastery=70)
         node = graph.get_node("attention")
-        assert node.mastery == 0.7
+        assert node.mastery == 70
         assert node.practice_count == 1
         assert node.last_practiced_at > 0
         await store.close()
@@ -72,13 +72,13 @@ def test_update_mastery():
 def test_find_weak_prereqs_detects_below_threshold():
     async def _test():
         graph, store, path = await _make_graph()
-        graph.add_node("vector_math", "向量乘法", mastery=0.2)
-        graph.add_node("attention", "注意力机制", mastery=0.1)
+        graph.add_node("vector_math", "向量乘法", mastery=20)
+        graph.add_node("attention", "注意力机制", mastery=10)
         graph.add_doc_order_edge(from_topic="vector_math", to_topic="attention")
-        weak = graph.find_weak_prereqs("attention", mastery_threshold=0.5)
+        weak = graph.find_weak_prereqs("attention", mastery_threshold=50)
         assert len(weak) == 1
         assert weak[0]["prereq_topic_id"] == "vector_math"
-        assert weak[0]["mastery"] == 0.2
+        assert weak[0]["mastery"] == 20
         assert weak[0]["edge_confidence"] == 0.5
         await store.close()
         os.unlink(path)
@@ -88,10 +88,10 @@ def test_find_weak_prereqs_detects_below_threshold():
 def test_find_weak_prereqs_no_weak_when_mastery_high():
     async def _test():
         graph, store, path = await _make_graph()
-        graph.add_node("vector_math", "向量乘法", mastery=0.9)
+        graph.add_node("vector_math", "向量乘法", mastery=90)
         graph.add_node("attention", "注意力机制")
         graph.add_doc_order_edge(from_topic="vector_math", to_topic="attention")
-        weak = graph.find_weak_prereqs("attention", mastery_threshold=0.5)
+        weak = graph.find_weak_prereqs("attention", mastery_threshold=50)
         assert len(weak) == 0
         await store.close()
         os.unlink(path)
@@ -99,17 +99,17 @@ def test_find_weak_prereqs_no_weak_when_mastery_high():
 
 
 def test_find_weak_prereqs_llm_infer_edge_stricter():
-    """低置信 LLM_INFER 边(0.3)门槛更严格(adjusted≈0.37): mastery 0.4 不触发, 0.2 触发。"""
+    """低置信 LLM_INFER 边(0.3)门槛更严格(adjusted≈37): mastery 40 不触发, 20 触发。"""
     async def _test():
         graph, store, path = await _make_graph()
-        graph.add_node("vec", "向量", mastery=0.4)
+        graph.add_node("vec", "向量", mastery=40)
         graph.add_node("attn", "注意力")
         graph.add_llm_infer_edge(from_topic="vec", to_topic="attn")
-        weak = graph.find_weak_prereqs("attn", mastery_threshold=0.5)
-        assert len(weak) == 0  # 0.4 > 0.370
-        graph.update_mastery("vec", mastery=0.2)
-        weak = graph.find_weak_prereqs("attn", mastery_threshold=0.5)
-        assert len(weak) == 1  # 0.2 < 0.370
+        weak = graph.find_weak_prereqs("attn", mastery_threshold=50)
+        assert len(weak) == 0  # 40 > 37.04
+        graph.update_mastery("vec", mastery=20)
+        weak = graph.find_weak_prereqs("attn", mastery_threshold=50)
+        assert len(weak) == 1  # 20 < 37.04
         assert weak[0]["prereq_topic_id"] == "vec"
         await store.close()
         os.unlink(path)
@@ -117,17 +117,17 @@ def test_find_weak_prereqs_llm_infer_edge_stricter():
 
 
 def test_find_weak_prereqs_interaction_edge_lenient():
-    """高置信 INTERACTION 边(0.8)门槛宽松(adjusted≈0.4545): mastery 0.5 不触发, 0.4 触发。"""
+    """高置信 INTERACTION 边(0.8)门槛宽松(adjusted≈45.45): mastery 50 不触发, 40 触发。"""
     async def _test():
         graph, store, path = await _make_graph()
-        graph.add_node("vec", "向量", mastery=0.5)
+        graph.add_node("vec", "向量", mastery=50)
         graph.add_node("attn", "注意力")
         graph.strengthen_edge_by_interaction(from_topic="vec", to_topic="attn")
-        weak = graph.find_weak_prereqs("attn", mastery_threshold=0.5)
-        assert len(weak) == 0  # 0.5 > 0.4545
-        graph.update_mastery("vec", mastery=0.4)
-        weak = graph.find_weak_prereqs("attn", mastery_threshold=0.5)
-        assert len(weak) == 1  # 0.4 < 0.4545
+        weak = graph.find_weak_prereqs("attn", mastery_threshold=50)
+        assert len(weak) == 0  # 50 > 45.45
+        graph.update_mastery("vec", mastery=40)
+        weak = graph.find_weak_prereqs("attn", mastery_threshold=50)
+        assert len(weak) == 1  # 40 < 45.45
         await store.close()
         os.unlink(path)
     asyncio.run(_test())
@@ -173,14 +173,14 @@ def test_has_any_prereqs():
 def test_graph_persist_roundtrip():
     async def _test():
         graph, store, path = await _make_graph()
-        graph.add_node("vec", "向量", mastery=0.8)
-        graph.add_node("attn", "注意力", mastery=0.3)
+        graph.add_node("vec", "向量", mastery=80)
+        graph.add_node("attn", "注意力", mastery=30)
         graph.add_doc_order_edge(from_topic="vec", to_topic="attn")
         await graph.save()
         graph2 = MasteryGraph(user_id="user_test", store=store)
         await graph2.load()
         assert len(graph2.nodes) == 2
-        assert graph2.nodes["vec"].mastery == 0.8
+        assert graph2.nodes["vec"].mastery == 80
         assert graph2.nodes["vec"].topic_name == "向量"
         assert len(graph2.edges) == 1
         assert graph2.edges[0].from_topic == "vec"

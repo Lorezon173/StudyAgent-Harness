@@ -50,23 +50,25 @@ def test_curator_emittable_types():
 def test_handle_mastery_assessed_updates_node():
     async def _test():
         curator, ws, store, path = await _setup_curator()
-        curator.graph.add_node("attention", "注意力机制", mastery=0.3)
+        curator.graph.add_node("attention", "注意力机制", mastery=30)
         event = Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
                       session_id="s1", payload={
                           "topic_id": "attention",
                           "level": "partial",
-                          "score": 0.65,
+                          "score": 65,
+                          "rationale": "能复述核心定义但举例不充分",
                       })
         results = curator.handle(event, ws)
         node = curator.graph.get_node("attention")
         assert node is not None
-        assert node.mastery == 0.65
+        assert node.mastery == 65
         assert node.practice_count == 1
         assert node.last_practiced_at > 0
         strengthened = [e for e in results if e.type == EventType.GRAPH_NODE_STRENGTHENED]
         assert len(strengthened) == 1
         assert strengthened[0].payload["topic_id"] == "attention"
-        assert strengthened[0].payload["mastery"] == 0.65
+        assert strengthened[0].payload["mastery"] == 65
+        assert strengthened[0].payload["rationale"] == "能复述核心定义但举例不充分"
         profile_updates = [e for e in results if e.type == EventType.PROFILE_UPDATED]
         assert len(profile_updates) == 1
         await store.close()
@@ -77,17 +79,17 @@ def test_handle_mastery_assessed_updates_node():
 def test_handle_mastery_assessed_with_weak_prereq_emits_observed():
     async def _test():
         curator, ws, store, path = await _setup_curator(current_topic="transformer")
-        # 线性代数 weak (0.2) → transformer; 注意力 strong (0.7) → transformer
-        curator.graph.add_node("linear_algebra", "线性代数", mastery=0.2)
-        curator.graph.add_node("attention", "注意力机制", mastery=0.7)
-        curator.graph.add_node("transformer", "Transformer架构", mastery=0.3)
+        # 线性代数 weak (20) → transformer; 注意力 strong (70) → transformer
+        curator.graph.add_node("linear_algebra", "线性代数", mastery=20)
+        curator.graph.add_node("attention", "注意力机制", mastery=70)
+        curator.graph.add_node("transformer", "Transformer架构", mastery=30)
         curator.graph.add_doc_order_edge(from_topic="linear_algebra", to_topic="transformer")
         curator.graph.add_doc_order_edge(from_topic="attention", to_topic="transformer")
         event = Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
                       session_id="s1", payload={
                           "topic_id": "transformer",
                           "level": "weak",
-                          "score": 0.3,
+                          "score": 30,
                       })
         results = curator.handle(event, ws)
         prereq_events = [e for e in results if e.type == EventType.GRAPH_PREREQ_WEAK_DETECTED]
@@ -105,12 +107,12 @@ def test_handle_mastery_assessed_with_weak_prereq_emits_observed():
 def test_handle_mastery_assessed_no_prereqs_no_prereq_event():
     async def _test():
         curator, ws, store, path = await _setup_curator()
-        curator.graph.add_node("attention", "注意力机制", mastery=0.3)
+        curator.graph.add_node("attention", "注意力机制", mastery=30)
         event = Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
                       session_id="s1", payload={
                           "topic_id": "attention",
                           "level": "weak",
-                          "score": 0.3,
+                          "score": 30,
                       })
         results = curator.handle(event, ws)
         prereq_events = [e for e in results if e.type == EventType.GRAPH_PREREQ_WEAK_DETECTED]
@@ -141,8 +143,8 @@ def test_handle_topic_entered_with_historical_weak_prereq():
     """画像有数据：前置 mastery 低 → 发 basis=historical。"""
     async def _test():
         curator, ws, store, path = await _setup_curator(current_topic="transformer")
-        curator.graph.add_node("linear_algebra", "线性代数", mastery=0.2)
-        curator.graph.add_node("attention", "注意力机制", mastery=0.9)
+        curator.graph.add_node("linear_algebra", "线性代数", mastery=20)
+        curator.graph.add_node("attention", "注意力机制", mastery=90)
         curator.graph.add_node("transformer", "Transformer架构")
         curator.graph.add_doc_order_edge(from_topic="linear_algebra", to_topic="transformer")
         curator.graph.add_doc_order_edge(from_topic="attention", to_topic="transformer")
@@ -165,8 +167,8 @@ def test_handle_topic_entered_with_no_weak_prereq_emits_nothing():
     """画像所有前置都强 → 不发事件。"""
     async def _test():
         curator, ws, store, path = await _setup_curator(current_topic="transformer")
-        curator.graph.add_node("linear_algebra", "线性代数", mastery=0.9)
-        curator.graph.add_node("attention", "注意力机制", mastery=0.95)
+        curator.graph.add_node("linear_algebra", "线性代数", mastery=90)
+        curator.graph.add_node("attention", "注意力机制", mastery=95)
         curator.graph.add_node("transformer", "Transformer架构")
         curator.graph.add_doc_order_edge(from_topic="linear_algebra", to_topic="transformer")
         curator.graph.add_doc_order_edge(from_topic="attention", to_topic="transformer")
@@ -211,11 +213,11 @@ def test_curator_cannot_emit_critic_event():
 def test_curator_evaluate_returns_metrics():
     async def _test():
         curator, ws, store, path = await _setup_curator()
-        curator.graph.add_node("A", "前置A", mastery=0.8)
-        curator.graph.add_node("B", "主题B", mastery=0.5)
+        curator.graph.add_node("A", "前置A", mastery=80)
+        curator.graph.add_node("B", "主题B", mastery=50)
         curator.graph.add_doc_order_edge(from_topic="A", to_topic="B")
         metrics = curator.evaluate({
-            "graph_nodes": {"A": 0.8, "B": 0.5},
+            "graph_nodes": {"A": 80, "B": 50},
             "graph_edges": [{"from": "A", "to": "B"}],
         })
         assert isinstance(metrics, dict)
@@ -229,9 +231,9 @@ def test_curator_evaluate_returns_metrics():
 def test_curator_evaluate_partial_coverage():
     async def _test():
         curator, ws, store, path = await _setup_curator()
-        curator.graph.add_node("A", "前置A", mastery=0.8)
+        curator.graph.add_node("A", "前置A", mastery=80)
         metrics = curator.evaluate({
-            "graph_nodes": {"A": 0.8, "B": 0.5},
+            "graph_nodes": {"A": 80, "B": 50},
             "graph_edges": [],
         })
         assert isinstance(metrics, dict)
