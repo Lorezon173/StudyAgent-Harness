@@ -148,32 +148,6 @@ class RetrieverAgent(AgentBase):
         else:
             context_precision = 0.0
 
-        # --- faithfulness：检索内容与 golden_answer 的字符 Jaccard 相似度 ---
-        if golden_answer and combined:
-            answer_tokens = set(golden_answer)
-            retrieved_tokens = set(combined)
-            intersection = answer_tokens & retrieved_tokens
-            union = answer_tokens | retrieved_tokens
-            faithfulness = len(intersection) / len(union) if union else 0.0
-        elif combined and query:
-            query_tokens = set(query)
-            retrieved_tokens = set(combined)
-            intersection = query_tokens & retrieved_tokens
-            union = query_tokens | retrieved_tokens
-            faithfulness = len(intersection) / len(union) if union else 0.0
-        else:
-            faithfulness = 0.0
-
-        # --- answer_relevancy：检索内容与 query 的字符 Jaccard 相似度 ---
-        if combined and query:
-            query_tokens = set(query)
-            retrieved_tokens = set(combined)
-            intersection = query_tokens & retrieved_tokens
-            union = query_tokens | retrieved_tokens
-            answer_relevancy = len(intersection) / len(union) if union else 0.0
-        else:
-            answer_relevancy = 0.0
-
         # --- redundancy：检索结果中高度相似 chunk 对的比例（multiset Jaccard，
         #   即按字符出现次数计算，避免重复字符被 set 折叠） ---
         n = len(retrieved_contents)
@@ -192,11 +166,98 @@ class RetrieverAgent(AgentBase):
         else:
             redundancy = 0.0
 
-        return {
-            "faithfulness": round(faithfulness, 4),
-            "answer_relevancy": round(answer_relevancy, 4),
-            "context_precision": round(context_precision, 4),
-            "recall_at_k": round(recall_at_k, 4),
-            "latency_ms": round(latency_ms, 2),
-            "redundancy": round(redundancy, 4),
-        }
+        # --- RAGAS 评估三件套（faithfulness/answer_relevancy/context_precision） ---
+        try:
+            from ragas import evaluate as ragas_eval
+            from ragas.metrics.collections import (
+                faithfulness as m_faithfulness,
+                answer_relevancy as m_answer_relevancy,
+                context_precision as m_context_precision,
+            )
+            from datasets import Dataset
+            from app.eval.judge import build_judge
+
+            # 构造 judge（复用 §5.1.1 不同族校验）
+            judge_handle = build_judge(target_agent_family="anthropic")
+
+            if judge_handle is None:
+                # 降级：judge 不可用（同族 / 无 key / 构造失败）
+                return {
+                    "recall_at_k": round(recall_at_k, 4),
+                    "faithfulness": 0.0,
+                    "answer_relevancy": 0.0,
+                    "context_precision": round(context_precision, 4),  # 保留启发式
+                    "latency_ms": round(latency_ms, 2),
+                    "redundancy": round(redundancy, 4),
+                    "degraded": True,
+                    "degraded_reason": "judge 不可用（同族或无 API key）",
+                }
+
+            if not golden_answer:
+                # 无 golden_answer 时 faithfulness/answer_relevancy 无意义，降级
+                return {
+                    "recall_at_k": round(recall_at_k, 4),
+                    "faithfulness": 0.0,
+                    "answer_relevancy": 0.0,
+                    "context_precision": round(context_precision, 4),  # 保留启发式
+                    "latency_ms": round(latency_ms, 2),
+                    "redundancy": round(redundancy, 4),
+                    "degraded": True,
+                    "degraded_reason": "无 golden_answer，无法评估 RAG 三件套",
+                }
+
+            # 包装为 RAGAS Dataset 格式
+            eval_dataset = Dataset.from_dict({
+                "question": [query],
+                "answer": [golden_answer],
+                "contexts": [retrieved_contents],
+            })
+
+            # 运行 RAGAS 评估（三指标）
+            ragas_result = ragas_eval(
+                dataset=eval_dataset,
+                metrics=[m_faithfulness, m_answer_relevancy, m_context_precision],
+                llm=judge_handle["llm"],
+                embeddings=judge_handle["embeddings"],
+                raise_exceptions=False,  # 单个失败不崩全局
+            )
+
+            # 提取分数（RAGAS 返回 pandas DataFrame）
+            ragas_faithfulness = float(ragas_result["faithfulness"].iloc[0]) if "faithfulness" in ragas_result.columns else 0.0
+            ragas_answer_relevancy = float(ragas_result["answer_relevancy"].iloc[0]) if "answer_relevancy" in ragas_result.columns else 0.0
+            ragas_context_precision = float(ragas_result["context_precision"].iloc[0]) if "context_precision" in ragas_result.columns else context_precision
+
+            return {
+                "recall_at_k": round(recall_at_k, 4),
+                "faithfulness": round(ragas_faithfulness, 4),
+                "answer_relevancy": round(ragas_answer_relevancy, 4),
+                "context_precision": round(ragas_context_precision, 4),
+                "latency_ms": round(latency_ms, 2),
+                "redundancy": round(redundancy, 4),
+                "degraded": False,
+            }
+
+        except ImportError:
+            # RAGAS/datasets 未安装，降级到启发式
+            return {
+                "recall_at_k": round(recall_at_k, 4),
+                "faithfulness": 0.0,
+                "answer_relevancy": 0.0,
+                "context_precision": round(context_precision, 4),
+                "latency_ms": round(latency_ms, 2),
+                "redundancy": round(redundancy, 4),
+                "degraded": True,
+                "degraded_reason": "RAGAS 或 datasets 未安装",
+            }
+        except Exception as e:
+            # RAGAS 评估失败，降级
+            return {
+                "recall_at_k": round(recall_at_k, 4),
+                "faithfulness": 0.0,
+                "answer_relevancy": 0.0,
+                "context_precision": round(context_precision, 4),
+                "latency_ms": round(latency_ms, 2),
+                "redundancy": round(redundancy, 4),
+                "degraded": True,
+                "degraded_reason": f"RAGAS 评估失败: {str(e)}",
+            }

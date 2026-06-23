@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, JSON, ForeignKey, UniqueConstraint
 from sqlalchemy.sql import func
+from pgvector.sqlalchemy import Vector
 from app.core.database import Base
 
 
@@ -51,6 +52,7 @@ class EvalTable(Base):
     ragas_faithfulness = Column(Float, nullable=True)
     ragas_relevancy = Column(Float, nullable=True)
     ragas_context_precision = Column(Float, nullable=True)
+    ragas_context_recall = Column(Float, nullable=True)
     eval_data = Column(JSON, default=dict)
     created_at = Column(DateTime, server_default=func.now())
 
@@ -81,3 +83,25 @@ class MasteryEdgeTable(Base):
         UniqueConstraint("user_id", "from_topic", "to_topic", "type",
                          name="uq_mastery_edge"),
     )
+
+
+class VectorChunkTable(Base):
+    """向量检索表 —— 存储 chunk 文本 + embedding + 元数据（阶段 A）。
+
+    字段设计：
+      - user_id/scope: 多用户 + global/personal 知识范围（对齐 KnowledgeTable）
+      - content: chunk 原文
+      - embedding: 向量（PG 用 pgvector.Vector，sqlite 退化为 JSON）
+      - source: "vector" | "ocr" | "code"（对齐 Chunk.source）
+      - doc_id/metadata: 文档标识 + 元信息（file_path/page/chunk_idx 等）
+    """
+    __tablename__ = "vector_chunks"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    scope = Column(String(16), nullable=False, default="global", index=True)
+    content = Column(Text, nullable=False)
+    embedding = Column(Vector(1536), nullable=True)  # PG: vector(1536); sqlite: 迁移时退化为 TEXT
+    source = Column(String(16), nullable=False, default="vector")
+    doc_id = Column(String(256), default="")
+    metadata_json = Column(JSON, default=dict)  # 不能用 'metadata'（SQLAlchemy 保留字）
+    created_at = Column(DateTime, server_default=func.now())

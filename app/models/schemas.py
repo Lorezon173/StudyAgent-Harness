@@ -43,6 +43,8 @@ class EvalResponse(BaseModel):
     mastery_level: str
     ragas_faithfulness: float | None = None
     ragas_relevancy: float | None = None
+    ragas_context_precision: float | None = None
+    ragas_context_recall: float | None = None
 
 
 class KnowledgeCreateRequest(BaseModel):

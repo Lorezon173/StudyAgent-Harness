@@ -43,7 +43,32 @@
 | `get_profile` | API | 读真实 sessions 计数 + mastery_nodes 均值（0-100） | 🟡 改动 | `app/api/profile.py:6` |
 | 旧 `MasteryGraphStore` | Infrastructure | aiosqlite 掌握度 store；本子项目**不删不改**，4 测试在用 | 🟢 保持 | `app/infrastructure/storage/mastery_graph_store.py:7` |
 
+## 研究调研文档（docs/research）
+
+| 名字 | 功能 | 位置 |
+|---|---|---|
+| `2026-06-15-rag-memory-frameworks-survey.md` | RAG/Memory 框架调研 | `docs/research/2026-06-15-rag-memory-frameworks-survey.md` |
+| `2026-06-16-current-vs-frameworks-decision-report.md` | 当前实现 vs 框架决策报告 | `docs/research/2026-06-16-current-vs-frameworks-decision-report.md` |
+| `2026-06-22-deepeval-vs-ragas-adoption-report.md` | DeepEval vs RAGAS 对比与本项目借鉴报告；推荐**混合方案**（Retriever 用 RAGAS + Tutor 用 DeepEval G-Eval） | `docs/research/2026-06-22-deepeval-vs-ragas-adoption-report.md` |
+
+## L2 评估体系（app/eval + Agent.evaluate）
+
+> spec：`docs/superpowers/specs/2026-05-29-multi-agent-redesign-design.md` §5（母 spec）+ `docs/designs/2026-06-22-deepeval-component-metrics.md`（DeepEval 落地，备选方案）+ `docs/research/2026-06-22-deepeval-vs-ragas-adoption-report.md`（混合方案，推荐）
+
+| 名字 | 归属子系统 | 功能 | 三色 | 位置 |
+|---|---|---|---|---|
+| `ComponentBench` | L2 eval | 对 Agent.evaluate() 跑黄金用例、按 expected 阈值判 passed | 🟢 保持（不改调度） | `app/eval/component_bench.py:23` |
+| `Retriever.evaluate()` | Agent 部件 | 当前字符级 Jaccard 占位算三件套，待替换为 **RAGAS**（推荐）或 DeepEval | 🟡 改动（替换指标段） | `app/agents/retriever.py:105` |
+| `Tutor.evaluate()` | Agent 部件 | 当前字符 Counter 占位算解释完整性，待替换为 **DeepEval G-Eval**（推荐） | 🟡 改动（替换指标段） | `app/agents/tutor.py:99` |
+| `golden_cases.py` | eval fixtures | Retriever/Tutor 黄金用例 + expected 阈值 | 🟡 改动（补字段 + 扩充到 50+ 用例） | `app/eval/fixtures/golden_cases.py:19` |
+| `JudgeProvider` 适配层 | L2 eval | 把项目 LLM 配置包成 RAGAS/DeepEval 通用 model + §5.1.1 不同族校验 | 🔴 新建 | `app/eval/judge.py`（待建） |
+| `ragas` 库 | 外部依赖 | RAG 专用评估（分阶段诊断 + 合成测试集），**已在依赖** | 🟢 已有（`pyproject.toml:33`） | `ragas>=0.2.0` |
+| `deepeval` 库 | 外部依赖 | 通用 LLM 评估（G-Eval 自定义指标），待加 eval extra | 🔴 新建（可选依赖） | pyproject eval extra（待加） |
+| `test_judge.py` | 测试 | judge 适配层 + 不同族校验 + 降级单测 | 🔴 新建 | `tests/eval/test_judge.py`（待建） |
+| `generate_ragas_testset.py` | scripts | 从知识库文档自动演化生成测试集（RAGAS 合成） | 🔴 新建 | `scripts/generate_ragas_testset.py`（待建） |
+
 ## 项目级规则（.claude/rules）
+
 
 | 名字 | 功能 | 触发 / 入口 | 位置 |
 |---|---|---|---|
