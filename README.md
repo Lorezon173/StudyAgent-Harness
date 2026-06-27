@@ -1,360 +1,340 @@
 # StudyAgent Harness
 
-基于苏格拉底教学法的多 Agent 学习框架。通过诊断→讲解→复述→追问的交互循环，引导用户主动构建知识理解，而非被动接受信息。
+基于苏格拉底教学法的多 Agent 学习框架。系统不直接灌输答案，而是通过诊断 → 讲解 → 复述 → 追问的交互循环，引导学习者主动构建理解，并在过程中持续评估掌握度、维护知识图谱画像。
+
+## 双栈现状（先读这一节）
+
+项目当前**两套实现并存**，由环境变量 `FEATURE_USE_NEW_AGENT_GRAPH` 在运行时切换：
+
+| | 新栈（推荐） | 老栈（默认回退） |
+|---|---|---|
+| 位置 | `app/` | `app_old/`（2026-06-02 归档） |
+| 范式 | 事件驱动 5-Agent 协作环 | LangGraph StateGraph（14+ 节点主图） |
+| LLM | 调真实 LLM，有真实教学能力 | 全节点用 `FakeLLM` 返回固定假数据，仅演示流程 |
+| 启用 | `FEATURE_USE_NEW_AGENT_GRAPH=true` | flag 未设 / 其他值 |
+| 落库 | `/chat`、`/chat/stream` 持久化落库 + 回填 turn_count | 不落库 |
+
+flag 在**每个请求处理函数内实时读取**（`app/core/feature_flags.py`），支持热切换、一键回退。新栈对 `app_old.*` 零依赖；老栈仍是 flag 关闭时 `/chat`、`/chat/stream` 的活路径，但靠 FakeLLM，**手动体验真实教学请开新栈**。
+
+本 README 以下内容除「老栈」小节外，均描述**新栈（`app/`）**。
 
 ## 架构概览
 
-```
-┌──────────────────────────────────────────────────────┐
-│  API 层 (FastAPI)                                     │
-│  认证 / 对话 / 流式 / 多Agent / 评估 / 知识库 / 会话  │
-├──────────────────────────────────────────────────────┤
-│  编排层 (LangGraph StateGraph)                        │
-│  主图 14 节点 + 4 SubGraph + 系统评估图               │
-│  意图路由 → 分支执行 → 状态汇聚                       │
-├──────────────────────────────────────────────────────┤
-│  Harness 层 (业务核心)                                │
-│  枚举 / 状态模型 / 意图路由 / 错误处理 /              │
-│  可观测性 / 记忆 / 工具注册 / 护栏 / 状态管理         │
-├──────────────────────────────────────────────────────┤
-│  基础设施层                                           │
-│  LLM / RAG / 存储 / 文件提取 / OCR / 搜索 / Redis    │
-└──────────────────────────────────────────────────────┘
-         ↑ 严格单向依赖，严禁反向引用 ↑
-```
-
-## 核心流程
-
-### 教学循环 (teach_loop)
+新栈遵循四层单向依赖，严禁反向引用：
 
 ```
-用户输入 → 意图路由
+┌────────────────────────────────────────────────────────────┐
+│  API 层 (FastAPI)                                           │
+│  auth / chat / chat-stream(SSE) / eval / knowledge /        │
+│  sessions / profile（全部挂在 /api 前缀下）                 │
+├────────────────────────────────────────────────────────────┤
+│  编排层 (Orchestration)                                     │
+│  collab_loop 事件循环 + LangGraph 主图骨架 +                │
+│  assembly 装配线 + orchestrator_rules.yaml 规则 DSL         │
+├────────────────────────────────────────────────────────────┤
+│  Harness 层 (业务核心)                                      │
+│  事件契约(events/eventbus) + 共享状态(workspace_state) +    │
+│  路由器(orchestrator) + 教学状态机(teaching_policy) +       │
+│  画像记忆(mastery_graph/user_profile) + 枚举 + 可观测性     │
+├────────────────────────────────────────────────────────────┤
+│  基础设施层 (Infrastructure)                                │
+│  LLM / RAG(多Provider) / 存储 / 文件提取 / OCR / 代码索引   │
+└────────────────────────────────────────────────────────────┘
+         ↑ 严格单向依赖 ↑
+```
+
+核心范式是**事件驱动多 Agent 协作环**：各 Agent 通过 `EventBus` 收发带「所有权白名单」校验的 `Event`，由单线程优先级队列循环 `run_collab_loop` 驱动，`Orchestrator` 用回合屏障 + 规则 DSL 做路由裁决。
+
+## 五个 Agent 与职能正交
+
+系统装配 5 个 Agent（`EventSource` 共 7 个角色，另两个 `user` / `orchestrator` 不是 Agent 类）。核心原则是**职能正交**——每个 Agent 只发自己专业领域的事件，越权由 EventBus 在 `publish` 时按白名单运行时拦截（`EmitViolationError`）。
+
+| Agent | source | 订阅 | 可发事件 | 职责 |
+|---|---|---|---|---|
+| **Tutor** | tutor | `ActionRequested`（target=tutor） | `TutorAsked` / `TutorExplained` / `TutorRequestedRecap` / `TutorOfferedAnalogy` | 只生成教学内容（提问/讲解/复述/类比），按 action 分派；不评判 |
+| **Critic** | critic | `UserMessage` / `RetrievedEvidence` | `MasteryAssessed` / `ConfusionDetected` / `ContradictionDetected` / `LowConfidenceDetected` / `RAGQualityAssessed` | 只判文本语义层；单次 LLM 调用产 JSON 拆多条 emit；RAG 质量仅 teaching 场景评（省成本） |
+| **Retriever** | retriever | `ActionRequested`（target=retriever） | `RetrievedEvidence` / `RetrievalFailed` | 机械层检索，委托 `RAGCoordinator.search`；按 `max_score<0.3` 机械判检索状态；不评语义质量 |
+| **Conductor** | conductor | `ConductorRequested` | `ConductorDecided` | LLM 决策兜底；只在已有观察上路由，观察不足时请求补观察；不直接发 ActionRequested（由 Orchestrator 转译） |
+| **Curator** | curator | `MasteryAssessed` / `TopicEntered` | `ProfileUpdated` / `GraphNodeStrengthened` / `GraphPrereqWeakDetected` | 只判结构层（图谱 PREREQ 边 + 前置掌握度）；双时机：实测(observed) / 历史画像(historical) |
+
+所有 Agent 继承 `AgentBase`（`app/agents/base.py`），统一契约：声明 `source` / `subscriptions` / `emittable_types` 三个类属性，实现 `handle(event, ws)`，可选实现 `evaluate(test_case)` 供部件级评估。硬约束：Agent 之间不互相直接调用、不直接写 DB/LLM、不写 `WorkspaceState`。
+
+## 协作环工作机制
+
+```
+种子事件: UserMessage + TopicEntered + ActionRequested(tutor_ask)
   ↓
-历史检查 → 诊断 → 知识检索 → 讲解 → 复述检查 ─┐
-                                                ├→ 最多3轮
-                              ┌─────────────────┘
-                              ↓
-                    评估(掌握度) → 总结
+run_collab_loop（单线程优先级队列）
+  ├─ 每个事件先经 EventBus.publish（白名单校验 + 持久化）→ on_event 钩子 → 入队
+  ├─ 出队分发给订阅该事件的 Agent.handle，产出新事件再入队
+  └─ Orchestrator.on_event 做回合屏障裁决：
+        观察类事件进缓冲 → micro-turn 内注入 OrchestratorTick(优先级最低，最后出队)
+        Tick 出队时对完整观察集裁决一次 → 规则引擎匹配 → TeachingPolicy 决定模式切换
+        → 发 ActionRequested（继续教学）或 LoopExit（出环，唯一退出信号）
+  ↓
+从事件流提取 reply / mastery_score(0-100) / mode_path / cost → persist_turn 落库
 ```
 
-### 直答分支 (qa_direct)
+**事件优先级**：`LoopExit(5) < Observation(10) < Default(20) < Tick(100)`，配 `heapq` + 入队序号实现确定性回放。**事件 ID** 用「13 位毫秒时间戳 + 12 位随机 hex」（ULID 语义，字典序即时序，无第三方依赖）。
 
-```
-用户提问 → RAG检索 → 证据门控 ─┬→ 回答策略 → 评估 → 总结
-                                └→ 恢复 → 回答策略
-```
+**Orchestrator 规则 DSL**（`app/orchestration/orchestrator_rules.yaml`，priority 大者优先）：
 
-### 重规划 / 复习
-
-- **replan**：用户切换主题 → 重新路由
-- **review**：直接生成学习总结
-
-## 渐进式规范系统
-
-Agent 的行为约束通过三层规范文件实现**按需加载**，而非一次性灌入全部上下文：
-
-```
-层级0 — 根规范 (始终加载, ~200 tokens)
-  specs/_root.prompt.md         全局底线规则
-
-层级1 — Agent 角色 (路由后加载, ~300 tokens)
-  specs/agents/teaching.prompt.md   苏格拉底式教学原则
-  specs/agents/eval.prompt.md       双重评估规则
-  specs/agents/retrieval.prompt.md  知识检索与证据门控
-  specs/agents/orchestrator.prompt.md 调度策略
-
-层级2 — 节点指令 (执行时加载, ~200 tokens)
-  specs/prompts/diagnose.prompt.md  只诊断不讲解
-  specs/prompts/explain.prompt.md   针对性讲解
-  ...共14个节点
+```yaml
+prereq_weak_observed   when: {prereq_weak: true, prereq_basis: observed}  → regress_to_prereq      (100)
+contradiction          when: {contradiction: true}                        → tutor_correct          (90)
+confusion              when: {confusion: true}                            → tutor_offer_analogy    (80)
+weak_within_repeat     when: {mastery: weak, repeat_lt: 2}                 → tutor_re_explain       (70)
+partial                when: {mastery: partial}                           → tutor_request_recap    (60)
+mastered_topic_complete when: {mastery: mastered, topic_complete: true}   → loop_exit              (50)
+rag_quality_low        when: {rag_quality_low: true}                      → retriever_expand_query (40)
+default                when: {}                                           → conductor_decide       (0)
 ```
 
-**加载流程**：
+规则全不命中时落到 `conductor_decide`，交给 Conductor 做 LLM 兜底决策。`TeachingPolicy`（`app/harness/teaching_policy.py`）是纯状态机，按当前教学模式（Socratic / Feynman / Analogy / Regress）和观察集决定下一步模式与动作。
 
-```python
-# SpecLoader 通过意图地图查询当前节点需要的资源
-# 同一轮次内，层级0和层级1被缓存，只有层级2增量加载
+## 知识图谱画像（Mastery Graph）
 
-SpecLoader.compose(intent="teach_loop", node="diagnose")
-→ 组装: _root.prompt.md + teaching.prompt.md + diagnose.prompt.md
-→ 用 XML 标签分隔: <root_rules> / <agent_role> / <node_instruction>
-→ 注入 state["_system_prompt"]
-```
+`app/harness/mastery_graph.py` 维护每个用户的掌握度图谱：
 
-**意图地图** (`intent_map.yaml`) 定义了每个意图下各节点需要的资源，一眼可览全局资源分配。
+- **节点** `MasteryNode`：topic_id / topic_name / **mastery（0-100 整数）** / practice_count / confusion_with / rationale（评估理由）
+- **边** `MasteryEdge`：PREREQ（前置）/ RELATED（相关）/ CONFLICT（冲突）三类，带 weight + confidence
+- **边来源置信度**：INTERACTION(0.8) > DOC_ORDER(0.5) > LLM_INFER(0.3)，支持冷启动建图
+- **前置薄弱检测** `find_weak_prereqs`：阈值 50，低置信度的边采用更严格的调整阈值 `threshold/(1+(1-conf)*0.5)`
 
-**双文件规范**：每个规范由 `.md`（开发者文档）+ `.prompt.md`（LLM 运行时 Prompt）组成，修改规范时必须同步修改对应 Prompt。
+`UserProfile`（`app/harness/user_profile.py`）维护偏好（讲解风格 / 节奏 / 深度）、活跃与已掌握主题、学习连续天数、会话总数。
 
-**新栈 specs 体系**（事件驱动 5-Agent）：`app/specs/` 下为 Tutor / Critic / Conductor / Retriever / Curator 各建双文件规范，`SpecLoader.compose(agent, intent)` 按「根规范 + Agent 角色 + intent 子指令」三层组装注入；合并标题（`### a / b / c`）让语义相近的 intent 共享指令段。`event_map.yaml` 取代旧 `intent_map.yaml` 记录事件→Agent→产出映射。Tutor / Critic / Conductor 的 system prompt 已从硬编码迁移到此体系按需加载。
+> 注：存在两套掌握度持久化——`MasteryGraphStore`（aiosqlite，旧，节点表无 rationale 列）与 `SQLAlchemyMasteryStore`（PG/SQLite 双模，含 rationale）。**生产 chat 流程用后者**。
 
-## 状态模型
+## 渐进式规范系统（specs）
 
-采用分层 TypedDict，每个子状态对应一个命名空间：
-
-```python
-LearningState
-  ├── user_input: str           # 用户原始输入
-  ├── routing: RoutingState     # 意图、置信度、路由信息
-  ├── teaching: TeachingState   # 诊断、讲解、复述、追问、总结
-  ├── retrieval: RetrievalState # RAG上下文、门控状态、检索策略
-  ├── evaluation: EvalState     # 掌握度、ragas指标
-  ├── memory: MemoryState       # 历史、主题、记忆条目
-  └── meta: MetaState           # 阶段、会话ID、错误信息
-```
-
-节点只写自己所属的命名空间，读取其他命名空间允许，跨命名空间写入被禁止。
-
-## 多 Agent 架构
+Agent 的行为约束通过分层规范文件**按需加载**，避免一次性灌入全部上下文。`app/specs/` 下每个 Agent 一对双文件：`.md`（开发者规范）+ `.prompt.md`（LLM 运行时 Prompt），修改时必须同步。
 
 ```
-主图 (LearningGraph)
-  14个节点 + 4条条件边
-
-SubGraph
-  ├── TeachingAgent    诊断→讲解→复述→追问
-  ├── EvalAgent        掌握度评估 → RAG质量评估
-  ├── RetrievalAgent   知识检索
-  └── OrchestratorAgent 调度决策→总结
-
-系统评估图
-  教学评估 → 编排评估 → 结果存储
+app/specs/
+  _root.md / _root.prompt.md                     层级0 全局底线规则（始终加载）
+  agents/{tutor,critic,conductor,curator,retriever}.md + .prompt.md   层级1 角色定义
+  event_map.yaml                                 事件→Agent→产出映射（规范文档）
+  loader.py                                       SpecLoader
 ```
 
-### 多 Agent 重设计（进行中 — 事件驱动新栈）
+`SpecLoader.compose(agent, intent)` 三层组装：层级0 根规范 + 层级1 角色定义 + 层级2 从角色文件中按 `### <intent>` 标题抽取的子段落（合并标题 `### a / b / c` 让相近 intent 共享指令段），用 `---` 分隔拼接，注入 system prompt。当前 Tutor / Critic / Conductor 在 handle 内调用它注入 prompt。
 
-正按[设计文档](docs/superpowers/specs/2026-05-29-multi-agent-redesign-design.md)将系统重设计为**事件驱动的 5-Agent 协作架构**（Tutor / Retriever / Critic / Curator / Conductor），核心原则是**职能正交**——每个 Agent 只发自己专业领域的事件，越权由 EventBus 白名单运行时拦截（`EmitViolationError`）。
+> **诚实标注**：`event_map.yaml` 目前**没有运行时消费者**——实际事件订阅是各 Agent 类的 `subscriptions` 类属性 + `assembly.py` 里 `bus.subscribe(agent, agent.subscriptions)` 装配的。`event_map.yaml` 是规范/文档产物，不是运行时配置源。真正驱动运行时决策的配置是 `orchestrator_rules.yaml`。
 
-**进度**：Wave 0「核心契约地基」已落地（[Plan 0](docs/superpowers/plans/2026-06-01-plan-0-core-contracts.md)，10 Task TDD）：
+## 评估体系（旁路 L2）
 
-- `app/harness/events.py` — Event 模型 + 时序 ID + 事件所有权白名单
-- `app/harness/eventbus.py` — EventBus（publish 白名单校验 + 持久化 + 订阅）
-- `app/harness/workspace_state.py` — 会话内共享状态
-- `app/infrastructure/storage/event_store.py` — 同步 sqlite3 事件持久化 + 全序回放
-- `app/agents/base.py` — AgentBase 统一契约（source / subscriptions / emittable_types / handle / emit / evaluate）
-- `app/orchestration/{collab_loop,graph}.py` — 单线程事件循环骨架 + 4 节点主图骨架
+`app/eval/` 是一套**离线旁路**评估子系统：不在请求热路径上，而是消费 `EventStore.replay()` 回放的事件链做分析。四层基准：
 
-**Wave 1 进展**：
+| 模块 | 层级 | 职责 |
+|---|---|---|
+| `component_bench.py` | §5.2 部件级 | 对各 Agent 的 `evaluate()` 跑黄金用例，按阈值比对 |
+| `system_bench.py` | §5.3 系统级 | 从场景 YAML 加载，对 trace 做结果断言（mastery/max_turns）+ 过程断言（mode_path / must_contain / must_not_contain） |
+| `collaboration_bench.py` | §5.4 协作级 | 消费 `parent_id` 因果链算六维：职能正交违约率（应恒 0）/ 协作效率 / 决策稳定 / 冲突消解 / 因果链质量 / 轨迹偏离 |
+| `ab_controller.py` | §5.5 A/B & 消融 | 参数 A/B + 组件消融（`StubAgent` 禁用某 Agent），回答「架构本身值多少增益」 |
+| `selection_reporter.py` | §5.6 选型报告 | 聚合四层结果产出 Markdown |
+| `kernel.py` | — | 薄编排层，统一委托各 bench |
+| `judge.py` | §5.1.1 | Judge 适配层：构造 OpenAI judge 并强制与被评 Agent **不同族**（anthropic ≠ openai），同族 / 无 key / unknown 一律返回 `None` 触发降级 |
 
-- **Plan A 检索与知识库**已落地（[Plan A](docs/superpowers/plans/2026-06-01-plan-a-retrieval.md)，8 Task TDD，68 测试）：
-  - `app/agents/retriever.py` — RetrieverAgent（事件驱动，机械层检索 + retrieval_status: ok/empty/timeout/low_score；不自评语义质量，符合§3.6 职能正交）
-  - `app/infrastructure/rag/coordinator.py` — RAGCoordinator 扩展为多 Provider 协调器（IndexProvider 协议 + Chunk/SearchResult 数据结构 + 去重排序聚合）
-  - `app/infrastructure/rag/ocr.py` — OCRProvider（图片文本提取，pytesseract 可选依赖优雅降级）
-  - `app/infrastructure/rag/code_index.py` — CodeIndexProvider（Python AST 切片，按函数/类粒度索引）
-  - `app/infrastructure/rag/extractors/` — Extractor 协议 + PDF/DOCX/TXT 实现（所有重依赖可选）
-  - evaluate() 实现 §5.2 RAG 三件套（faithfulness / answer_relevancy / context_precision / recall@k / latency / redundancy），多集 Counter Jaccard 字符相似度
-  - ✅ **阶段 A：真向量检索**（pgvector + OpenAI embedding，支持语义检索）：
-    - `app/infrastructure/rag/embedding.py` — EmbeddingService（文本→向量，复用 OpenAI 配置，懒加载 client）
-    - `app/infrastructure/rag/pgvector_provider.py` — PgVectorProvider（IndexProvider 实现，PG 用 pgvector <=> 近邻检索，sqlite 降级为字符匹配）
-    - `app/models/tables.py` — VectorChunkTable（向量表，embedding 列用 `pgvector.sqlalchemy.Vector(1536)`，sqlite 退化为 JSON）
-    - 配置：`rag_backend=pgvector` 启用真向量检索（默认 `fake` 保持测试兼容）
-    - 测试：11 个 EmbeddingService 单测 + 18 个 PgVectorProvider 单测（sqlite 降级分支）+ 8 个集成测试（需 Docker PG + OpenAI API key）
-- **Plan B 记忆与画像**已落地（[Plan B](docs/superpowers/plans/2026-06-01-plan-b-memory-profile.md)，5 Task TDD，35 测试）：
-  - `app/harness/mastery_graph.py` — MasteryGraph 引擎（DOC_ORDER/LLM_INFER/INTERACTION 三来源冷启动建图 + 置信度加权前置薄弱检测）
-  - `app/harness/user_profile.py` — UserProfile 偏好与进度
-  - `app/agents/curator.py` — Curator Agent（MasteryAssessed 实测 / TopicEntered 历史画像 双时机；historical 分支渐进启用）
-  - `app/infrastructure/storage/mastery_graph_store.py` — aiosqlite 持久化
-- ✅ Plan C 教学与编排（Tutor / Critic / Conductor + Orchestrator 规则引擎 +
-  TeachingPolicy 状态机 + 回合屏障 + graph 协作环接入；spec §4.3 场景可复现）
-- ✅ Plan D 集成与灰度（[Plan D](docs/superpowers/plans/2026-06-01-plan-d-integration.md)，8 Task TDD，23 测试）：
-  - Feature flag `FEATURE_USE_NEW_AGENT_GRAPH`（环境变量，运行时切换、一键回退）：
-    `true/1/yes/on` → 新栈（事件驱动 5 Agent 协作环）；未设/其他值 → 老栈（app_old LangGraph 图）。
-  - 装配线 `app/orchestration/assembly.py`：EventBus + Tutor / Critic / Retriever / Curator / Conductor +
-    Orchestrator 一次同步 `run_collab_loop`，从事件流提取 reply / mastery / mode_path。
-  - API：`/chat`、`/chat/stream` 端点内按 flag 分支；新栈用 `asyncio.to_thread` 包裹同步协作环。
-    `/chat/stream` 新栈为真流式：协作环 `on_event` 回调经 `loop.call_soon_threadsafe` 跨线程投递到 `asyncio.Queue`，
-    主协程逐事件 `project_event` 投影成 SSE（`agent_event`）实时下发，工作线程结束后再发 `final` 事件（含落库后的 `turn_count`）；
-    自开独立 DB session（`async with async_session()`）贯穿整个流，不依赖 `Depends(get_db)`，避免 StreamingResponse 提前关 session。
-  - 指标对齐：`ChatResponse` 扩展 `turn_count` / `mode_path` / `cost_est_usd` / `stack`，新旧栈同 schema 可比。
-  - 回退：关 flag 即走老栈，新栈代码零触及。
-  - ✅ **子项目② 实时协作流**（[spec](docs/designs/2026-06-11-realtime-collab-stream-design.md)，[实现计划](docs/superpowers/plans/2026-06-11-realtime-collab-stream.md)，10 Task TDD）：
-    - `app/api/_persist.py` — `persist_turn` 共享落库（会话+消息+掌握度原子提交，返回 turn_index）
-    - `app/api/_sse_projection.py` — `project_event` 语义事件白名单（15 EventType）→ 前端友好 SSE payload
-    - `app/api/profile.py` — 读真实 sessions 计数 + avg_mastery（0-100 整数，`mastery_nodes` 均值）
-    - `app/models/tables.py` — 新增 `MasteryNodeTable`（含 rationale）/ `MasteryEdgeTable`（topic_id `String(512)` 防 PG 长消息丢库）
-    - `app/infrastructure/storage/sqlalchemy_mastery_store.py` — SQLAlchemy 掌握度 store（复刻旧 aiosqlite store 4 方法契约，PG/SQLite 双模）
-    - `app/orchestration/collab_loop.py` — `run_collab_loop` 加 `on_event` 回调钩子（`None` 时向后兼容）
-    - `app/orchestration/assembly.py` — `build_new_stack`/`run_new_agent_session` 加可选 `graph`/`on_event` 参数
-    - 回合数修复：`turn_count` 改为教学回合（`persist_turn` 返回的 `turn_index + 1`），不再透传事件循环迭代次数
+**RAGAS 集成**：`RetrieverAgent.evaluate()` 在有 golden 数据时调用 `ragas.evaluate`（faithfulness / answer_relevancy / context_precision，对齐 RAGAS 0.4.3 API），RAGAS 不可用或无 key 时优雅降级回启发式分数。配套设计见 [混合评估 spec（RAGAS + DeepEval）](docs/designs/2026-06-22-hybrid-evaluation-ragas-deepeval.md)。
 
-- ✅ Plan E 评估体系（[Plan E](docs/superpowers/plans/2026-06-01-plan-e-eval.md)，11 Task TDD + 评审修复，49 测试）——纯旁路 L2，只读 EventStore / 调 Agent.evaluate() / 回放 `parent_id` 因果链，不触任何在线 Agent/编排代码：
-  - `app/eval/component_bench.py` — ComponentBench（§5.2，调各 Agent `evaluate()` 跑黄金用例）
-  - `app/eval/system_bench.py` — SystemBench（§5.3，scenarios YAML + 结果断言 mastery/max_turns + 过程断言 mode_path/must_contain/must_not_contain；兼容 Event 对象与 dict trace）
-  - `app/eval/collaboration_bench.py` — CollaborationBench（§5.4，消费 `parent_id` 因果链算六维：职能正交违约率「应恒 0」/ 协作效率 / 决策稳定 / 冲突消解 / 因果链质量 / 轨迹偏离）
-  - `app/eval/ab_controller.py` — ABController（§5.5，参数 A/B + 组件消融 `StubAgent`/`make_ablation_agent_map`，回答「架构本身值多少增益」）
-  - `app/eval/selection_reporter.py` — SelectionReporter（§5.6，聚合四层结果产出 Markdown 选型报告）
-  - `app/eval/kernel.py` — EvalKernel 薄编排层（统一委托各 bench）+ TestCase/EvalResult/ScenarioDefinition 数据类
-  - `tests/golden/` — 黄金集 + Cohen's κ≥0.6 一致性工具（§5.1.1）；`app/eval/scenarios/standard_scenarios.yaml` 四标准场景 + 消融场景
+> **诚实标注**：评估框架已实现并有测试覆盖，但**尚未接到在线 API 或 CLI**——`/api/eval` 端点只读 `EvalStore`，不调用任何 bench；benches 当前仅由 `tests/eval/` 驱动。
 
-Wave 2（集成灰度 / 评估体系）见[并行执行编排](docs/superpowers/plans/2026-06-01-execution-orchestration.md)。新栈已通过 feature flag 接入 `/chat`、`/chat/stream`，默认仍回退老栈（14 节点主图），可灰度切换。
+## RAG 检索
 
-**P0 / P1 修复（2026-06-04）**（[修复计划](docs/superpowers/plans/2026-06-04-p1-fixes.md)）：审阅对齐后补齐的缺口——
+`RAGCoordinator`（`app/infrastructure/rag/coordinator.py`）是多 Provider 协调器：`IndexProvider` 协议 + `Chunk` / `SearchResult` 数据结构 + 多源去重排序聚合。按 `settings.rag_backend` 选后端：
 
-- **P0**：Orchestrator 补 `topic_complete`（mastered 且非 Regress 模式时置真，使 `LOOP_EXIT` 规则可触发）与 `repeat_count`（跨 micro-turn 维护连续 weak 计数，2 次重讲后穿透 Conductor），修复规则永不命中 / 恒久命中两处缺陷。
-- **P1-1**：补齐 Tutor / Critic / Conductor 的 `evaluate()`（§5.2），ComponentBench 现可对全部 5 Agent 跑部件级基准。
-- **P1-2**：提取 `app/orchestration/routers.py`（对齐 spec §7 主图条件边）。
-- **P1-3**：建立新栈 `app/specs/` 渐进式 Prompt 体系（5 Agent 双文件 + `event_map.yaml` + `SpecLoader`），移除 3 个 Agent 的硬编码 prompt（§10）。
+- **`fake`（默认）**：内存 `FakeRAGStore`，字符重叠计分，保证测试无需外部依赖
+- **`pgvector`（生产真向量）**：`PgVectorProvider` + `EmbeddingService`（OpenAI embedding），PG 用 `<=>` 余弦距离近邻检索，SQLite 降级为字符匹配
+
+其他 Provider：`OCRProvider`（图片文本提取，懒依赖 pytesseract+PIL）、`CodeIndexProvider`（Python AST 按函数/类粒度切片）、`extractors/`（PDF/DOCX/TXT 提取，所有重依赖惰性 import + 优雅降级）。
+
+> 这些惰性依赖（pdfplumber / PyPDF2 / python-docx / pytesseract / Pillow）**不在任何 extra 里声明**，缺失时对应解析路径降级，不阻断启动。
 
 ## 技术栈
 
 | 类别 | 技术 |
-|------|------|
-| Web 框架 | FastAPI + Pydantic V2 |
-| Agent 编排 | LangGraph StateGraph + MemorySaver |
-| LLM 接入 | LangChain OpenAI + 重试/回退/流式/成本追踪 |
-| RAG | LlamaIndex + Chroma(开发) / Qdrant(生产) |
-| ORM | SQLAlchemy 2.0 async + Alembic |
-| 可观测性 | Langfuse（生产）/ Console（开发）+ SessionStats 汇总 |
-| 评估 | ragas (faithfulness/relevancy/context_precision) |
-| 任务队列 | Celery + Redis (可选) |
-| UI | Chainlit (可选) |
-| 包管理 | uv |
+|---|---|
+| Web 框架 | FastAPI ≥0.115 + Pydantic V2 |
+| ASGI | uvicorn[standard] ≥0.32 |
+| 编排（新栈） | 自研事件驱动协作环 + LangGraph ≥0.2 主图骨架 |
+| LLM 接入 | langchain-openai ≥0.3（重试 / fallback 模型 / 流式 / 成本追踪） |
+| RAG | 自研多 Provider 协调器；pgvector ≥0.3 真向量；可选 LlamaIndex + Chroma（`--extra rag`） |
+| ORM | SQLAlchemy 2.0 async + Alembic；PG 用 asyncpg，开发用 aiosqlite |
+| 可观测性 | Langfuse ≥2.0（生产）/ Console（开发）+ SessionStats |
+| 评估 | ragas 0.4.3（faithfulness / answer_relevancy / context_precision / context_recall）+ 不同族 judge 校验 |
+| 认证 | passlib + python-jose |
+| 任务队列 | Celery + Redis（可选 `--extra worker`，当前为桩） |
+| UI | Chainlit（可选 `--extra ui`，当前为桩）；Web 前端用 React |
+| 前端 | React 18 + Vite 5 + TypeScript 5 + react-router |
+| 包管理 | uv（Python ≥3.11） |
 
 ## 项目结构
 
-> **2026-06-02 重构归档**：旧 LangGraph 栈（`app/agent/`）及其专属的旧 harness/infra 模块已整体迁移至 **`app_old/`**（详见 [docs/app_old_migration_plan.md](docs/app_old_migration_plan.md)）。`app/` 现以**事件驱动 5-Agent 新栈**为主体；新栈对旧代码的真实依赖闭包仅 6 个文件（`llm.py`/`observability.py`/`rag.store`/`rag.__init__`/`enums.py`/`coordinator.py`），均保留在 `app/`。
-
 ```
 app/                            # 事件驱动新栈（主体）
-├── agents/                     # 🆕 5-Agent + 基类
-│   ├── base.py                 # AgentBase 统一契约
-│   ├── retriever.py / curator.py / tutor.py / critic.py / conductor.py
-├── orchestration/              # 🆕 编排层
-│   ├── collab_loop.py          # 单线程事件循环 + 优先级队列 + 回合屏障
-│   ├── graph.py                # 4 节点主图 + _collab_loop_node 装配
-│   └── orchestrator_rules.yaml # 规则 DSL
-├── harness/                    # 契约 + 必留共享
-│   ├── enums.py                # 全部 StrEnum（旧枚举 + Plan0 新增 4 类，新旧共用）
-│   ├── events.py / eventbus.py / workspace_state.py   # 🆕 事件契约
-│   ├── mastery_graph.py / user_profile.py             # 🆕 L3 画像记忆
-│   ├── orchestrator.py / teaching_policy.py           # 🆕 路由器 + 教学状态机
-│   └── observability.py        # 必留（被 llm.py 传递依赖）
+├── agents/                     # AgentBase + 5 Agent（tutor/critic/retriever/conductor/curator）
+├── orchestration/
+│   ├── collab_loop.py          # 单线程事件循环 + 优先级队列 + 回合屏障 + on_event 钩子
+│   ├── graph.py                # LangGraph 主图骨架（ingest→route→collab_loop→wrap_up）
+│   ├── assembly.py             # 端到端装配线（build_new_stack / run_new_agent_session）
+│   ├── routers.py              # 主图条件边
+│   └── orchestrator_rules.yaml # 规则 DSL（运行时配置）
+├── harness/                    # 业务核心 + 契约
+│   ├── enums.py                # 全部 StrEnum（EventType/EventSource/ActionKind/TeachingMode...）
+│   ├── events.py / eventbus.py / workspace_state.py   # 事件契约 + 共享状态
+│   ├── orchestrator.py         # 路由器（规则引擎 + 回合屏障，物理在 harness）
+│   ├── teaching_policy.py      # 教学模式状态机
+│   ├── mastery_graph.py / user_profile.py             # L3 画像记忆
+│   └── observability.py        # Console / Fake / Langfuse 三实现
 ├── infrastructure/
-│   ├── llm.py                  # LLMService（被 tutor/critic/conductor 依赖）
-│   ├── rag/                    # RAGCoordinator(多Provider) + store + ocr/code_index/extractors 🆕
-│   └── storage/                # event_store/mastery_graph_store 🆕 + message_store(对话历史) 🆕 + session/user/eval/knowledge(API复用)
-├── api/                        # API 层（chat 已接持久化落库，sessions 已接 db 注入）
-├── core/ · models/ · ui/ · worker/
+│   ├── llm.py                  # LLMService（重试/fallback/流式/成本）+ FakeLLM
+│   ├── rag/                    # coordinator + embedding + pgvector_provider + ocr + code_index + extractors
+│   └── storage/                # event_store + mastery（aiosqlite + SQLAlchemy 双版）+ message/session/user/eval/knowledge store
+├── eval/                       # 旁路评估子系统（component/system/collaboration/ab + judge + kernel）
+├── specs/                      # 渐进式 Prompt 体系（_root + 5 Agent 双文件 + loader）
+├── api/                        # auth/chat/chat_stream/chat_multi/eval/knowledge/sessions/profile + _persist + _sse_projection
+├── models/                     # tables.py(8 张表) + schemas.py(Pydantic)
+├── core/                       # config / database / feature_flags / prompts
+└── ui/ · worker/               # Chainlit / Celery（均为可选桩）
 
-app_old/                        # 📦 归档老栈（2026-06-02 迁移，仍可运行）
-├── agent/                      # 旧 LangGraph 栈：graph/routers/node_wrapper/spec_*/nodes(15)/multi_agent(7)/system_eval(5)/specs(34)
-├── harness/                    # 旧 harness：state/(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
-└── infrastructure/             # storage/memory_store + external/(ocr,redis,web_search) + extraction/(file_extract)
+app_old/                        # 📦 归档老栈（2026-06-02 迁移，flag 关闭时仍是 /chat 活路径）
+├── agent/                      # 旧 LangGraph 栈：graph/routers/nodes(15)/multi_agent(7)/system_eval(5)/specs(34)
+├── harness/                    # 旧分层 state(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
+└── infrastructure/             # memory_store + external(ocr/redis/web_search) + extraction(file_extract)
 
-tests/                          # 524 收集 / 524 通过
-
-alembic/                        # 数据库迁移（PG 生产环境唯一建表源）
+web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
+alembic/versions/               # 3 个迁移：init → vector_chunks → ragas_context_recall
+tests/                          # 572 收集 / 564 通过 / 8 deselected
 docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
 ```
 
+> 详见 [docs/app_old_migration_plan.md](docs/app_old_migration_plan.md)。新栈对老栈零依赖；必留在 `app/` 的旧依赖闭包仅 `llm.py` / `observability.py` / `rag.store` / `rag.coordinator` / `enums.py` 等少数共用文件。
 
 ## 快速开始
 
 ```bash
-# 安装依赖
+# 1. 安装依赖
 uv sync
 
-# 安装可选依赖 (按需)
-uv sync --extra rag      # RAG 检索
+# 可选 extras（按需）
+uv sync --extra rag      # LlamaIndex + Chroma 检索
 uv sync --extra eval     # ragas 评估
 uv sync --extra worker   # Celery 异步任务
 uv sync --extra ui       # Chainlit 界面
 
-# 配置环境变量
+# 2. 配置环境变量
 cp .env.example .env
 # 编辑 .env 填入真实 OPENAI_API_KEY（用第三方网关再填 OPENAI_BASE_URL / OPENAI_MODEL）
+# 启用新栈（真实教学能力）：FEATURE_USE_NEW_AGENT_GRAPH=true
 
-# 数据库迁移（首次或拉取新代码后）
+# 3. 数据库迁移（首次或拉新代码后）
 uv run alembic upgrade head
 
-# 启动 PostgreSQL（可选，生产环境用；开发环境默认 sqlite 无需此步）
+# 4. 启动 PostgreSQL（可选；开发默认 sqlite 开箱即用，无需此步）
 docker compose up -d
-# 然后在 .env 中取消注释 PG 连接串：
+# 然后在 .env 中启用 PG 连接串：
 # DATABASE_URL=postgresql+asyncpg://studyagent:studyagent@localhost:5432/studyagent
+# 并设 rag_backend=pgvector 启用真向量检索
 
-# 启动服务（新栈需先把 .env 导出为环境变量，否则 feature flag 读不到、会回退老栈）
+# 5. 启动服务（新栈需先把 .env 导出为环境变量，否则 flag 读不到、会回退老栈）
 set -a && source .env && set +a
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload   # 默认 http://127.0.0.1:8000
 
 # —— 前端（React，可选）——
 cd web && npm install
-npm run dev          # 开发：localhost:5173，proxy 转发 /api 到后端
-# 若后端不在 8000（如 8000 被占用 8001）：
-#   VITE_API_TARGET=http://127.0.0.1:8001 npm run dev
+npm run dev          # 开发：localhost:5173，proxy 转发 /api、/health 到后端 8000
+# 后端不在 8000 时：VITE_API_TARGET=http://127.0.0.1:8001 npm run dev
 npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（重启后端加载）
 cd ..
 
-# 运行测试
-uv run pytest tests/ -v
+# 6. 运行测试
+uv run pytest tests/ -v                # 默认排除 integration（564 通过）
+uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
-
-> **新栈 vs 老栈**：`.env` 中 `FEATURE_USE_NEW_AGENT_GRAPH=true` 启用新栈（事件驱动 5-Agent，调真实 LLM）。
-> 老栈（关 flag）所有节点用 `FakeLLM` 返回固定假数据，仅作流程演示，无真实教学能力——手动体验真实教学请走新栈。
-> LLM 配置经 `app/core/config.py` 的 `settings` 注入 `LLMService`：`.env` 的 `OPENAI_API_KEY` 为空时不覆盖 `ChatOpenAI` 的环境读取。
 
 ## API 端点
 
+所有端点挂在 `/api` 前缀下（`/health` 例外）。
+
 | 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/auth/register` | 用户注册 |
-| POST | `/api/auth/login` | 用户登录 |
-| POST | `/api/chat` | 学习对话 |
-| POST | `/api/chat/stream` | 流式对话 |
-| POST | `/api/chat/multi` | 多Agent对话 |
-| POST | `/api/eval` | 运行评估 |
-| GET | `/api/eval/{session_id}` | 查询评估结果 |
+|---|---|---|
+| POST | `/api/auth/register` | 用户注册（用户名重复 → 409） |
+| POST | `/api/auth/login` | 用户登录 ⚠️ 当前不校验密码，仅查用户名 |
+| POST | `/api/chat` | 学习对话（按 flag 走新/老栈） |
+| POST | `/api/chat/stream` | 流式对话（SSE，新栈逐事件投影 + final） |
+| POST | `/api/chat/multi` | 多 Agent 对话（桩，未实现） |
+| GET | `/api/eval/{session_id}` | 查询评估结果（读 EvalStore） |
+| POST | `/api/eval/{session_id}/rerun` | 重跑评估（桩，返回全 0） |
 | POST | `/api/knowledge` | 创建知识库 |
 | GET | `/api/knowledge` | 列出知识库 |
-| GET | `/api/sessions` | 列出会话（含 title，按 updated_at 倒序） |
+| DELETE | `/api/knowledge/{id}` | 删除知识库（不存在 → 404） |
+| GET | `/api/sessions` | 列出会话（按 user_id，含 title，updated_at 倒序） |
+| GET | `/api/sessions/{id}` | 获取单个会话 |
 | GET | `/api/sessions/{id}/messages` | 获取会话对话历史 |
-| GET | `/api/profile/{user_id}` | 用户画像 |
+| GET | `/api/profile/{user_id}` | 用户画像（会话数 + 平均掌握度 0-100 整数） |
 | GET | `/health` | 健康检查 |
 
-## 存储双模式
+### 流式实现（新栈 SSE）
 
-所有 Store 支持两种运行模式，无需真实数据库即可测试：
+`/chat/stream` 新栈为真流式：协作环在 `asyncio.to_thread` 工作线程跑，`on_event` 回调经 `loop.call_soon_threadsafe` 跨线程投递到 `asyncio.Queue`，主协程逐事件经 `project_event`（15 个语义事件白名单）投影成 SSE 下发，工作线程结束后再发 `final` 事件（含落库后的 turn_count）。自开独立 DB session 贯穿整个流，避免 StreamingResponse 提前关 session。落库由共享的 `persist_turn`（会话 + 两条消息 + 可选图谱，单次原子 commit）完成。
+
+## 数据模型与存储
+
+`app/models/tables.py` 定义 8 张 SQLAlchemy 表：`users` / `sessions` / `messages` / `knowledge` / `evals`（含 ragas 四指标列）/ `mastery_nodes`（含 rationale）/ `mastery_edges` / `vector_chunks`（embedding 列 PG 用 `Vector(1536)`，sqlite 退化 JSON）。
+
+存储层多数 Store 支持**双模式**——传入 `db` session 走 SQLAlchemy 生产模式，传 `None` 用内存 fallback，便于测试：
 
 ```python
-# 生产模式: SQLAlchemy async（C3: 由调用方 commit）
+# 生产模式：调用方负责 commit（约定 C3：save 不内部 commit）
 store = SessionStore(db=session)
 await store.save("sid", state, user_id=1, title="学习会话")
-await session.commit()  # 调用方负责提交
+await session.commit()
 
-# 测试模式: 内存 fallback
-store = SessionStore(db=None)  # 自动使用内存字典
+# 测试模式：内存字典
+store = SessionStore(db=None)
 ```
 
-**SessionStore 契约**：
-- `title` 首次写入生效，后续更新不覆盖（first-write-wins）
-- `save()` 不内部 commit（C3），由调用方决定事务边界
-- `list_by_user()` 两分支返回统一 `{session_id, title, updated_at}` 形状，按 `updated_at` 降序
+`SessionStore` 契约：`title` 首写生效（first-write-wins）；`save()` 不内部 commit；`list_by_user()` 统一返回 `{session_id, title, updated_at}`，按 updated_at 降序。
+
+迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）。
 
 ## 关键枚举
 
-所有有限集合使用 StrEnum 定义，确保类型安全：
+有限集合统一用 StrEnum（`app/harness/enums.py`）确保类型安全，节选：
 
-- `Stage` — 节点执行阶段 (init / routing / diagnosing / explaining / ...)
-- `Intent` — 用户意图 (teach_loop / qa_direct / review / replan)
-- `GateStatus` — 证据门控 (pass / supplement / reject)
-- `MasteryLevel` — 掌握度 (weak / partial / mastered)
-- `ErrorKind` — 错误分类 (rag_timeout / llm_error / fatal / ...)
-- `RecoveryAction` — 恢复策略 (retry / fallback_llm / skip_retrieval / abort)
-- `MemoryScope` — 记忆作用域 (working / episode / session / user / global)
-- `AgentRole` — Agent 角色 (teaching / eval / retrieval / orchestrator)
+- `EventType`（24 个）— UserMessage / TutorAsked / RetrievedEvidence / MasteryAssessed / ActionRequested / LoopExit / OrchestratorTick ...
+- `EventSource`（7 个）— user / tutor / retriever / critic / curator / conductor / orchestrator
+- `ActionKind`（14 个）— tutor_ask / tutor_explain / tutor_re_explain / regress_to_prereq / retriever_expand_query / conductor_decide / loop_exit ...
+- `TeachingMode` — Socratic / Feynman / Analogy / Regress
+- `MasteryLevel` — weak / partial / mastered
+- `EvalMetric` — faithfulness / relevancy / context_precision / context_recall
+- `GateStatus` — pass / supplement / reject
+- `ErrorKind` / `RecoveryAction` / `MemoryScope` / `Intent` / `Stage` ...
 
 ## 测试
 
 ```
-524 收集 / 524 通过
+572 收集 / 564 通过 / 8 deselected（实测全绿）
 
-tests/unit/harness/         枚举、状态、事件总线、编排器、教学策略、画像图谱
-tests/unit/agents/          5 Agent（tutor/critic/retriever/curator/conductor）契约与行为
+tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
+tests/unit/agents/          5 Agent 契约与行为 + AgentBase
 tests/unit/orchestration/   协作环、主图、路由、装配线
 tests/unit/specs/           SpecLoader 渐进式加载
-tests/unit/infrastructure/  LLM、RAG、存储、事件存储
-tests/eval/                 ComponentBench / SystemBench / CollaborationBench / ABController
+tests/unit/infrastructure/  LLM、RAG、embedding、pgvector、事件存储、掌握度存储
+tests/unit/api · core · models · storage/   API flag 分支、feature_flags、表、store
+tests/unit/agent/           老栈（app_old）LangGraph 图执行、节点、SpecLoader
+tests/eval/                 ComponentBench / SystemBench / CollaborationBench / ABController / Judge
 tests/golden/               黄金集 + Cohen's κ 一致性
-tests/integration/          端到端场景与新旧栈对齐
-tests/unit/agent/           老栈（app_old）图执行、节点、SpecLoader
+tests/api/                  实时流 SSE、persist_turn、profile、sse_projection
+tests/integration/          pgvector 真检索、端到端场景、新旧栈对齐（默认 deselect）
 ```
 
-> **关于 test_stores.py 的 4 个失败**：这 4 个测试用了 `asyncio.get_event_loop().run_until_complete(...)` 的过时写法——单独跑全绿，全量跑时因前序 async 测试已关闭全局 event loop 而报 `Event loop is closed`。EvalStore / KnowledgeStore 本身工作正常（单测证明），改用 `asyncio.run()` 或 pytest-asyncio fixture 即可修复，非 Store bug、非 DB 兼容问题。
+> 集成测试用 `integration` marker 标记，默认不跑（`pyproject.toml` 里 `addopts = "-m 'not integration'"`），它们依赖真实 Docker PostgreSQL + OpenAI API key。手动跑：`uv run pytest -m integration`。
+
+## 已知限制（诚实清单）
+
+- `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
+- `/api/auth/login` 当前**不校验密码**，仅按用户名查找，属安全缺陷，勿用于真实部署。
+- `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
+- 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
+- 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。
