@@ -4,8 +4,7 @@ __pycache__/
 *.db
 .env
 uv.lock
-Learned/
 .DS_Store
 .codegraph/
-.evolve/
+.evolve/_inbox/
 .superpowers/
