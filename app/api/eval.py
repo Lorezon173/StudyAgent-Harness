@@ -20,6 +20,8 @@ async def get_evals(session_id: str):
             mastery_level=e.get("mastery_level", ""),
             ragas_faithfulness=e.get("ragas_faithfulness"),
             ragas_relevancy=e.get("ragas_relevancy"),
+            ragas_context_precision=e.get("ragas_context_precision"),
+            ragas_context_recall=e.get("ragas_context_recall"),
         )
         for e in evals
     ]

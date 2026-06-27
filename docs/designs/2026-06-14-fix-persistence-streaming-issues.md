@@ -1,7 +1,8 @@
 # 修复方案：persistence + streaming 七项问题
 
 > 创建时间：2026-06-14  
-> 状态：✅ 5项决策已确认（见末尾决策记录），ready 进 writing-plans  
+> 最后更新：2026-06-22  
+> 状态：✅ 待定点已收口（dirty-flag 选 B + Gap-2 已定），ready for User Review Gate  
 > 基于：正向 + 反向双组 code review 发现（最近 5 提交 e15a9d8^..HEAD）
 
 ## 资产清单 + 三色血缘
@@ -68,8 +69,14 @@
 
 **改动**：
 - `app/models/schemas.py`：`ChatResponse` 加 `persisted: bool = True`
-- `app/api/chat.py` / `chat_stream.py`：按 `turn_index is not None` 回填
-- `app/api/_persist.py`：预期内冲突（如问题5的唯一约束冲突）和非预期异常分别处理，但都返回明确 None
+- `app/api/chat.py`：按 `turn_index is not None` 回填 `persisted`
+- `app/api/chat_stream.py`：
+  - **✅ 已定（Gap-2 收口）**：流式 `final` 事件加 `"persisted": turn_index is not None` 字段，与非流式端点对齐。不用 error 事件（因为 reply 已成功发出，persist 失败 ≠ 对话失败，发 error 会误导"整轮失败"）。
+  - 按 `turn_index is not None` 回填
+- `app/api/_persist.py`：
+  - 预期内冲突（如问题5的唯一约束冲突）和非预期异常分别处理，但都返回明确 None
+  - **修复 log_event bug**（第六轮评审补充）：第 33 行 `get_observability().log_event("persist_error", ...)` 改为 `get_observability().log("error", "persist_error", {...})`（`Observability` 接口无 `log_event` 方法，当前会抛 AttributeError 被吞掉，导致 persist 失败彻底静默）
+  - **成功时清除 dirty-flag**：调用 `DirtyFlag.clear_dirty(user_id)` 写内存/DB（阶段一用内存 Set）
 
 **旧客户端兼容**（评审建议 S-1）：响应加 `X-API-Version: 2` 头，旧客户端若不认该版本则降级返回 500（宁可失败也不给假象）。
 
@@ -77,15 +84,38 @@
 - **问题**：persist_turn 失败时，内存 graph 已被 Curator 修改（如 mastery+=0.1），若不清理下次 load 会不一致。
 - **方案**：内存 graph 不回滚，记录 dirty flag。persist 成功时清除 flag；失败时保留 flag，下次该 user_id 的请求 load 时跳过 cache、强制从 DB 重建干净 graph。
 - **实现**：
-  - `MasteryGraph` 加 `_dirty: bool` 标志，协作环修改后设为 True
-  - `persist_turn` 成功时清除 `graph._dirty = False`
-  - 失败时不清除，响应 `persisted=false`
-  - **多进程部署方案**（评审B-NEW-1）：dirty flag 需跨进程共享
-    - 选项A（若已有Redis）：dirty flag 存 Redis `SET dirty_users:<user_id> 1 EX 3600`，所有进程共享
-    - 选项B（无Redis）：graph 表加 `dirty: bool` 字段，persist 成功时 UPDATE 清除
-    - 选项C（单进程部署）：内存缓存 `_dirty_users: Set[str]` 即可
-    - **部署假设**：默认多进程（uvicorn workers=4 或 K8s replicas≥2），建议选B（DB字段）。若确认单进程部署可选C简化。
-  - 下次请求 `graph.load()` 时检查 dirty（从 Redis/DB 读），若 dirty 则强制重新 load
+  - **阶段一（批次一，内存实现）**：
+    - 模块级缓存 `_dirty_users: Set[str] = set()`（`app/api/_persist.py` 或专门模块）
+    - `MasteryGraph` 加 `mark_dirty()` / `is_dirty(user_id)` / `clear_dirty(user_id)` **静态方法**，操作模块级 Set
+    - Curator 修改 graph 后调用 `MasteryGraph.mark_dirty(user_id)`（或在 `assembly.py` 协作环结束后统一标记）
+    - `persist_turn` 成功时调用 `MasteryGraph.clear_dirty(user_id)`，失败时不调用
+    - `graph.load()` 前检查 `MasteryGraph.is_dirty(user_id)`，若 dirty 则跳过内存 cache、强制从 DB 重建
+  - **阶段二（PG 多进程上线时，DB 字段实现）**：
+    - mastery_graph 表（或新表 `user_dirty_flags`）加 `dirty: bool` 列 + alembic 迁移
+    - `mark_dirty` / `clear_dirty` 改为 DB UPDATE 操作
+    - `is_dirty` 改为 DB SELECT
+    - 接口不变，调用方无感知
+  - **接口设计**（第六轮评审要求明确）：
+    ```python
+    # app/harness/mastery_graph.py 或 app/api/_persist_utils.py
+    _dirty_users: Set[str] = set()  # 阶段一：模块级
+    
+    class DirtyFlag:  # 或作为 MasteryGraph 静态方法
+        @staticmethod
+        def mark_dirty(user_id: str) -> None:
+            _dirty_users.add(user_id)  # 阶段一
+            # 阶段二：db.execute(UPDATE mastery_graph SET dirty=true WHERE user_id=...)
+        
+        @staticmethod
+        def is_dirty(user_id: str) -> bool:
+            return user_id in _dirty_users  # 阶段一
+            # 阶段二：db.scalar(SELECT dirty FROM mastery_graph WHERE user_id=...)
+        
+        @staticmethod
+        def clear_dirty(user_id: str) -> None:
+            _dirty_users.discard(user_id)  # 阶段一
+            # 阶段二：db.execute(UPDATE mastery_graph SET dirty=false WHERE user_id=...)
+    ```
 - **trade-off**：容忍单次请求的 graph 变更丢失（用户视角：这轮对话"没被记住"，下次重新教），换取简单的恢复机制。若要零丢失，需实现内存 graph 的回滚（复杂度高）。
 
 **失误率监测（选A：基础埋点，brainstorming 已定）**
@@ -94,14 +124,19 @@
 
 - **⚠️ 先修现存 bug（前置）**：`_persist.py:33` 调用了 `get_observability().log_event(...)`，但 `Observability` 接口（observability.py:62-86）**没有 `log_event` 方法**，只有 `log(level, event, context)`。当前这行会抛 AttributeError，被外层 `except Exception: pass`（_persist.py:35）吞掉——**导致 persist 失败目前彻底静默，连日志都没记**。必须改成 `obs.log("error", "persist_error", {...})`，否则监测代码自身是坏的。
 - **⚠️ B4 修订：埋点必须走 `log()` 而非 `metric()`**。原因：`_LangfuseObservability.metric`（observability.py:215-216）函数体是 `pass`（no-op），生产配 Langfuse 时所有 `metric()` 调用**静默丢弃**；只有 `log()` 在三个实现里都非 no-op。若埋点走 metric()，会出现"dev（Console）监测正常、生产（Langfuse）失误率无数据"的最危险情形。故关键计数一律走 `log()`。
-- **埋点清单（基础 A，全部走 log）**：
+- **⚠️ 第六轮评审发现：`log()` 在 Langfuse 实现里不支持聚合计数**。`_LangfuseObservability.log` 只是 `logger.info(json.dumps(...))`（第 219 行），输出到 Python logging 流，**不会进 Langfuse Dashboard 的结构化事件**，且 Langfuse 不提供日志聚合能力。若生产环境未配置日志聚合工具（ELK/Loki），失误率数据无法查询 → "容忍丢失"的前提（丢失可观测）不成立。
+- **修正方案**（第六轮评审）：
+  - **批次一范围（phase 1）**：失误率监测**仅在 dev 环境生效**（ConsoleObservability），埋点代码写上但承认生产环境数据不可查。
+  - **生产监测作为独立 backlog**（phase 2 或独立 feature）：三选一——
+    - 方案 A（最简单）：persist_turn 写全局计数器 + 暴露 `/metrics` 端点供 Prometheus 抓取（标准 FastAPI + prometheus_client 库，2 小时工作量）
+    - 方案 B（补 Langfuse）：补充 `_LangfuseObservability.metric` 实现调用 Langfuse SDK score API（需研究 SDK 能力，5+ 小时）
+    - 方案 C（外部聚合）：配置日志聚合工具（ELK/Loki）解析 JSON 日志、按 event 字段分组计数（运维任务）
+- **埋点清单（基础 A，全部走 log，dev 环境可用）**：
   1. persist 成功：`obs.log("info", "persist_success", {"endpoint": "chat"|"chat_stream", "session_id": ...})`
   2. persist 失败：`obs.log("error", "persist_failure", {"reason": "integrity_conflict"|"db_error"|"other", "session_id": ..., "error": ...})`
   3. dirty 恢复：下次 load 检测到 dirty 强制重建时，`obs.log("warn", "graph_dirty_recovered", {"user_id": ..., "session_id": ...})` —— 记录"丢了一轮变更"的事件
-- **可回答的问题**（通过日志聚合）：失误率 = persist_failure 条数 / (persist_success + persist_failure)；失败构成（reason tag）；丢失轮数（graph_dirty_recovered 计数）
-- **不做（留给数据证明必要后）**：每次 graph 变更量、丢失的具体 mastery delta、按用户聚合（方案B，需改 graph 核心结构，YAGNI）
-- **告警阈值**（呼应监控章节）：基于日志聚合的 persist_failure 比例 > 5% 告警
-- **遗留提示**：`metric()` 在 Langfuse 实现里是 no-op 属现存设施缺陷，本方案绕开（用 log），不在本次范围修；若后续要用 metric 做指标，需先补 `_LangfuseObservability.metric` 实现。
+- **可回答的问题**（仅 dev 环境，通过 Console 输出人肉观察）：失误率趋势、失败构成（reason tag）、丢失轮数
+- **告警阈值**（留给 phase 2）：基于日志聚合或 Prometheus 的 persist_failure 比例 > 5% 告警
 
 ---
 
@@ -126,19 +161,49 @@
 - **chat.py 现状**：用 `Depends(get_db)` 注入一个请求级 db，从进入握到 persist 结束全程持有。
 - **chat_stream.py 现状**：`generate_new` 内**一个** `async with async_session() as db:` 包裹了**整个流主体**——含 `await task`（数十秒协作环，chat_stream.py:55）。注释自承"自开独立 session，生命周期贯穿整个流"。改造不是"同理"，而是要把**一个 async with 拆成两个**（load 段、persist 段），中间 `await task` 不在任何 session 上下文内。
 
-- **chat.py 改造**：分三段
+- **chat.py 改造（三段）**：
   ```python
+  # 段一：load（短连接）
   async with async_session() as db1:
       graph = MasteryGraph(user_id=key, store=SQLAlchemyMasteryStore(db1))
       await graph.load()
   # 出 with → db1 已释放，graph 是纯内存对象
+  
+  # 段二：协作环（不持连接）
   result = await asyncio.to_thread(run_new_agent_session, ..., graph)
+  
+  # 段三：persist（短连接）
   async with async_session() as db2:
-      graph._store = SQLAlchemyMasteryStore(db2)   # ⚠️ B2: 必须 re-bind 到新 session
+      # ⚠️ 必须 re-bind：graph 内旧 store 绑的是 db1（已关闭）
+      graph._store = SQLAlchemyMasteryStore(db2)
       await persist_turn(db2, ..., graph=graph)
   ```
-- **chat_stream.py 改造**：把单个 `async with` 拆成 load 段 + persist 段，`await task` 在两段之间裸跑（不持连接）。persist 段同样 re-bind store。
-- **⚠️ B2 核心坑（两端点都踩）**：graph 在 load 段用 db1 构造（`store=SQLAlchemyMasteryStore(db1)`），但 db1 出 with 即关闭。persist 段 `graph.save()` 若仍用 graph 内的旧 store（绑 db1），会在已关闭连接上操作 → 报错或静默失败。**必须在 persist 段把 `graph._store` 替换为绑定 db2 的新 store**。这一步是分段方案的必踩坑，writing-plans 阶段须落实。
+  
+- **chat_stream.py 改造（两段）**：把单个 `async with` 拆成 load 段 + persist 段，`await task` 在两段之间裸跑（不持连接）。persist 段同样 re-bind store。
+  ```python
+  # generate_new 内：
+  # 段一：load
+  async with async_session() as db1:
+      graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(db1))
+      await graph.load()
+  
+  # 段二：协作环 + 消费事件队列（不持连接）
+  task = asyncio.create_task(asyncio.to_thread(...))
+  while True:
+      item = await queue.get()
+      if item is _SENTINEL: break
+      yield project_event(item)
+  result = await task
+  
+  # 段三：persist
+  async with async_session() as db2:
+      # ⚠️ 必须 re-bind
+      graph._store = SQLAlchemyMasteryStore(db2)
+      turn_index = await persist_turn(db2, ..., graph=graph)
+      yield final_event(...)
+  ```
+
+- **⚠️ B2 核心坑（两端点都踩）**：graph 在 load 段用 db1 构造（`store=SQLAlchemyMasteryStore(db1)`），但 db1 出 with 即关闭。persist 段 `graph.save()` 若仍用 graph 内的旧 store（绑 db1），会在已关闭连接上操作 → 报错或静默失败。**必须在 persist 段把 `graph._store` 替换为绑定 db2 的新 store**。这一步是分段方案的必踩坑，编码时须优先落实。第五轮评审标注：此步骤遗漏会导致 persist_turn 不报错但掌握度更新丢失（静默失败 2.0）。
 
 **改动**：（见上方分段改造，含 B2 的 re-bind 步骤）
 - **与问题7联动**：graph load 出来后在协作环（工作线程）用，但连接已释放。依赖 Curator 纯内存操作（附录A已验证），load 完释放连接、graph 作为纯内存对象进线程安全。
@@ -185,7 +250,10 @@
   - login 端点签发 JWT（payload含 user_id + exp，HS256签名）
   - `get_current_user` 依赖函数：验签 + 检查过期 + 提取 user_id
   - chat/profile 端点加 `Depends(get_current_user)`，用 token 里的 user_id 覆盖 body 里的
-  - 密钥配置（env变量 JWT_SECRET_KEY）
+  - **密钥管理**（第五轮评审补充）：
+    - 环境变量 `JWT_SECRET_KEY`（生产必须配置，dev 可用默认值但启动时警告）
+    - 启动时校验：`assert os.getenv("JWT_SECRET_KEY") or settings.dev_mode, "生产环境必须配置 JWT_SECRET_KEY"`
+    - 配置示例：`JWT_SECRET_KEY=<openssl rand -hex 32>` 生成 256 位随机密钥
 - **不包含（留给 phase 2）**：
   - 刷新 token（refresh_token）
   - 撤销 blacklist（远程登出）
@@ -267,17 +335,39 @@
 | 做法 | 表加 UniqueConstraint(session_id, turn_index, role) + 计数改 func.count() | Redis/分布式锁 |
 | 代价 | 需 alembic 迁移；冲突后回 persisted=false 语义（需问题1先落地） | 引入 Redis 依赖，复杂度高 |
 
+**并发来源澄清**（第五轮评审要求，第六轮修正）：
+- **当前代码无此竞态**（第六轮评审命中）：`chat.py:19` 用 `Depends(get_db)` 长连接持有整个协作环（含数十秒 LLM 调用），同 session 并发请求因连接池满而**阻塞等待**，等到连接时前面请求已 persist 完成，`len(existing)` 已更新，意外避免了 turn_index 重复。
+- **P0-② 改造后会引入竞态**：分段持有（load 释放连接 → 协作环 → persist 新连接）打开并发窗口。场景：请求 A/B 同时到达同一 session_id，各自 load（读到 turn_index=5，连接立刻释放）→ 协作环并发跑 20 秒 → 各自 persist（都计算 turn_index=6）→ Lost Update，两条 turn_index=6 记录。
+- **唯一约束的作用**：**预防性配套**，在 P0-② 改造打开竞态的同时提供 DB 层兜底。并发写相同 turn_index 触发 IntegrityError → persisted=false。单/多进程下都生效。
+
 **改动**：
 - `app/models/tables.py`：`MessageTable.__table_args__` 加 `UniqueConstraint("session_id", "turn_index", "role")`
 - `app/api/_persist.py`：计数改 `await db.scalar(select(func.count()).where(MessageTable.session_id==...))`，不再 `SELECT *` 整表
-- **迁移前脏数据检查**（评审建议 S-3）：
-  ```sql
+- **⚠️ alembic 迁移步骤**（第五轮评审补充）：
+  ```bash
+  # 1. 迁移前清洗脚本（一次性，若检测到重复数据）
+  # 检测命令：
   SELECT session_id, turn_index, role, COUNT(*) as cnt
   FROM messages
   GROUP BY session_id, turn_index, role
   HAVING COUNT(*) > 1;
+  
+  # 若有结果，编写清洗脚本保留最新 created_at 记录
+  # uv run python scripts/clean_duplicate_turns.py
+  
+  # 2. 生成迁移
+  uv run alembic revision -m "add_message_unique_constraint"
+  
+  # 3. 手工编辑 alembic/versions/xxx.py：
+  # upgrade():
+  #   op.create_unique_constraint('uq_message_turn', 'messages', 
+  #                               ['session_id', 'turn_index', 'role'])
+  # downgrade():
+  #   op.drop_constraint('uq_message_turn', 'messages')
+  
+  # 4. 执行迁移
+  uv run alembic upgrade head
   ```
-  若有结果，先人工清洗（如保留最新 created_at 的记录）
 
 **冲突重试策略**（评审要求明确）：IntegrityError 捕获后立刻返回 persisted=false，不重试（因为 turn_index 已被占，重试无意义）。
 
@@ -415,7 +505,9 @@ class CuratorBase(AgentBase):   # Curator 继承此类
 | 2 | 匿名用户 mastery 处理 | **匿名不写 mastery**（N2 降级）。原选 session_id 作 key，第三轮评审 N2 指出其产出物批次三 JWT 后变死代码、ROI 不足，降级为最简方案。两方案都修了共享污染 bug | ✅ 已定（N2 修订） |
 | 3 | P0-⑦ 固化方案 | **运行时断言**（`__init_subclass__`，加在 **Curator 专属基类**，见 P1-⑦ 章节 B3） | ✅ 已定 |
 | 4 | 故障恢复 trade-off | **容忍单次 graph 变更丢失**（A），**配套基础失误率监测**（复用 Observability，**埋点走 log() 非 metric()**，B4）。附带修复 `_persist.py:33` log_event bug | ✅ 已定 |
-| 5 | 并发隔离 trade-off | **容忍并发高峰部分 `persisted=false`**（A），唯一约束（**提到批次一，B1**）保证数据正确性，冲突频率由 `persist_failure{reason=integrity_conflict}` 日志观测。同 session 并发罕见，不引入 Redis 锁 | ✅ 已定 |
+| 5 | 并发隔离 trade-off | **容忍并发高峰部分 `persisted=false`**（A），唯一约束（**提到批次一，B1**）作为 **P0-② 改造的预防性配套**（当前长连接架构无此竞态，分段改造后才引入，第六轮修正）。同 session 并发罕见，不引入 Redis 锁 | ✅ 已定 |
+| 6 | dirty-flag 存储位置 | **选 B（DB 字段，接口预留）**。批次一先用内存 Set 实现，DB 字段迁移推迟到 PG 多进程上线时（第六轮修正：选 B 是接口预留而非立刻实现，避免批次一工期膨胀）。**PG 迁移作为独立运维任务** | ✅ 已定（2026-06-22 收口，第六轮修正实现时机） |
+| 7 | Gap-2 流式 persist 失败感知 | **选 A**：流式 `final` 事件加 `"persisted": turn_index is not None`，与非流式对齐。不发 error 事件（reply 已成功，persist 失败 ≠ 对话失败） | ✅ 已定（2026-06-22 收口） |
 
 **第三轮评审（读真实源码）修订记录**：
 - **B1（时序漏洞，评审命中）**：P1-⑤ 唯一约束从批次二**提到批次一**，与 P0-② 同批——否则批次间窗口期 Lost Update 暴露面打开但无约束兜底，并发静默双写。
@@ -423,6 +515,20 @@ class CuratorBase(AgentBase):   # Curator 继承此类
 - **B3（影响半径未定）**：`__init_subclass__` 断言加在 **Curator 专属基类**（只有它进工作线程跑 db-graph），不污染其它 Agent。
 - **B4（生产监测断裂）**：`_LangfuseObservability.metric` 是 no-op，监测埋点改走 `log()`（三实现均非 no-op），避免"dev 绿、生产瞎"。
 - **M1（前提存疑）**：docker-compose 只暴露 DB 端口、**未定义 app 服务**，无法从仓库证实"仅内网 dev"。决策1 的排序基于此前提——若实际部署拓扑不同（外网可达），P0-③ 应紧急提前。**部署拓扑需项目方以仓库外证据确认**，当前按"内网 dev"假设但标注未证实。
+
+**第五轮评审（2026-06-22，收口验证）修订记录**：
+- **R5-1（并发来源澄清，已被第六轮推翻重写）**：~~原补充"单进程 async 仍有并发竞态"~~。第六轮评审指出此论证有误，见 R6-1。
+- **R5-2（re-bind 明确化）**：在 P0-② 分段改造章节补充完整伪码，chat.py / chat_stream.py 均明确标注 persist 段必须 `graph._store = SQLAlchemyMasteryStore(db2)` re-bind 步骤。遗漏此步骤会导致 persist_turn 不报错但掌握度更新丢失（静默失败 2.0）。
+- **R5-3（alembic 迁移步骤）**：P1-⑤ 补充完整迁移命令（清洗脚本检测 → alembic revision → 手工编辑 upgrade/downgrade → alembic upgrade head）。
+- **R5-4（JWT 密钥管理）**：P0-③ 补充密钥配置方案（环境变量 JWT_SECRET_KEY + 启动时校验 + 配置示例）。
+- **R5-5（dirty-flag 清除）**：P0-① 改动清单明确 persist_turn 成功时清除 dirty-flag。
+
+**第六轮评审（2026-06-22，修订版验证）修订记录**：
+- **R6-1（单进程并发竞态论证修正，阻断）**：第五轮 R5-1 称"单进程 async 仍有并发竞态"有误。核实代码：`chat.py:19` 用 `Depends(get_db)` 长连接持有整个协作环，同 session 并发请求因连接池满而**阻塞排队**，前请求 persist 完才轮到后请求 load，意外避免了竞态——这正是当前无脏数据的原因。**唯一约束的真实定位是 P0-② 分段改造的"预防性配套"**：改造打开并发窗口后才需要它兜底，与 P0-② 同批（B1）的理由依然成立。
+- **R6-2（dirty-flag 实现缺失，阻断）**：第五轮只写了 `graph.clear_dirty()` 接口调用，但 `MasteryGraph` 无此方法、无 `_dirty` 属性、表无 `dirty` 列。补充完整接口设计（`DirtyFlag.mark_dirty/is_dirty/clear_dirty` 三方法）+ 两阶段实现（批次一内存 Set，PG 多进程时迁 DB 字段），调用方无感知。
+- **R6-3（dirty-flag 实现时机，隐患）**：决策点 6 选 B（DB 字段）澄清为"接口预留"——批次一用内存 Set 实现（单进程足够），DB 字段迁移随 PG 上线，避免"选 B 但不做迁移"的最坏组合。
+- **R6-4（log_event bug 修复入清单，隐患）**：明确把 `_persist.py:33` 的 `log_event` → `log("error", ...)` 修复**写进 P0-① 改动清单**（此前只在论证里提及，改动清单遗漏，编码易漏）。
+- **R6-5（失误率监测设计修正，隐患）**：第六轮指出 `log()` 在 Langfuse 实现里只是 `logger.info`，不进 Dashboard、不支持聚合计数。修正：批次一失误率监测**仅 dev 环境生效**（Console），生产监测降级为独立 backlog（Prometheus /metrics 端点 / 补 metric 实现 / 外部日志聚合，三选一）。撤销原"生产 log 可聚合算失误率"的假设。
 
 **JWT breaking change** ✅ 已写入 P0-③ 章节（前后端必须同步上线，否则全量 401 中断）。
 

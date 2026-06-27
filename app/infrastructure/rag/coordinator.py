@@ -52,28 +52,36 @@ class RAGCoordinator:
         self._register_default_vector_provider()
 
     def _register_default_vector_provider(self) -> None:
-        """将现有 FakeRAGStore/RAGStore 包装为 VectorStoreProvider。"""
-        store_ref = self._store  # 闭包引用
+        """注册默认向量 provider：根据 settings.rag_backend 选择 pgvector 或 fake。"""
+        from app.core.config import settings
 
-        class _VectorStoreProvider(IndexProvider):
-            name = "vector"
+        if settings.rag_backend == "pgvector":
+            # 生产模式：使用真向量检索
+            from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+            self._providers["vector"] = PgVectorProvider()
+        else:
+            # 测试/开发模式：包装 FakeRAGStore
+            store_ref = self._store  # 闭包引用
 
-            def index(self, docs: list[dict]) -> None:
-                store_ref.index(docs)
+            class _VectorStoreProvider(IndexProvider):
+                name = "vector"
 
-            def search(self, query: str, top_k: int = 5) -> list[Chunk]:
-                raw = store_ref.query(query, top_k)
-                return [
-                    Chunk(content=r["content"], score=float(r.get("score", 0)),
-                          source="vector", metadata=r.get("metadata", {}))
-                    for r in raw
-                ]
+                def index(self, docs: list[dict]) -> None:
+                    store_ref.index(docs)
 
-            @property
-            def doc_count(self) -> int:
-                return store_ref.doc_count
+                def search(self, query: str, top_k: int = 5) -> list[Chunk]:
+                    raw = store_ref.query(query, top_k)
+                    return [
+                        Chunk(content=r["content"], score=float(r.get("score", 0)),
+                              source="vector", metadata=r.get("metadata", {}))
+                        for r in raw
+                    ]
 
-        self._providers["vector"] = _VectorStoreProvider()
+                @property
+                def doc_count(self) -> int:
+                    return store_ref.doc_count
+
+            self._providers["vector"] = _VectorStoreProvider()
 
     # --- Provider 管理 ---
 
@@ -145,7 +153,18 @@ class RAGCoordinator:
         context = "\n".join(c.content for c in result.chunks)
         citations = [{"content": c.content, "score": c.score} for c in result.chunks]
         avg_score = sum(c.score for c in result.chunks) / len(result.chunks)
-        confidence = "high" if avg_score > 2 else "medium" if avg_score > 1 else "low"
+
+        # 阈值校准（适配向量检索的归一化 score）：
+        # - pgvector 的 score = 1/(1+distance)，落在 (0, 1] 区间
+        # - FakeRAGStore 的 score 是整数计数，通常 >= 1
+        # 为兼容两者，采用自适应阈值：avg_score > 0.6 → high, > 0.3 → medium, 否则 low
+        if avg_score > 0.6:
+            confidence = "high"
+        elif avg_score > 0.3:
+            confidence = "medium"
+        else:
+            confidence = "low"
+
         return {
             "context": context,
             "found": True,

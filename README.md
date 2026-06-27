@@ -142,6 +142,12 @@ SubGraph
   - `app/infrastructure/rag/code_index.py` — CodeIndexProvider（Python AST 切片，按函数/类粒度索引）
   - `app/infrastructure/rag/extractors/` — Extractor 协议 + PDF/DOCX/TXT 实现（所有重依赖可选）
   - evaluate() 实现 §5.2 RAG 三件套（faithfulness / answer_relevancy / context_precision / recall@k / latency / redundancy），多集 Counter Jaccard 字符相似度
+  - ✅ **阶段 A：真向量检索**（pgvector + OpenAI embedding，支持语义检索）：
+    - `app/infrastructure/rag/embedding.py` — EmbeddingService（文本→向量，复用 OpenAI 配置，懒加载 client）
+    - `app/infrastructure/rag/pgvector_provider.py` — PgVectorProvider（IndexProvider 实现，PG 用 pgvector <=> 近邻检索，sqlite 降级为字符匹配）
+    - `app/models/tables.py` — VectorChunkTable（向量表，embedding 列用 `pgvector.sqlalchemy.Vector(1536)`，sqlite 退化为 JSON）
+    - 配置：`rag_backend=pgvector` 启用真向量检索（默认 `fake` 保持测试兼容）
+    - 测试：11 个 EmbeddingService 单测 + 18 个 PgVectorProvider 单测（sqlite 降级分支）+ 8 个集成测试（需 Docker PG + OpenAI API key）
 - **Plan B 记忆与画像**已落地（[Plan B](docs/superpowers/plans/2026-06-01-plan-b-memory-profile.md)，5 Task TDD，35 测试）：
   - `app/harness/mastery_graph.py` — MasteryGraph 引擎（DOC_ORDER/LLM_INFER/INTERACTION 三来源冷启动建图 + 置信度加权前置薄弱检测）
   - `app/harness/user_profile.py` — UserProfile 偏好与进度

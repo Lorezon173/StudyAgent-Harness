@@ -8,7 +8,7 @@
 
 ## 一、当前进度（读这段就知道走到哪了）
 
-**所处阶段**：brainstorming（设计）阶段尾声，spec 已经过**四轮隔离评审**，正在收口最后 2 个待定点，之后进 writing-plans（实现计划）。
+**所处阶段**：设计阶段完成，spec 已收口所有待定点，进入 **User Review Gate**（用户最终 review spec）。
 
 **流程位置**：
 ```
@@ -16,13 +16,32 @@
 ✅ 写 spec（docs/designs/2026-06-14-fix-persistence-streaming-issues.md）
 ✅ 五项决策逐个 brainstorming 确认
 ✅ 四轮隔离评审（reviewing-plans-isolated skill）
-🔄 收口最后 2 个待定点 ← 现在在这
-⬜ User Review Gate（用户最终 review spec）
+✅ 收口最后 2 个待定点（dirty-flag 选 B + Gap-2 已定）
+🔄 User Review Gate（用户最终 review spec）← 现在在这
 ⬜ 进 writing-plans 生成实现计划
 ⬜ 编码（批次一 → 二 → 三）
 ```
 
-**还差什么才能进 writing-plans**：2 个待定点（见第四节），其中 1 个等用户最终拍板。
+**待定点收口结果**（2026-06-22）：
+- **待定点 1（dirty-flag）**：✅ 已选 B（DB 字段）。生产规划为上规模/多进程兼容，PG 迁移作为独立运维任务不纳入代码批次。
+- **待定点 2（Gap-2）**：✅ 已选 A（流式 final 加 persisted 字段）。
+- **待定点 3（批次一估时）**：留待 writing-plans 阶段拆细。
+
+**第五轮评审完成**（2026-06-22）：
+- ✅ 澄清单进程 async 并发竞态（评审误判决策点 5/9 矛盾，已补充说明）
+- ✅ 采纳 re-bind store 明确化（真阻断，已补充完整伪码）
+- ✅ 采纳 alembic 迁移步骤（已补充完整命令）
+- ✅ 采纳 JWT 密钥管理（已补充配置方案）
+- ✅ 采纳 dirty-flag 清除明确化（persist_turn 改动清单已补充）
+
+**第六轮评审完成**（2026-06-22，修订版验证）：
+- ✅ 修正单进程并发竞态论证（阻断）：第五轮澄清有误，当前长连接架构意外避免竞态，唯一约束是 P0-② 改造的预防性配套
+- ✅ 补充 dirty-flag 完整实现（阻断）：`DirtyFlag` 接口设计 + 两阶段实现（批次一内存 Set，PG 多进程时迁 DB 字段）
+- ✅ 澄清 dirty-flag 实现时机（隐患）：选 B 是"接口预留"，批次一先用内存
+- ✅ 补充 log_event bug 修复入清单（隐患）：明确写进 P0-① 改动清单
+- ✅ 修正失误率监测方案（隐患）：承认批次一仅 dev 环境生效，生产监测降级为 backlog
+
+**还差什么才能进 writing-plans**：用户 review spec 通过后，即可进入。
 
 ---
 

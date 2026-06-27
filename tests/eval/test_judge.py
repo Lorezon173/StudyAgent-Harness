@@ -20,6 +20,19 @@ class TestInferFamily:
         assert infer_family("llama-3") == "unknown"
         assert infer_family("mystery-model") == "unknown"
 
+    def test_substring_false_positives(self):
+        """对抗用例：含 gpt/o1/text 子串但非 OpenAI 模型，不应误判。"""
+        assert infer_family("sol-v1") == "unknown"        # 含 "o1" 子串
+        assert infer_family("llama-gpt-style") == "unknown"  # 含 "gpt" 但不是前缀
+        assert infer_family("context-model") == "unknown"  # 含 "text" 子串
+        assert infer_family("retro1-x") == "unknown"       # 含 "o1" 子串
+
+    def test_o1_real_models(self):
+        """o1 系列真实模型应正确识别为 openai。"""
+        assert infer_family("o1") == "openai"           # 裸 o1（基础系列名）
+        assert infer_family("o1-mini") == "openai"
+        assert infer_family("o1-preview") == "openai"
+
 
 class TestBuildJudge:
     def test_different_family_passes(self, monkeypatch):

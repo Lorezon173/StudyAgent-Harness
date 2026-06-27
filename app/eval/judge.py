@@ -24,7 +24,9 @@ def infer_family(model_name: str) -> str:
         "openai" | "anthropic" | "unknown"
     """
     model_lower = model_name.lower()
-    if "gpt" in model_lower or "o1" in model_lower or "text-" in model_lower:
+    # 用词边界/前缀匹配，避免子串误判（如 "sol-v1" 含 "o1" 但非 OpenAI）
+    # 特殊处理裸 "o1"（OpenAI 推理模型基础名）
+    if model_lower == "o1" or any(model_lower.startswith(p) for p in ["gpt-", "o1-", "text-"]):
         return "openai"
     if "claude" in model_lower or "sonnet" in model_lower or "opus" in model_lower:
         return "anthropic"

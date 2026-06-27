@@ -169,7 +169,7 @@ class RetrieverAgent(AgentBase):
         # --- RAGAS 评估三件套（faithfulness/answer_relevancy/context_precision） ---
         try:
             from ragas import evaluate as ragas_eval
-            from ragas.metrics.collections import (
+            from ragas.metrics import (
                 faithfulness as m_faithfulness,
                 answer_relevancy as m_answer_relevancy,
                 context_precision as m_context_precision,
@@ -206,11 +206,12 @@ class RetrieverAgent(AgentBase):
                     "degraded_reason": "无 golden_answer，无法评估 RAG 三件套",
                 }
 
-            # 包装为 RAGAS Dataset 格式
+            # 包装为 RAGAS Dataset 格式（0.4.3 列名）
             eval_dataset = Dataset.from_dict({
-                "question": [query],
-                "answer": [golden_answer],
-                "contexts": [retrieved_contents],
+                "user_input": [query],
+                "response": [golden_answer],
+                "retrieved_contexts": [retrieved_contents],
+                "reference": [golden_answer],  # context_precision 需要 reference
             })
 
             # 运行 RAGAS 评估（三指标）
@@ -222,10 +223,11 @@ class RetrieverAgent(AgentBase):
                 raise_exceptions=False,  # 单个失败不崩全局
             )
 
-            # 提取分数（RAGAS 返回 pandas DataFrame）
-            ragas_faithfulness = float(ragas_result["faithfulness"].iloc[0]) if "faithfulness" in ragas_result.columns else 0.0
-            ragas_answer_relevancy = float(ragas_result["answer_relevancy"].iloc[0]) if "answer_relevancy" in ragas_result.columns else 0.0
-            ragas_context_precision = float(ragas_result["context_precision"].iloc[0]) if "context_precision" in ragas_result.columns else context_precision
+            # 提取分数（ragas_eval 返回 EvaluationResult，[key] → List[float]）
+            scores = ragas_result._scores_dict
+            ragas_faithfulness = float(scores["faithfulness"][0]) if "faithfulness" in scores else 0.0
+            ragas_answer_relevancy = float(scores["answer_relevancy"][0]) if "answer_relevancy" in scores else 0.0
+            ragas_context_precision = float(scores["context_precision"][0]) if "context_precision" in scores else context_precision
 
             return {
                 "recall_at_k": round(recall_at_k, 4),

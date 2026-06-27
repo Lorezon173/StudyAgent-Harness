@@ -30,7 +30,8 @@ rag = [
     "chromadb>=0.5.0",
 ]
 eval = [
-    "ragas>=0.2.0",
+    "ragas==0.4.3",
+    "datasets>=2.0.0",
 ]
 worker = [
     "celery>=5.4.0",
@@ -47,3 +48,11 @@ dev = [
 
 [tool.uv]
 index-url = "https://pypi.org/simple/"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (require Docker PG + OpenAI API key, deselected by default)",
+]
+addopts = "-m 'not integration'"
+testpaths = ["tests"]
+

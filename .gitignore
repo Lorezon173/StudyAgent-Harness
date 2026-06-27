@@ -1,6 +1,11 @@
 .venv/
+.venv_test/
 __pycache__/
 *.db
 .env
 uv.lock
 Learned/
+.DS_Store
+.codegraph/
+.evolve/
+.superpowers/

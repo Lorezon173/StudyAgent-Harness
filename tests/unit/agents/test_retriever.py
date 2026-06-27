@@ -352,3 +352,61 @@ def test_evaluate_degraded_when_no_golden_answer():
     assert "recall_at_k" in metrics
     assert "redundancy" in metrics
     assert "latency_ms" in metrics
+
+
+def test_evaluate_ragas_happy_path_extraction():
+    """happy-path：mock judge + ragas_eval，验证 import/Dataset/分数提取链路不崩。
+
+    此前 32 测试全走降级分支，RAGAS 真实调用从未被执行，掩盖了
+    metric import 类型错误与 EvaluationResult 提取接口错误两个 bug。
+    本测试 mock 掉 build_judge 与 ragas_eval 本身，但保留真实的
+    ragas.metrics import、Dataset 构造、_scores_dict 提取，覆盖该链路。
+    """
+    from unittest.mock import patch, MagicMock
+
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([{"content": "RAG 是检索增强生成"}])
+
+    fake_result = MagicMock()
+    fake_result._scores_dict = {
+        "faithfulness": [0.9],
+        "answer_relevancy": [0.85],
+        "context_precision": [0.8],
+    }
+
+    with patch("app.eval.judge.build_judge",
+               return_value={"llm": "mock_llm", "embeddings": "mock_emb"}), \
+         patch("ragas.evaluate", return_value=fake_result):
+        metrics = agent.evaluate({
+            "query": "RAG",
+            "golden_chunks": ["RAG 是检索增强生成"],
+            "golden_answer": "RAG 即检索增强生成",
+        })
+
+    assert metrics["degraded"] is False
+    assert metrics["faithfulness"] == 0.9
+    assert metrics["answer_relevancy"] == 0.85
+    assert metrics["context_precision"] == 0.8
+
+
+@pytest.mark.integration
+def test_evaluate_ragas_real_judge():
+    """集成测试：真实 OpenAI judge 跑 RAGAS（需 OPENAI_API_KEY）。
+
+    默认被 pytest -m 'not integration' 排除。手动运行：
+        pytest tests/unit/agents/test_retriever.py -m integration
+    验证 RAGAS evaluate 真实调用成功、三件套分数落在 [0,1]。
+    """
+    agent = RetrieverAgent()
+    agent._coordinator.index_documents([
+        {"content": "注意力机制的核心是 Query、Key、Value 三个矩阵的运算"},
+    ])
+    metrics = agent.evaluate({
+        "query": "注意力机制的核心是什么",
+        "golden_chunks": ["注意力机制的核心是 Query、Key、Value 三个矩阵的运算"],
+        "golden_answer": "注意力机制核心是 QKV 三个矩阵",
+    })
+
+    assert metrics["degraded"] is False, f"不应降级：{metrics.get('degraded_reason')}"
+    for k in ("faithfulness", "answer_relevancy", "context_precision"):
+        assert 0.0 <= metrics[k] <= 1.0

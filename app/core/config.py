@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     celery_broker_url: str = "redis://localhost:6379/0"
     celery_result_backend: str = "redis://localhost:6379/1"
 
+    # RAG & Embedding 配置（阶段 A：真向量检索）
+    rag_backend: str = "fake"  # "fake" | "pgvector"，默认 fake 保持测试兼容
+    embedding_model: str = "text-embedding-3-small"
+    embedding_dim: int = 1536
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8",
                     "extra": "ignore"}
 
