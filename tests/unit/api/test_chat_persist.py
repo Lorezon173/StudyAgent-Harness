@@ -25,8 +25,11 @@ def _run(coro):
     return asyncio.run(coro)
 
 
-def _make_client(monkeypatch, db_session):
+def _make_client_with_patched_db(monkeypatch, db_session):
     """Create TestClient with chat.async_session patched to yield the test session.
+
+    **副作用**：monkeypatch.setattr 替换 chat_mod.async_session，使 chat() 内部的
+    三段连接全部解析到 *db_session*。测试结束后由 pytest 自动还原（fixture scope）。
 
     After the Task 3 refactor, chat() no longer uses FastAPI Depends(get_db);
     it calls module-level async_session().  This helper replaces that callable
@@ -107,7 +110,7 @@ def test_chat_persist_happy_path(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(monkeypatch, session)
+                client = _make_client_with_patched_db(monkeypatch, session)
                 try:
                     resp = client.post("/api/chat", json={
                         "message": "帮我理解 RAG",
@@ -151,7 +154,7 @@ def test_chat_persist_second_turn(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(monkeypatch, session)
+                client = _make_client_with_patched_db(monkeypatch, session)
                 try:
                     # First turn
                     resp1 = client.post("/api/chat", json={
@@ -215,7 +218,7 @@ def test_chat_persist_error_resilience(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(monkeypatch, session)
+                client = _make_client_with_patched_db(monkeypatch, session)
                 try:
                     resp = client.post("/api/chat", json={
                         "message": "测试错误恢复",

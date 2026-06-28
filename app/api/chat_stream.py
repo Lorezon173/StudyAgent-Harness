@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import sys
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
@@ -69,8 +70,10 @@ async def chat_stream(req: ChatRequest):
                     )
                 turn_count = (turn_index + 1) if turn_index is not None else None
                 was_persisted = turn_index is not None
-            except Exception:
+            except Exception as e:
                 logger.exception("stream persist stage failed for session %s", req.session_id)
+                # Fallback: if logging is not configured (e.g. test env), print to stderr
+                print(f"[chat_stream] persist failed: {e}", file=sys.stderr)
 
             final = {
                 "type": "final",

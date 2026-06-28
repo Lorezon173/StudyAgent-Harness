@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError, DatabaseError
 
 from app.infrastructure.storage.session_store import SessionStore
 from app.infrastructure.storage.message_store import MessageStore
@@ -54,12 +54,27 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
         except Exception as obs_err:
             logger.warning(f"Failed to log persist_failure: {obs_err}")
         return None
-    except Exception as e:
+    except (OperationalError, DatabaseError) as e:
+        # DB 层异常（连接丢失、锁超时等）—— 显式捕获并记录
         await db.rollback()
+        logger.exception(f"DB layer error during persist for session {session_id}")
         try:
             get_observability().log("error", "persist_failure", {
                 "session_id": session_id,
-                "reason": "db_error",
+                "reason": "db_layer_error",
+                "error": str(e)
+            })
+        except Exception as obs_err:
+            logger.warning(f"Failed to log persist_failure: {obs_err}")
+        return None
+    except Exception as e:
+        # 最后兜底：编程错误（AttributeError、TypeError 等）—— 仍记录但标记为 programming_error
+        await db.rollback()
+        logger.exception(f"Programming error during persist for session {session_id}")
+        try:
+            get_observability().log("error", "persist_failure", {
+                "session_id": session_id,
+                "reason": "programming_error",
                 "error": str(e)
             })
         except Exception as obs_err:
