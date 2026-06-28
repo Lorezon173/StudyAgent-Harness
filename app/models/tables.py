@@ -30,6 +30,10 @@ class MessageTable(Base):
     content = Column(Text, nullable=False)
     turn_index = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
+    __table_args__ = (
+        UniqueConstraint("session_id", "turn_index", "role",
+                         name="uq_message_turn"),
+    )
 
 
 class KnowledgeTable(Base):
