@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import inspect
 
 from app.harness.events import Event
 from app.harness.enums import EventType, EventSource
@@ -44,3 +45,23 @@ class AgentBase(ABC):
         """部件级评估接口（§5.2）。Plan E / Wave 1 各 Agent 自行实现。"""
         raise NotImplementedError(
             f"{type(self).__name__} 尚未实现 evaluate（见 §5.2）")
+
+
+class CuratorBase(AgentBase):
+    """Curator 基类 —— 强制 handle 为同步方法（P0-⑦ 合同执行）。
+
+    协作环以同步方式调用 Curator.handle，async handle 会导致静默未 await
+    （返回 coroutine 对象而不执行），造成图谱更新丢失。
+
+    __init_subclass__ 在子类定义时自动触发（PEP 487），拒绝 async handle。
+    """
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        handle = cls.__dict__.get("handle")
+        if handle is not None and inspect.iscoroutinefunction(handle):
+            raise TypeError(
+                f"{cls.__name__}.handle must be synchronous, not async. "
+                f"Curator runs in a synchronous collaboration loop and an "
+                f"async handle would never be awaited."
+            )

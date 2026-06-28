@@ -1,4 +1,4 @@
-from app.agents.base import AgentBase
+from app.agents.base import CuratorBase
 from app.harness.events import Event
 from app.harness.enums import EventType, EventSource
 from app.harness.workspace_state import WorkspaceState
@@ -6,7 +6,7 @@ from app.harness.mastery_graph import MasteryGraph, EdgeType
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
-class Curator(AgentBase):
+class Curator(CuratorBase):
     """维护用户画像与掌握点知识图谱（§2.1 Curator 行）。
 
     事件契约：
