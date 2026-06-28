@@ -1,7 +1,7 @@
 """Dirty-flag 故障恢复机制（批次一：内存实现）。
 
 persist_turn 失败时标记 user_id 为 dirty，下次 load 强制从 DB 重建。
-批次一用模块级 Set（单进程足够），将来迁 PG 多进程时改为 DB 字段。
+批次一用内存 Dict + Lock（支持多线程单进程），将来迁 PG 多进程时改为 DB 字段。
 """
 
 import threading
@@ -14,7 +14,7 @@ _DEFAULT_TTL = 3600  # 1小时TTL
 
 
 class DirtyFlag:
-    """Dirty-flag 接口（阶段一：内存 Set；阶段二：DB 字段）。"""
+    """Dirty-flag 接口（阶段一：内存 Dict；阶段二：DB 字段）。"""
 
     @staticmethod
     def mark_dirty(user_id: str, ttl: float = _DEFAULT_TTL) -> None:
@@ -22,8 +22,13 @@ class DirtyFlag:
 
         Args:
             user_id: 用户ID
-            ttl: 过期时间（秒），默认1小时
+            ttl: 过期时间（秒），默认1小时，必须大于0
+
+        Raises:
+            ValueError: 如果 ttl <= 0
         """
+        if ttl <= 0:
+            raise ValueError("ttl must be positive")
         with _lock:
             _dirty_users[user_id] = (time.time(), ttl)
 
