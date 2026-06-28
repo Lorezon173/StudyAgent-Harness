@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
@@ -6,9 +7,11 @@ from app.infrastructure.storage.message_store import MessageStore
 from app.api._dirty_flag import DirtyFlag
 from app.harness.observability import get_observability
 
+logger = logging.getLogger(__name__)
 
-async def persist_turn(db: AsyncSession, session_id: str, user_id, user_message: str,
-                       reply: str, graph=None) -> int | None:
+
+async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
+                       user_message: str, reply: str, graph=None) -> int | None:
     """原子落库一轮：session(upsert) + user/assistant 两条消息 (+ 可选 graph.save()).
 
     返回算出的 turn_index（供 API 回填 turn_count=turn_index+1）；失败 rollback 返回 None.
@@ -36,8 +39,8 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id, user_message:
         # 观测性：persist 成功
         try:
             get_observability().log("info", "persist_success", {"session_id": session_id})
-        except Exception:
-            pass
+        except Exception as obs_err:
+            logger.warning(f"Failed to log persist_success: {obs_err}")
 
         return turn_index
     except IntegrityError as e:
@@ -48,18 +51,17 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id, user_message:
                 "reason": "integrity_conflict",
                 "error": str(e)
             })
-        except Exception:
-            pass
+        except Exception as obs_err:
+            logger.warning(f"Failed to log persist_failure: {obs_err}")
         return None
     except Exception as e:
         await db.rollback()
         try:
-            # 修复 log_event → log() bug
             get_observability().log("error", "persist_failure", {
                 "session_id": session_id,
                 "reason": "db_error",
                 "error": str(e)
             })
-        except Exception:
-            pass
+        except Exception as obs_err:
+            logger.warning(f"Failed to log persist_failure: {obs_err}")
         return None
