@@ -65,7 +65,7 @@ def test_persist_turn_rolls_back_and_returns_none_on_error(db_fixture):
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 from app.api._persist import persist_turn
 
 
@@ -127,3 +127,31 @@ async def test_persist_uses_log_not_log_event():
         args = mock_obs.return_value.log.call_args[0]
         assert args[0] == "error"
         assert args[1] == "persist_failure"  # 修复：实际事件名是 persist_failure
+
+
+@pytest.mark.asyncio
+async def test_persist_operational_error_returns_none_and_logs():
+    """OperationalError（连接丢失/锁超时）返回 None，标记 reason=db_layer_error"""
+    db = AsyncMock()
+    db.commit.side_effect = OperationalError("", "", Exception("connection lost"))
+
+    with patch("app.api._persist.MessageStore") as mock_store, \
+         patch("app.api._persist.SessionStore") as mock_session, \
+         patch("app.api._persist.get_observability") as mock_obs, \
+         patch("app.api._persist.DirtyFlag") as mock_dirty:
+        # MessageStore/SessionStore 需要 AsyncMock 才能 await
+        mock_store.return_value.list_by_session = AsyncMock(return_value=[])
+        mock_store.return_value.add = AsyncMock()
+        mock_session.return_value.save = AsyncMock()
+
+        result = await persist_turn(db, "sess1", 1, "msg", "reply", None)
+
+        assert result is None
+        db.rollback.assert_called_once()
+        mock_dirty.clear_dirty.assert_not_called()
+        # 验证观测性日志 reason 为 db_layer_error
+        mock_obs.return_value.log.assert_called_once()
+        args = mock_obs.return_value.log.call_args[0]
+        assert args[0] == "error"
+        assert args[1] == "persist_failure"
+        assert args[2]["reason"] == "db_layer_error"

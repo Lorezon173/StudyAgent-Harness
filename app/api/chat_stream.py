@@ -56,7 +56,17 @@ async def chat_stream(req: ChatRequest):
                 if sse is not None:
                     yield f"data: {json.dumps(sse, ensure_ascii=False)}\n\n"
 
-            result = await task   # 取结果 + re-raise 工作线程异常
+            try:
+                result = await task   # 取结果 + re-raise 工作线程异常
+            except Exception as e:
+                logger.exception("collab loop failed for session %s", req.session_id)
+                error_event = {
+                    "type": "error",
+                    "error": str(e),
+                    "persisted": False,
+                }
+                yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"
+                return
 
             # ── 阶段③：持久化（新短连接 → rebind store） ──
             was_persisted = False
