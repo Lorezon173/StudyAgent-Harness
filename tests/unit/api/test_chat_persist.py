@@ -6,13 +6,13 @@ Verifies:
 - Error resilience: persist failure → rollback + HTTP 200 with reply
 """
 import asyncio
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from typing import Any
 
 from starlette.testclient import TestClient
 
 from app.main import app
-from app.core.database import get_db
 from app.infrastructure.storage.message_store import MessageStore
 from app.infrastructure.storage.session_store import SessionStore
 
@@ -25,18 +25,25 @@ def _run(coro):
     return asyncio.run(coro)
 
 
-def _make_client(db_session):
-    """Create TestClient with get_db overridden to yield the given session."""
-    async def _override():
+def _make_client(monkeypatch, db_session):
+    """Create TestClient with chat.async_session patched to yield the test session.
+
+    After the Task 3 refactor, chat() no longer uses FastAPI Depends(get_db);
+    it calls module-level async_session().  This helper replaces that callable
+    so all internal sessions resolve to *db_session*.
+    """
+    import app.api.chat as chat_mod
+
+    @asynccontextmanager
+    async def _fake_session():
         yield db_session
 
-    app.dependency_overrides[get_db] = _override
+    monkeypatch.setattr(chat_mod, "async_session", _fake_session)
     return TestClient(app)
 
 
 def _cleanup_client(client):
     client.close()
-    app.dependency_overrides.clear()
 
 
 @dataclass
@@ -100,7 +107,7 @@ def test_chat_persist_happy_path(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(session)
+                client = _make_client(monkeypatch, session)
                 try:
                     resp = client.post("/api/chat", json={
                         "message": "帮我理解 RAG",
@@ -111,6 +118,7 @@ def test_chat_persist_happy_path(monkeypatch, db_fixture):
                     data = resp.json()
                     assert data["stack"] == "new"
                     assert data["reply"] == "这是 AI 回复"
+                    assert data["persisted"] is True
 
                     # Verify session row
                     sess = await _get_session_row(session, "s-happy")
@@ -143,7 +151,7 @@ def test_chat_persist_second_turn(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(session)
+                client = _make_client(monkeypatch, session)
                 try:
                     # First turn
                     resp1 = client.post("/api/chat", json={
@@ -207,18 +215,19 @@ def test_chat_persist_error_resilience(monkeypatch, db_fixture):
         engine, session_factory = await db_fixture.setup_db()
         try:
             async with session_factory() as session:
-                client = _make_client(session)
+                client = _make_client(monkeypatch, session)
                 try:
                     resp = client.post("/api/chat", json={
                         "message": "测试错误恢复",
                         "session_id": "s-err",
                         "user_id": 3,
                     })
-                    # HTTP still 200 with reply
+                    # HTTP still 200 with reply, persisted=False
                     assert resp.status_code == 200
                     data = resp.json()
                     assert data["reply"] == "这是 AI 回复"
                     assert data["stack"] == "new"
+                    assert data["persisted"] is False
 
                     # Rollback: 0 messages persisted
                     msgs = await _get_messages(session, "s-err")
@@ -251,8 +260,15 @@ def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
             monkeypatch.setattr(chat_mod, "use_new_agent_graph", lambda: True)
 
             async with session_factory() as db:
-                resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1), db=db)
+                # Patch async_session so chat()'s internal sessions resolve to our test db
+                @asynccontextmanager
+                async def _fake_session():
+                    yield db
+                monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+
+                resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1))
             assert resp.turn_count == 1   # 不是 11
+            assert resp.persisted is True
         finally:
             await engine.dispose()
     db_fixture.run(_test())

@@ -18,6 +18,7 @@ class ChatResponse(BaseModel):
     mode_path: list[str] | None = None     # 教学模式路径（新栈，来自 PolicyTransition）
     cost_est_usd: float | None = None       # 本会话 LLM 估算成本（best-effort）
     stack: Literal["new", "legacy"] | None = None   # 标识本次走哪条栈
+    persisted: bool = True                 # 落库是否成功（P0-② 显式暴露）
 
 
 class AuthRegisterRequest(BaseModel):
