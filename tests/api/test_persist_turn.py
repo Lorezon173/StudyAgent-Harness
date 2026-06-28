@@ -59,3 +59,71 @@ def test_persist_turn_rolls_back_and_returns_none_on_error(db_fixture):
         finally:
             await engine.dispose()
     db_fixture.run(_test())
+
+
+# ===== 批次一新增测试 =====
+
+import pytest
+from unittest.mock import AsyncMock, MagicMock, patch
+from sqlalchemy.exc import IntegrityError
+from app.api._persist import persist_turn
+
+
+@pytest.mark.asyncio
+async def test_persist_success_returns_turn_index_and_clears_dirty():
+    """persist 成功返回 turn_index，清除 dirty-flag"""
+    db = AsyncMock()
+    graph = MagicMock()
+    graph.save = AsyncMock()  # 必须是 AsyncMock 才能 await
+
+    with patch("app.api._persist.MessageStore") as mock_store, \
+         patch("app.api._persist.SessionStore") as mock_session, \
+         patch("app.api._persist.DirtyFlag") as mock_dirty, \
+         patch("app.api._persist.get_observability"):
+        # 设置 MessageStore 实例的方法
+        mock_store.return_value.list_by_session = AsyncMock(return_value=[{"role": "user"}, {"role": "assistant"}])
+        mock_store.return_value.add = AsyncMock()
+
+        # 设置 SessionStore 实例的方法
+        mock_session.return_value.save = AsyncMock()
+
+        result = await persist_turn(db, "sess1", 1, "user msg", "reply", graph)
+
+        assert result == 1  # len([user, assistant]) // 2 = 1
+        db.commit.assert_called_once()
+        graph.save.assert_called_once()
+        mock_dirty.clear_dirty.assert_called_once_with("1")
+
+
+@pytest.mark.asyncio
+async def test_persist_integrity_error_returns_none_no_clear():
+    """IntegrityError（唯一约束冲突）返回 None，不清 dirty"""
+    db = AsyncMock()
+    db.commit.side_effect = IntegrityError("", "", "")
+
+    with patch("app.api._persist.MessageStore"), \
+         patch("app.api._persist.SessionStore"), \
+         patch("app.api._persist.DirtyFlag") as mock_dirty:
+        result = await persist_turn(db, "sess1", 1, "msg", "reply", None)
+
+        assert result is None
+        db.rollback.assert_called_once()
+        mock_dirty.clear_dirty.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_persist_uses_log_not_log_event():
+    """修复 log_event bug，改用 log()"""
+    db = AsyncMock()
+    db.commit.side_effect = Exception("DB error")
+
+    with patch("app.api._persist.get_observability") as mock_obs, \
+         patch("app.api._persist.MessageStore"), \
+         patch("app.api._persist.SessionStore"):
+        await persist_turn(db, "sess1", 1, "msg", "reply", None)
+
+        # 验证调用 log() 而非 log_event()
+        mock_obs.return_value.log.assert_called_once()
+        args = mock_obs.return_value.log.call_args[0]
+        assert args[0] == "error"
+        assert args[1] == "persist_failure"  # 修复：实际事件名是 persist_failure

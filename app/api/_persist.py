@@ -1,7 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 
 from app.infrastructure.storage.session_store import SessionStore
 from app.infrastructure.storage.message_store import MessageStore
+from app.api._dirty_flag import DirtyFlag
+from app.harness.observability import get_observability
 
 
 async def persist_turn(db: AsyncSession, session_id: str, user_id, user_message: str,
@@ -25,13 +28,38 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id, user_message:
         if graph is not None:
             await graph.save()
         await db.commit()
+
+        # 成功时清除 dirty-flag
+        if user_id is not None:
+            DirtyFlag.clear_dirty(str(user_id))
+
+        # 观测性：persist 成功
+        try:
+            get_observability().log("info", "persist_success", {"session_id": session_id})
+        except Exception:
+            pass
+
         return turn_index
+    except IntegrityError as e:
+        await db.rollback()
+        try:
+            get_observability().log("error", "persist_failure", {
+                "session_id": session_id,
+                "reason": "integrity_conflict",
+                "error": str(e)
+            })
+        except Exception:
+            pass
+        return None
     except Exception as e:
         await db.rollback()
         try:
-            from app.harness.observability import get_observability
-            get_observability().log_event("persist_error",
-                                           {"session_id": session_id, "error": str(e)})
+            # 修复 log_event → log() bug
+            get_observability().log("error", "persist_failure", {
+                "session_id": session_id,
+                "reason": "db_error",
+                "error": str(e)
+            })
         except Exception:
             pass
         return None
