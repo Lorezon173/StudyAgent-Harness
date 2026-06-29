@@ -62,8 +62,9 @@ async def chat_stream(req: ChatRequest):
                 logger.exception("collab loop failed for session %s", req.session_id)
                 error_event = {
                     "type": "error",
-                    "error": str(e),
-                    "persisted": False,
+                    "code": "AGENT_ERROR",
+                    "message": str(e),
+                    "retryable": False,
                 }
                 yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"
                 return
