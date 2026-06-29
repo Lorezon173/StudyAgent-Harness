@@ -33,9 +33,12 @@ async def chat_stream(req: ChatRequest):
             queue: asyncio.Queue = asyncio.Queue()
 
             # ── 阶段①：加载掌握度图谱（短连接） ──
-            async with async_session() as load_db:
-                graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(load_db))
-                await graph.load()
+            # P1-⑥：匿名请求不写 mastery，跳过 MasteryGraph 构造
+            graph = None
+            if req.user_id is not None:
+                async with async_session() as load_db:
+                    graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(load_db))
+                    await graph.load()
 
             # ── 阶段②：运行协作环 + 流式推送（不持 DB 连接） ──
             def cb(ev):  # 工作线程内执行 → 跨线程投递
@@ -74,7 +77,8 @@ async def chat_stream(req: ChatRequest):
             turn_count = None
             try:
                 async with async_session() as persist_db:
-                    graph._store = SQLAlchemyMasteryStore(persist_db)
+                    if graph is not None:
+                        graph._store = SQLAlchemyMasteryStore(persist_db)
                     turn_index = await persist_turn(
                         persist_db, session_id=req.session_id, user_id=req.user_id,
                         user_message=req.message, reply=result.reply, graph=graph,
