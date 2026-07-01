@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     embedding_model: str = "text-embedding-3-small"
     embedding_dim: int = 1536
 
+    # JWT 配置（批次三 P0-③）
+    jwt_secret_key: str = "dev-secret-change-me-in-production"
+    jwt_expire_minutes: int = 1440  # 24 小时（dev 环境；上 prod 前需重审）
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8",
                     "extra": "ignore"}
 
