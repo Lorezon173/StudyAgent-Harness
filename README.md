@@ -59,6 +59,8 @@ flag 在**每个请求处理函数内实时读取**（`app/core/feature_flags.py
 
 所有 Agent 继承 `AgentBase`（`app/agents/base.py`），统一契约：声明 `source` / `subscriptions` / `emittable_types` 三个类属性，实现 `handle(event, ws)`，可选实现 `evaluate(test_case)` 供部件级评估。硬约束：Agent 之间不互相直接调用、不直接写 DB/LLM、不写 `WorkspaceState`。
 
+`Curator` 额外继承 `CuratorBase`（`base.py:48`）——它用 `__init_subclass__`（PEP 487）在**类定义时**自动拒绝 async handle，防止协作环同步调用 Curator 时因未 await 导致图谱更新静默丢失（P0 合同执行）。
+
 ## 协作环工作机制
 
 ```
@@ -172,7 +174,7 @@ app/specs/
 
 ```
 app/                            # 事件驱动新栈（主体）
-├── agents/                     # AgentBase + 5 Agent（tutor/critic/retriever/conductor/curator）
+├── agents/                     # AgentBase + CuratorBase + 5 Agent（tutor/critic/retriever/conductor/curator）
 ├── orchestration/
 │   ├── collab_loop.py          # 单线程事件循环 + 优先级队列 + 回合屏障 + on_event 钩子
 │   ├── graph.py                # LangGraph 主图骨架（ingest→route→collab_loop→wrap_up）
@@ -192,7 +194,7 @@ app/                            # 事件驱动新栈（主体）
 │   └── storage/                # event_store + mastery（aiosqlite + SQLAlchemy 双版）+ message/session/user/eval/knowledge store
 ├── eval/                       # 旁路评估子系统（component/system/collaboration/ab + judge + kernel）
 ├── specs/                      # 渐进式 Prompt 体系（_root + 5 Agent 双文件 + loader）
-├── api/                        # auth/chat/chat_stream/chat_multi/eval/knowledge/sessions/profile + _persist + _sse_projection
+├── api/                        # auth/chat/chat_stream/chat_multi/eval/knowledge/sessions/profile + _persist + _sse_projection + _dirty_flag
 ├── models/                     # tables.py(8 张表) + schemas.py(Pydantic)
 ├── core/                       # config / database / feature_flags / prompts
 └── ui/ · worker/               # Chainlit / Celery（均为可选桩）
@@ -203,8 +205,8 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，flag �
 └── infrastructure/             # memory_store + external(ocr/redis/web_search) + extraction(file_extract)
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
-alembic/versions/               # 3 个迁移：init → vector_chunks → ragas_context_recall
-tests/                          # 572 收集 / 564 通过 / 8 deselected
+alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
+tests/                          # 590 收集 / 582 通过 / 8 deselected
 docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
 ```
 
@@ -248,7 +250,7 @@ npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（
 cd ..
 
 # 6. 运行测试
-uv run pytest tests/ -v                # 默认排除 integration（564 通过）
+uv run pytest tests/ -v                # 默认排除 integration（582 通过）
 uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
 
@@ -258,8 +260,8 @@ uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI k
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | `/api/auth/register` | 用户注册（用户名重复 → 409） |
-| POST | `/api/auth/login` | 用户登录 ⚠️ 当前不校验密码，仅查用户名 |
+| POST | `/api/auth/register` | 用户注册（用户名重复 → 409），返回 JWT token |
+| POST | `/api/auth/login` | 用户登录（bcrypt 验密码），返回 JWT token |
 | POST | `/api/chat` | 学习对话（按 flag 走新/老栈） |
 | POST | `/api/chat/stream` | 流式对话（SSE，新栈逐事件投影 + final） |
 | POST | `/api/chat/multi` | 多 Agent 对话（桩，未实现） |
@@ -278,9 +280,13 @@ uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI k
 
 `/chat/stream` 新栈为真流式：协作环在 `asyncio.to_thread` 工作线程跑，`on_event` 回调经 `loop.call_soon_threadsafe` 跨线程投递到 `asyncio.Queue`，主协程逐事件经 `project_event`（15 个语义事件白名单）投影成 SSE 下发，工作线程结束后再发 `final` 事件（含落库后的 turn_count）。自开独立 DB session 贯穿整个流，避免 StreamingResponse 提前关 session。落库由共享的 `persist_turn`（会话 + 两条消息 + 可选图谱，单次原子 commit）完成。
 
+**3 阶段连接拆分**（batch2）：`/chat` 和 `/chat/stream` 将连接生命周期拆为建立 → 运行 → 收尾三个阶段，`persisted` 标记确保只有在 DB 落库成功后才向前端确认持久化完成。**SSE 错误事件规范化**（batch3）：流中异常统一包装为 `{"type":"error", code, message}` schema 下发，前端可统一处理，不再依赖原始异常透传。
+
+**DirtyFlag 故障恢复**（`app/api/_dirty_flag.py`）：`persist_turn` 失败时标记 user 为 dirty（内存 Dict + TTL），下次 load 强制从 DB 重建图谱，防止内存-DB 不一致。
+
 ## 数据模型与存储
 
-`app/models/tables.py` 定义 8 张 SQLAlchemy 表：`users` / `sessions` / `messages` / `knowledge` / `evals`（含 ragas 四指标列）/ `mastery_nodes`（含 rationale）/ `mastery_edges` / `vector_chunks`（embedding 列 PG 用 `Vector(1536)`，sqlite 退化 JSON）。
+`app/models/tables.py` 定义 8 张 SQLAlchemy 表：`users` / `sessions` / `messages`（含 `(session_id, turn_index, role)` 唯一约束，防重复落库）/ `knowledge` / `evals`（含 ragas 四指标列）/ `mastery_nodes`（含 rationale）/ `mastery_edges` / `vector_chunks`（embedding 列 PG 用 `Vector(1536)`，sqlite 退化 JSON）。
 
 存储层多数 Store 支持**双模式**——传入 `db` session 走 SQLAlchemy 生产模式，传 `None` 用内存 fallback，便于测试：
 
@@ -296,7 +302,7 @@ store = SessionStore(db=None)
 
 `SessionStore` 契约：`title` 首写生效（first-write-wins）；`save()` 不内部 commit；`list_by_user()` 统一返回 `{session_id, title, updated_at}`，按 updated_at 降序。
 
-迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）。
+迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）。
 
 ## 关键枚举
 
@@ -314,7 +320,7 @@ store = SessionStore(db=None)
 ## 测试
 
 ```
-572 收集 / 564 通过 / 8 deselected（实测全绿）
+590 收集 / 582 通过 / 8 deselected（实测全绿）
 
 tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
 tests/unit/agents/          5 Agent 契约与行为 + AgentBase
@@ -334,7 +340,7 @@ tests/integration/          pgvector 真检索、端到端场景、新旧栈对�
 ## 已知限制（诚实清单）
 
 - `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
-- `/api/auth/login` 当前**不校验密码**，仅按用户名查找，属安全缺陷，勿用于真实部署。
+- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。端点鉴权（Task 11）完成后全链路 IDOR 阻断。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
 - 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。
