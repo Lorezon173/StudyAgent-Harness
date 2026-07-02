@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import AuthRegisterRequest, AuthLoginRequest, AuthResponse
 from app.infrastructure.storage.user_store import UserStore
+from app.core.security import verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 _store = UserStore()
@@ -13,12 +14,14 @@ async def register(req: AuthRegisterRequest):
     if existing:
         raise HTTPException(status_code=409, detail="用户名已存在")
     user_id = await _store.create(req.username, req.password)
-    return AuthResponse(user_id=user_id, username=req.username)
+    token = create_access_token(user_id)
+    return AuthResponse(user_id=user_id, username=req.username, token=token)
 
 
 @router.post("/login", response_model=AuthResponse)
 async def login(req: AuthLoginRequest):
     user = await _store.find_by_username(req.username)
-    if not user:
+    if not user or not verify_password(req.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
-    return AuthResponse(user_id=user["id"], username=user["username"])
+    token = create_access_token(user["id"])
+    return AuthResponse(user_id=user["id"], username=user["username"], token=token)

@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.tables import UserTable
+from app.core.security import hash_password
 
 
 class UserStore:
@@ -9,16 +10,17 @@ class UserStore:
         self._memory: dict[int, dict] = {}
         self._next_id = 1
 
-    async def create(self, username: str, password_hash: str) -> int:
+    async def create(self, username: str, password: str) -> int:
+        hashed = hash_password(password)
         if self.db:
-            user = UserTable(username=username, password_hash=password_hash)
+            user = UserTable(username=username, password_hash=hashed)
             self.db.add(user)
             await self.db.commit()
             await self.db.refresh(user)
             return user.id
         uid = self._next_id
         self._next_id += 1
-        self._memory[uid] = {"id": uid, "username": username, "password_hash": password_hash}
+        self._memory[uid] = {"id": uid, "username": username, "password_hash": hashed}
         return uid
 
     async def find_by_username(self, username: str) -> dict | None:
