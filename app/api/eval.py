@@ -1,14 +1,23 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.database import get_db
+from app.core.security import get_current_user
 from app.models.schemas import EvalResponse
 from app.infrastructure.storage.eval_store import EvalStore
+from app.infrastructure.storage.session_store import SessionStore
 
 router = APIRouter(prefix="/eval", tags=["eval"])
 _store = EvalStore()
 
 
 @router.get("/{session_id}", response_model=list[EvalResponse])
-async def get_evals(session_id: str):
+async def get_evals(session_id: str, db: AsyncSession = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    session = await SessionStore(db).get(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="会话不存在")
+    if session.get("user_id") != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="无权访问该会话")
     evals = await _store.list_by_session(session_id)
     if not evals:
         return []
@@ -28,7 +37,12 @@ async def get_evals(session_id: str):
 
 
 @router.post("/{session_id}/rerun", response_model=EvalResponse)
-async def rerun_eval(session_id: str):
+async def rerun_eval(session_id: str, db: AsyncSession = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    session = await SessionStore(db).get(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="会话不存在")
+    if session.get("user_id") != current_user["user_id"]:
+        raise HTTPException(status_code=403, detail="无权访问该会话")
     return EvalResponse(
         eval_id=0,
         session_id=session_id,

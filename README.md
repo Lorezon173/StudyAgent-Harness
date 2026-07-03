@@ -164,7 +164,7 @@ app/specs/
 | ORM | SQLAlchemy 2.0 async + Alembic；PG 用 asyncpg，开发用 aiosqlite |
 | 可观测性 | Langfuse ≥2.0（生产）/ Console（开发）+ SessionStats |
 | 评估 | ragas 0.4.3（faithfulness / answer_relevancy / context_precision / context_recall）+ 不同族 judge 校验 |
-| 认证 | passlib + python-jose |
+| 认证 | bcrypt（密码哈希，弃用 passlib）+ python-jose（JWT HS256） |
 | 任务队列 | Celery + Redis（可选 `--extra worker`，当前为桩） |
 | UI | Chainlit（可选 `--extra ui`，当前为桩）；Web 前端用 React |
 | 前端 | React 18 + Vite 5 + TypeScript 5 + react-router |
@@ -206,7 +206,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，flag �
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
 alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
-tests/                          # 590 收集 / 582 通过 / 8 deselected
+tests/                          # 601 收集 / 593 通过 / 8 deselected
 docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
 ```
 
@@ -250,7 +250,7 @@ npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（
 cd ..
 
 # 6. 运行测试
-uv run pytest tests/ -v                # 默认排除 integration（582 通过）
+uv run pytest tests/ -v                # 默认排除 integration（593 通过）
 uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
 
@@ -273,7 +273,7 @@ uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI k
 | GET | `/api/sessions` | 列出会话（按 user_id，含 title，updated_at 倒序） |
 | GET | `/api/sessions/{id}` | 获取单个会话 |
 | GET | `/api/sessions/{id}/messages` | 获取会话对话历史 |
-| GET | `/api/profile/{user_id}` | 用户画像（会话数 + 平均掌握度 0-100 整数） |
+| GET | `/api/profile/` | 当前登录用户画像（会话数 + 平均掌握度 0-100 整数），需 JWT |
 | GET | `/health` | 健康检查 |
 
 ### 流式实现（新栈 SSE）
@@ -320,7 +320,7 @@ store = SessionStore(db=None)
 ## 测试
 
 ```
-590 收集 / 582 通过 / 8 deselected（实测全绿）
+601 收集 / 593 通过 / 8 deselected（实测全绿）
 
 tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
 tests/unit/agents/          5 Agent 契约与行为 + AgentBase
@@ -340,7 +340,7 @@ tests/integration/          pgvector 真检索、端到端场景、新旧栈对�
 ## 已知限制（诚实清单）
 
 - `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
-- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。端点鉴权（Task 11）完成后全链路 IDOR 阻断。
+- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。knowledge 端点无 user_id 绑定，不加鉴权。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
 - 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。

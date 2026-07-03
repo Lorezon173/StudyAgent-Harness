@@ -3,13 +3,16 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.core.security import get_current_user
 from app.models.tables import SessionTable, MasteryNodeTable
 
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 
-@router.get("/{user_id}")
-async def get_profile(user_id: int, db: AsyncSession = Depends(get_db)):
+@router.get("/")
+async def get_profile(db: AsyncSession = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_id = current_user["user_id"]
+
     sessions = await db.scalar(
         select(func.count()).select_from(SessionTable)
         .where(SessionTable.user_id == user_id)

@@ -1,11 +1,12 @@
 import asyncio
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.models.schemas import ChatRequest, ChatResponse
 from app.core.feature_flags import use_new_agent_graph
 from app.core.database import async_session
+from app.core.security import get_current_user
 from app.api._persist import persist_turn
 from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
@@ -17,18 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=ChatResponse)
-async def chat(req: ChatRequest):
+async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
     if use_new_agent_graph():
         from app.orchestration.assembly import run_new_agent_session
-        uid_str = str(req.user_id) if req.user_id is not None else "anonymous"
+        uid_str = str(current_user["user_id"])
 
         # ── 阶段①：加载掌握度图谱（短连接） ──
-        # P1-⑥：匿名请求不写 mastery，跳过 MasteryGraph 构造
-        graph = None
-        if req.user_id is not None:
-            async with async_session() as load_db:
-                graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(load_db))
-                await graph.load()
+        async with async_session() as load_db:
+            graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(load_db))
+            await graph.load()
 
         # ── 阶段②：运行协作环（不持 DB 连接） ──
         result = await asyncio.to_thread(
@@ -41,10 +39,9 @@ async def chat(req: ChatRequest):
         turn_count = None
         try:
             async with async_session() as persist_db:
-                if graph is not None:
-                    graph._store = SQLAlchemyMasteryStore(persist_db)
+                graph._store = SQLAlchemyMasteryStore(persist_db)
                 turn_index = await persist_turn(
-                    persist_db, session_id=req.session_id, user_id=req.user_id,
+                    persist_db, session_id=req.session_id, user_id=current_user["user_id"],
                     user_message=req.message, reply=result.reply, graph=graph,
                 )
             turn_count = (turn_index + 1) if turn_index is not None else None

@@ -1,13 +1,14 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.models.schemas import ChatRequest, ChatResponse
+from app.core.security import get_current_user
 from app.harness.enums import Stage
 
 router = APIRouter(prefix="/chat", tags=["chat-multi"])
 
 
 @router.post("/multi", response_model=ChatResponse)
-async def chat_multi(req: ChatRequest):
+async def chat_multi(req: ChatRequest, current_user: dict = Depends(get_current_user)):
     state = {
         "user_input": req.message,
         "routing": {}, "teaching": {}, "retrieval": {},
