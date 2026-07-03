@@ -31,7 +31,7 @@ def test_critic_emits_mastery_assessed_on_user_message(mock_llm_invoke_json):
         "mastery_score": 65,
         "rationale": "基本概念掌握，细节不足",
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("我觉得 RAG 应该是先搜再答"), ws)
     types = [e.type for e in out]
     assert EventType.MASTERY_ASSESSED in types
@@ -44,7 +44,7 @@ def test_critic_emits_mastery_assessed_on_user_message(mock_llm_invoke_json):
 def test_critic_handles_missing_optional_fields(mock_llm_invoke_json):
     # LLM 仅返回最小集合
     mock_llm_invoke_json({"critic_assess": {"mastery_level": "weak"}})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("不懂"), ws)
     assert any(e.type == EventType.MASTERY_ASSESSED for e in out)
     assert all(e.type != EventType.CONFUSION_DETECTED for e in out)
@@ -53,7 +53,7 @@ def test_critic_handles_missing_optional_fields(mock_llm_invoke_json):
 
 def test_critic_ignores_evidence_without_purpose_teaching(mock_llm_invoke_json):
     mock_llm_invoke_json({"critic_rag_quality": {"score": 0.4}})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     ev = Event(type=EventType.RETRIEVED_EVIDENCE, source=EventSource.RETRIEVER,
                session_id="s1", payload={"chunks": [], "purpose": "exploration"})
     out = CriticAgent().handle(ev, ws)
@@ -65,7 +65,7 @@ def test_critic_emits_confusion_when_present(mock_llm_invoke_json):
         "mastery_level": "partial",
         "confusion": {"concept_a": "retrieval", "concept_b": "augment"},
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("先搜，再给 LLM 处理"), ws)
     confusion = [e for e in out if e.type == EventType.CONFUSION_DETECTED]
     assert len(confusion) == 1
@@ -78,7 +78,7 @@ def test_critic_emits_contradiction_when_present(mock_llm_invoke_json):
         "mastery_level": "weak",
         "contradiction": {"description": "前后说 RAG 是又是微调又是检索"},
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("反复矛盾"), ws)
     assert any(e.type == EventType.CONTRADICTION_DETECTED for e in out)
 
@@ -88,7 +88,7 @@ def test_critic_emits_low_confidence(mock_llm_invoke_json):
         "mastery_level": "partial",
         "low_confidence": True,
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("可能…大概…"), ws)
     assert any(e.type == EventType.LOW_CONFIDENCE_DETECTED for e in out)
 
@@ -100,7 +100,7 @@ def test_critic_emits_all_observations_in_single_handle(mock_llm_invoke_json):
         "confusion": {"concept_a": "A", "concept_b": "B"},
         "low_confidence": True,
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = CriticAgent().handle(_user_msg("x"), ws)
     types = {e.type for e in out}
     assert types == {
@@ -115,7 +115,7 @@ def test_critic_emits_rag_quality_for_teaching_purpose(mock_llm_invoke_json):
         "score": 0.42, "relevance": 0.5, "sufficiency": 0.3,
         "rationale": "证据偏离主题",
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1", current_topic="RAG")
+    ws = WorkspaceState(session_id="s1", user_id=1, current_topic="RAG")
     ev = Event(type=EventType.RETRIEVED_EVIDENCE, source=EventSource.RETRIEVER,
                session_id="s1",
                payload={"chunks": [{"text": "..."}], "purpose": "teaching"})
@@ -128,14 +128,14 @@ def test_critic_emits_rag_quality_for_teaching_purpose(mock_llm_invoke_json):
 
 def test_critic_cannot_emit_tutor_event():
     # 越权防御（#14）
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     with pytest.raises(ValueError):
         CriticAgent().emit(EventType.TUTOR_ASKED, ws)
 
 
 def test_critic_cannot_emit_graph_prereq_weak():
     # 越权防御：结构层归 Curator（#15 切分）
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     with pytest.raises(ValueError):
         CriticAgent().emit(EventType.GRAPH_PREREQ_WEAK_DETECTED, ws)
 

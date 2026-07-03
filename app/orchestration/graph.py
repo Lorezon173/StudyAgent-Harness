@@ -31,7 +31,7 @@ class MainState(TypedDict, total=False):
     不要求跨步幂等回放）。
     """
     session_id: str
-    user_id: str
+    user_id: int
     enter_loop: bool
     stage: str
     visited: Annotated[list[str], operator.add]

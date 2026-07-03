@@ -8,7 +8,7 @@ from app.harness.mastery_graph import (
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
-async def _make_graph(user_id: str = "user_test"):
+async def _make_graph(user_id: int = 1):
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     store = MasteryGraphStore(db_path=path)
@@ -20,7 +20,7 @@ async def _make_graph(user_id: str = "user_test"):
 def test_create_graph_empty():
     async def _test():
         graph, store, path = await _make_graph()
-        assert graph.user_id == "user_test"
+        assert graph.user_id == 1
         assert len(graph.nodes) == 0
         assert len(graph.edges) == 0
         await store.close()
@@ -177,7 +177,7 @@ def test_graph_persist_roundtrip():
         graph.add_node("attn", "注意力", mastery=30)
         graph.add_doc_order_edge(from_topic="vec", to_topic="attn")
         await graph.save()
-        graph2 = MasteryGraph(user_id="user_test", store=store)
+        graph2 = MasteryGraph(user_id=1, store=store)
         await graph2.load()
         assert len(graph2.nodes) == 2
         assert graph2.nodes["vec"].mastery == 80

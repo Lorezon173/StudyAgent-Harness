@@ -12,7 +12,7 @@ def test_profile_reads_real_sessions_and_avg_mastery(db_fixture):
                 await SessionStore(db).save("s1", state={}, user_id=1, title="t1")
                 await SessionStore(db).save("s2", state={}, user_id=1, title="t2")
                 store = SQLAlchemyMasteryStore(db)
-                await store.save_nodes("1", [
+                await store.save_nodes(1, [
                     {"topic_id": "a", "topic_name": "a", "mastery": 70.0,
                      "last_practiced_at": 0, "practice_count": 1,
                      "confusion_with": [], "rationale": ""},

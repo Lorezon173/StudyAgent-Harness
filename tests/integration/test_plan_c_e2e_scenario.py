@@ -95,7 +95,7 @@ def test_socratic_feynman_analogy_mastered_loop_exit(mock_llm_invoke_json, _stor
               EventType.TUTOR_OFFERED_ANALOGY])
 
         orch = Orchestrator()
-        ws = WorkspaceState(session_id="e2e-1", user_id="u1",
+        ws = WorkspaceState(session_id="e2e-1", user_id=1,
                             current_topic="RAG")
         seeds = [
             Event(type=EventType.USER_MESSAGE, source=EventSource.USER,

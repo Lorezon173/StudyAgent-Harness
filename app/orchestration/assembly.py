@@ -97,7 +97,7 @@ def _read_cost(session_id: str) -> float | None:
         return None
 
 
-def build_new_stack(user_id: str, graph=None):
+def build_new_stack(user_id: int, graph=None):
     """装配 EventBus + 5 Agent + Orchestrator。返回 (bus, orchestrator, store)。
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
@@ -129,7 +129,7 @@ def build_new_stack(user_id: str, graph=None):
     return bus, orchestrator, store
 
 
-def run_new_agent_session(session_id: str, user_id: str, user_message: str,
+def run_new_agent_session(session_id: str, user_id: int, user_message: str,
                           current_topic: str | None = None,
                           graph=None, on_event=None) -> NewStackResult:
     """新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。

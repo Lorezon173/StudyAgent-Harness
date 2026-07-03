@@ -19,8 +19,8 @@ class Settings(BaseSettings):
 
     # RAG & Embedding 配置（阶段 A：真向量检索）
     rag_backend: str = "fake"  # "fake" | "pgvector"，默认 fake 保持测试兼容
-    embedding_model: str = "text-embedding-3-small"
-    embedding_dim: int = 1536
+    embedding_model: str = "doubao-embedding-vision"  # 火山引擎方舟 embedding 模型
+    embedding_dim: int = 2048  # doubao-embedding-vision 默认维度
 
     # JWT 配置（批次三 P0-③）
     jwt_secret_key: str = "dev-secret-change-me-in-production"

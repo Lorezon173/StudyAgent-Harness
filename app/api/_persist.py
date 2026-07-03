@@ -67,7 +67,7 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
 
         # 成功时清除 dirty-flag
         if user_id is not None:
-            DirtyFlag.clear_dirty(str(user_id))
+            DirtyFlag.clear_dirty(user_id)
 
         # 观测性：persist 成功
         try:

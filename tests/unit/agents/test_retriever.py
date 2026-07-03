@@ -8,7 +8,7 @@ from app.harness.workspace_state import WorkspaceState
 
 @pytest.fixture
 def ws():
-    return WorkspaceState(session_id="s1", user_id="u1")
+    return WorkspaceState(session_id="s1", user_id=1)
 
 
 @pytest.fixture

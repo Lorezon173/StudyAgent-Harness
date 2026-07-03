@@ -18,7 +18,7 @@ class UserProfile:
     前置依赖推理；UserProfile 关注学习偏好、进度、活跃主题。
     """
 
-    user_id: str
+    user_id: int
     store: MasteryGraphStore
     preferences: dict = field(default_factory=lambda: dict(DEFAULT_PREFERENCES))
     topics_active: list[str] = field(default_factory=list)

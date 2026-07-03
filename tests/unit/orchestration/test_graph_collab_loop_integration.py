@@ -46,7 +46,7 @@ def test_collab_loop_node_runs_when_runtime_present(mock_llm_invoke_json):
     try:
         bus = EventBus(store=store)
         runtime = build_collab_runtime(bus)
-        ws = WorkspaceState(session_id="s1", user_id="u1", current_topic="RAG")
+        ws = WorkspaceState(session_id="s1", user_id=1, current_topic="RAG")
         seeds = [Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                        session_id="s1", payload={"text": "我已经懂 RAG 了"})]
         g = build_main_graph()

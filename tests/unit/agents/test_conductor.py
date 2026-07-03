@@ -28,7 +28,7 @@ def test_conductor_observation_enough_emits_action(mock_llm_invoke_json):
         "reason": "复述虽然偏，但前置 OK，类比破解最优",
         "observation_enough": True,
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = ConductorAgent().handle(_request([
         {"type": "MasteryAssessed", "level": "partial"},
     ]), ws)
@@ -40,14 +40,14 @@ def test_conductor_observation_enough_emits_action(mock_llm_invoke_json):
 
 def test_conductor_cannot_emit_action_requested():
     # 越权防御（#16）：Conductor 不可直接 emit ActionRequested
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     with pytest.raises(ValueError):
         ConductorAgent().emit(EventType.ACTION_REQUESTED, ws)
 
 
 def test_conductor_cannot_emit_mastery_or_confusion():
     # 越权防御（#16）：Conductor 不能自产语义观察
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     with pytest.raises(ValueError):
         ConductorAgent().emit(EventType.MASTERY_ASSESSED, ws)
     with pytest.raises(ValueError):
@@ -61,7 +61,7 @@ def test_conductor_observation_insufficient_requests_critic(mock_llm_invoke_json
         "reason": "缺掌握度评估",
         "observation_enough": False,
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = ConductorAgent().handle(_request([]), ws)
     assert len(out) == 1
     assert out[0].payload["action"] == str(ActionKind.REQUEST_OBSERVATION)
@@ -76,7 +76,7 @@ def test_conductor_observation_insufficient_requests_curator(mock_llm_invoke_jso
         "reason": "缺前置依赖结构观察",
         "observation_enough": False,
     }})
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = ConductorAgent().handle(_request([
         {"type": "MasteryAssessed", "level": "weak"},
     ]), ws)
@@ -84,7 +84,7 @@ def test_conductor_observation_insufficient_requests_curator(mock_llm_invoke_jso
 
 
 def test_conductor_ignores_non_subscribed_event():
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     ev = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                session_id="s1")
     assert ConductorAgent().handle(ev, ws) == []

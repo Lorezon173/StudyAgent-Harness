@@ -66,7 +66,7 @@ def pg_provider():
                 user_id INTEGER,
                 scope TEXT DEFAULT 'global',
                 content TEXT NOT NULL,
-                embedding vector(1536),
+                embedding vector(2048),
                 source TEXT DEFAULT 'vector',
                 doc_id TEXT DEFAULT '',
                 metadata_json JSONB DEFAULT '{}'::jsonb,

@@ -14,7 +14,7 @@ class SQLAlchemyMasteryStore:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def save_nodes(self, user_id: str, nodes: list[dict]) -> None:
+    async def save_nodes(self, user_id: int, nodes: list[dict]) -> None:
         for n in nodes:
             row = await self.db.get(MasteryNodeTable, (user_id, n["topic_id"]))
             if row is None:
@@ -35,7 +35,7 @@ class SQLAlchemyMasteryStore:
                 row.confusion_with = n.get("confusion_with", [])
                 row.rationale = n.get("rationale", "")
 
-    async def load_nodes(self, user_id: str) -> dict[str, dict]:
+    async def load_nodes(self, user_id: int) -> dict[str, dict]:
         result = await self.db.execute(
             select(MasteryNodeTable).where(MasteryNodeTable.user_id == user_id)
         )
@@ -52,7 +52,7 @@ class SQLAlchemyMasteryStore:
             }
         return out
 
-    async def save_edges(self, user_id: str, edges: list[dict]) -> None:
+    async def save_edges(self, user_id: int, edges: list[dict]) -> None:
         for e in edges:
             result = await self.db.execute(
                 select(MasteryEdgeTable).where(
@@ -76,7 +76,7 @@ class SQLAlchemyMasteryStore:
                 row.confidence = e.get("confidence", 0.5)
                 row.source = e.get("source", "LLM_INFER")
 
-    async def load_edges(self, user_id: str) -> list[dict]:
+    async def load_edges(self, user_id: int) -> list[dict]:
         result = await self.db.execute(
             select(MasteryEdgeTable).where(MasteryEdgeTable.user_id == user_id)
         )

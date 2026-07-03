@@ -20,7 +20,7 @@ async def get_profile(db: AsyncSession = Depends(get_db), current_user: dict = D
 
     avg = await db.scalar(
         select(func.avg(MasteryNodeTable.mastery))
-        .where(MasteryNodeTable.user_id == str(user_id))
+        .where(MasteryNodeTable.user_id == user_id)
     )
     avg_mastery = int(round(avg)) if avg is not None else 0
 

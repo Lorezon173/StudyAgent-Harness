@@ -69,7 +69,7 @@ def test_run_new_agent_session_partial_drives_socratic_to_feynman(mock_llm_invok
         "tutor_request_recap": {"content": "请用你的话复述 RAG"},
     })
     result = run_new_agent_session(
-        session_id="asm-1", user_id="u1", user_message="帮我理解 RAG")
+        session_id="asm-1", user_id=1, user_message="帮我理解 RAG")
 
     assert isinstance(result, NewStackResult)
     # 最后一个 Tutor 事件是 recap（partial 触发 Socratic→Feynman→request_recap）
@@ -87,7 +87,7 @@ def test_run_new_agent_session_no_observation_still_replies(mock_llm_invoke_json
         "critic_assess": {},
     })
     result = run_new_agent_session(
-        session_id="asm-2", user_id="u2", user_message="随便聊聊")
+        session_id="asm-2", user_id=2, user_message="随便聊聊")
     assert result.reply == "开场引导问题"
     assert result.mastery_score is None
     assert result.mode_path == ["Socratic"]
@@ -103,7 +103,7 @@ def test_run_new_agent_session_no_emit_violation(mock_llm_invoke_json):
     })
     try:
         result = run_new_agent_session(
-            session_id="asm-3", user_id="u3", user_message="我已经懂了")
+            session_id="asm-3", user_id=3, user_message="我已经懂了")
     except EmitViolationError as e:
         raise AssertionError(f"出现越权 emit：{e}")
     assert result.reply  # 有回复
@@ -116,7 +116,7 @@ def test_run_new_agent_session_invokes_on_event(mock_llm_invoke_json):
     mock_llm_invoke_json({})
     seen = []
     result = run_new_agent_session(
-        "sess-onev", "u-onev", "什么是二分查找",
+        "sess-onev", 100, "什么是二分查找",
         on_event=lambda ev: seen.append(ev.type),
     )
     assert isinstance(result, NewStackResult)
@@ -127,8 +127,8 @@ def test_run_new_agent_session_accepts_external_graph(mock_llm_invoke_json):
     mock_llm_invoke_json({})
     from app.harness.mastery_graph import MasteryGraph
     from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
-    graph = MasteryGraph(user_id="u-ext", store=MasteryGraphStore(db_path=":memory:"))
+    graph = MasteryGraph(user_id=99, store=MasteryGraphStore(db_path=":memory:"))
     result = run_new_agent_session(
-        "sess-ext", "u-ext", "二分查找", graph=graph,
+        "sess-ext", 99, "二分查找", graph=graph,
     )
     assert isinstance(result, NewStackResult)

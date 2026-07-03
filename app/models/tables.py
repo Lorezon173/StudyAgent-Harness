@@ -63,7 +63,7 @@ class EvalTable(Base):
 
 class MasteryNodeTable(Base):
     __tablename__ = "mastery_nodes"
-    user_id = Column(String(64), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     topic_id = Column(String(512), primary_key=True)
     topic_name = Column(String(512), nullable=False, default="")
     mastery = Column(Float, nullable=False, default=0.0)
@@ -76,7 +76,7 @@ class MasteryNodeTable(Base):
 class MasteryEdgeTable(Base):
     __tablename__ = "mastery_edges"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(String(64), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     from_topic = Column(String(512), nullable=False)
     to_topic = Column(String(512), nullable=False)
     type = Column(String(16), nullable=False, default="PREREQ")
@@ -104,7 +104,7 @@ class VectorChunkTable(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     scope = Column(String(16), nullable=False, default="global", index=True)
     content = Column(Text, nullable=False)
-    embedding = Column(Vector(1536), nullable=True)  # PG: vector(1536); sqlite: 迁移时退化为 TEXT
+    embedding = Column(Vector(2048), nullable=True)  # PG: vector(2048); sqlite: 迁移时退化为 TEXT
     source = Column(String(16), nullable=False, default="vector")
     doc_id = Column(String(256), default="")
     metadata_json = Column(JSON, default=dict)  # 不能用 'metadata'（SQLAlchemy 保留字）

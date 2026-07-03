@@ -17,7 +17,7 @@ class _EchoTutor(AgentBase):
 
 
 def test_handle_emits_event_with_own_source():
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     trigger = Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                     session_id="s1")
     out = _EchoTutor().handle(trigger, ws)
@@ -29,7 +29,7 @@ def test_handle_emits_event_with_own_source():
 
 
 def test_emit_undeclared_type_raises():
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     agent = _EchoTutor()
     with pytest.raises(ValueError):
         agent.emit(EventType.CONFUSION_DETECTED, ws)   # 未在 emittable_types
@@ -37,7 +37,7 @@ def test_emit_undeclared_type_raises():
 
 def test_emitted_event_passes_bus_ownership():
     # AgentBase.emit 出的事件应天然通过 §3.2 全局白名单
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     ev = _EchoTutor().emit(EventType.TUTOR_ASKED, ws)
     check_ownership(ev)                              # 不抛错
 

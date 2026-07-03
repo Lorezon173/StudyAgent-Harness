@@ -8,7 +8,7 @@ import threading
 import time
 from typing import Dict, Tuple
 
-_dirty_users: Dict[str, Tuple[float, float]] = {}  # {user_id: (mark_time, ttl)}
+_dirty_users: Dict[int, Tuple[float, float]] = {}  # {user_id: (mark_time, ttl)}
 _lock = threading.Lock()
 _DEFAULT_TTL = 3600  # 1小时TTL
 
@@ -17,7 +17,7 @@ class DirtyFlag:
     """Dirty-flag 接口（阶段一：内存 Dict；阶段二：DB 字段）。"""
 
     @staticmethod
-    def mark_dirty(user_id: str, ttl: float = _DEFAULT_TTL) -> None:
+    def mark_dirty(user_id: int, ttl: float = _DEFAULT_TTL) -> None:
         """标记 user 为 dirty（persist 失败时调用）。
 
         Args:
@@ -33,7 +33,7 @@ class DirtyFlag:
             _dirty_users[user_id] = (time.time(), ttl)
 
     @staticmethod
-    def is_dirty(user_id: str) -> bool:
+    def is_dirty(user_id: int) -> bool:
         """检查 user 是否 dirty（load 前调用）。
 
         自动清理过期条目。
@@ -48,7 +48,7 @@ class DirtyFlag:
             return True
 
     @staticmethod
-    def clear_dirty(user_id: str) -> None:
+    def clear_dirty(user_id: int) -> None:
         """清除 dirty 标志（persist 成功时调用）。"""
         with _lock:
             _dirty_users.pop(user_id, None)

@@ -54,7 +54,7 @@ def test_rule_engine_unknown_observations_fallback_to_conductor():
 
 def test_observation_event_buffers_and_injects_tick():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = orch.on_event(Event(
         type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
         session_id="s1", payload={"level": "partial"}), ws)
@@ -65,7 +65,7 @@ def test_observation_event_buffers_and_injects_tick():
 
 def test_only_one_tick_injected_per_micro_turn():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out1 = orch.on_event(Event(
         type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
         session_id="s1", payload={"level": "weak"}), ws)
@@ -78,7 +78,7 @@ def test_only_one_tick_injected_per_micro_turn():
 
 def test_non_observation_event_no_buffer_no_tick():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out = orch.on_event(Event(
         type=EventType.TUTOR_ASKED, source=EventSource.TUTOR,
         session_id="s1"), ws)
@@ -87,7 +87,7 @@ def test_non_observation_event_no_buffer_no_tick():
 
 def test_tick_with_partial_mastery_emits_request_recap():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
                         source=EventSource.CRITIC, session_id="s1",
                         payload={"level": "partial"}), ws)
@@ -103,7 +103,7 @@ def test_tick_with_partial_mastery_emits_request_recap():
 
 def test_tick_with_prereq_observed_emits_regress():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED,
                         source=EventSource.CURATOR, session_id="s1",
                         payload={"basis": "observed", "prereq_topic": "X"}), ws)
@@ -116,7 +116,7 @@ def test_tick_with_prereq_observed_emits_regress():
 
 def test_tick_with_priority_prereq_over_confusion():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.CONFUSION_DETECTED,
                         source=EventSource.CRITIC, session_id="s1",
                         payload={"concept_a": "A", "concept_b": "B"}), ws)
@@ -132,7 +132,7 @@ def test_tick_with_priority_prereq_over_confusion():
 
 def test_tick_emits_policy_transition_when_mode_changes():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
                         source=EventSource.CRITIC, session_id="s1",
                         payload={"level": "partial"}), ws)
@@ -147,7 +147,7 @@ def test_tick_emits_policy_transition_when_mode_changes():
 
 def test_tick_clears_buffer_for_next_micro_turn():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
                         source=EventSource.CRITIC, session_id="s1",
                         payload={"level": "partial"}), ws)
@@ -162,7 +162,7 @@ def test_tick_clears_buffer_for_next_micro_turn():
 
 def test_tick_with_no_match_emits_conductor_requested():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     orch.on_event(Event(type=EventType.LOW_CONFIDENCE_DETECTED,
                         source=EventSource.CRITIC, session_id="s1",
                         payload={"signal": "user_uncertain"}), ws)
@@ -176,7 +176,7 @@ def test_tick_with_no_match_emits_conductor_requested():
 
 def test_conductor_decided_translated_to_action_requested():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     decided = Event(type=EventType.CONDUCTOR_DECIDED,
                     source=EventSource.CONDUCTOR, session_id="s1",
                     payload={"action": "tutor_offer_analogy", "target": "tutor",
@@ -191,7 +191,7 @@ def test_conductor_decided_translated_to_action_requested():
 
 def test_conductor_decided_request_observation_routes_to_critic():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     decided = Event(type=EventType.CONDUCTOR_DECIDED,
                     source=EventSource.CONDUCTOR, session_id="s1",
                     payload={"action": "request_observation",
@@ -205,7 +205,7 @@ def test_conductor_decided_request_observation_routes_to_critic():
 
 def test_conductor_decided_loop_exit_emits_loop_exit():
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     decided = Event(type=EventType.CONDUCTOR_DECIDED,
                     source=EventSource.CONDUCTOR, session_id="s1",
                     payload={"action": "loop_exit", "observation_enough": True})
@@ -216,7 +216,7 @@ def test_conductor_decided_loop_exit_emits_loop_exit():
 def test_barrier_blocks_routing_until_tick_arrives():
     """回合屏障专项：观察集不完整时 Orchestrator 绝不裁决（无 ActionRequested）。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     # 第一个观察到达：仅注入 Tick，不产 ActionRequested
     out1 = orch.on_event(Event(type=EventType.CONFUSION_DETECTED,
                                source=EventSource.CRITIC, session_id="s1",
@@ -245,7 +245,7 @@ def test_barrier_blocks_routing_until_tick_arrives():
 def test_barrier_handles_single_observation_correctly():
     """单观察场景：Tick 依然必要 — 屏障对所有观察一视同仁。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     out1 = orch.on_event(Event(type=EventType.MASTERY_ASSESSED,
                                source=EventSource.CRITIC, session_id="s1",
                                payload={"level": "mastered"}), ws)
@@ -268,7 +268,7 @@ def _feed_mastery_and_tick(orch, ws, level="mastered"):
 def test_mastered_in_socratic_emits_loop_exit():
     """Socratic + mastered → topic_complete=True → LoopExit（§4.2 第一行）。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1",
+    ws = WorkspaceState(session_id="s1", user_id=1,
                         current_mode=TeachingMode.SOCRATIC)
     out = _feed_mastery_and_tick(orch, ws, "mastered")
     assert any(e.type == EventType.LOOP_EXIT for e in out), \
@@ -278,7 +278,7 @@ def test_mastered_in_socratic_emits_loop_exit():
 def test_mastered_in_regress_does_not_exit():
     """Regress + mastered → 前置补齐回 Socratic，不出环（§4.2 Regress 行）。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1",
+    ws = WorkspaceState(session_id="s1", user_id=1,
                         current_mode=TeachingMode.REGRESS)
     out = _feed_mastery_and_tick(orch, ws, "mastered")
     assert not any(e.type == EventType.LOOP_EXIT for e in out), \
@@ -288,7 +288,7 @@ def test_mastered_in_regress_does_not_exit():
 def test_mastered_in_feynman_exits():
     """Feynman + mastered → topic_complete=True → 可直接出环（§4.3 示例简化）。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1",
+    ws = WorkspaceState(session_id="s1", user_id=1,
                         current_mode=TeachingMode.FEYNMAN)
     out = _feed_mastery_and_tick(orch, ws, "mastered")
     assert any(e.type == EventType.LOOP_EXIT for e in out), \
@@ -300,7 +300,7 @@ def test_mastered_in_feynman_exits():
 def test_repeat_count_allows_two_re_explains_then_falls_through():
     """连续 3 次 weak：前两次 re_explain，第三次穿透到 conductor（§3.4 规则）。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
 
     # 第 1 次 weak → repeat_count=0 < 2 → re_explain
     out1 = _feed_mastery_and_tick(orch, ws, "weak")
@@ -321,7 +321,7 @@ def test_repeat_count_allows_two_re_explains_then_falls_through():
 def test_repeat_count_resets_on_non_weak_mastery():
     """weak → weak → partial → weak：partial 重置计数，第 3 个 weak 视为新的第 1 次。"""
     orch = Orchestrator()
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
 
     _feed_mastery_and_tick(orch, ws, "weak")    # count 0 → 1
     _feed_mastery_and_tick(orch, ws, "weak")    # count 1 → 2

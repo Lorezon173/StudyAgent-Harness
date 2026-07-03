@@ -72,7 +72,7 @@ def test_loop_runs_until_queue_empty():
     bus, store, path = _bus()
     try:
         bus.subscribe(_AskOnce(), [EventType.USER_MESSAGE])
-        ws = WorkspaceState(session_id="s1", user_id="u1")
+        ws = WorkspaceState(session_id="s1", user_id=1)
         seed = Event(type=EventType.USER_MESSAGE, source=EventSource.USER, session_id="s1")
         run_collab_loop(bus, ws, [seed])
         types = [e.type for e in bus.replay("s1")]
@@ -87,7 +87,7 @@ def test_max_turns_fuse_stops_infinite_loop():
     bus, store, path = _bus()
     try:
         bus.subscribe(_LoopForever(), [EventType.USER_MESSAGE, EventType.TUTOR_ASKED])
-        ws = WorkspaceState(session_id="s1", user_id="u1")
+        ws = WorkspaceState(session_id="s1", user_id=1)
         seed = Event(type=EventType.USER_MESSAGE, source=EventSource.USER, session_id="s1")
         run_collab_loop(bus, ws, [seed], max_turns=5)
         assert ws.turn_count >= 5
@@ -100,7 +100,7 @@ def test_max_turns_fuse_stops_infinite_loop():
 def test_dual_seed_both_persisted():
     bus, store, path = _bus()
     try:
-        ws = WorkspaceState(session_id="s1", user_id="u1")
+        ws = WorkspaceState(session_id="s1", user_id=1)
         seeds = [
             Event(type=EventType.USER_MESSAGE, source=EventSource.USER, session_id="s1"),
             Event(type=EventType.TOPIC_ENTERED, source=EventSource.ORCHESTRATOR,
@@ -119,7 +119,7 @@ def test_orchestrator_hook_invoked_and_can_exit():
     bus, store, path = _bus()
     try:
         orch = _StubOrchestrator()
-        ws = WorkspaceState(session_id="s1", user_id="u1")
+        ws = WorkspaceState(session_id="s1", user_id=1)
         seed = Event(type=EventType.USER_MESSAGE, source=EventSource.USER, session_id="s1")
         run_collab_loop(bus, ws, [seed], orchestrator=orch)
         assert EventType.USER_MESSAGE in orch.seen
@@ -156,7 +156,7 @@ def test_on_event_callback_receives_every_published_event():
     bus, store, path = _bus()
     try:
         bus.subscribe(_AskOnce(), [EventType.USER_MESSAGE])
-        ws = WorkspaceState(session_id="s", user_id="u")
+        ws = WorkspaceState(session_id="s", user_id=1)
         seen = []
         seeds = [Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                        session_id="s", payload={"text": "hi"})]
@@ -175,7 +175,7 @@ def test_on_event_none_is_noop():
     bus, store, path = _bus()
     try:
         bus.subscribe(_AskOnce(), [EventType.USER_MESSAGE])
-        ws = WorkspaceState(session_id="s", user_id="u")
+        ws = WorkspaceState(session_id="s", user_id=1)
         seeds = [Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                        session_id="s", payload={"text": "hi"})]
         out = run_collab_loop(bus, ws, seeds, orchestrator=None)

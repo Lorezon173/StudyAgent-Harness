@@ -84,11 +84,12 @@ class PgVectorProvider(IndexProvider):
 
             if dialect == "postgresql":
                 # PostgreSQL: embedding 存为 pgvector 的 vector 类型
+                # 使用 CAST(:embedding AS vector) 避免 ::vector 与 psycopg3 参数解析冲突
                 emb_str = "[" + ",".join(map(str, emb)) + "]"
                 conn.execute(
                     text("""
                     INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, metadata_json)
-                    VALUES (:user_id, :scope, :content, :embedding::vector, :source, :doc_id, :metadata_json)
+                    VALUES (:user_id, :scope, :content, CAST(:embedding AS vector), :source, :doc_id, :metadata_json)
                     """),
                     {"user_id": user_id, "scope": scope, "content": content,
                      "embedding": emb_str, "source": source, "doc_id": doc_id,
@@ -129,10 +130,11 @@ class PgVectorProvider(IndexProvider):
 
         if dialect == "postgresql":
             # PostgreSQL: 用 pgvector 的 <=> 计算余弦距离
+            # 使用 CAST(:embedding AS vector) 避免 ::vector 与 psycopg3 参数解析冲突
             emb_str = "[" + ",".join(map(str, query_emb)) + "]"
             result = conn.execute(
                 text("""
-                SELECT content, embedding <=> :embedding::vector AS distance, source, doc_id, metadata_json
+                SELECT content, embedding <=> CAST(:embedding AS vector) AS distance, source, doc_id, metadata_json
                 FROM vector_chunks
                 ORDER BY distance
                 LIMIT :top_k

@@ -6,7 +6,7 @@ from app.harness.user_profile import UserProfile
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
-async def _make_profile(user_id: str = "user_test"):
+async def _make_profile(user_id: int = 1):
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     store = MasteryGraphStore(db_path=path)
@@ -18,7 +18,7 @@ async def _make_profile(user_id: str = "user_test"):
 def test_user_profile_defaults():
     async def _test():
         profile, store, path = await _make_profile()
-        assert profile.user_id == "user_test"
+        assert profile.user_id == 1
         assert profile.preferences == {"explanation_style": "verbal", "pace": "normal", "depth": "standard"}
         assert profile.topics_active == []
         assert profile.topics_mastered == []
@@ -76,7 +76,7 @@ def test_profile_persist_roundtrip():
         profile.sync_from_mastery({"linear_algebra": 0.9}, mastered_threshold=0.8)
         profile.increment_session()
         await profile.save()
-        profile2 = UserProfile(user_id="user_test", store=store)
+        profile2 = UserProfile(user_id=1, store=store)
         await profile2.load()
         assert profile2.preferences["explanation_style"] == "mathematical"
         assert profile2.preferences["depth"] == "deep"

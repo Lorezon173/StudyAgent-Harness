@@ -12,7 +12,7 @@ class WorkspaceState:
     Wave 1（Plan A/B）落地具体结构后可替换为强类型。
     """
     session_id: str
-    user_id: str
+    user_id: int
     current_topic: str | None = None
     current_mode: TeachingMode = TeachingMode.SOCRATIC
     turn_count: int = 0

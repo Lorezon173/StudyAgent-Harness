@@ -27,12 +27,12 @@ def test_persist_turn_saves_graph(db_fixture):
             from app.harness.mastery_graph import MasteryGraph
             from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
             async with session_factory() as db:
-                graph = MasteryGraph(user_id="1", store=SQLAlchemyMasteryStore(db))
+                graph = MasteryGraph(user_id=1, store=SQLAlchemyMasteryStore(db))
                 graph.add_node("二分查找", "二分查找", mastery=70.0)
                 await persist_turn(db, session_id="s2", user_id=1,
                                    user_message="二分", reply="r", graph=graph)
                 # 重新载入验证落库
-                graph2 = MasteryGraph(user_id="1", store=SQLAlchemyMasteryStore(db))
+                graph2 = MasteryGraph(user_id=1, store=SQLAlchemyMasteryStore(db))
                 await graph2.load()
             assert graph2.get_node("二分查找").mastery == 70.0
         finally:

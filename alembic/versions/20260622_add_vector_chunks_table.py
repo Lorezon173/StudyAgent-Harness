@@ -29,14 +29,14 @@ def upgrade() -> None:
 
     # 创建 vector_chunks 表，embedding 列根据 dialect 选择类型
     if dialect == "postgresql":
-        # PostgreSQL: 使用 pgvector 的 vector(1536) 类型
+        # PostgreSQL: 使用 pgvector 的 vector(2048) 类型
         op.execute("""
             CREATE TABLE vector_chunks (
                 id SERIAL PRIMARY KEY,
                 user_id INTEGER REFERENCES users(id),
                 scope VARCHAR(16) NOT NULL DEFAULT 'global',
                 content TEXT NOT NULL,
-                embedding vector(1536),
+                embedding vector(2048),
                 source VARCHAR(16) NOT NULL DEFAULT 'vector',
                 doc_id VARCHAR(256) DEFAULT '',
                 metadata_json JSON DEFAULT '{}',

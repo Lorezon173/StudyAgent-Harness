@@ -39,7 +39,7 @@ class _InMemoryStore:
 
 def test_ocr_content_retrievable_in_collab_loop():
     """OCR 索引的图片文本应可被 RetrieverAgent 检索到。"""
-    ws = WorkspaceState(session_id="s1", user_id="u1")
+    ws = WorkspaceState(session_id="s1", user_id=1)
     bus = EventBus(store=_InMemoryStore())
 
     retriever = RetrieverAgent()
@@ -112,7 +112,7 @@ def attention(query, key, value):
 
 def test_retrieval_status_ok_in_collab_loop():
     """有匹配内容时 retrieval_status=ok"""
-    ws = WorkspaceState(session_id="s2", user_id="u1")
+    ws = WorkspaceState(session_id="s2", user_id=1)
     bus = EventBus(store=_InMemoryStore())
 
     retriever = RetrieverAgent()
@@ -136,7 +136,7 @@ def test_retrieval_status_ok_in_collab_loop():
 
 def test_retrieval_status_empty_in_collab_loop():
     """无匹配内容时 retrieval_status=empty"""
-    ws = WorkspaceState(session_id="s3", user_id="u1")
+    ws = WorkspaceState(session_id="s3", user_id=1)
     bus = EventBus(store=_InMemoryStore())
 
     retriever = RetrieverAgent()
@@ -157,7 +157,7 @@ def test_retrieval_status_empty_in_collab_loop():
 
 def test_retrieval_event_source_is_retriever():
     """产出事件 source 必须为 retriever（白名单合规）"""
-    ws = WorkspaceState(session_id="s4", user_id="u1")
+    ws = WorkspaceState(session_id="s4", user_id=1)
     bus = EventBus(store=_InMemoryStore())
 
     retriever = RetrieverAgent()

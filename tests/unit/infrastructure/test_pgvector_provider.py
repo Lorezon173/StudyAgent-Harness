@@ -19,7 +19,7 @@ from app.infrastructure.rag.coordinator import Chunk
 class FakeEmbeddingService:
     """[MOCK:阶段A] 假 embedding 服务，返回固定向量用于测试。"""
 
-    def __init__(self, dim=1536):
+    def __init__(self, dim=2048):
         self._dim = dim
 
     @property
@@ -117,7 +117,7 @@ def test_index_single_doc(sqlite_provider):
     # 验证 embedding 存为 JSON 字符串
     embedding = json.loads(row[1])
     assert isinstance(embedding, list)
-    assert len(embedding) == 1536
+    assert len(embedding) == 2048
 
     # 验证 metadata
     metadata = json.loads(row[2])

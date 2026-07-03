@@ -12,7 +12,7 @@ from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
-async def _setup_curator(user_id: str = "user_1",
+async def _setup_curator(user_id: int = 1,
                          session_id: str = "s1",
                          current_topic: str = "attention"):
     fd, path = tempfile.mkstemp(suffix=".db")

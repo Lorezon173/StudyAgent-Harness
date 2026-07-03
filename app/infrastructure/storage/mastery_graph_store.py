@@ -22,7 +22,7 @@ class MasteryGraphStore:
         self._db = await aiosqlite.connect(self._db_path)
         await self._db.executescript("""
             CREATE TABLE IF NOT EXISTS mastery_nodes (
-                user_id TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
                 topic_id TEXT NOT NULL,
                 topic_name TEXT NOT NULL DEFAULT '',
                 mastery REAL NOT NULL DEFAULT 0.0,
@@ -33,7 +33,7 @@ class MasteryGraphStore:
             );
             CREATE TABLE IF NOT EXISTS mastery_edges (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
                 from_topic TEXT NOT NULL,
                 to_topic TEXT NOT NULL,
                 type TEXT NOT NULL DEFAULT 'PREREQ',
@@ -45,7 +45,7 @@ class MasteryGraphStore:
             CREATE INDEX IF NOT EXISTS idx_edges_user_from ON mastery_edges(user_id, from_topic);
             CREATE INDEX IF NOT EXISTS idx_edges_user_to ON mastery_edges(user_id, to_topic);
             CREATE TABLE IF NOT EXISTS user_profile_l3 (
-                user_id TEXT PRIMARY KEY,
+                user_id INTEGER PRIMARY KEY,
                 preferences_json TEXT NOT NULL DEFAULT '{}',
                 topics_active_json TEXT NOT NULL DEFAULT '[]',
                 topics_mastered_json TEXT NOT NULL DEFAULT '[]',
@@ -60,7 +60,7 @@ class MasteryGraphStore:
             await self._db.close()
             self._db = None
 
-    async def save_nodes(self, user_id: str, nodes: list[dict]) -> None:
+    async def save_nodes(self, user_id: int, nodes: list[dict]) -> None:
         """批量 upsert 节点。每个 dict 含 topic_id, topic_name, mastery, last_practiced_at, practice_count, confusion_with。"""
         for n in nodes:
             await self._db.execute(
@@ -75,7 +75,7 @@ class MasteryGraphStore:
             )
         await self._db.commit()
 
-    async def load_nodes(self, user_id: str) -> dict[str, dict]:
+    async def load_nodes(self, user_id: int) -> dict[str, dict]:
         """返回 {topic_id: {topic_id, topic_name, mastery, ...}}。"""
         cursor = await self._db.execute(
             "SELECT topic_id, topic_name, mastery, last_practiced_at, practice_count, confusion_with "
@@ -94,7 +94,7 @@ class MasteryGraphStore:
             }
         return result
 
-    async def save_edges(self, user_id: str, edges: list[dict]) -> None:
+    async def save_edges(self, user_id: int, edges: list[dict]) -> None:
         """批量 upsert 边。每个 dict 含 from_topic, to_topic, type, weight, confidence, source。"""
         for e in edges:
             await self._db.execute(
@@ -107,7 +107,7 @@ class MasteryGraphStore:
             )
         await self._db.commit()
 
-    async def load_edges(self, user_id: str) -> list[dict]:
+    async def load_edges(self, user_id: int) -> list[dict]:
         """返回 [{id, from_topic, to_topic, type, weight, confidence, source}, ...]。"""
         cursor = await self._db.execute(
             "SELECT id, from_topic, to_topic, type, weight, confidence, source "
@@ -120,7 +120,7 @@ class MasteryGraphStore:
             for row in rows
         ]
 
-    async def save_profile(self, user_id: str, profile: dict) -> None:
+    async def save_profile(self, user_id: int, profile: dict) -> None:
         """写入 L3 画像。profile 含 preferences, topics_active, topics_mastered, learning_streak, total_sessions。"""
         await self._db.execute(
             """INSERT OR REPLACE INTO user_profile_l3
@@ -136,7 +136,7 @@ class MasteryGraphStore:
         )
         await self._db.commit()
 
-    async def load_profile(self, user_id: str) -> dict | None:
+    async def load_profile(self, user_id: int) -> dict | None:
         """读取 L3 画像，不存在返回 None。"""
         cursor = await self._db.execute(
             "SELECT preferences_json, topics_active_json, topics_mastered_json, "

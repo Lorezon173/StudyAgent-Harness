@@ -52,7 +52,7 @@ class MasteryGraph:
     - load / save：与 MasteryGraphStore 交互持久化
     """
 
-    def __init__(self, user_id: str, store):
+    def __init__(self, user_id: int, store):
         self.user_id = user_id
         self._store = store
         self.nodes: dict[str, MasteryNode] = {}

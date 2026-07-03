@@ -21,16 +21,16 @@ logger = logging.getLogger(__name__)
 async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
     if use_new_agent_graph():
         from app.orchestration.assembly import run_new_agent_session
-        uid_str = str(current_user["user_id"])
+        uid_int = current_user["user_id"]
 
         # ── 阶段①：加载掌握度图谱（短连接） ──
         async with async_session() as load_db:
-            graph = MasteryGraph(user_id=uid_str, store=SQLAlchemyMasteryStore(load_db))
+            graph = MasteryGraph(user_id=uid_int, store=SQLAlchemyMasteryStore(load_db))
             await graph.load()
 
         # ── 阶段②：运行协作环（不持 DB 连接） ──
         result = await asyncio.to_thread(
-            run_new_agent_session, req.session_id, uid_str, req.message,
+            run_new_agent_session, req.session_id, uid_int, req.message,
             None, graph,
         )
 

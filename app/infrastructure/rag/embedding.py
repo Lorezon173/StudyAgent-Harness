@@ -37,13 +37,12 @@ class EmbeddingService:
 
     @property
     def client(self):
-        """懒加载 OpenAI embedding client。"""
+        """懒加载 OpenAI embedding client（直接用 OpenAI SDK，避免 langchain 预分词问题）。"""
         if self._client is None:
-            from langchain_openai import OpenAIEmbeddings
-            self._client = OpenAIEmbeddings(
-                model=self.model,
-                openai_api_key=self.api_key,
-                openai_api_base=self.base_url or None,
+            from openai import OpenAI
+            self._client = OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url or None,
             )
         return self._client
 
@@ -78,14 +77,23 @@ class EmbeddingService:
         if not non_empty_texts:
             return [[0.0] * self.dim] * len(texts)
 
-        embeddings = self.client.embed_documents(non_empty_texts)
+        # 分批调用 API（方舟限制：单次最多 10 条）
+        BATCH_SIZE = 10
+        all_embeddings = []
+        for i in range(0, len(non_empty_texts), BATCH_SIZE):
+            batch = non_empty_texts[i:i + BATCH_SIZE]
+            response = self.client.embeddings.create(
+                model=self.model,
+                input=batch,
+            )
+            all_embeddings.extend([item.embedding for item in response.data])
 
         # 将结果映射回原始索引位置
         result = []
         embed_idx = 0
         for i, text in enumerate(texts):
             if text:
-                result.append(embeddings[embed_idx])
+                result.append(all_embeddings[embed_idx])
                 embed_idx += 1
             else:
                 result.append([0.0] * self.dim)
