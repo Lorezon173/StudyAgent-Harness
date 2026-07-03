@@ -10,8 +10,10 @@ import bcrypt
 from jose import jwt, JWTError
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.database import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -36,13 +38,24 @@ def create_access_token(user_id: int) -> str:
     )
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
-    """FastAPI 依赖：验签 + 检查过期 + 提取 user_id。"""
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """FastAPI 依赖：验签 + 检查过期 + 提取 user_id + 确认用户仍存在。"""
     try:
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=["HS256"])
         user_id = payload.get("user_id")
         if user_id is None:
             raise HTTPException(status_code=401, detail="无效 token")
+
+        # S5: 确认用户仍存在于数据库（延迟 import 避免循环依赖）
+        from app.infrastructure.storage.user_store import UserStore
+        store = UserStore(db)
+        user = await store.find_by_id(user_id)
+        if user is None:
+            raise HTTPException(status_code=401, detail="用户不存在")
+
         return {"user_id": user_id}
     except JWTError:
         raise HTTPException(status_code=401, detail="token 验证失败")

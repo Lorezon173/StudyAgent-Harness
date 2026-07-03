@@ -36,3 +36,14 @@ class UserStore:
             if u["username"] == username:
                 return u
         return None
+
+    async def find_by_id(self, user_id: int) -> dict | None:
+        if self.db:
+            result = await self.db.execute(
+                select(UserTable).where(UserTable.id == user_id)
+            )
+            user = result.scalar_one_or_none()
+            if user:
+                return {"id": user.id, "username": user.username, "password_hash": user.password_hash}
+            return None
+        return self._memory.get(user_id)

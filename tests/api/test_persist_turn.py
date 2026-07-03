@@ -85,6 +85,7 @@ async def test_persist_success_returns_turn_index_and_clears_dirty():
         mock_store.return_value.add = AsyncMock()
 
         # 设置 SessionStore 实例的方法
+        mock_session.return_value.get = AsyncMock(return_value=None)
         mock_session.return_value.save = AsyncMock()
 
         result = await persist_turn(db, "sess1", 1, "user msg", "reply", graph)
@@ -142,6 +143,7 @@ async def test_persist_operational_error_returns_none_and_logs():
         # MessageStore/SessionStore 需要 AsyncMock 才能 await
         mock_store.return_value.list_by_session = AsyncMock(return_value=[])
         mock_store.return_value.add = AsyncMock()
+        mock_session.return_value.get = AsyncMock(return_value=None)
         mock_session.return_value.save = AsyncMock()
 
         result = await persist_turn(db, "sess1", 1, "msg", "reply", None)

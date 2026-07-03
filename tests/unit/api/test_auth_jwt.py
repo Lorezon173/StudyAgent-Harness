@@ -7,75 +7,104 @@ Verifies:
 - login nonexistent user → 401
 - password stored as bcrypt hash (not plaintext)
 """
+import asyncio
+
+import pytest
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from starlette.testclient import TestClient
 
 from app.main import app
+from app.core.database import Base, get_db
 from app.core.security import verify_password
 
 
-def test_register_returns_token():
+@pytest.fixture()
+def client():
+    """Create a TestClient with in-memory SQLite, tables pre-created."""
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+    async def _setup():
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        return await factory().__aenter__()
+
+    loop = asyncio.new_event_loop()
+    session = loop.run_until_complete(_setup())
+
+    async def _override():
+        yield session
+
+    app.dependency_overrides[get_db] = _override
+    try:
+        with TestClient(app) as c:
+            yield c, session, loop
+    finally:
+        app.dependency_overrides.clear()
+        loop.run_until_complete(session.close())
+        loop.run_until_complete(engine.dispose())
+        loop.close()
+
+
+def test_register_returns_token(client):
     """register 返回非 null 的 JWT token。"""
-    client = TestClient(app)
-    resp = client.post("/api/auth/register",
-                       json={"username": "token_user1", "password": "pass123"})
+    c, _, _ = client
+    resp = c.post("/api/auth/register",
+                  json={"username": "token_user1", "password": "pass123"})
     assert resp.status_code == 200
     data = resp.json()
     assert data["token"] is not None
     assert len(data["token"]) > 0
 
 
-def test_login_returns_token():
+def test_login_returns_token(client):
     """login 返回非 null 的 JWT token。"""
-    client = TestClient(app)
-    client.post("/api/auth/register",
-                json={"username": "token_user2", "password": "pass123"})
-    resp = client.post("/api/auth/login",
-                       json={"username": "token_user2", "password": "pass123"})
+    c, _, _ = client
+    c.post("/api/auth/register",
+           json={"username": "token_user2", "password": "pass123"})
+    resp = c.post("/api/auth/login",
+                  json={"username": "token_user2", "password": "pass123"})
     assert resp.status_code == 200
     data = resp.json()
     assert data["token"] is not None
 
 
-def test_login_wrong_password_401():
+def test_login_wrong_password_401(client):
     """login 错误密码 → 401。"""
-    client = TestClient(app)
-    client.post("/api/auth/register",
-                json={"username": "token_user3", "password": "correct"})
-    resp = client.post("/api/auth/login",
-                       json={"username": "token_user3", "password": "wrong"})
+    c, _, _ = client
+    c.post("/api/auth/register",
+           json={"username": "token_user3", "password": "correct"})
+    resp = c.post("/api/auth/login",
+                  json={"username": "token_user3", "password": "wrong"})
     assert resp.status_code == 401
 
 
-def test_login_nonexistent_user_401():
+def test_login_nonexistent_user_401(client):
     """login 不存在的用户 → 401。"""
-    client = TestClient(app)
-    resp = client.post("/api/auth/login",
-                       json={"username": "no_such_user_xyz", "password": "anything"})
+    c, _, _ = client
+    resp = c.post("/api/auth/login",
+                  json={"username": "no_such_user_xyz", "password": "anything"})
     assert resp.status_code == 401
 
 
-def test_password_stored_as_hash():
+def test_password_stored_as_hash(client):
     """register 后密码以 bcrypt 哈希存储，非明文。"""
-    import asyncio
-    from app.infrastructure.storage.user_store import UserStore
+    from sqlalchemy import text
 
-    store = UserStore()  # 内存模式（与 auth.py 共享同一实例）
+    c, session, loop = client
+    c.post("/api/auth/register",
+           json={"username": "hash_check_user", "password": "my_secret"})
 
-    async def _test():
-        # 先注册（通过 API 走完整流程）
-        client = TestClient(app)
-        client.post("/api/auth/register",
-                    json={"username": "hash_check_user", "password": "my_secret"})
-        # 直接从 store 读取（auth.py 的 _store 是模块级单例）
-        from app.api.auth import _store
-        user = await _store.find_by_username("hash_check_user")
-        assert user is not None
-        stored = user["password_hash"]
-        # 不是明文
+    async def _check():
+        result = await session.execute(
+            text("SELECT password_hash FROM users WHERE username = :u"),
+            {"u": "hash_check_user"},
+        )
+        row = result.fetchone()
+        assert row is not None
+        stored = row[0]
         assert stored != "my_secret"
-        # 是 bcrypt 哈希
         assert stored.startswith("$2b$")
-        # 可以验证
         assert verify_password("my_secret", stored) is True
 
-    asyncio.run(_test())
+    loop.run_until_complete(_check())

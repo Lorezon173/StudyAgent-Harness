@@ -20,9 +20,14 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Backfill historical sessions with user_id=1 (dev environment)."""
+    # 检查 user_id=1 是否存在，不存在则跳过
+    conn = op.get_bind()
+    result = conn.execute(sa.text("SELECT 1 FROM users WHERE id = 1")).scalar()
+    if result is None:
+        print("[migration] WARNING: user_id=1 does not exist, skipping backfill")
+        return
     # 历史会话（user_id=NULL）分配给第一个用户（user_id=1）
-    # 假设 dev 环境有 user_id=1 的测试用户
-    op.execute("UPDATE sessions SET user_id = 1 WHERE user_id IS NULL")
+    conn.execute(sa.text("UPDATE sessions SET user_id = 1 WHERE user_id IS NULL"))
 
 
 def downgrade() -> None:

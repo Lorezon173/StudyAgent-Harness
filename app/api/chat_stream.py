@@ -64,7 +64,7 @@ async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current
                 error_event = {
                     "type": "error",
                     "code": "AGENT_ERROR",
-                    "message": str(e),
+                    "message": "处理过程中发生错误",
                     "retryable": False,
                 }
                 yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"

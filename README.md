@@ -163,7 +163,7 @@ app/specs/
 | RAG | 自研多 Provider 协调器；pgvector ≥0.3 真向量；可选 LlamaIndex + Chroma（`--extra rag`） |
 | ORM | SQLAlchemy 2.0 async + Alembic；PG 用 asyncpg，开发用 aiosqlite |
 | 可观测性 | Langfuse ≥2.0（生产）/ Console（开发）+ SessionStats |
-| 评估 | ragas 0.4.3（faithfulness / answer_relevancy / context_precision / context_recall）+ 不同族 judge 校验 |
+| 评估 | ragas 0.4.3（faithfulness / answer_relevancy / context_precision / context_recall）+ deepeval（G-Eval 教学三维度，Phase 3）+ 不同族 judge 校验 |
 | 认证 | bcrypt（密码哈希，弃用 passlib）+ python-jose（JWT HS256） |
 | 任务队列 | Celery + Redis（可选 `--extra worker`，当前为桩） |
 | UI | Chainlit（可选 `--extra ui`，当前为桩）；Web 前端用 React |
@@ -220,7 +220,7 @@ uv sync
 
 # 可选 extras（按需）
 uv sync --extra rag      # LlamaIndex + Chroma 检索
-uv sync --extra eval     # ragas 评估
+uv sync --extra eval     # ragas + deepeval 评估
 uv sync --extra worker   # Celery 异步任务
 uv sync --extra ui       # Chainlit 界面
 

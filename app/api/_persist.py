@@ -1,4 +1,5 @@
 import logging
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, OperationalError, DatabaseError
 
@@ -18,6 +19,15 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
     成功一次 commit（C3）。
     """
     try:
+        # S1 IDOR 防护：若会话已存在且归属其他用户，拒绝写入
+        session_store = SessionStore(db)
+        existing_session = await session_store.get(session_id)
+        if (existing_session is not None
+                and existing_session.get("user_id") is not None
+                and user_id is not None
+                and existing_session["user_id"] != user_id):
+            raise HTTPException(status_code=403, detail="无权写入该会话")
+
         existing = await MessageStore(db).list_by_session(session_id)
         turn_index = len(existing) // 2
 
@@ -25,12 +35,35 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
         if len(existing) == 0:
             title = user_message.strip()[:24] if user_message.strip() else "新会话"
 
-        await SessionStore(db).save(session_id, state={}, user_id=user_id, title=title)
-        await MessageStore(db).add(session_id, "user", user_message, turn_index)
-        await MessageStore(db).add(session_id, "assistant", reply, turn_index)
-        if graph is not None:
-            await graph.save()
-        await db.commit()
+        await session_store.save(session_id, state={}, user_id=user_id, title=title)
+        try:
+            await MessageStore(db).add(session_id, "user", user_message, turn_index)
+            await MessageStore(db).add(session_id, "assistant", reply, turn_index)
+            if graph is not None:
+                await graph.save()
+            await db.commit()
+        except IntegrityError:
+            # M1 竞态降级：并发请求可能算出相同 turn_index，重新查询并重试一次
+            await db.rollback()
+            existing = await MessageStore(db).list_by_session(session_id)
+            turn_index = len(existing) // 2
+            try:
+                await MessageStore(db).add(session_id, "user", user_message, turn_index)
+                await MessageStore(db).add(session_id, "assistant", reply, turn_index)
+                if graph is not None:
+                    await graph.save()
+                await db.commit()
+            except IntegrityError as e:
+                await db.rollback()
+                try:
+                    get_observability().log("error", "persist_failure", {
+                        "session_id": session_id,
+                        "reason": "integrity_conflict_retry_exhausted",
+                        "error": str(e)
+                    })
+                except Exception as obs_err:
+                    logger.warning(f"Failed to log persist_failure: {obs_err}")
+                return None
 
         # 成功时清除 dirty-flag
         if user_id is not None:
@@ -43,6 +76,9 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
             logger.warning(f"Failed to log persist_success: {obs_err}")
 
         return turn_index
+    except HTTPException:
+        # S1 IDOR 拒绝 —— 不吞异常，直接向上抛
+        raise
     except IntegrityError as e:
         await db.rollback()
         try:
