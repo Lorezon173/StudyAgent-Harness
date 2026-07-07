@@ -72,29 +72,40 @@ def test_knowledge_crud():
     assert resp3.status_code == 200
 
 
-def test_sessions_empty():
+def test_sessions_empty(auth_headers):
     from starlette.testclient import TestClient
     client = TestClient(app)
-    resp = client.get("/api/sessions")
+    resp = client.get("/api/sessions", headers=auth_headers())
     assert resp.status_code == 200
 
 
-def test_eval_empty():
-    from starlette.testclient import TestClient
-    from app.core.security import get_current_user
-    app.dependency_overrides[get_current_user] = lambda: {"user_id": 1}
-    try:
-        client = TestClient(app)
-        resp = client.get("/api/eval/test-session")
-        assert resp.status_code == 200
-        assert isinstance(resp.json(), list)
-    finally:
-        app.dependency_overrides.pop(get_current_user, None)
+def test_eval_empty(db_client, auth_headers):
+    """GET /api/eval/{session_id} 返回 eval 列表；需 seed session 通过所有权校验。"""
+    import asyncio
+    from app.infrastructure.storage.session_store import SessionStore
+
+    # db_client 已 override get_db 到一个固定 session；seed 同一 session
+    loop = asyncio.new_event_loop()
+
+    async def _seed():
+        gen = app.dependency_overrides[get_db]()
+        db = await gen.__anext__()
+        try:
+            await SessionStore(db).save("test-session", state={}, user_id=1, title="t")
+            await db.commit()
+        finally:
+            await gen.aclose()
+    loop.run_until_complete(_seed())
+    loop.close()
+
+    resp = db_client.get("/api/eval/test-session", headers=auth_headers())
+    assert resp.status_code == 200
+    assert isinstance(resp.json(), list)
 
 
-def test_profile():
+def test_profile(auth_headers):
     from starlette.testclient import TestClient
     client = TestClient(app)
-    resp = client.get("/api/profile/1")
+    resp = client.get("/api/profile/", headers=auth_headers())
     assert resp.status_code == 200
     assert resp.json()["user_id"] == 1

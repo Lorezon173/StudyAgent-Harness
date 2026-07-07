@@ -10,7 +10,7 @@ import os
 import tempfile
 
 
-def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch):
+def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch, auth_headers):
     """Collab loop raises → SSE yields structured error event, stream ends cleanly."""
     from fastapi.testclient import TestClient
     from sqlalchemy import create_engine
@@ -39,7 +39,8 @@ def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch):
     try:
         client = TestClient(app)
         with client.stream("POST", "/api/chat/stream",
-                           json={"message": "hi", "session_id": "st-err", "user_id": 1}) as r:
+                           json={"message": "hi", "session_id": "st-err", "user_id": 1},
+                           headers=auth_headers()) as r:
             body = "".join(chunk for chunk in r.iter_text())
     finally:
         try:
@@ -60,7 +61,8 @@ def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch):
 
     err = error_events[0]
     assert err["code"] == "AGENT_ERROR"
-    assert err["message"] == "agent boom"
+    # chat_stream.py 用通用错误信息屏蔽内部异常细节（不外泄 "agent boom"）
+    assert err["message"] == "处理过程中发生错误"
     assert err["retryable"] is False
 
     # No final event when agent crashes (stream ends with error)

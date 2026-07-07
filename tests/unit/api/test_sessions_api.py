@@ -47,6 +47,9 @@ async def _seed_session(session):
 
 
 async def _seed_messages(session):
+    """Seed a session owned by user_id=1 + 2 messages for it (needed for ownership check)."""
+    sess_store = SessionStore(session)
+    await sess_store.save("sess-msg", {"foo": "bar"}, user_id=1, title="Msg Session")
     store = MessageStore(session)
     await store.add("sess-msg", "user", "hello", turn_index=0)
     await store.add("sess-msg", "assistant", "hi there", turn_index=1)
@@ -74,23 +77,22 @@ def _cleanup_client(client):
 # ── Tests ──
 
 
-def test_list_sessions_no_user_id():
-    """GET /api/sessions without user_id returns []."""
+def test_list_sessions_no_user_id(auth_headers):
+    """GET /api/sessions 无 token → 401（无鉴权头被鉴权层拦截）。"""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
     try:
         client = _make_client(session)
         try:
             resp = client.get("/api/sessions")
-            assert resp.status_code == 200
-            assert resp.json() == []
+            assert resp.status_code == 401
         finally:
             _cleanup_client(client)
     finally:
         _close_db(engine, session)
 
 
-def test_list_sessions_with_user_id():
+def test_list_sessions_with_user_id(auth_headers):
     """GET /api/sessions?user_id=1 returns SessionSummary list."""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
@@ -98,7 +100,7 @@ def test_list_sessions_with_user_id():
         _run(_seed_session(session))
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions?user_id=1")
+            resp = client.get("/api/sessions?user_id=1", headers=auth_headers())
             assert resp.status_code == 200
             data = resp.json()
             assert isinstance(data, list)
@@ -112,14 +114,14 @@ def test_list_sessions_with_user_id():
         _close_db(engine, session)
 
 
-def test_list_sessions_with_user_id_no_results():
+def test_list_sessions_with_user_id_no_results(auth_headers):
     """GET /api/sessions?user_id=999 returns []."""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
     try:
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions?user_id=999")
+            resp = client.get("/api/sessions?user_id=999", headers=auth_headers())
             assert resp.status_code == 200
             assert resp.json() == []
         finally:
@@ -128,14 +130,19 @@ def test_list_sessions_with_user_id_no_results():
         _close_db(engine, session)
 
 
-def test_get_session_messages_empty():
-    """GET /api/sessions/{id}/messages returns [] when no messages."""
+def test_get_session_messages_empty(auth_headers):
+    """GET /api/sessions/{id}/messages returns [] when session exists but has no messages.
+
+    Task 11 给该端点加了所有权校验：会话必须存在且 user_id 匹配 token。
+    故需 seed 一个空消息会话，而非测不存在的 session_id。
+    """
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
     try:
+        _run(_seed_session(session))  # seed sess-1 owned by user_id=1
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions/nonexistent/messages")
+            resp = client.get("/api/sessions/sess-1/messages", headers=auth_headers())
             assert resp.status_code == 200
             assert resp.json() == []
         finally:
@@ -144,7 +151,7 @@ def test_get_session_messages_empty():
         _close_db(engine, session)
 
 
-def test_get_session_messages():
+def test_get_session_messages(auth_headers):
     """GET /api/sessions/{id}/messages returns MessageItem list."""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
@@ -152,7 +159,7 @@ def test_get_session_messages():
         _run(_seed_messages(session))
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions/sess-msg/messages")
+            resp = client.get("/api/sessions/sess-msg/messages", headers=auth_headers())
             assert resp.status_code == 200
             data = resp.json()
             assert isinstance(data, list)
@@ -167,14 +174,14 @@ def test_get_session_messages():
         _close_db(engine, session)
 
 
-def test_get_session_not_found():
+def test_get_session_not_found(auth_headers):
     """GET /api/sessions/{id} returns 404."""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
     try:
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions/nonexistent")
+            resp = client.get("/api/sessions/nonexistent", headers=auth_headers())
             assert resp.status_code == 404
         finally:
             _cleanup_client(client)
@@ -182,7 +189,7 @@ def test_get_session_not_found():
         _close_db(engine, session)
 
 
-def test_get_session_found():
+def test_get_session_found(auth_headers):
     """GET /api/sessions/{id} returns SessionResponse."""
     engine, factory = _make_db_ctx()
     session = _init_and_open(engine, factory)
@@ -190,7 +197,7 @@ def test_get_session_found():
         _run(_seed_session(session))
         client = _make_client(session)
         try:
-            resp = client.get("/api/sessions/sess-1")
+            resp = client.get("/api/sessions/sess-1", headers=auth_headers())
             assert resp.status_code == 200
             data = resp.json()
             assert data["session_id"] == "sess-1"

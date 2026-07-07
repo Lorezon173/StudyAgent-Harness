@@ -1,13 +1,11 @@
-"""Tests for P1-⑥ anonymous user doesn't write mastery (Task 8).
+"""Tests for Task 11 鉴权后的匿名端点行为。
 
-Verifies:
-- user_id=None → MasteryGraph NOT constructed (no "anonymous" graph pollution)
-- user_id=None → HTTP 200 + reply still returned
-- user_id=None → messages still persist to DB
-- Both non-streaming (chat.py) and streaming (chat_stream.py) endpoints
+Task 11 给 chat / chat_stream 加了 Depends(get_current_user)。
+此前（Task 8）测试 user_id=None 是否跳过 MasteryGraph；现在无 token 的请求
+会被鉴权层挡在 401，根本到不了业务逻辑。
+故此文件改为验证：未带 Authorization → 401，保护业务逻辑不被匿名流量触达。
 """
 import asyncio
-import json
 import os
 import tempfile
 from contextlib import asynccontextmanager
@@ -33,10 +31,10 @@ def _make_client_for_chat(monkeypatch, db_session):
 
 
 def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
-    """user_id=None → MasteryGraph NOT constructed, reply still returned."""
+    """无 Authorization → 401，业务逻辑（含 MasteryGraph 构造）不被触达。"""
     from unittest.mock import patch
 
-    # Patch run_new_agent_session to return a fake result
+    # Patch run_new_agent_session to return a fake result (不应被调用)
     from dataclasses import dataclass, field
 
     @dataclass
@@ -65,15 +63,12 @@ def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
                             "session_id": "s-anon",
                             "user_id": None,
                         })
-                        # MasteryGraph must NOT be constructed
+                        # MasteryGraph 必须未被构造（请求被鉴权层拦截）
                         mock_mg.assert_not_called()
                 finally:
                     client.close()
 
-                assert resp.status_code == 200
-                data = resp.json()
-                assert data["reply"] == "anonymous reply"
-                assert data["stack"] == "new"
+            assert resp.status_code == 401
         finally:
             await engine.dispose()
 
@@ -81,7 +76,7 @@ def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
 
 
 def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
-    """user_id=None → messages still persist to DB."""
+    """无 Authorization → 401，无消息被持久化。"""
     from dataclasses import dataclass, field
 
     @dataclass
@@ -109,18 +104,16 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
                         "session_id": "s-anon-persist",
                         "user_id": None,
                     })
-                    assert resp.status_code == 200
+                    assert resp.status_code == 401
 
-                    # Messages should persist
+                    # 被鉴权层拦截，无消息持久化
                     from sqlalchemy import select
                     from app.models.tables import MessageTable
                     r = await session.execute(
                         select(MessageTable).where(MessageTable.session_id == "s-anon-persist")
                     )
                     msgs = r.scalars().all()
-                    assert len(msgs) == 2
-                    assert msgs[0].role == "user"
-                    assert msgs[1].role == "assistant"
+                    assert len(msgs) == 0
                 finally:
                     client.close()
         finally:
@@ -133,7 +126,7 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
 
 
 def test_anonymous_stream_no_mastery_graph(monkeypatch):
-    """user_id=None → MasteryGraph NOT constructed in stream endpoint."""
+    """无 Authorization → 401，流式端点同样被鉴权层拦截。"""
     from unittest.mock import patch
     from sqlalchemy import create_engine
     from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -162,11 +155,10 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
     try:
         client = TestClient(app)
         with patch("app.api.chat_stream.MasteryGraph") as mock_mg:
-            with client.stream("POST", "/api/chat/stream",
+            resp = client.post("/api/chat/stream",
                                json={"message": "hi", "session_id": "st-anon",
-                                     "user_id": None}) as r:
-                body = "".join(chunk for chunk in r.iter_text())
-            # MasteryGraph must NOT be constructed
+                                     "user_id": None})
+            # MasteryGraph 不应被构造（鉴权层拦截）
             mock_mg.assert_not_called()
     finally:
         try:
@@ -174,12 +166,5 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
         except OSError:
             pass
 
-    # Should still get a final event with reply
-    events = []
-    for line in body.splitlines():
-        if line.startswith("data:"):
-            events.append(json.loads(line[len("data:"):].strip()))
-
-    final_events = [e for e in events if e.get("type") == "final"]
-    assert len(final_events) == 1
-    assert final_events[0]["reply"] == "stream anon reply"
+    # 无 token → 401
+    assert resp.status_code == 401

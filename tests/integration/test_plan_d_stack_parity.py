@@ -3,9 +3,12 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from app.api.chat import router
+from app.core.security import get_current_user
 
 _app = FastAPI()
 _app.include_router(router, prefix="/api")
+# Task 11 后端点需要鉴权；测试直接 override 跳过 DB 用户校验
+_app.dependency_overrides[get_current_user] = lambda: {"user_id": 1}
 client = TestClient(_app)
 
 _ALIGN_KEYS = {"reply", "session_id", "mastery_score", "stack"}

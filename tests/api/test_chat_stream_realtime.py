@@ -3,7 +3,7 @@ import os
 import tempfile
 
 
-def test_chat_stream_emits_incremental_agent_events(monkeypatch):
+def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
     from fastapi.testclient import TestClient
     from sqlalchemy import create_engine
     from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -43,7 +43,8 @@ def test_chat_stream_emits_incremental_agent_events(monkeypatch):
     try:
         client = TestClient(app)
         with client.stream("POST", "/api/chat/stream",
-                           json={"message": "hi", "session_id": "st1", "user_id": 1}) as r:
+                           json={"message": "hi", "session_id": "st1", "user_id": 1},
+                           headers=auth_headers()) as r:
             body = "".join(chunk for chunk in r.iter_text())
     finally:
         try:

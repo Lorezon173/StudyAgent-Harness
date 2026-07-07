@@ -115,3 +115,44 @@ def db_fixture():
         os.unlink(tmp_path)
     except OSError:
         pass
+
+
+# ---------------------------------------------------------------------------
+# Auth fixture (Task 13)
+# ---------------------------------------------------------------------------
+# Task 11 给受保护端点加了 Depends(get_current_user)。get_current_user 除了验签，
+# 还会查 DB 确认用户存在（S5），测试场景下若不 seed 用户会拿到 401。
+# 此 fixture 既注入合法 Bearer JWT（确保 Authorization header 真实存在），
+# 又覆写 get_current_user 依赖跳过 DB 查询，使测试无需 seed 用户即可鉴权通过。
+@pytest.fixture
+def auth_headers():
+    """提供已认证用户的 Authorization header（工厂模式）。
+
+    用法：
+        client.post("/api/chat", json={...}, headers=auth_headers())
+        client.post("/api/chat", json={...}, headers=auth_headers(user_id=2))
+
+    副作用：覆写 app.main.app 的 get_current_user 依赖为返回
+    ``{"user_id": user_id}``，测试结束后自动还原。
+    """
+    from app.main import app
+    from app.core.security import create_access_token, get_current_user
+
+    # 进入时捕获原 override（可能为 None）
+    original_override = app.dependency_overrides.get(get_current_user)
+    override_installed = {"done": False}
+
+    def _make(user_id: int = 1) -> dict:
+        token = create_access_token(user_id)
+        app.dependency_overrides[get_current_user] = lambda: {"user_id": user_id}
+        override_installed["done"] = True
+        return {"Authorization": f"Bearer {token}"}
+
+    yield _make
+
+    # 仅在 _make 被调用过时还原
+    if override_installed["done"]:
+        if original_override is None:
+            app.dependency_overrides.pop(get_current_user, None)
+        else:
+            app.dependency_overrides[get_current_user] = original_override

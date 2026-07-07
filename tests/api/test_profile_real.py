@@ -21,7 +21,7 @@ def test_profile_reads_real_sessions_and_avg_mastery(db_fixture):
                      "confusion_with": [], "rationale": ""},
                 ])
                 await db.commit()
-                resp = await get_profile(1, db=db)
+                resp = await get_profile(db=db, current_user={"user_id": 1})
             assert resp["stats"]["sessions"] == 2
             assert resp["stats"]["avg_mastery"] == 80
         finally:
@@ -35,7 +35,7 @@ def test_profile_empty_returns_zero(db_fixture):
         try:
             from app.api.profile import get_profile
             async with session_factory() as db:
-                resp = await get_profile(999, db=db)
+                resp = await get_profile(db=db, current_user={"user_id": 999})
             assert resp["stats"]["sessions"] == 0
             assert resp["stats"]["avg_mastery"] == 0
         finally:

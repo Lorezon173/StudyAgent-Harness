@@ -102,7 +102,7 @@ async def _get_messages(db_session, session_id):
 # ── Tests ──
 
 
-def test_chat_persist_happy_path(monkeypatch, db_fixture):
+def test_chat_persist_happy_path(monkeypatch, db_fixture, auth_headers):
     """First turn: session row with title, 2 messages with turn_index=0."""
     _patch_new_stack(monkeypatch)
 
@@ -116,7 +116,7 @@ def test_chat_persist_happy_path(monkeypatch, db_fixture):
                         "message": "帮我理解 RAG",
                         "session_id": "s-happy",
                         "user_id": 1,
-                    })
+                    }, headers=auth_headers())
                     assert resp.status_code == 200
                     data = resp.json()
                     assert data["stack"] == "new"
@@ -146,7 +146,7 @@ def test_chat_persist_happy_path(monkeypatch, db_fixture):
     db_fixture.run(_test())
 
 
-def test_chat_persist_second_turn(monkeypatch, db_fixture):
+def test_chat_persist_second_turn(monkeypatch, db_fixture, auth_headers):
     """Second turn: 4 messages total, second pair has turn_index=1, title NOT overwritten."""
     _patch_new_stack(monkeypatch)
 
@@ -161,7 +161,7 @@ def test_chat_persist_second_turn(monkeypatch, db_fixture):
                         "message": "第一个问题",
                         "session_id": "s-turn2",
                         "user_id": 2,
-                    })
+                    }, headers=auth_headers(user_id=2))
                     assert resp1.status_code == 200
 
                     # Second turn
@@ -169,7 +169,7 @@ def test_chat_persist_second_turn(monkeypatch, db_fixture):
                         "message": "第二个问题",
                         "session_id": "s-turn2",
                         "user_id": 2,
-                    })
+                    }, headers=auth_headers(user_id=2))
                     assert resp2.status_code == 200
 
                     # Verify 4 messages
@@ -198,7 +198,7 @@ def test_chat_persist_second_turn(monkeypatch, db_fixture):
     db_fixture.run(_test())
 
 
-def test_chat_persist_error_resilience(monkeypatch, db_fixture):
+def test_chat_persist_error_resilience(monkeypatch, db_fixture, auth_headers):
     """MessageStore.add raises on second call → rollback (0 messages), HTTP still 200."""
     _patch_new_stack(monkeypatch)
 
@@ -224,7 +224,7 @@ def test_chat_persist_error_resilience(monkeypatch, db_fixture):
                         "message": "测试错误恢复",
                         "session_id": "s-err",
                         "user_id": 3,
-                    })
+                    }, headers=auth_headers(user_id=3))
                     # HTTP still 200 with reply, persisted=False
                     assert resp.status_code == 200
                     data = resp.json()
@@ -269,7 +269,8 @@ def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
                     yield db
                 monkeypatch.setattr(chat_mod, "async_session", _fake_session)
 
-                resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1))
+                resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1),
+                                  current_user={"user_id": 1})
             assert resp.turn_count == 1   # 不是 11
             assert resp.persisted is True
         finally:
