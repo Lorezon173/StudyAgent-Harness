@@ -32,6 +32,11 @@ rag = [
 eval = [
     "ragas==0.4.3",
     "datasets>=2.0.0",
+    "pandas>=2.0.0",
+    "scikit-learn>=1.0.0",
+    "openai>=1.0.0",
+    # ragas 0.4.3 兼容性修复（langchain_community 路径变更），评估之外不直接使用
+    "langchain-google-vertexai==3.2.4",
 ]
 worker = [
     "celery>=5.4.0",

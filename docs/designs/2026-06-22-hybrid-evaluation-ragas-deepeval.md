@@ -43,7 +43,7 @@
 | `Retriever.evaluate()` | Agent 部件 | 跑检索 + 算 recall@k/redundancy（启发式）+ RAGAS 三件套 | ComponentBench 调用 | `app/agents/retriever.py:105` | 🟡 已改（Phase 1） |
 | `app/eval/judge.py` | L2 eval | 构造 judge（llm+embeddings）+ §5.1.1 不同族校验，同族/无 key 返回 None | Retriever/Tutor.evaluate 内调 | `app/eval/judge.py:36`（`build_judge`；`infer_family` 在 `:17`） | 🔴 已建（Phase 1） |
 | `EvalTable.ragas_context_recall` | Infrastructure | 补齐枚举有定义但表缺的 context_recall 列 | ORM | `app/models/tables.py` | 🔴 已建（Phase 1） |
-| `tests/eval/test_judge.py` | 测试 | infer_family + build_judge 不同族/降级单测（7 例） | pytest | `tests/eval/test_judge.py` | 🔴 已建（Phase 1） |
+| `tests/eval/test_judge.py` | 测试 | infer_family + build_judge 不同族/降级单测（9 例） | pytest | `tests/eval/test_judge.py` | 🔴 已建（Phase 1） |
 | `ComponentBench` | L2 eval | 跑黄金用例、按 expected 阈值判 passed | `EvalKernel` | `app/eval/component_bench.py:4`（`run` 在 :11） | 🟢 保持（Phase 1）/ 🟡 改（Phase 3 加分阶段诊断） |
 | `Tutor.evaluate()` | Agent 部件 | 当前字符 Counter 占位算解释完整性 | ComponentBench 调用 | `app/agents/tutor.py:99` | 🟡 待改（Phase 3） |
 | `golden_cases.py` | eval fixtures | Retriever/Tutor 黄金用例 + expected 阈值 | ComponentBench 加载 | `app/eval/fixtures/golden_cases.py:19` | 🟡 待改（Phase 2 扩充 + 补 ground_truth/topic） |
@@ -60,7 +60,7 @@
 |---|---|
 | 母 spec §5.2 把 RAG 三件套写进 Retriever 指标、把「解释完整性 rubric-LLM-judge」写进 Tutor 指标 | 母 spec `:562,561` |
 | §5.1.1 规定 LLM-judge 必须与被评 Agent 不同族、盲评、judge 自身 κ≥0.6 才采信 | 母 spec `:532-536` |
-| Phase 1 已落地：Retriever 三件套走 RAGAS，judge 适配层完成 | `app/agents/retriever.py:169`、`app/eval/judge.py:36` |
+| Phase 1 已落地：Retriever 三件套走 RAGAS，judge 适配层完成 | `app/agents/retriever.py:105`、`app/eval/judge.py:36` |
 | `Tutor.evaluate()` 解释完整性仍是字符 Counter 交并比占位 | `app/agents/tutor.py:99` |
 | `golden_cases.py` 黄金用例数量不足（远少于 §5.1.1 可信评估所需） | `app/eval/fixtures/golden_cases.py:19` |
 | context_recall 列已建但 evaluate 未算（缺 ground_truth） | `app/models/tables.py:55` |
@@ -138,11 +138,11 @@ Phase 1 review 发现并已修复三处 API 误用，后续实施须遵守：
 
 **实际产出**：
 - `app/eval/judge.py` — `infer_family()` + `build_judge()` + §5.1.1 不同族校验。构造返回 dict `{"llm": ChatOpenAI, "embeddings": EmbeddingService, "family": str}`
-- `app/agents/retriever.py:169-265` — RAGAS 三件套替换字符 Jaccard；recall_at_k/redundancy 保留启发式；4 层降级（judge=None → 无 golden_answer → ImportError → Exception）
+- `app/agents/retriever.py:105-265` — RAGAS 三件套替换字符 Jaccard；recall_at_k/redundancy 保留启发式；4 层降级（judge=None → 无 golden_answer → ImportError → Exception）
 - `app/models/tables.py:55` — 补 `ragas_context_recall = Column(Float, nullable=True)`
 - `alembic/versions/20260623_add_ragas_context_recall.py` — 对应迁移
 - 兼容性修复：`langchain-google-vertexai==3.2.4` + venv shim（解决 ragas 0.4.3 的 langchain_community.chat_models.vertexai 路径变更）
-- `tests/eval/test_judge.py` — 7 例单测；`tests/unit/agents/test_retriever.py` — 25 例（含降级分支覆盖）
+- `tests/eval/test_judge.py` — 9 例单测；`tests/unit/agents/test_retriever.py` — 25 例（含降级分支覆盖）
 
 **验收结果**：初版 32 tests passed，但**全部走降级分支**（CI 无 API key → judge=None），RAGAS 真实调用从未执行，掩盖了 §3.3 的三处 API bug。Review 后已修 bug + 补 happy-path 提取测试（mock ragas_eval 但执行真实 import/Dataset/提取链路）+ integration 测试（真实 key，默认 deselect）。现 33 tests passed。
 

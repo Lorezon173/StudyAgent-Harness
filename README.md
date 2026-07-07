@@ -146,7 +146,14 @@ app/specs/
 `RAGCoordinator`（`app/infrastructure/rag/coordinator.py`）是多 Provider 协调器：`IndexProvider` 协议 + `Chunk` / `SearchResult` 数据结构 + 多源去重排序聚合。按 `settings.rag_backend` 选后端：
 
 - **`fake`（默认）**：内存 `FakeRAGStore`，字符重叠计分，保证测试无需外部依赖
-- **`pgvector`（生产真向量）**：`PgVectorProvider` + `EmbeddingService`（OpenAI embedding），PG 用 `<=>` 余弦距离近邻检索，SQLite 降级为字符匹配
+- **`pgvector`（生产真向量）**：`PgVectorProvider`（`app/infrastructure/rag/pgvector_provider.py`）+ `EmbeddingService`（`app/infrastructure/rag/embedding.py`），PG 用 `<=>` 余弦距离近邻检索，SQLite 降级为字符匹配
+
+**真向量检索配置**（`app/core/config.py`）：
+- `embedding_model`：默认 `doubao-embedding-vision`（方舟 API，2048 维），可切换 OpenAI 官方模型
+- `embedding_dim`：默认 2048，须与向量表 `Vector(dim)` 一致
+- `openai_base_url`：方舟端点 `https://ark.cn-beijing.volces.com/api/coding/v3`，或 OpenAI 官方留空
+- 向量表 `vector_chunks`（`app/models/tables.py`）存储 chunk + embedding + metadata，Alembic 迁移 `20260622_add_vector_chunks_table.py` 自动建表
+- `EmbeddingService` 直接调 OpenAI SDK（绕过 langchain 预分词），分批调用（batch=10，方舟 API 限制）
 
 其他 Provider：`OCRProvider`（图片文本提取，懒依赖 pytesseract+PIL）、`CodeIndexProvider`（Python AST 按函数/类粒度切片）、`extractors/`（PDF/DOCX/TXT 提取，所有重依赖惰性 import + 优雅降级）。
 
@@ -160,7 +167,7 @@ app/specs/
 | ASGI | uvicorn[standard] ≥0.32 |
 | 编排（新栈） | 自研事件驱动协作环 + LangGraph ≥0.2 主图骨架 |
 | LLM 接入 | langchain-openai ≥0.3（重试 / fallback 模型 / 流式 / 成本追踪） |
-| RAG | 自研多 Provider 协调器；pgvector ≥0.3 真向量；可选 LlamaIndex + Chroma（`--extra rag`） |
+| RAG | 自研多 Provider 协调器；pgvector ≥0.3 真向量（doubao-embedding-vision 2048 维）；OpenAI SDK 直接调用 embedding API；可选 LlamaIndex + Chroma（`--extra rag`） |
 | ORM | SQLAlchemy 2.0 async + Alembic；PG 用 asyncpg，开发用 aiosqlite |
 | 可观测性 | Langfuse ≥2.0（生产）/ Console（开发）+ SessionStats |
 | 评估 | ragas 0.4.3（faithfulness / answer_relevancy / context_precision / context_recall）+ deepeval（G-Eval 教学三维度，Phase 3）+ 不同族 judge 校验 |
@@ -207,6 +214,7 @@ app_old/                        # 📦 归档老栈（2026-06-02 迁移，flag �
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
 alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
 tests/                          # 601 收集 / 593 通过 / 8 deselected
+scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
 docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
 ```
 
@@ -220,7 +228,7 @@ uv sync
 
 # 可选 extras（按需）
 uv sync --extra rag      # LlamaIndex + Chroma 检索
-uv sync --extra eval     # ragas + deepeval 评估
+uv sync --extra eval     # ragas 评估
 uv sync --extra worker   # Celery 异步任务
 uv sync --extra ui       # Chainlit 界面
 
@@ -340,7 +348,7 @@ tests/integration/          pgvector 真检索、端到端场景、新旧栈对�
 ## 已知限制（诚实清单）
 
 - `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
-- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。knowledge 端点无 user_id 绑定，不加鉴权。
+- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。全链路鉴权可用。knowledge 端点无 user_id 绑定不加鉴权。端点鉴权后 29 个测试因缺 token fixture 失败（Task 13 待做）。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
 - 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。

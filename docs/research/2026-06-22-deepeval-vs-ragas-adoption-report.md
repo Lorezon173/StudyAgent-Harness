@@ -3,14 +3,16 @@
 > **用途**：对比 DeepEval 与 RAGAS 两个 LLM/RAG 评估框架，结合 StudyAgent 已落地的实践，给出针对性的采纳与改造建议。
 > **日期**：2026-06-22
 > **调研来源**：`Learned/DeepEval_测评方案.md`、`Learned/RAGAS_评估方案.md`
-> **关联设计**：`docs/designs/2026-06-22-deepeval-component-metrics.md`（DeepEval 落地 spec）
+> **关联设计**：`docs/designs/2026-06-22-hybrid-evaluation-ragas-deepeval.md`（混合方案，实际执行）+ `docs/designs/2026-06-22-deepeval-component-metrics.md`（DeepEval 落地 spec，备选）
 > **关联母 spec**：`docs/superpowers/specs/2026-05-29-multi-agent-redesign-design.md` §5 评估体系
+>
+> **⚠️ 状态更新（2026-06-30）**：本文推荐的混合方案已采纳，**Phase 1 RAGAS 集成已完成**（commit `fc210d4`）。具体进展见 `docs/designs/2026-06-22-hybrid-evaluation-ragas-deepeval.md`。下文 §1 事实核查中部分"缺"/"占位"描述已不再准确，保留原文以反映调研时的历史状态。
 
 ---
 
 ## 0. 一句话结论
 
-本项目**早已为 RAGAS 铺好路**（依赖已装、数据表字段已建、Retriever 注释明写"后续替换 ragas"），但至今是字符级占位未落地；**DeepEval 则尚未引入**。建议走**混合方案**：Retriever 检索质量用 RAGAS（复用既有铺垫 + 分阶段诊断 + 合成测试集），Tutor 教学效果用 DeepEval G-Eval（自然语言定义"引导性/清晰度"更灵活）。
+本项目**早已为 RAGAS 铺好路**（依赖已装、数据表字段已建、Retriever 注释明写"后续替换 ragas"），~~但至今是字符级占位未落地~~（**Phase 1 RAGAS 集成已完成，2026-06-30**）；**DeepEval 则尚未引入**（Phase 3 待实施）。建议走**混合方案**：Retriever 检索质量用 RAGAS（复用既有铺垫 + 分阶段诊断 + 合成测试集），Tutor 教学效果用 DeepEval G-Eval（自然语言定义"引导性/清晰度"更灵活）。
 
 ---
 
@@ -21,13 +23,13 @@
 | 产物 | 现状 | 位置 |
 |---|---|---|
 | `ragas>=0.2.0` 依赖 | ✅ 已声明，但代码未真正调用 | `pyproject.toml:33` |
-| `EvalTable` 的 ragas 字段 | ✅ 建了 `ragas_faithfulness`/`ragas_relevancy`/`ragas_context_precision` 三列；**缺 `context_recall` 列** | `app/models/tables.py:52-54` |
+| `EvalTable` 的 ragas 字段 | ✅ 建了 `ragas_faithfulness`/`ragas_relevancy`/`ragas_context_precision` 三列；~~缺 `context_recall` 列~~（**Phase 1 已通过迁移 `20260623_add_ragas_context_recall.py` 补齐**） | `app/models/tables.py:52-55` |
 | `EvalMetric` 枚举 | ✅ 定义了 4 个指标（含 CONTEXT_RECALL），但表里没对应列 | `app/harness/enums.py:86-91` |
 | `EmbeddingService` | ✅ 已实现，复用 OpenAI 配置，RAGAS 需要的 embeddings **现成可用** | `app/infrastructure/rag/embedding.py:17` |
 | `RAGCoordinator.search` | ✅ 多源检索，返回带 score、按 score 降序去重 | `app/infrastructure/rag/coordinator.py:100-128` |
 | 多格式 extractors | ✅ pdf/docx/text + OCR，合成测试集的文档源就绪 | `app/infrastructure/rag/extractors/` |
 | `KnowledgeStore` | ✅ 知识库 CRUD（create/get/list/delete） | `app/infrastructure/storage/knowledge_store.py:1` |
-| `Retriever.evaluate()` | ⚠️ 三件套是**字符级 Jaccard/token 重叠占位**，注释自承"后续可替换 ragas" | `app/agents/retriever.py:105,114,151` |
+| `Retriever.evaluate()` | ~~⚠️ 三件套是**字符级 Jaccard/token 重叠占位**~~（**Phase 1 已替换为 RAGAS 三件套 + 4 层降级，commit `fc210d4`**） | `app/agents/retriever.py:105-265` |
 | `Tutor.evaluate()` | ⚠️ 解释完整性是**字符 Counter 交并比占位** | `app/agents/tutor.py:99,126` |
 | `api/eval.py` `rerun_eval` | ⚠️ **stub**：直接返回全 0 的 EvalResponse，未真跑评估 | `app/api/eval.py:28-35` |
 | ComponentBench | ✅ Plan E 已实现调度，按 expected 阈值判 passed（不改） | `app/eval/component_bench.py:23` |
