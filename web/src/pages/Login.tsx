@@ -20,7 +20,7 @@ export default function Login() {
     try {
       const path = mode === "login" ? "/api/auth/login" : "/api/auth/register";
       const resp = await apiPost<AuthResponse>(path, { username, password });
-      login(resp.user_id, resp.username);
+      login(resp.user_id, resp.username, resp.token ?? undefined);
       navigate("/chat");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "请求失败");

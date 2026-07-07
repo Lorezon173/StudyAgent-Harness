@@ -14,7 +14,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (userId === null) return;
-    apiGet<ProfileResp>(`/api/profile/${userId}`)
+    apiGet<ProfileResp>("/api/profile/")
       .then((r) => setStats(r.stats))
       .catch(() => setStats(null));
   }, [userId]);

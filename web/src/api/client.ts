@@ -9,12 +9,22 @@ export class ApiError extends Error {
 
 const TIMEOUT_MS = 120_000;   // 对话是长耗时操作（协作环多次 LLM），见 spec §3.1
 
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem("studyagent_token");
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}
+
 async function request<T>(url: string, init: RequestInit): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   let resp: Response;
   try {
-    resp = await fetch(url, { ...init, signal: controller.signal });
+    resp = await fetch(url, {
+      ...init,
+      headers: { ...getAuthHeaders(), ...init.headers },
+      signal: controller.signal,
+    });
   } catch (e) {
     clearTimeout(timer);
     if (e instanceof DOMException && e.name === "AbortError") {
@@ -23,6 +33,17 @@ async function request<T>(url: string, init: RequestInit): Promise<T> {
     throw new ApiError(0, "连接失败");
   }
   clearTimeout(timer);
+
+  if (resp.status === 401) {
+    localStorage.removeItem("studyagent_token");
+    localStorage.removeItem("studyagent_user_id");
+    localStorage.removeItem("studyagent_username");
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+    throw new ApiError(401, "登录已过期，请重新登录");
+  }
+
   let body: unknown = null;
   try {
     body = await resp.json();
