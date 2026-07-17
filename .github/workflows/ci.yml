@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        # dev extra 含 pytest / pytest-asyncio / httpx
+        run: uv sync --extra dev
+
+      - name: Lint (ruff)
+        # pyproject 未声明 ruff 依赖，用 uvx 按需拉取（读项目 [tool.ruff] 配置）
+        run: uvx ruff check .
+
+      - name: Test (pytest，默认排除 integration)
+        run: uv run pytest tests/ -v

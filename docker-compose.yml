@@ -1,14 +1,55 @@
+# StudyAgent-Harness 编排
+#
+# 用法：
+#   开发（仅起 PG，后端用本地 uvicorn --reload 跑）：
+#     docker compose up -d
+#   全栈部署（PG + app 容器，前端随镜像内置）：
+#     cp .env.example .env && 填 OPENAI_API_KEY
+#     docker compose --profile deploy up -d
+#   健康检查：curl http://localhost:8000/health
+#
+# 生产改 DB 密码：在 .env 设 POSTGRES_PASSWORD（下方默认 studyagent）
+
 services:
   db:
     image: pgvector/pgvector:pg16
     environment:
       POSTGRES_DB: studyagent
       POSTGRES_USER: studyagent
-      POSTGRES_PASSWORD: studyagent
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-studyagent}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studyagent -d studyagent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    # profiles 隔离：默认 docker compose up 不启动 app（不破坏现有开发工作流）
+    profiles: [deploy]
+    image: studyagent-harness:local
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://studyagent:${POSTGRES_PASSWORD:-studyagent}@db:5432/studyagent
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      FEATURE_USE_NEW_AGENT_GRAPH: "true"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request;urllib.request.urlopen(\"http://localhost:8000/health\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
 volumes:
   pgdata:

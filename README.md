@@ -215,7 +215,10 @@ web/                            # React 18 + Vite 前端（pages: Chat/Knowledge
 alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
 tests/                          # 601 收集 / 593 通过 / 8 deselected
 scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
-docker-compose.yml              # pgvector/pgvector:pg16（PG 开发/生产用）
+Dockerfile                      # 多阶段：node 构建前端 → uv 装后端 → 精简 runtime（启动自跑 alembic 迁移）
+.dockerignore                   # 构建上下文裁剪 + 密钥防泄漏
+docker-compose.yml              # pgvector/pgvector:pg16（db）+ app（deploy profile，默认仅起 db 供本地 uvicorn 开发）
+.github/workflows/              # ci.yml（ruff + pytest）/ release.yml（构建推送 ghcr 镜像）
 ```
 
 > 详见 [docs/app_old_migration_plan.md](docs/app_old_migration_plan.md)。新栈对老栈零依赖；必留在 `app/` 的旧依赖闭包仅 `llm.py` / `observability.py` / `rag.store` / `rag.coordinator` / `enums.py` 等少数共用文件。
@@ -345,10 +348,28 @@ tests/integration/          pgvector 真检索、端到端场景、新旧栈对�
 
 > 集成测试用 `integration` marker 标记，默认不跑（`pyproject.toml` 里 `addopts = "-m 'not integration'"`），它们依赖真实 Docker PostgreSQL + OpenAI API key。手动跑：`uv run pytest -m integration`。
 
+## CI/CD 与 Docker 部署
+
+**CI**（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：push 到 main 或任意 PR 触发 `uvx ruff check .` + `uv run pytest tests/`（默认排除 integration）。
+
+**镜像发布**（[`.github/workflows/release.yml`](.github/workflows/release.yml)）：push 到 main 或打 `v*` tag → 多阶段构建（[Dockerfile](Dockerfile)：node 构建前端 → uv 装后端 → 精简 runtime）→ 推 `ghcr.io/<owner>/studyagent-harness`（tag `latest` + 短 sha），用仓库自带 `GITHUB_TOKEN`，无需配 secret。
+
+**本地全栈部署**（[docker-compose.yml](docker-compose.yml)）：
+
+```bash
+cp .env.example .env                       # 填 OPENAI_API_KEY
+docker compose --profile deploy up -d      # db（pgvector）+ app，app 启动自动 alembic 迁移
+curl http://localhost:8000/health          # 健康检查
+```
+
+> 默认 `docker compose up -d`（不带 `--profile deploy`）仅起 db，保留现有「后端本地 uvicorn 开发」工作流，不破坏既有用法。
+
+**关键衔接**：[alembic/env.py](alembic/env.py) 用同步引擎迁移（async→sync），已补 `psycopg[binary]` 主依赖；前端 `web/dist` 由 [app/main.py](app/main.py) 检测后同源伺服，镜像零额外路由。
+
 ## 已知限制（诚实清单）
 
 - `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
-- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。全链路鉴权可用。knowledge 端点无 user_id 绑定不加鉴权。端点鉴权后 29 个测试因缺 token fixture 失败（Task 13 待做）。
+- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点无 user_id 绑定不加鉴权。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
 - 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。

@@ -26,22 +26,33 @@
 
 > 注：以上功能描述源自 evolve-capture skill 正文，hook 脚本（session-capture-ask / capture-gate）实现 ⏳ 未读，后续涉及时补。
 
-## 子项目② 实时协作流（待实现，spec 已定稿）
+## 子项目② 实时协作流（已落地，仍有后续演进项）
 
-> spec：`docs/designs/2026-06-11-realtime-collab-stream-design.md`。下列产物为该 spec 规划的改动/新建，**尚未实现**，实现后补 file:line。
+> 设计来源：`docs/designs/2026-06-11-realtime-collab-stream-design.md`。下列条目记录实际代码资产及仍待实现的后续项；“待建”仅表示对应条目尚未落地。
 
 | 名字 | 归属子系统 | 功能（规划） | 三色 | 位置 |
 |---|---|---|---|---|
 | `run_collab_loop` on_event 钩子 | Orchestration | 循环内每 publish 一事件即回调透出，供 SSE 实时桥接 | 🟡 改动 | `app/orchestration/collab_loop.py:31` |
 | `run_new_agent_session`/`build_new_stack` | Orchestration | 加可选 graph/on_event 参数，透传桥接与外部 graph | 🟡 改动 | `app/orchestration/assembly.py:131/100` |
 | `project_event` | API | SSE 语义事件白名单过滤 + 转前端友好 payload | 🔴 新建 | `app/api/_sse_projection.py`（待建） |
-| `MasteryNodeTable`/`MasteryEdgeTable` | Infrastructure | 掌握度节点/边的 SQLAlchemy 表（PG/SQLite 双模） | 🔴 新建 | `app/models/tables.py` |
-| `SQLAlchemyMasteryStore` | Infrastructure | 复刻旧 store 4 方法契约，底层走 AsyncSession | 🔴 新建 | `app/infrastructure/storage/sqlalchemy_mastery_store.py`（待建） |
-| `persist_turn` | API | 共享落库函数：会话+消息+掌握度原子提交，chat/chat_stream 复用 | 🔴 新建 | `app/api/_persist.py`（待建） |
-| `chat_stream.generate_new` | API | 重写为队列桥接真流式 SSE + 流末复用落库 | 🟡 改动 | `app/api/chat_stream.py:19` |
-| `chat`（非流式） | API | 改调共享 persist_turn，接掌握度落库 | 🟡 改动 | `app/api/chat.py:29` |
-| `get_profile` | API | 读真实 sessions 计数 + mastery_nodes 均值（0-100） | 🟡 改动 | `app/api/profile.py:6` |
-| 旧 `MasteryGraphStore` | Infrastructure | aiosqlite 掌握度 store；本子项目**不删不改**，4 测试在用 | 🟢 保持 | `app/infrastructure/storage/mastery_graph_store.py:7` |
+| `MasteryNodeTable`/`MasteryEdgeTable` | Infrastructure | 掌握度节点/边的 SQLAlchemy 表（PG/SQLite 双模），新栈 chat 加载与持久化的事实源 | chat/chat_stream + `persist_turn` | `app/models/tables.py:64-89` | 🟢 已建 |
+| `SQLAlchemyMasteryStore` | Infrastructure | 复刻旧 store 的节点/边读写契约，底层走 `AsyncSession`；新栈 chat 使用 | `app/api/chat.py:26-46`、`chat_stream.py` | `app/infrastructure/storage/sqlalchemy_mastery_store.py:7-88` | 🟢 已建 |
+| `persist_turn` | API | 共享落库函数：会话+消息+掌握度一次事务提交，chat/chat_stream 复用 | chat / chat_stream 完成协作环后 | `app/api/_persist.py:14-118` | 🟢 已建 |
+| `chat`（非流式） | API | 加载 SQLAlchemy 掌握图→运行协作环→重新绑定 store 后持久化 | `POST /api/chat` | `app/api/chat.py:20-61` | 🟢 已建 |
+| `get_profile` | API | 读真实 sessions 计数 + SQLAlchemy `mastery_nodes` 均值（0-100） | `GET /api/profile/` | `app/api/profile.py:9-27` | 🟢 已建 |
+| 旧 `MasteryGraphStore` | Legacy Infrastructure | aiosqlite 掌握度/`user_profile_l3` store；新栈 API 不读写，旧图谱与画像测试仍用 | 旧 `UserProfile`、单元测试 | `app/infrastructure/storage/mastery_graph_store.py:7-155` | 🟢 保持 |
+
+## 阶段 B-②：掌握度时序化 + 用户主动复习（规划待实现）
+
+> 主 spec：`docs/designs/2026-07-03-phase-b2-mastery-temporal-review-spec.md`。当前只记录已验证的现有资产和计划中的三色影响；尚未实现 Review API。
+
+| 名字 | 归属子系统 | 功能 | 触发 / 入口 | 位置 | 三色 |
+|---|---|---|---|---|---|
+| `FEATURE_USE_NEW_AGENT_GRAPH` / `use_new_agent_graph()` | Core Runtime Flag | 新旧 Agent Graph 路径的请求时开关；B-② 仅在 flag 为 true 时可用 | `/api/chat`、`/api/chat/stream`，未来 review router | `app/core/feature_flags.py:1-17` | 🟡 约束扩展 |
+| Alembic mastery 历史链 | Migration | 当前 PG 迁移链缺少 mastery 两表创建责任；B-② 要先修复该链 | `alembic upgrade head` | `alembic/versions/m3_unify_user_id_type.py` | 🟡 修复 |
+| `ReviewPreferenceTable` / `ReviewPreferenceStore` | Models / Infrastructure | 新栈用户的持久化复习偏好 | 未来 review router | `app/models/tables.py` / `app/infrastructure/storage/`（新） | 🔴 新建 |
+| `MasteryDecayService` / `ReviewTriggerService` | Harness | 只读 mastery 投影和主动建议筛选 | 未来 `POST /api/review/trigger` | `app/harness/`（新） | 🔴 新建 |
+| review router | API | 新栈限定的偏好 GET/PUT 与主动 trigger | 未来 `/api/review/*` | `app/api/review.py`（新） | 🔴 新建 |
 
 ## 研究调研文档（docs/research）
 
@@ -76,3 +87,20 @@
 | `learning-docs.md` | 学习文档落地规则（Learned/ 下 QA 式记录的格式与流程） | learning-docs skill 触发 | `.claude/rules/learning-docs.md` |
 | `agent-root.md` | StudyAgent 框架根规范（四层单向依赖、薄壳节点、spec 同步规则） | app/agent/ 下开发时 | `.claude/rules/agent-root.md` |
 | `solution-presentation.md` | 方案呈现规范（引用即解释 + 资产清单/三色血缘默认开头） | 给用户任何方案/计划/设计时 | `.claude/rules/solution-presentation.md` |
+
+## 项目入口文档
+
+| 名字 | 功能 | 触发 / 入口 | 位置 |
+|---|---|---|---|
+| `CLAUDE.md` | Claude 每会话自动加载的项目入口：单栈方向（新栈 `app/` 唯一主体 / 老栈 `app_old/` 待删）+ 四层架构 + 关键目录地图 + 五 Agent 点名 + 时效性地标 + 载体路标 | 会话启动自动加载 | `CLAUDE.md`（根目录） |
+
+## CI/CD 与 Docker 部署
+
+| 名字 | 归属子系统 | 功能 | 触发 / 入口 | 位置 | 三色 |
+|---|---|---|---|---|---|
+| `Dockerfile` | 部署 | 多阶段镜像：node 构建前端 → uv 装后端（`--extra rag`）→ 精简 runtime；启动自跑 `alembic upgrade head` + uvicorn | `docker build` / release.yml | `Dockerfile` | 🔴 新建 |
+| `.dockerignore` | 部署 | 构建上下文裁剪 + 密钥防泄漏（排除 .env/node_modules/.venv/tests/docs） | `docker build` | `.dockerignore` | 🔴 新建 |
+| `docker-compose.yml` | 部署 | db（pgvector/pg16）+ app（`profiles:[deploy]`）；默认 `up` 仅起 db 保本地开发，`--profile deploy` 起全栈 | `docker compose [--profile deploy] up` | `docker-compose.yml` | 🟡 改动（原仅 db，加 app profile） |
+| `ci.yml` | CI | push main / 任意 PR → `uvx ruff check` + `uv run pytest`（默认排除 integration） | git push / PR | `.github/workflows/ci.yml` | 🔴 新建 |
+| `release.yml` | CD | push main / `v*` tag → 多阶段构建 → 推 ghcr.io（tag `latest`+sha），用仓库自带 `GITHUB_TOKEN` | git push main / 打 tag | `.github/workflows/release.yml` | 🔴 新建 |
+| `psycopg[binary]` | 迁移驱动 | alembic 同步引擎迁移所需（async→sync，见 env.py:22）；原仅有 asyncpg | `uv sync` / 镜像内 `alembic upgrade` | `pyproject.toml` 主依赖 | 🟡 新增 |
