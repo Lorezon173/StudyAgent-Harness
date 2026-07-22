@@ -2,21 +2,9 @@
 
 基于苏格拉底教学法的多 Agent 学习框架。系统不直接灌输答案，而是通过诊断 → 讲解 → 复述 → 追问的交互循环，引导学习者主动构建理解，并在过程中持续评估掌握度、维护知识图谱画像。
 
-## 双栈现状（先读这一节）
+## 单栈现状
 
-项目当前**两套实现并存**，由环境变量 `FEATURE_USE_NEW_AGENT_GRAPH` 在运行时切换：
-
-| | 新栈（推荐） | 老栈（默认回退） |
-|---|---|---|
-| 位置 | `app/` | `app_old/`（2026-06-02 归档） |
-| 范式 | 事件驱动 5-Agent 协作环 | LangGraph StateGraph（14+ 节点主图） |
-| LLM | 调真实 LLM，有真实教学能力 | 全节点用 `FakeLLM` 返回固定假数据，仅演示流程 |
-| 启用 | `FEATURE_USE_NEW_AGENT_GRAPH=true` | flag 未设 / 其他值 |
-| 落库 | `/chat`、`/chat/stream` 持久化落库 + 回填 turn_count | 不落库 |
-
-flag 在**每个请求处理函数内实时读取**（`app/core/feature_flags.py`），支持热切换、一键回退。新栈对 `app_old.*` 零依赖；老栈仍是 flag 关闭时 `/chat`、`/chat/stream` 的活路径，但靠 FakeLLM，**手动体验真实教学请开新栈**。
-
-本 README 以下内容除「老栈」小节外，均描述**新栈（`app/`）**。
+项目仅保留 `app/` 事件驱动 5-Agent 协作环。`/api/chat` 与 `/api/chat/stream` 始终运行真实 LLM 教学流程，并在完成后持久化会话、消息和掌握度图谱；不再提供旧 LangGraph/FakeLLM 回退路径或运行时切换开关。
 
 ## 架构概览
 
@@ -196,24 +184,19 @@ app/                            # 事件驱动新栈（主体）
 │   ├── mastery_graph.py / user_profile.py             # L3 画像记忆
 │   └── observability.py        # Console / Fake / Langfuse 三实现
 ├── infrastructure/
-│   ├── llm.py                  # LLMService（重试/fallback/流式/成本）+ FakeLLM
+│   ├── llm.py                  # LLMService（重试/fallback/流式/成本）+ FakeLLM（测试替身）
 │   ├── rag/                    # coordinator + embedding + pgvector_provider + ocr + code_index + extractors
 │   └── storage/                # event_store + mastery（aiosqlite + SQLAlchemy 双版）+ message/session/user/eval/knowledge store
 ├── eval/                       # 旁路评估子系统（component/system/collaboration/ab + judge + kernel）
 ├── specs/                      # 渐进式 Prompt 体系（_root + 5 Agent 双文件 + loader）
 ├── api/                        # auth/chat/chat_stream/chat_multi/eval/knowledge/sessions/profile + _persist + _sse_projection + _dirty_flag
 ├── models/                     # tables.py(8 张表) + schemas.py(Pydantic)
-├── core/                       # config / database / feature_flags / prompts
+├── core/                       # config / database / prompts
 └── ui/ · worker/               # Chainlit / Celery（均为可选桩）
-
-app_old/                        # 📦 归档老栈（2026-06-02 迁移，flag 关闭时仍是 /chat 活路径）
-├── agent/                      # 旧 LangGraph 栈：graph/routers/nodes(15)/multi_agent(7)/system_eval(5)/specs(34)
-├── harness/                    # 旧分层 state(6) + state_manager/intent_router/error_handler/memory/guardrails/tool_registry
-└── infrastructure/             # memory_store + external(ocr/redis/web_search) + extraction(file_extract)
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
 alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
-tests/                          # 601 收集 / 593 通过 / 8 deselected
+tests/                          # 默认：494 passed / 1 skipped / 8 deselected（实测全绿）
 scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
 Dockerfile                      # 多阶段：node 构建前端 → uv 装后端 → 精简 runtime（启动自跑 alembic 迁移）
 .dockerignore                   # 构建上下文裁剪 + 密钥防泄漏
@@ -221,13 +204,11 @@ docker-compose.yml              # pgvector/pgvector:pg16（db）+ app（deploy p
 .github/workflows/              # ci.yml（ruff + pytest）/ release.yml（构建推送 ghcr 镜像）
 ```
 
-> 详见 [docs/app_old_migration_plan.md](docs/app_old_migration_plan.md)。新栈对老栈零依赖；必留在 `app/` 的旧依赖闭包仅 `llm.py` / `observability.py` / `rag.store` / `rag.coordinator` / `enums.py` 等少数共用文件。
-
 ## 快速开始
 
 ```bash
-# 1. 安装依赖
-uv sync
+# 1. 安装运行与开发测试依赖
+uv sync --extra dev
 
 # 可选 extras（按需）
 uv sync --extra rag      # LlamaIndex + Chroma 检索
@@ -238,7 +219,6 @@ uv sync --extra ui       # Chainlit 界面
 # 2. 配置环境变量
 cp .env.example .env
 # 编辑 .env 填入真实 OPENAI_API_KEY（用第三方网关再填 OPENAI_BASE_URL / OPENAI_MODEL）
-# 启用新栈（真实教学能力）：FEATURE_USE_NEW_AGENT_GRAPH=true
 
 # 3. 数据库迁移（首次或拉新代码后）
 uv run alembic upgrade head
@@ -249,7 +229,7 @@ docker compose up -d
 # DATABASE_URL=postgresql+asyncpg://studyagent:studyagent@localhost:5432/studyagent
 # 并设 rag_backend=pgvector 启用真向量检索
 
-# 5. 启动服务（新栈需先把 .env 导出为环境变量，否则 flag 读不到、会回退老栈）
+# 5. 启动服务
 set -a && source .env && set +a
 uv run uvicorn app.main:app --reload   # 默认 http://127.0.0.1:8000
 
@@ -261,7 +241,7 @@ npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（
 cd ..
 
 # 6. 运行测试
-uv run pytest tests/ -v                # 默认排除 integration（593 通过）
+uv run pytest tests/ -v                # 默认排除 integration（494 passed / 1 skipped）
 uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
 
@@ -273,7 +253,7 @@ uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI k
 |---|---|---|
 | POST | `/api/auth/register` | 用户注册（用户名重复 → 409），返回 JWT token |
 | POST | `/api/auth/login` | 用户登录（bcrypt 验密码），返回 JWT token |
-| POST | `/api/chat` | 学习对话（按 flag 走新/老栈） |
+| POST | `/api/chat` | 学习对话（事件驱动 5-Agent 协作环；未提供 `session_id` 时自动创建会话） |
 | POST | `/api/chat/stream` | 流式对话（SSE，新栈逐事件投影 + final） |
 | POST | `/api/chat/multi` | 多 Agent 对话（桩，未实现） |
 | GET | `/api/eval/{session_id}` | 查询评估结果（读 EvalStore） |
@@ -331,19 +311,18 @@ store = SessionStore(db=None)
 ## 测试
 
 ```
-601 收集 / 593 通过 / 8 deselected（实测全绿）
+默认测试：494 passed / 1 skipped / 8 deselected（实测全绿）
 
 tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
 tests/unit/agents/          5 Agent 契约与行为 + AgentBase
 tests/unit/orchestration/   协作环、主图、路由、装配线
 tests/unit/specs/           SpecLoader 渐进式加载
 tests/unit/infrastructure/  LLM、RAG、embedding、pgvector、事件存储、掌握度存储
-tests/unit/api · core · models · storage/   API flag 分支、feature_flags、表、store
-tests/unit/agent/           老栈（app_old）LangGraph 图执行、节点、SpecLoader
+tests/unit/api · core · models · storage/   新栈 API、表、store
 tests/eval/                 ComponentBench / SystemBench / CollaborationBench / ABController / Judge
 tests/golden/               黄金集 + Cohen's κ 一致性
 tests/api/                  实时流 SSE、persist_turn、profile、sse_projection
-tests/integration/          pgvector 真检索、端到端场景、新旧栈对齐（默认 deselect）
+tests/integration/          pgvector 真检索、端到端场景（默认 deselect）
 ```
 
 > 集成测试用 `integration` marker 标记，默认不跑（`pyproject.toml` 里 `addopts = "-m 'not integration'"`），它们依赖真实 Docker PostgreSQL + OpenAI API key。手动跑：`uv run pytest -m integration`。
@@ -372,4 +351,3 @@ curl http://localhost:8000/health          # 健康检查
 - `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点无 user_id 绑定不加鉴权。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
-- 老栈默认启用且用 FakeLLM，真实教学需开 `FEATURE_USE_NEW_AGENT_GRAPH=true`。

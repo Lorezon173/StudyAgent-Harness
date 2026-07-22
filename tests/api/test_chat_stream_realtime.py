@@ -26,8 +26,6 @@ def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
     test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
     monkeypatch.setattr(cs, "async_session", test_sessionmaker)
 
-    monkeypatch.setattr(cs, "use_new_agent_graph", lambda: True)
-
     def fake_run(session_id, user_id, message, current_topic=None, graph=None, on_event=None):
         # 模拟协作环逐事件回调
         if on_event:

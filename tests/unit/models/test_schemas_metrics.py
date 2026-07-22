@@ -2,7 +2,7 @@ from app.models.schemas import ChatResponse
 
 
 def test_chat_response_backward_compatible_minimal():
-    """老栈构造方式（仅 reply/session_id/mastery_score）仍合法，新字段默认 None。"""
+    """仅填 reply/session_id/mastery_score 的最小响应仍合法，其余字段默认 None。"""
     r = ChatResponse(reply="hi", session_id="s1", mastery_score=70)
     assert r.reply == "hi"
     assert r.session_id == "s1"
@@ -26,7 +26,7 @@ def test_chat_response_accepts_new_metric_fields():
     assert r.stack == "new"
 
 
-def test_chat_response_stack_legacy_label():
-    """老栈出口标识 stack="legacy" 合法（与新栈 "new" 对称）。"""
-    r = ChatResponse(reply="x", session_id="s3", stack="legacy")
-    assert r.stack == "legacy"
+def test_chat_response_stack_new_label():
+    """新栈出口标识 stack="new" 合法。"""
+    r = ChatResponse(reply="x", session_id="s3", stack="new")
+    assert r.stack == "new"

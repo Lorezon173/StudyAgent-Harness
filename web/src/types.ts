@@ -13,7 +13,7 @@ export interface ChatResponse {
   turn_count?: number | null;
   mode_path?: string[] | null;
   cost_est_usd?: number | null;
-  stack?: "new" | "legacy" | null;
+  stack?: "new" | null;
   persisted?: boolean;       // 后端已返回（持久化状态）
 }
 
@@ -29,10 +29,10 @@ export interface KnowledgeResponse {
   description: string;
 }
 
-export interface SessionResponse {
+export interface SessionSummary {
   session_id: string;
-  user_id: number | null;
-  state_json: string;       // 仅这三个字段，无 title/created_at
+  title: string;
+  updated_at?: string | number | null;
 }
 
 // 前端聊天消息（内存维护，非后端类型）

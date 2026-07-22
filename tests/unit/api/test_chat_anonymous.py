@@ -49,7 +49,6 @@ def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
         "app.orchestration.assembly.run_new_agent_session",
         lambda *a, **kw: FakeResult(),
     )
-    monkeypatch.setenv("FEATURE_USE_NEW_AGENT_GRAPH", "true")
 
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
@@ -91,7 +90,6 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
         "app.orchestration.assembly.run_new_agent_session",
         lambda *a, **kw: FakeResult(),
     )
-    monkeypatch.setenv("FEATURE_USE_NEW_AGENT_GRAPH", "true")
 
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
@@ -142,7 +140,6 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
     aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
     test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
     monkeypatch.setattr(cs, "async_session", test_sessionmaker)
-    monkeypatch.setattr(cs, "use_new_agent_graph", lambda: True)
 
     from app.orchestration.assembly import NewStackResult
 

@@ -32,19 +32,16 @@ class SessionStore:
                 self.db.add(row)
             else:
                 row.state_json = json.dumps(state)
-                if user_id is not None:
-                    row.user_id = user_id
-                # R1: explicit updated_at refresh — SQLAlchemy onupdate may not fire
-                # when state_json is always "{}" and user_id doesn't change
+                # Existing session ownership is immutable, including legacy NULL.
                 row.updated_at = func.now()
             # C3: caller commits — do NOT commit here
         else:
             self._seq += 1
-            # Memory mode: first-write-wins for title
-            existing_title = self._memory.get(session_id, {}).get("title", "")
+            existing = self._memory.get(session_id)
+            existing_title = existing.get("title", "") if existing else ""
             self._memory[session_id] = {
                 "session_id": session_id,
-                "user_id": user_id,
+                "user_id": existing.get("user_id") if existing else user_id,
                 "state_json": json.dumps(state),
                 "title": title if title is not None else existing_title,
                 "_updated_seq": self._seq,

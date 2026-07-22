@@ -338,7 +338,7 @@ def test_evaluate_degraded_when_no_golden_answer():
     agent = RetrieverAgent()
     agent._coordinator.index_documents([{"content": "测试内容"}])
 
-    # mock build_judge 返回非 None，绕过 judge 不可用分支，触发 golden_answer 检查
+    # 无 golden_answer 时应在导入可选 RAGAS 依赖前降级。
     with patch("app.eval.judge.build_judge", return_value={"llm": "mock", "embeddings": "mock"}):
         metrics = agent.evaluate({
             "query": "测试",
@@ -363,6 +363,10 @@ def test_evaluate_ragas_happy_path_extraction():
     ragas.metrics import、Dataset 构造、_scores_dict 提取，覆盖该链路。
     """
     from unittest.mock import patch, MagicMock
+    import pytest
+
+    pytest.importorskip("ragas")
+    pytest.importorskip("datasets")
 
     agent = RetrieverAgent()
     agent._coordinator.index_documents([{"content": "RAG 是检索增强生成"}])

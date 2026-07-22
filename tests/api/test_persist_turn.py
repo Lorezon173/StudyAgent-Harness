@@ -93,7 +93,7 @@ async def test_persist_success_returns_turn_index_and_clears_dirty():
         assert result == 1  # len([user, assistant]) // 2 = 1
         db.commit.assert_called_once()
         graph.save.assert_called_once()
-        mock_dirty.clear_dirty.assert_called_once_with("1")
+        mock_dirty.clear_dirty.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
@@ -110,6 +110,7 @@ async def test_persist_integrity_error_returns_none_no_clear():
         assert result is None
         db.rollback.assert_called_once()
         mock_dirty.clear_dirty.assert_not_called()
+        mock_dirty.mark_dirty.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
@@ -120,7 +121,8 @@ async def test_persist_uses_log_not_log_event():
 
     with patch("app.api._persist.get_observability") as mock_obs, \
          patch("app.api._persist.MessageStore"), \
-         patch("app.api._persist.SessionStore"):
+         patch("app.api._persist.SessionStore"), \
+         patch("app.api._persist.DirtyFlag") as mock_dirty:
         await persist_turn(db, "sess1", 1, "msg", "reply", None)
 
         # 验证调用 log() 而非 log_event()
@@ -128,6 +130,7 @@ async def test_persist_uses_log_not_log_event():
         args = mock_obs.return_value.log.call_args[0]
         assert args[0] == "error"
         assert args[1] == "persist_failure"  # 修复：实际事件名是 persist_failure
+        mock_dirty.mark_dirty.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
@@ -151,9 +154,35 @@ async def test_persist_operational_error_returns_none_and_logs():
         assert result is None
         db.rollback.assert_called_once()
         mock_dirty.clear_dirty.assert_not_called()
+        mock_dirty.mark_dirty.assert_called_once_with(1)
         # 验证观测性日志 reason 为 db_layer_error
         mock_obs.return_value.log.assert_called_once()
         args = mock_obs.return_value.log.call_args[0]
         assert args[0] == "error"
         assert args[1] == "persist_failure"
         assert args[2]["reason"] == "db_layer_error"
+
+
+@pytest.mark.asyncio
+async def test_persist_retry_rechecks_owner_before_writing_messages():
+    """A conflicting retry must not write messages after ownership changes."""
+    db = AsyncMock()
+    db.commit.side_effect = [IntegrityError("", "", ""), None]
+
+    with patch("app.api._persist.MessageStore") as mock_messages, \
+         patch("app.api._persist.SessionStore") as mock_sessions, \
+         patch("app.api._persist.get_observability"), \
+         patch("app.api._persist.DirtyFlag"):
+        mock_sessions.return_value.get = AsyncMock(
+            side_effect=[None, {"session_id": "sess1", "user_id": 2}]
+        )
+        mock_sessions.return_value.save = AsyncMock()
+        mock_messages.return_value.list_by_session = AsyncMock(return_value=[])
+        mock_messages.return_value.add = AsyncMock()
+
+        with pytest.raises(Exception) as exc_info:
+            await persist_turn(db, "sess1", 1, "msg", "reply", None)
+
+        assert getattr(exc_info.value, "status_code", None) == 403
+        assert mock_messages.return_value.add.await_count == 2
+        assert db.rollback.await_count == 1

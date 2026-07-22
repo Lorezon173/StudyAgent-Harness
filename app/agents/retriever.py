@@ -167,6 +167,19 @@ class RetrieverAgent(AgentBase):
             redundancy = 0.0
 
         # --- RAGAS 评估三件套（faithfulness/answer_relevancy/context_precision） ---
+        if not golden_answer:
+            # 无 golden_answer 时 faithfulness/answer_relevancy 无意义，降级
+            return {
+                "recall_at_k": round(recall_at_k, 4),
+                "faithfulness": 0.0,
+                "answer_relevancy": 0.0,
+                "context_precision": round(context_precision, 4),  # 保留启发式
+                "latency_ms": round(latency_ms, 2),
+                "redundancy": round(redundancy, 4),
+                "degraded": True,
+                "degraded_reason": "无 golden_answer，无法评估 RAG 三件套",
+            }
+
         try:
             from ragas import evaluate as ragas_eval
             from ragas.metrics import (
@@ -191,19 +204,6 @@ class RetrieverAgent(AgentBase):
                     "redundancy": round(redundancy, 4),
                     "degraded": True,
                     "degraded_reason": "judge 不可用（同族或无 API key）",
-                }
-
-            if not golden_answer:
-                # 无 golden_answer 时 faithfulness/answer_relevancy 无意义，降级
-                return {
-                    "recall_at_k": round(recall_at_k, 4),
-                    "faithfulness": 0.0,
-                    "answer_relevancy": 0.0,
-                    "context_precision": round(context_precision, 4),  # 保留启发式
-                    "latency_ms": round(latency_ms, 2),
-                    "redundancy": round(redundancy, 4),
-                    "degraded": True,
-                    "degraded_reason": "无 golden_answer，无法评估 RAG 三件套",
                 }
 
             # 包装为 RAGAS Dataset 格式（0.4.3 列名）

@@ -1,9 +1,9 @@
-"""Prompt 模板 — 已迁移至 app/agent/specs/ 目录
+"""Prompt 模板 — system prompt 已迁移至 app/specs/ 目录
 
 所有 system prompt 现在通过 SpecLoader 渐进式加载：
-- 层级0: specs/_root.prompt.md
-- 层级1: specs/agents/*.prompt.md
-- 层级2: specs/prompts/*.prompt.md
+- 层级0: app/specs/_root.prompt.md
+- 层级1: app/specs/agents/*.prompt.md
+- 层级2: 从 app/specs/agents/*.prompt.md 中按 intent 段落抽取
 
 本文件保留 user_prompt 模板，用于节点内构建 user_prompt 参数。
 """

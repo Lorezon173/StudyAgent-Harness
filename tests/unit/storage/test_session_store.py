@@ -83,6 +83,15 @@ class TestSessionStoreMemory:
 
         asyncio.run(_test())
 
+    def test_existing_memory_owner_is_preserved(self):
+        async def _test():
+            store = SessionStore()
+            await store.save("s1", {}, user_id=1)
+            await store.save("s1", {}, user_id=2)
+            assert store._memory["s1"]["user_id"] == 1
+
+        asyncio.run(_test())
+
 
 # ---------------------------------------------------------------------------
 # DB-mode tests
@@ -142,6 +151,42 @@ class TestSessionStoreDB:
                     assert db_row.title == "Original"
                     # But state should be updated
                     assert db_row.state_json == '{"k": "v2"}'
+            finally:
+                await engine.dispose()
+
+        db_fixture.run(_test())
+
+    def test_existing_session_owner_is_preserved(self, db_fixture):
+        """A retry must not reassign an existing session to another user."""
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    store = SessionStore(db=session)
+                    await store.save("s1", {}, user_id=1)
+                    await session.commit()
+                    await store.save("s1", {}, user_id=2)
+                    await session.commit()
+                    row = await store.get("s1")
+                    assert row["user_id"] == 1
+            finally:
+                await engine.dispose()
+
+        db_fixture.run(_test())
+
+    def test_existing_null_owner_is_preserved(self, db_fixture):
+        """A normal write must not claim a legacy NULL-owned session."""
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    store = SessionStore(db=session)
+                    await store.save("s1", {}, user_id=None)
+                    await session.commit()
+                    await store.save("s1", {}, user_id=1)
+                    await session.commit()
+                    row = await store.get("s1")
+                    assert row["user_id"] is None
             finally:
                 await engine.dispose()
 

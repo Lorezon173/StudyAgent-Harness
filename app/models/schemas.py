@@ -1,11 +1,12 @@
 from typing import Any, Literal
+from uuid import uuid4
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: str = "default"
+    session_id: str = Field(default_factory=lambda: f"s-{uuid4().hex}")
     user_id: int | None = None
 
 
@@ -13,11 +14,11 @@ class ChatResponse(BaseModel):
     reply: str
     session_id: str
     mastery_score: int | None = None
-    # —— Plan D 灰度对齐指标（向后兼容，老栈仅填 stack/mastery_score）——
-    turn_count: int | None = None          # 协作环回合数（新栈）
-    mode_path: list[str] | None = None     # 教学模式路径（新栈，来自 PolicyTransition）
-    cost_est_usd: float | None = None       # 本会话 LLM 估算成本（best-effort）
-    stack: Literal["new", "legacy"] | None = None   # 标识本次走哪条栈
+    # —— 新栈协作环指标 ——
+    turn_count: int | None = None          # 协作环回合数
+    mode_path: list[str] | None = None     # 教学模式路径（来自 PolicyTransition）
+    cost_est_usd: float | None = None      # 本会话 LLM 估算成本（best-effort）
+    stack: Literal["new"] | None = None   # 当前仅保留新栈标识
     persisted: bool = True                 # 落库是否成功（P0-② 显式暴露）
 
 

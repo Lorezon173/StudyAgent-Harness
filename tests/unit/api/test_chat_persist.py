@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from typing import Any
 
+from fastapi import HTTPException
 from starlette.testclient import TestClient
 
 from app.main import app
@@ -71,7 +72,6 @@ def _patch_new_stack(monkeypatch, result=None):
         "app.orchestration.assembly.run_new_agent_session",
         fake_run,
     )
-    monkeypatch.setenv("FEATURE_USE_NEW_AGENT_GRAPH", "true")
 
 
 async def _count_sessions(db_session):
@@ -260,7 +260,6 @@ def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
                 return NewStackResult(reply="R", mastery_score=80, turn_count=11,
                                       mode_path=["socratic"], cost_est_usd=None, events=[])
             monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run)
-            monkeypatch.setattr(chat_mod, "use_new_agent_graph", lambda: True)
 
             async with session_factory() as db:
                 # Patch async_session so chat()'s internal sessions resolve to our test db

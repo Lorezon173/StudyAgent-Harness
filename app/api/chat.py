@@ -1,79 +1,65 @@
 import asyncio
 import logging
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.models.schemas import ChatRequest, ChatResponse
-from app.core.feature_flags import use_new_agent_graph
 from app.core.database import async_session
 from app.core.security import get_current_user
-from app.api._persist import persist_turn
+from app.api._dirty_flag import DirtyFlag
+from app.api._persist import ensure_session_writable, persist_turn
 from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
-from app_old.agent.graph import build_learning_graph
 
 router = APIRouter(prefix="/chat", tags=["chat"])
-_graph = build_learning_graph()
 logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=ChatResponse)
 async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
-    if use_new_agent_graph():
-        from app.orchestration.assembly import run_new_agent_session
-        uid_int = current_user["user_id"]
+    from app.orchestration.assembly import run_new_agent_session
+    uid_int = current_user["user_id"]
 
-        # ── 阶段①：加载掌握度图谱（短连接） ──
-        async with async_session() as load_db:
-            graph = MasteryGraph(user_id=uid_int, store=SQLAlchemyMasteryStore(load_db))
-            await graph.load()
+    async with async_session() as auth_db:
+        await ensure_session_writable(auth_db, req.session_id, uid_int)
 
-        # ── 阶段②：运行协作环（不持 DB 连接） ──
-        result = await asyncio.to_thread(
-            run_new_agent_session, req.session_id, uid_int, req.message,
-            None, graph,
-        )
+    # ── 阶段①：加载掌握度图谱（短连接） ──
+    async with async_session() as load_db:
+        graph = MasteryGraph(user_id=uid_int, store=SQLAlchemyMasteryStore(load_db))
+        await graph.load()
+        if DirtyFlag.is_dirty(uid_int):
+            DirtyFlag.clear_dirty(uid_int)
 
-        # ── 阶段③：持久化（新短连接 → rebind store） ──
-        persisted = False
-        turn_count = None
-        try:
-            async with async_session() as persist_db:
-                graph._store = SQLAlchemyMasteryStore(persist_db)
-                turn_index = await persist_turn(
-                    persist_db, session_id=req.session_id, user_id=current_user["user_id"],
-                    user_message=req.message, reply=result.reply, graph=graph,
-                )
-            turn_count = (turn_index + 1) if turn_index is not None else None
-            persisted = turn_index is not None
-        except Exception:
-            logger.exception("persist stage failed for session %s", req.session_id)
+    # ── 阶段②：运行协作环（不持 DB 连接） ──
+    result = await asyncio.to_thread(
+        run_new_agent_session, req.session_id, uid_int, req.message,
+        None, graph,
+    )
 
-        return ChatResponse(
-            reply=result.reply,
-            session_id=req.session_id,
-            mastery_score=result.mastery_score,
-            turn_count=turn_count,
-            mode_path=result.mode_path,
-            cost_est_usd=result.cost_est_usd,
-            stack="new",
-            persisted=persisted,
-        )
+    # ── 阶段③：持久化（新短连接 → rebind store） ──
+    persisted = False
+    turn_count = None
+    try:
+        async with async_session() as persist_db:
+            graph._store = SQLAlchemyMasteryStore(persist_db)
+            turn_index = await persist_turn(
+                persist_db, session_id=req.session_id, user_id=current_user["user_id"],
+                user_message=req.message, reply=result.reply, graph=graph,
+            )
+        turn_count = (turn_index + 1) if turn_index is not None else None
+        persisted = turn_index is not None
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("persist stage failed for session %s", req.session_id)
 
-    # —— 老栈（关 flag 回退路径，逻辑与改造前一致）——
-    from app.harness.enums import Stage
-    state = {
-        "user_input": req.message,
-        "routing": {}, "teaching": {}, "retrieval": {},
-        "evaluation": {}, "memory": {},
-        "meta": {"session_id": req.session_id, "stage": Stage.INIT, "branch_trace": []},
-    }
-    config = {"configurable": {"thread_id": req.session_id}}
-    result = await _graph.ainvoke(state, config=config)
     return ChatResponse(
-        reply=result.get("teaching", {}).get("reply", "") or result.get("teaching", {}).get("summary", ""),
+        reply=result.reply,
         session_id=req.session_id,
-        mastery_score=result.get("evaluation", {}).get("mastery_score"),
-        stack="legacy",
-        persisted=True,
+        mastery_score=result.mastery_score,
+        turn_count=turn_count,
+        mode_path=result.mode_path,
+        cost_est_usd=result.cost_est_usd,
+        stack="new",
+        persisted=persisted,
     )

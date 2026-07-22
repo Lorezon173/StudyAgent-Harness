@@ -306,6 +306,22 @@ Plan A 新文件以惰性 import 引入了 **`pyproject.toml` 未声明**的外�
 2. **old 测试位置**：老测试仍物理位于 `tests/`（仅改了 import）。若需 `tests/` 仅含新栈测试，可后续将其归档至 `app_old/tests/`（需同步 conftest 拆分）
 3. **`coordinator.py::retrieve()`**：保留的零消费者向后兼容方法（§4.3），Plan D 若不复用可届时剥离
 
+### 5.6 后续删除执行记录（2026-07-20）
+
+- ✅ `app/api/chat.py`、`app/api/chat_stream.py` 已删除老栈 import、`_graph` 单例与 flag 分支，`/api/chat*` 固定走新栈协作环
+- ✅ `tests/conftest.py` 已删除 `app_old.harness.state` 顶层 import 与老栈 `blank_state` / `teach_state` fixture
+- ✅ 老栈测试已删除：`tests/unit/agent/` 整目录、`tests/unit/harness/` 7 个老 harness 测试、`tests/unit/infrastructure/test_memory_store.py`
+- ✅ flag / parity 测试已删除：`tests/unit/core/test_feature_flags.py`、`tests/integration/test_plan_d_stack_parity.py`、两份旧 API flag 测试
+- ✅ `app/core/feature_flags.py` 已删除；`.env.example` 与 `docker-compose.yml` 已移除 `FEATURE_USE_NEW_AGENT_GRAPH`
+- ✅ `app_old/` 已从 git 删除；当前物理残留仅 `__pycache__`，可忽略或手动清理
+- ✅ 新增新栈 API e2e：`tests/unit/api/test_chat_new_stack_e2e.py`、`tests/unit/api/test_chat_stream_new_stack_e2e.py`
+- ✅ `ChatResponse.stack` 与前端类型已收紧为仅 `"new"`
+
+### 5.7 当前状态
+
+- `app/` 已是唯一运行栈；不再提供老栈回退路径
+- 本文档 §5.1-§5.5 保留为 2026-06-02 迁移归档记录，用于追溯 `app_old/` 的历史来源
+
 ---
 
 ## 四、第三轮：基于 superpowers 设计文档的「修改必要性」复核（分析，未改动任何文件）

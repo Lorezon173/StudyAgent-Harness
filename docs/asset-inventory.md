@@ -42,18 +42,6 @@
 | `get_profile` | API | 读真实 sessions 计数 + SQLAlchemy `mastery_nodes` 均值（0-100） | `GET /api/profile/` | `app/api/profile.py:9-27` | 🟢 已建 |
 | 旧 `MasteryGraphStore` | Legacy Infrastructure | aiosqlite 掌握度/`user_profile_l3` store；新栈 API 不读写，旧图谱与画像测试仍用 | 旧 `UserProfile`、单元测试 | `app/infrastructure/storage/mastery_graph_store.py:7-155` | 🟢 保持 |
 
-## 阶段 B-②：掌握度时序化 + 用户主动复习（规划待实现）
-
-> 主 spec：`docs/designs/2026-07-03-phase-b2-mastery-temporal-review-spec.md`。当前只记录已验证的现有资产和计划中的三色影响；尚未实现 Review API。
-
-| 名字 | 归属子系统 | 功能 | 触发 / 入口 | 位置 | 三色 |
-|---|---|---|---|---|---|
-| `FEATURE_USE_NEW_AGENT_GRAPH` / `use_new_agent_graph()` | Core Runtime Flag | 新旧 Agent Graph 路径的请求时开关；B-② 仅在 flag 为 true 时可用 | `/api/chat`、`/api/chat/stream`，未来 review router | `app/core/feature_flags.py:1-17` | 🟡 约束扩展 |
-| Alembic mastery 历史链 | Migration | 当前 PG 迁移链缺少 mastery 两表创建责任；B-② 要先修复该链 | `alembic upgrade head` | `alembic/versions/m3_unify_user_id_type.py` | 🟡 修复 |
-| `ReviewPreferenceTable` / `ReviewPreferenceStore` | Models / Infrastructure | 新栈用户的持久化复习偏好 | 未来 review router | `app/models/tables.py` / `app/infrastructure/storage/`（新） | 🔴 新建 |
-| `MasteryDecayService` / `ReviewTriggerService` | Harness | 只读 mastery 投影和主动建议筛选 | 未来 `POST /api/review/trigger` | `app/harness/`（新） | 🔴 新建 |
-| review router | API | 新栈限定的偏好 GET/PUT 与主动 trigger | 未来 `/api/review/*` | `app/api/review.py`（新） | 🔴 新建 |
-
 ## 研究调研文档（docs/research）
 
 | 名字 | 功能 | 位置 |
@@ -85,14 +73,13 @@
 |---|---|---|---|
 | `dev-standards.md` | 全局开发规范的项目级镜像（语言/命令执行/README维护/模块三层规划/规划产出物管理） | 随会话加载 | `.claude/rules/dev-standards.md` |
 | `learning-docs.md` | 学习文档落地规则（Learned/ 下 QA 式记录的格式与流程） | learning-docs skill 触发 | `.claude/rules/learning-docs.md` |
-| `agent-root.md` | StudyAgent 框架根规范（四层单向依赖、薄壳节点、spec 同步规则） | app/agent/ 下开发时 | `.claude/rules/agent-root.md` |
 | `solution-presentation.md` | 方案呈现规范（引用即解释 + 资产清单/三色血缘默认开头） | 给用户任何方案/计划/设计时 | `.claude/rules/solution-presentation.md` |
 
 ## 项目入口文档
 
 | 名字 | 功能 | 触发 / 入口 | 位置 |
 |---|---|---|---|
-| `CLAUDE.md` | Claude 每会话自动加载的项目入口：单栈方向（新栈 `app/` 唯一主体 / 老栈 `app_old/` 待删）+ 四层架构 + 关键目录地图 + 五 Agent 点名 + 时效性地标 + 载体路标 | 会话启动自动加载 | `CLAUDE.md`（根目录） |
+| `CLAUDE.md` | Claude 每会话自动加载的项目入口：单栈方向（`app/` 为唯一主体）+ 四层架构 + 关键目录地图 + 五 Agent 点名 + 时效性地标 + 载体路标 | 会话启动自动加载 | `CLAUDE.md`（根目录） |
 
 ## CI/CD 与 Docker 部署
 
