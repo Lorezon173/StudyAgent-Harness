@@ -1,6 +1,7 @@
 import os
+from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.core.database import init_db
@@ -39,10 +40,24 @@ async def health():
 
 if os.path.exists("web/dist"):
     app.mount("/assets", StaticFiles(directory="web/dist/assets"), name="assets")
+    DIST = (Path(__file__).resolve().parent.parent / "web" / "dist").resolve()
 
     @app.get("/{full_path:path}")
     async def serve_vue(full_path: str):
-        file_path = f"web/dist/{full_path}"
-        if os.path.exists(file_path) and not full_path.startswith("api"):
-            return FileResponse(file_path)
-        return FileResponse("web/dist/index.html")
+        # ① API 命名空间不进 SPA fallback：缺失/方法错统一 404
+        if full_path == "api" or full_path.startswith("api/"):
+            raise HTTPException(status_code=404)
+        # ② 路径遍历边界闸
+        if full_path:
+            try:
+                candidate = (DIST / full_path).resolve()
+                candidate.relative_to(DIST)
+            except (ValueError, OSError):
+                raise HTTPException(status_code=404)
+            if candidate.is_file():
+                return FileResponse(candidate)
+            # ③ 带扩展名的缺失资源 → 404，不伪装成 HTML
+            if Path(full_path).suffix:
+                raise HTTPException(status_code=404)
+        # 根路径 / 无扩展名前端路由 → SPA 壳
+        return FileResponse(DIST / "index.html")
