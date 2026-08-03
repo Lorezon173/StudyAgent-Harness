@@ -93,6 +93,8 @@ default                when: {}                                           → co
 
 `UserProfile`（`app/harness/user_profile.py`）维护偏好（讲解风格 / 节奏 / 深度）、活跃与已掌握主题、学习连续天数、会话总数。
 
+> **设计参考**：画像记忆结构源于 [7 框架调研报告](docs/research/2026-06-16-current-vs-frameworks-decision-report.md)（mem0 / letta / cognee / graphiti / LightRAG / ragflow / Dify，2026-06-16），结论为「借鉴设计、自研嫁接」——graphiti 的时序上下文图谱设计被 Phase B-② spec 借鉴（引入 Neo4j 被否决）；「掌握度图谱（MasteryGraph）+ 偏好画像（UserProfile）」双组件并列结构即由该调研定型。
+
 > 注：存在两套掌握度持久化——`MasteryGraphStore`（aiosqlite，旧，节点表无 rationale 列）与 `SQLAlchemyMasteryStore`（PG/SQLite 双模，含 rationale）。**生产 chat 流程用后者**。
 
 ## 渐进式规范系统（specs）
@@ -125,7 +127,10 @@ app/specs/
 | `kernel.py` | — | 薄编排层，统一委托各 bench |
 | `judge.py` | §5.1.1 | Judge 适配层：构造 OpenAI judge 并强制与被评 Agent **不同族**（anthropic ≠ openai），同族 / 无 key / unknown 一律返回 `None` 触发降级 |
 
-**RAGAS 集成**：`RetrieverAgent.evaluate()` 在有 golden 数据时调用 `ragas.evaluate`（faithfulness / answer_relevancy / context_precision，对齐 RAGAS 0.4.3 API），RAGAS 不可用或无 key 时优雅降级回启发式分数。配套设计见 [混合评估 spec（RAGAS + DeepEval）](docs/designs/2026-06-22-hybrid-evaluation-ragas-deepeval.md)。
+**评估设计参考（混合方案）**：见 [混合评估 spec（RAGAS + DeepEval）](docs/designs/2026-06-22-hybrid-evaluation-ragas-deepeval.md)——**RAG 检索质量 → RAGAS**，**Tutor 教学质量 → DeepEval G-Eval**，两者经 `judge.py` 的 `build_judge()` 共享入口（含「与被评 Agent 不同族」校验）。
+
+- **RAGAS 集成**：`RetrieverAgent.evaluate()` 在有 golden 数据时调用 `ragas.evaluate`（faithfulness / answer_relevancy / context_precision，对齐 RAGAS 0.4.3 API），RAGAS 不可用或无 key 时优雅降级回启发式分数。
+- **Tutor 评估参考 DeepEval**：规划用 G-Eval 自定义教学指标三维度（`explanation_completeness` / `guidance_quality` / `clarity`）替换 `Tutor.evaluate()` 的字符级占位。**诚实标注：DeepEval 为 Phase 3 待建项**——当前 `app/agents/tutor.py:99` 仍是字符 Counter 交并比占位，deepeval 依赖尚未引入（仅列为技术栈规划，见下）。
 
 > **诚实标注**：评估框架已实现并有测试覆盖，但**尚未接到在线 API 或 CLI**——`/api/eval` 端点只读 `EvalStore`，不调用任何 bench；benches 当前仅由 `tests/eval/` 驱动。
 
