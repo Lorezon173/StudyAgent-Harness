@@ -1,0 +1,39 @@
+{
+  "title": "RAG Foundation 子框架分层地图（蛇形泳道）",
+  "canvas": {"width": 960, "height": 660},
+  "style": {"font_family": "system-ui, -apple-system, Segoe UI, sans-serif", "font_size": 13, "bg_color": "#fcfcfb", "palette": ["#2a78d6", "#1baf7a", "#eda100", "#4a3aa7"]},
+  "nodes": [
+    {"id":"input","label":"知识文件\nEPUB/PDF/TXT","x":180,"y":115,"width":150,"height":58,"fill":"#f0efec","stroke":"#898781"},
+    {"id":"extractor","label":"Extractor\n文件→文本","x":400,"y":115,"width":155,"height":58,"fill":"#cde2fb","stroke":"#2a78d6","sublabel":"部分已实现"},
+    {"id":"adapter","label":"adapter\n统一元素序列","x":620,"y":115,"width":155,"height":58,"fill":"#fef3c7","stroke":"#eda100","sublabel":"spec 设计"},
+
+    {"id":"chunking","label":"ChunkingService\n生成证据身份","x":620,"y":270,"width":175,"height":64,"fill":"#fee2e2","stroke":"#d03b3b","sublabel":"未编码 · BLK-004 左边界"},
+    {"id":"ingestion","label":"KnowledgeIngestionService\n正式摄入编排","x":180,"y":270,"width":205,"height":64,"fill":"#fef3c7","stroke":"#eda100","sublabel":"已确认职责 · 未编码"},
+
+    {"id":"coordinator","label":"RAGCoordinator\n检索后端协调","x":180,"y":425,"width":170,"height":62,"fill":"#d1fae5","stroke":"#1baf7a","sublabel":"已实现"},
+    {"id":"provider","label":"PgVectorProvider\n向量写入/检索","x":400,"y":425,"width":180,"height":64,"fill":"#fee2e2","stroke":"#d03b3b","sublabel":"已实现 · round-trip 缺口"},
+    {"id":"table","label":"vector_chunks\ndoc_id✓ · chunk_id✗","x":620,"y":425,"width":190,"height":64,"fill":"#fee2e2","stroke":"#d03b3b","sublabel":"BLK-004 右边界"},
+    {"id":"retriever","label":"RetrieverAgent\n机械检索","x":840,"y":425,"width":165,"height":62,"fill":"#d1fae5","stroke":"#1baf7a","sublabel":"已实现"},
+
+    {"id":"projection","label":"EvidenceProjection\n授权证据投影","x":840,"y":565,"width":180,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"已确认 · 未编码"},
+    {"id":"tutor","label":"Tutor\ngrounded answer","x":620,"y":565,"width":165,"height":62,"fill":"#f0eefd","stroke":"#4a3aa7","sublabel":"prompt 未接 evidence"}
+  ],
+  "edges": [
+    {"from":"input","to":"extractor"},{"from":"extractor","to":"adapter"},
+    {"from":"adapter","to":"chunking"},
+    {"from":"chunking","to":"ingestion"},
+    {"from":"ingestion","to":"coordinator"},
+    {"from":"coordinator","to":"provider"},{"from":"provider","to":"table"},{"from":"table","to":"retriever"},
+    {"from":"retriever","to":"projection"},
+    {"from":"projection","to":"tutor"}
+  ],
+  "groups": [
+    {"id":"layer1","label":"API / 输入层","node_ids":["input","extractor","adapter"],"fill":"#f8fafc","stroke":"#c3c2b7","padding":18},
+    {"id":"layer2","label":"Harness 身份层（BLK-004 核心）","node_ids":["chunking","ingestion"],"fill":"#fff7ed","stroke":"#ec835a","padding":18},
+    {"id":"layer3","label":"Infrastructure 索引与检索层","node_ids":["coordinator","provider","table","retriever"],"fill":"#f0fdf4","stroke":"#1baf7a","padding":18},
+    {"id":"layer4","label":"Orchestration 生成层","node_ids":["projection","tutor"],"fill":"#f5f3ff","stroke":"#4a3aa7","padding":18}
+  ],
+  "labels": [
+    {"text":"蛇形泳道：层内方向交替（→←→←），跨层全垂直连接，证据沿 Z 字流动","x":480,"y":25,"font_size":13,"color":"#52514e","anchor":"middle"}
+  ]
+}

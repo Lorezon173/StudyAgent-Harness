@@ -1,0 +1,4 @@
+"user_input","retrieved_contexts","reference","ground_truth_human"
+"StudyAgent 的四层架构是什么？","API → Orchestration → Harness → Infrastructure 四层单向依赖;严禁反向依赖","理想答案：StudyAgent 采用 API → Orchestration → Harness → Infrastructure 的四层单向依赖架构",""
+"safe_node 装饰器的作用是什么？","所有节点必须通过 safe_node 装饰器注册;safe_node 提供统一的异常捕获与日志","理想答案：safe_node 是节点注册装饰器，提供统一的异常捕获与日志，确保节点失败不会导致整图崩溃",""
+"SpecLoader 的渐进式加载分几层？","层级0: _root.prompt.md 始终加载;层级1: agents/<name>.prompt.md 路由后加载;层级2: prompts/<name>.prompt.md 节点执行时加载","理想答案：SpecLoader 分三层加载：层级0 全局规则、层级1 角色定义、层级2 节点精确指令",""

@@ -1,0 +1,566 @@
+---
+schema_version: 1
+book_key: the-myth-of-sisyphus
+language: zh-CN
+verification_state: first_pass_verified_against_local_corpus
+questions:
+- id: sisyphus-l1-001
+  level: 1
+  question_type: 定位
+  question: 加缪在书中从哪里开始提出“真正严肃的哲学问题”这一论述？
+  status: verified_v1
+  gold_answer: 该论述位于“荒诞推理”章的“荒诞与自杀”小节开头；作者从自杀及人生是否值得活这一问题展开。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-008-p-0002
+    excerpt: 真正严肃的哲学问题只有一个，那便是自杀。判断人生值不值得活，等于回答哲学的根本问题。
+  source_locator:
+    chapter: 荒诞推理
+    section: 荒诞与自杀
+    page: 
+    paragraph: sisyphus-spine-008-p-0002
+  answer_requirements:
+  - 需要在指定译本中确认该论述所在的准确章节或小节。
+  - 需要依据指定译本概括其开篇论证对象，不得仅凭通行引语作答。
+  common_failure_modes:
+  - 凭网络名句补写原文。
+  - 编造章节名或页码。
+  - 将后文结论误作开篇论述。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-002
+  level: 1
+  question_type: 明确观点
+  question: 在指定译本中，加缪如何界定哲学判断与是否值得活下去之间的关系？
+  status: verified_v1
+  gold_answer: 加缪把判断人生是否值得活视为哲学的根本问题，并以一个问题可能引起的行动来衡量其紧要性；这是问题设定，并不等于赞成自杀。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-008-p-0002
+    excerpt: 判断人生值不值得活，等于回答哲学的根本问题。
+  - paragraph_id: sisyphus-spine-008-p-0003
+    excerpt: 倘问凭什么来判断这个问题比那个问题紧要，回答是要看问题所引起的行动。
+  source_locator:
+    chapter: 荒诞推理
+    section: 荒诞与自杀
+    page: 
+    paragraph:
+    - sisyphus-spine-008-p-0002
+    - sisyphus-spine-008-p-0003
+  answer_requirements:
+  - 需要核验作者明确建立了哪些判断关系。
+  - 需要区分作者的问题设定与作者最终主张。
+  common_failure_modes:
+  - 把提出问题直接等同于赞成自杀。
+  - 用二手哲学概述替代书内表述。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-003
+  level: 1
+  question_type: 概念定义
+  question: "“荒诞”在书中是怎样被界定的，它由哪些相互关系产生？"
+  status: verified_v1
+  gold_answer: 荒诞不是单独属于人或世界的属性，而产生于比较双方的对峙，并存在于人与世界的共同存在和联系中。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-010-p-0004
+    excerpt: 荒诞本质上是一种分离，不属于相比因素的任何一方，而产生于相比因素的对峙。
+  - paragraph_id: sisyphus-spine-010-p-0005
+    excerpt: 荒诞不在于人（如果这样的隐喻有意义的话），也不在于世界，而在于两者的共同存在。
+  source_locator:
+    chapter: 荒诞推理
+    section: 哲学的自杀
+    page: 
+    paragraph:
+    - sisyphus-spine-010-p-0004
+    - sisyphus-spine-010-p-0005
+  answer_requirements:
+  - 需要从指定译本验证荒诞是否被视为单独属于人或世界的属性。
+  - 需要确认构成荒诞关系的各方及其张力。
+  common_failure_modes:
+  - 把荒诞简化为“世界毫无意义”。
+  - 把情绪体验与概念定义混为一谈。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-004
+  level: 1
+  question_type: 定位
+  question: 书中讨论“荒诞之墙”或对应译法的内容出现在哪一部分？
+  status: verified_v1
+  gold_answer: 本译本采用“荒诞的藩篱”，内容位于“荒诞推理”章的同名小节。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-009-p-0001
+    excerpt: 荒诞的藩篱
+  source_locator:
+    chapter: 荒诞推理
+    section: 荒诞的藩篱
+    page: 
+    paragraph: sisyphus-spine-009-p-0001
+  answer_requirements:
+  - 需要先确认指定译本是否采用“荒诞之墙”这一译法。
+  - 需要定位对应段落所在章节、小节及可核查页码。
+  common_failure_modes:
+  - 假定所有译本都使用同一术语。
+  - 凭目录结构猜测位置。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-005
+  level: 1
+  question_type: 明确观点
+  question: 加缪在书中对“哲学上的自杀”持什么态度？
+  status: verified_v1
+  gold_answer: 加缪批评“哲学的自杀”这种思想跳跃：思想否定自身，并企图在导致否定的事物中超越自身，从而回避应当维持的荒诞对峙。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-010-p-0018
+    excerpt: 思想否定自身，并倾向于在引起否定自身的东西中超越自身。
+  - paragraph_id: sisyphus-spine-010-p-0006
+    excerpt: 否定荒诞赖以生存的对立面中有一项是逃避荒诞
+  source_locator:
+    chapter: 荒诞推理
+    section: 哲学的自杀
+    page: 
+    paragraph:
+    - sisyphus-spine-010-p-0018
+    - sisyphus-spine-010-p-0006
+  answer_requirements:
+  - 需要核验指定译本中该术语的译法与作者评价。
+  - 需要指出作者批评的对象或推理方式，但不得超出证据范围。
+  common_failure_modes:
+  - 把“哲学上的自杀”误解为身体自杀。
+  - 未经证据列举作者没有讨论的人物。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-006
+  level: 1
+  question_type: 概念定义
+  question: 书中“荒诞的人”是按哪些基本特征来描述的？
+  status: verified_v1
+  gold_answer: 荒诞人不为永恒做事却也不否定永恒；他更看重勇气和推理，认识自身局限，并在有限生命时间内继续冒险。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-013-p-0001
+    excerpt: 荒诞人究竟是什么？就是不为永恒做任何事情，又不否定永恒的人。
+  - paragraph_id: sisyphus-spine-013-p-0001
+    excerpt: 虽然确信他的自由已到尽头，他的反抗没有前途，他的意识可能消亡，但他在自己生命的时间内继续冒险。
+  source_locator:
+    chapter: 荒诞人
+    section: 荒诞人
+    page: 
+    paragraph:
+    - sisyphus-spine-013-p-0001
+    - sisyphus-spine-013-p-0001
+  answer_requirements:
+  - 需要从指定译本提取作者明确使用的判据或特征。
+  - 需要区分总定义与后续人物范型。
+  common_failure_modes:
+  - 把任意叛逆人物都称为荒诞的人。
+  - 用个人价值判断替代作者的描述标准。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-007
+  level: 1
+  question_type: 定位
+  question: 唐璜作为例子是在书中哪一部分被讨论的？
+  status: verified_v1
+  gold_answer: 唐璜在“荒诞人”章的“唐璜主义”小节中被讨论；他作为以重复、数量和有限经验生活的荒诞人物范型出现。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-014-p-0001
+    excerpt: 唐璜主义
+  - paragraph_id: sisyphus-spine-014-p-0002
+    excerpt: 正因为他以同等的冲动去爱一个个女人，并且每次都用全身去爱，他才需要重复这种天赋和深化这种性爱。
+  source_locator:
+    chapter: 荒诞人
+    section: 唐璜主义
+    page: 
+    paragraph:
+    - sisyphus-spine-014-p-0001
+    - sisyphus-spine-014-p-0002
+  answer_requirements:
+  - 需要确认指定译本的章节、小节名称及定位信息。
+  - 需要确认唐璜在该处承担的论证功能。
+  common_failure_modes:
+  - 根据其他文学作品推断本书内容。
+  - 编造页码或小节标题。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-008
+  level: 1
+  question_type: 明确观点
+  question: 加缪在书中如何评价希望或超越对荒诞处境的处理？
+  status: verified_v1
+  gold_answer: 加缪拒绝借希望或超越消除荒诞，因为那会破坏构成荒诞的对峙；他要求正视并维持荒诞，而不是逃避它。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 否定荒诞赖以生存的对立面中有一项是逃避荒诞，而取消有意识的反抗，就是回避问题。
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 生存，就是使荒诞存活。使荒诞存活，首先是正视荒诞。
+  source_locator:
+    chapter: 荒诞推理
+    section: 荒诞自由
+    page: 
+    paragraph:
+    - sisyphus-spine-011-p-0005
+    - sisyphus-spine-011-p-0005
+  answer_requirements:
+  - 需要核验作者针对希望、超越或对应译法的明确论述。
+  - 需要说明其与保持荒诞张力的关系。
+  common_failure_modes:
+  - 将日常意义的乐观希望与书中批评对象混同。
+  - 把作者立场表述为未经限定的虚无主义。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-009
+  level: 1
+  question_type: 局部解释
+  question: 西西弗斯神话在全书结尾部分承担什么论证作用？
+  status: verified_v1
+  gold_answer: 结尾的西西弗形象把前文抽象论证具体化：无望且重复的惩罚仍被有意识地承担，主人公以觉醒、反抗和对自身命运的占有回应荒诞。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-022-p-0006
+    excerpt: 这则神话之所以悲壮，正因为神话的主人公是有意识的。
+  - paragraph_id: sisyphus-spine-022-p-0009
+    excerpt: 西西弗沉默的喜悦全在于此。他的命运是属于他的。岩石是他的东西。
+  source_locator:
+    chapter: 西西弗神话
+    section: 西西弗神话
+    page: 
+    paragraph:
+    - sisyphus-spine-022-p-0006
+    - sisyphus-spine-022-p-0009
+  answer_requirements:
+  - 需要依据结尾相关段落确认神话与前文论证的连接点。
+  - 需要区分神话情节复述与作者借此提出的哲学含义。
+  common_failure_modes:
+  - 只复述推石头的故事。
+  - 直接套用流行励志解释。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l1-010
+  level: 1
+  question_type: 误读纠正
+  question: "“必须想象西西弗斯是幸福的”是否等于说他的处境本身是轻松或令人愉快的？"
+  status: verified_v1
+  gold_answer: 不等于。文本明确保留无望劳动、苦难和黑夜；所谓幸福来自清醒地承担属于自己的命运，以及攀登本身足以充实人心，而不是处境轻松。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-022-p-0001
+    excerpt: 没有比无用又无望的劳动更为可怕的惩罚了。
+  - paragraph_id: sisyphus-spine-022-p-0010
+    excerpt: 攀登山顶的拼搏本身足以充实一颗人心。应当想像西西弗是幸福的。
+  source_locator:
+    chapter: 西西弗神话
+    section: 西西弗神话
+    page: 
+    paragraph:
+    - sisyphus-spine-022-p-0001
+    - sisyphus-spine-022-p-0010
+  answer_requirements:
+  - 需要从指定译本结尾语境核验“幸福”与处境、意识或态度之间的关系。
+  - 需要明确纠正“幸福等于轻松愉快”的简化解读。
+  common_failure_modes:
+  - 将结论鸡汤化。
+  - 脱离上下文解释单句。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-001
+  level: 2
+  question_type: 局部解释
+  question: 为什么作者把日常生活的机械重复视为可能触发荒诞意识的契机？
+  status: verified_v1
+  gold_answer: 机械重复本身不是荒诞的定义；当日常链条断裂、“为什么”的追问出现时，厌倦成为意识觉醒的序幕，由此显露荒诞问题。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-009-p-0006
+    excerpt: 不过有一天，“为什么”的疑问油然而生，于是一切就在这种略带惊讶的百无聊赖中开始了。
+  - paragraph_id: sisyphus-spine-009-p-0006
+    excerpt: 厌倦处在机械生活的末端，但又是开启意识活动的序幕：唤醒意识，触发未来。
+  source_locator:
+    chapter: 荒诞推理
+    section: 荒诞的藩篱
+    page: 
+    paragraph:
+    - sisyphus-spine-009-p-0006
+    - sisyphus-spine-009-p-0006
+  answer_requirements:
+  - 需要核验指定译本对日常重复、醒觉及追问的具体联系。
+  - 需要说明“契机”而非把重复本身直接定义为荒诞。
+  common_failure_modes:
+  - 把工作重复直接等同于荒诞概念。
+  - 加入书中未出现的现代职场批判。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-002
+  level: 2
+  question_type: 误读纠正
+  question: 说“荒诞产生于人与世界的关系”是否意味着作者断言人和世界各自都毫无意义？
+  status: verified_v1
+  gold_answer: 不意味着。加缪明确说世界本身只能称为不可理喻，而荒诞来自人的明晰要求与世界非理性之间的冲突；它属于两者的联系，而非任一方的本体属性。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-009-p-0018
+    excerpt: 世界本身不可理喻，我们所能说的，仅此而已。
+  - paragraph_id: sisyphus-spine-009-p-0018
+    excerpt: 所谓荒诞，是指非理性和非弄清楚不可的愿望之间的冲突
+  - paragraph_id: sisyphus-spine-010-p-0005
+    excerpt: 荒诞不在于人（如果这样的隐喻有意义的话），也不在于世界，而在于两者的共同存在。
+  source_locator:
+    chapter: 荒诞推理
+    section:
+    - 荒诞的藩篱
+    - 哲学的自杀
+    page: 
+    paragraph:
+    - sisyphus-spine-009-p-0018
+    - sisyphus-spine-009-p-0018
+    - sisyphus-spine-010-p-0005
+  answer_requirements:
+  - 需要核验关系性定义及其限定。
+  - 需要区分“关系中的冲突”与对人或世界本体的绝对断言。
+  common_failure_modes:
+  - 将关系概念本体化。
+  - 用“虚无主义”标签代替论证。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-003
+  level: 2
+  question_type: 局部解释
+  question: 作者为什么认为承认荒诞之后仍需保持清醒，而不能通过某种超越来消解矛盾？
+  status: verified_v1
+  gold_answer: 荒诞依赖人与世界两项持续对峙；通过超越或希望取消任何一项都会使荒诞消失并回避原问题。因此作者要求保持意识和不断反抗，正视而不消解荒诞。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-010-p-0006
+    excerpt: 第一个条件，其实是我研究的唯一条件，就是维护压得我喘不过气的东西
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 取消有意识的反抗，就是回避问题。
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 生存，就是使荒诞存活。使荒诞存活，首先是正视荒诞。
+  source_locator:
+    chapter: 荒诞推理
+    section:
+    - 哲学的自杀
+    - 荒诞自由
+    page: 
+    paragraph:
+    - sisyphus-spine-010-p-0006
+    - sisyphus-spine-011-p-0005
+    - sisyphus-spine-011-p-0005
+  answer_requirements:
+  - 需要验证“清醒”或对应译法与荒诞持续存在之间的关系。
+  - 需要从指定译本说明作者反对消解矛盾的理由。
+  common_failure_modes:
+  - 把清醒解释成一般理性主义。
+  - 把作者批评扩大为反对一切宗教或形而上学。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-004
+  level: 2
+  question_type: 明确观点
+  question: 在作者的论证中，反抗、自由与激情分别如何回应荒诞？
+  status: verified_v1
+  gold_answer: 反抗是在无希望的命运前持续维持意识与对抗；自由是在永恒自由被打消后获得的行动自由；激情则使有限而多样的此世经验得到最大限度的生活。三者都以不逃避荒诞为前提。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 唯一前后一致的哲学立场，就是反抗。
+  - paragraph_id: sisyphus-spine-011-p-0010
+    excerpt: 若说荒诞打消了我获得永恒自由的一切可能性，反倒还给我行动自由和激励我获取行动自由。
+  - paragraph_id: sisyphus-spine-020-p-0010
+    excerpt: 我对荒诞创作的要求相当于我对思想的要求，诸如反抗、自由和多样性。
+  source_locator:
+    chapter:
+    - 荒诞推理
+    - 荒诞创作
+    section:
+    - 荒诞自由
+    - 没有前途的创作
+    page: 
+    paragraph:
+    - sisyphus-spine-011-p-0005
+    - sisyphus-spine-011-p-0010
+    - sisyphus-spine-020-p-0010
+  answer_requirements:
+  - 需要核验指定译本对三者的实际译名及各自含义。
+  - 需要说明三者之间的关系，不得只列词语。
+  common_failure_modes:
+  - 套用政治反抗概念。
+  - 把自由解释成不受任何约束。
+  - 缺少三者与荒诞前提的连接。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-005
+  level: 2
+  question_type: 局部解释
+  question: 唐璜范型如何体现作者所说的“数量”与“生活经验”之间的关系？
+  status: verified_v1
+  gold_answer: 唐璜不是追求一次完美爱情，而是以同等冲动全身投入一次又一次的爱；“数量”指在有限生命中重复和增加经验，而非对情爱对象作道德排名，也不能自动等同于经验的深度。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-014-p-0002
+    excerpt: 正因为他以同等的冲动去爱一个个女人，并且每次都用全身去爱，他才需要重复这种天赋和深化这种性爱。
+  - paragraph_id: sisyphus-spine-014-p-0002
+    excerpt: "“毕竟？不，又多了一次罢了。”"
+  source_locator:
+    chapter: 荒诞人
+    section: 唐璜主义
+    page: 
+    paragraph:
+    - sisyphus-spine-014-p-0002
+    - sisyphus-spine-014-p-0002
+  answer_requirements:
+  - 需要先确认指定译本是否使用“数量”等对应表述。
+  - 需要依据唐璜相关段落解释其经验方式与荒诞立场的联系。
+  common_failure_modes:
+  - 将问题简化为对情爱数量的道德评价。
+  - 用唐璜传说的外部知识代替书内论证。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-006
+  level: 2
+  question_type: 误读纠正
+  question: 作者讨论演员时，是否是在宣称表演职业天然比其他生活方式更接近真理？
+  status: verified_v1
+  gold_answer: 不是。作者明确说演员并非普遍都是荒诞人；演员的命运只是一个可能吸引清醒心灵的荒诞范型，借其短暂生涯和多重角色展示在有限时间内经历多种生命。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-015-p-0002
+    excerpt: 不是说演员普遍听从这种召唤，也不是说他们是荒诞人，而是说他们的命运是一种荒诞命运
+  - paragraph_id: sisyphus-spine-015-p-0005
+    excerpt: 演员就这样经历了多少世纪，领悟了多少智者，模仿了他可能成为的人物和他切身体验的人物
+  source_locator:
+    chapter: 荒诞人
+    section: 戏剧
+    page: 
+    paragraph:
+    - sisyphus-spine-015-p-0002
+    - sisyphus-spine-015-p-0005
+  answer_requirements:
+  - 需要核验演员作为范型的具体论证作用。
+  - 需要区分示例性描述与职业优越性的普遍断言。
+  common_failure_modes:
+  - 把范型误作职业排名。
+  - 脱离有限生命、角色经验等上下文作答。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-007
+  level: 2
+  question_type: 概念定义
+  question: "“荒诞创作”在书中需要满足哪些条件，作品与解释世界之间是什么关系？"
+  status: verified_v1
+  gold_answer: 荒诞创作必须保持对自身无动机性的清醒，表现分离与反抗，不推崇幻想或激发希望，并抵抗以最终解释或和解结论消除荒诞的诱惑。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-018-p-0017
+    excerpt: 一种始终如一的荒诞态度，必须对其无动机性保持清醒的意识。
+  - paragraph_id: sisyphus-spine-018-p-0017
+    excerpt: 假如作品没有表现分离和反抗，假如作品推崇幻想和激发希望，那么作品就不再是无动机的了。
+  - paragraph_id: sisyphus-spine-018-p-0018
+    excerpt: 解释的诱惑最为强烈的创作中，作者能够克服这种诱惑吗？
+  source_locator:
+    chapter: 荒诞创作
+    section: 哲学与小说
+    page: 
+    paragraph:
+    - sisyphus-spine-018-p-0017
+    - sisyphus-spine-018-p-0017
+    - sisyphus-spine-018-p-0018
+  answer_requirements:
+  - 需要从指定译本确认荒诞创作的限定条件。
+  - 需要说明创作、描述与解释之间的区别。
+  common_failure_modes:
+  - 将任何悲观作品都视为荒诞创作。
+  - 把“不解释”误解为作品可以没有结构或思想。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-008
+  level: 2
+  question_type: 局部解释
+  question: 作者借陀思妥耶夫斯基的作品讨论了创作中的哪一种思想转折或矛盾？
+  status: verified_v1
+  gold_answer: 作者借陀思妥耶夫斯基展示作品从提出荒诞问题转向重新接纳希望和上帝的矛盾：基里洛夫把逻辑自杀推到反抗与自由，但小说家最终选择与其人物对抗，因此作品提出荒诞问题却不是荒诞作品。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-019-p-0006
+    excerpt: 基里洛夫是《群魔》中的人物，也是逻辑自杀的信奉者。
+  - paragraph_id: sisyphus-spine-019-p-0006
+    excerpt: "“我将自杀，以证明我的违抗，确认我新的、了不起的自由。”"
+  - paragraph_id: sisyphus-spine-019-p-0015
+    excerpt: 这里涉及的不是一部荒诞作品，而是一部提出荒诞问题的作品。
+  source_locator:
+    chapter: 荒诞创作
+    section: 基里洛夫
+    page: 
+    paragraph:
+    - sisyphus-spine-019-p-0006
+    - sisyphus-spine-019-p-0006
+    - sisyphus-spine-019-p-0015
+  answer_requirements:
+  - 需要核验指定译本实际讨论的作品、人物或论点。
+  - 需要依据相关段落说明作者识别出的转折或矛盾。
+  common_failure_modes:
+  - 凭文学史常识补写未被本书讨论的作品。
+  - 把加缪的评价与陀思妥耶夫斯基人物立场混为一谈。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-009
+  level: 2
+  question_type: 误读纠正
+  question: 西西弗斯的“反抗”是否意味着他能够改变惩罚的外部结果？
+  status: verified_v1
+  gold_answer: 不意味着。他无力终止惩罚，岩石仍会滚落；反抗在于清醒认识命运、蔑视它，并把命运认作自己的，从而改变主体与处境的关系而非外部结果。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-022-p-0006
+    excerpt: 西西弗，这个诸神的无产者，无能为力却叛逆反抗，认识到自己苦海无边的生存状况
+  - paragraph_id: sisyphus-spine-022-p-0009
+    excerpt: 西西弗沉默的喜悦全在于此。他的命运是属于他的。岩石是他的东西。
+  - paragraph_id: sisyphus-spine-022-p-0009
+    excerpt: 岩石照旧滚动。
+  source_locator:
+    chapter: 西西弗神话
+    section: 西西弗神话
+    page: 
+    paragraph:
+    - sisyphus-spine-022-p-0006
+    - sisyphus-spine-022-p-0009
+    - sisyphus-spine-022-p-0009
+  answer_requirements:
+  - 需要核验结尾段落如何处理外部命运、意识及反抗之间的关系。
+  - 需要区分改变处境与改变主体对处境的关系。
+  common_failure_modes:
+  - 杜撰西西弗斯最终逃脱惩罚。
+  - 把反抗简化为积极心态。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+- id: sisyphus-l2-010
+  level: 2
+  question_type: 局部解释
+  question: 全书从自杀问题推进到西西弗斯形象时，核心论证链条如何衔接？
+  status: verified_v1
+  gold_answer: 论证从“人生是否值得活”的自杀问题出发，进而把荒诞界定为人与世界共同存在中的对峙；作者排除以自杀、希望或思想跳跃逃避对峙的方案，保留清醒的反抗、有限行动自由与多样经验；最后以西西弗清醒承担仍旧滚落的岩石，把这条回应具体化。
+  gold_evidence:
+  - paragraph_id: sisyphus-spine-008-p-0002
+    excerpt: 判断人生值不值得活，等于回答哲学的根本问题。
+  - paragraph_id: sisyphus-spine-010-p-0005
+    excerpt: 荒诞不在于人（如果这样的隐喻有意义的话），也不在于世界，而在于两者的共同存在。
+  - paragraph_id: sisyphus-spine-011-p-0005
+    excerpt: 唯一前后一致的哲学立场，就是反抗。
+  - paragraph_id: sisyphus-spine-022-p-0006
+    excerpt: 这则神话之所以悲壮，正因为神话的主人公是有意识的。
+  - paragraph_id: sisyphus-spine-022-p-0010
+    excerpt: 攀登山顶的拼搏本身足以充实一颗人心。
+  source_locator:
+    chapter:
+    - 荒诞推理
+    - 西西弗神话
+    section:
+    - 荒诞与自杀
+    - 哲学的自杀
+    - 荒诞自由
+    - 西西弗神话
+    page: 
+    paragraph:
+    - sisyphus-spine-008-p-0002
+    - sisyphus-spine-010-p-0005
+    - sisyphus-spine-011-p-0005
+    - sisyphus-spine-022-p-0006
+    - sisyphus-spine-022-p-0010
+  answer_requirements:
+  - 需要在指定译本中分别核验问题设定、荒诞概念、回应方式与结尾形象的连接。
+  - 需要用可定位证据支持每个环节，不能仅给主题摘要。
+  common_failure_modes:
+  - 跳过中间论证，只并列开头与结尾。
+  - 把后世存在主义概述当作本书论证。
+  - 未区分作者提出的问题、排除的方案与保留的回应。
+  verification_note: 已按 source-manifest.yaml 锁定的沈志明译本 EPUB 正文核验；EPUB 无稳定页码，page 保持
+    null，以 paragraph_id 为主定位。
+corpus_version:
+  source_sha256: 341696af4d08a3f0dec622ac2311556495459d68517387bd912c5fcc8d545a7f
+  manifest: source-manifest.yaml
+  corpus: corpus.local.jsonl

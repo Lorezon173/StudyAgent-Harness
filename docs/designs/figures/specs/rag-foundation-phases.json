@@ -1,0 +1,22 @@
+{
+  "title": "RAG Foundation Phase 0-6 进度（蛇形）",
+  "canvas": {"width": 720, "height": 340},
+  "style": {"font_family": "system-ui, -apple-system, Segoe UI, sans-serif", "font_size": 12, "bg_color": "#fcfcfb", "palette": ["#2a78d6", "#1baf7a", "#eda100", "#4a3aa7"]},
+  "nodes": [
+    {"id":"p0","label":"Phase 0\n边界冻结","x":105,"y":100,"width":130,"height":62,"fill":"#d1fae5","stroke":"#1baf7a","sublabel":"DEC-001~004 已确认"},
+    {"id":"p1","label":"Phase 1\n协议补证","x":270,"y":100,"width":130,"height":62,"fill":"#fee2e2","stroke":"#d03b3b","sublabel":"当前：BLK-004"},
+    {"id":"p2","label":"Phase 2\n摄入身份闭环","x":435,"y":100,"width":140,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"blocked"},
+    {"id":"p3","label":"Phase 3\nevidence 进 Tutor","x":600,"y":100,"width":140,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"后置"},
+    {"id":"p4","label":"Phase 4\n首本 EPUB 摄入","x":600,"y":240,"width":150,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"后置"},
+    {"id":"p5","label":"Phase 5\n正式索引 baseline","x":435,"y":240,"width":150,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"后置"},
+    {"id":"p6","label":"Phase 6\n真实 API E2E","x":270,"y":240,"width":140,"height":62,"fill":"#fef3c7","stroke":"#eda100","sublabel":"最终验收"}
+  ],
+  "edges": [
+    {"from":"p0","to":"p1"},{"from":"p1","to":"p2"},{"from":"p2","to":"p3"},
+    {"from":"p3","to":"p4"},
+    {"from":"p4","to":"p5"},{"from":"p5","to":"p6"}
+  ],
+  "labels": [
+    {"text":"蛇形折行：前段向右，末段向左，小窗口友好","x":360,"y":25,"font_size":13,"color":"#52514e","anchor":"middle"}
+  ]
+}

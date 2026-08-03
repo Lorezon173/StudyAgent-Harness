@@ -195,13 +195,16 @@ app/                            # 事件驱动新栈（主体）
 └── ui/ · worker/               # Chainlit / Celery（均为可选桩）
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
-alembic/versions/               # 4 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint
+alembic/versions/               # 6 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint → session_user_id 回填 → M3 user_id 类型统一
 tests/                          # 默认：494 passed / 1 skipped / 8 deselected（实测全绿）
 scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
 Dockerfile                      # 多阶段：node 构建前端 → uv 装后端 → 精简 runtime（启动自跑 alembic 迁移）
 .dockerignore                   # 构建上下文裁剪 + 密钥防泄漏
 docker-compose.yml              # pgvector/pgvector:pg16（db）+ app（deploy profile，默认仅起 db 供本地 uvicorn 开发）
 .github/workflows/              # ci.yml（ruff + pytest）/ release.yml（构建推送 ghcr 镜像）
+
+docs/                           # 设计 spec / 决策看板（designs/）+ RAG 基础并行工作流状态（rag-foundation-status/）+ 会话交接（claude-chat/）
+benchmarks/                     # RAG 基准集（语料 + 评测题目 + 标注指南）
 ```
 
 ## 快速开始
@@ -293,7 +296,7 @@ store = SessionStore(db=None)
 
 `SessionStore` 契约：`title` 首写生效（first-write-wins）；`save()` 不内部 commit；`list_by_user()` 统一返回 `{session_id, title, updated_at}`，按 updated_at 降序。
 
-迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）。
+迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）→ `d50dd837b8e6`（回填 sessions.user_id）→ `m3_unify_user_id_type`（MasteryNode/Edge 两表 user_id 从 String 统一为 Integer + ForeignKey，与 session/knowledge/vector_chunk 对齐）。
 
 ## 关键枚举
 
@@ -343,7 +346,7 @@ curl http://localhost:8000/health          # 健康检查
 
 > 默认 `docker compose up -d`（不带 `--profile deploy`）仅起 db，保留现有「后端本地 uvicorn 开发」工作流，不破坏既有用法。
 
-**关键衔接**：[alembic/env.py](alembic/env.py) 用同步引擎迁移（async→sync），已补 `psycopg[binary]` 主依赖；前端 `web/dist` 由 [app/main.py](app/main.py) 检测后同源伺服，镜像零额外路由。
+**关键衔接**：[alembic/env.py](alembic/env.py) 用同步引擎迁移（async→sync），已补 `psycopg[binary]` 主依赖；前端 `web/dist` 由 [app/main.py](app/main.py) 检测后同源伺服，镜像零额外路由。静态伺服带加固（`serve_vue`）：`/api` 与 `/api/*` 显式 404（不落入 SPA 回退）、`resolve + relative_to` 边界校验堵路径遍历、带扩展名的缺失资源直接 404（不伪装成 HTML）、根路径及无扩展名前端路由回退 `index.html`。
 
 ## 已知限制（诚实清单）
 

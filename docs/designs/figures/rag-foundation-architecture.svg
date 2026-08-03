@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" width="960" height="660" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+  <rect width="960" height="660" fill="#fcfcfb"/>
+  <defs>
+    <marker id="arrow-default" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#555555"/>
+    </marker>
+    <marker id="arrow-c0" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#2a78d6"/>
+    </marker>
+    <marker id="arrow-c1" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#1baf7a"/>
+    </marker>
+    <marker id="arrow-c2" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#eda100"/>
+    </marker>
+    <marker id="arrow-c3" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#4a3aa7"/>
+    </marker>
+  </defs>
+  <rect x="87.0" y="68.0" width="628.5" height="94.0" fill="#f8fafc" stroke="#c3c2b7" stroke-width="1" rx="8"/>
+  <text x="95.0" y="84.0" font-size="11" fill="#999999" font-weight="bold">API / 输入层</text>
+  <rect x="59.5" y="220.0" width="666.0" height="100.0" fill="#fff7ed" stroke="#ec835a" stroke-width="1" rx="8"/>
+  <text x="67.5" y="236.0" font-size="11" fill="#999999" font-weight="bold">Harness 身份层（BLK-004 核心）</text>
+  <rect x="77.0" y="375.0" width="863.5" height="100.0" fill="#f0fdf4" stroke="#1baf7a" stroke-width="1" rx="8"/>
+  <text x="85.0" y="391.0" font-size="11" fill="#999999" font-weight="bold">Infrastructure 索引与检索层</text>
+  <rect x="519.5" y="516.0" width="428.5" height="98.0" fill="#f5f3ff" stroke="#4a3aa7" stroke-width="1" rx="8"/>
+  <text x="527.5" y="532.0" font-size="11" fill="#999999" font-weight="bold">Orchestration 生成层</text>
+  <path d="M 255.0,115.0 L 322.5,115.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 477.5,115.0 L 542.5,115.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 620.0,144.0 L 620.0,238.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 532.5,270.0 L 282.5,270.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 180.0,302.0 L 180.0,394.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 265.0,425.0 L 310.0,425.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 490.0,425.0 L 525.0,425.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 715.0,425.0 L 757.5,425.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 840.0,456.0 L 840.0,534.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 750.0,565.0 L 702.5,565.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <rect x="105.0" y="86.0" width="150.0" height="58.0" fill="#f0efec" stroke="#898781" stroke-width="2" rx="8"/>
+  <text x="180.0" y="112.0" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">知识文件</text>
+  <text x="180.0" y="127.0" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">EPUB/PDF/TXT</text>
+  <rect x="322.5" y="86.0" width="155.0" height="58.0" fill="#cde2fb" stroke="#2a78d6" stroke-width="2" rx="8"/>
+  <text x="400.0" y="104.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">Extractor</text>
+  <text x="400.0" y="119.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">文件→文本</text>
+  <text x="400.0" y="134.6" font-size="10" fill="#888888" text-anchor="middle">部分已实现</text>
+  <rect x="542.5" y="86.0" width="155.0" height="58.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="620.0" y="104.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">adapter</text>
+  <text x="620.0" y="119.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">统一元素序列</text>
+  <text x="620.0" y="134.6" font-size="10" fill="#888888" text-anchor="middle">spec 设计</text>
+  <rect x="532.5" y="238.0" width="175.0" height="64.0" fill="#fee2e2" stroke="#d03b3b" stroke-width="2" rx="8"/>
+  <text x="620.0" y="259.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">ChunkingService</text>
+  <text x="620.0" y="274.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">生成证据身份</text>
+  <text x="620.0" y="289.6" font-size="10" fill="#888888" text-anchor="middle">未编码 · BLK-004 左边界</text>
+  <rect x="77.5" y="238.0" width="205.0" height="64.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="180.0" y="259.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">KnowledgeIngestionService</text>
+  <text x="180.0" y="274.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">正式摄入编排</text>
+  <text x="180.0" y="289.6" font-size="10" fill="#888888" text-anchor="middle">已确认职责 · 未编码</text>
+  <rect x="95.0" y="394.0" width="170.0" height="62.0" fill="#d1fae5" stroke="#1baf7a" stroke-width="2" rx="8"/>
+  <text x="180.0" y="414.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">RAGCoordinator</text>
+  <text x="180.0" y="429.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">检索后端协调</text>
+  <text x="180.0" y="444.6" font-size="10" fill="#888888" text-anchor="middle">已实现</text>
+  <rect x="310.0" y="393.0" width="180.0" height="64.0" fill="#fee2e2" stroke="#d03b3b" stroke-width="2" rx="8"/>
+  <text x="400.0" y="414.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">PgVectorProvider</text>
+  <text x="400.0" y="429.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">向量写入/检索</text>
+  <text x="400.0" y="444.6" font-size="10" fill="#888888" text-anchor="middle">已实现 · round-trip 缺口</text>
+  <rect x="525.0" y="393.0" width="190.0" height="64.0" fill="#fee2e2" stroke="#d03b3b" stroke-width="2" rx="8"/>
+  <text x="620.0" y="414.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">vector_chunks</text>
+  <text x="620.0" y="429.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">doc_id✓ · chunk_id✗</text>
+  <text x="620.0" y="444.6" font-size="10" fill="#888888" text-anchor="middle">BLK-004 右边界</text>
+  <rect x="757.5" y="394.0" width="165.0" height="62.0" fill="#d1fae5" stroke="#1baf7a" stroke-width="2" rx="8"/>
+  <text x="840.0" y="414.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">RetrieverAgent</text>
+  <text x="840.0" y="429.6" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">机械检索</text>
+  <text x="840.0" y="444.6" font-size="10" fill="#888888" text-anchor="middle">已实现</text>
+  <rect x="750.0" y="534.0" width="180.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="840.0" y="554.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">EvidenceProjection</text>
+  <text x="840.0" y="569.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">授权证据投影</text>
+  <text x="840.0" y="584.5" font-size="10" fill="#888888" text-anchor="middle">已确认 · 未编码</text>
+  <rect x="537.5" y="534.0" width="165.0" height="62.0" fill="#f0eefd" stroke="#4a3aa7" stroke-width="2" rx="8"/>
+  <text x="620.0" y="554.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">Tutor</text>
+  <text x="620.0" y="569.5" font-size="13" fill="#333333" text-anchor="middle" font-weight="bold">grounded answer</text>
+  <text x="620.0" y="584.5" font-size="10" fill="#888888" text-anchor="middle">prompt 未接 evidence</text>
+  <text x="480.0" y="25.0" font-size="13" fill="#52514e" text-anchor="middle">蛇形泳道：层内方向交替（→←→←），跨层全垂直连接，证据沿 Z 字流动</text>
+</svg>

@@ -1,0 +1,55 @@
+schema_version: 1
+book_key: the-myth-of-sisyphus
+manifest_state: source_verified_and_body_extracted
+source:
+  title: 西西弗神话
+  author: 加缪
+  translator: 沈志明
+  publisher: 上海译文出版社
+  publication_date: "2013.8"
+  isbn: 978-7-5327-6183-8
+  metadata_basis: 用户已验证的 EPUB 版权页；不采用不完整的 OPF creator/publisher 字段
+  external_path: /Users/ywwl/Downloads/6006-西西弗神话/西西弗神话.epub
+  sha256: 341696af4d08a3f0dec622ac2311556495459d68517387bd912c5fcc8d545a7f
+extraction:
+  script: benchmarks/rag/books/the-myth-of-sisyphus/extract_epub.py
+  method: Python 标准库；读取 META-INF/container.xml 与 OPF manifest/spine，按 spine 顺序抽取作者正文段落
+  output_corpus: benchmarks/rag/books/the-myth-of-sisyphus/corpus.local.jsonl
+  extracted_at: null
+  paragraph_id_scheme: sisyphus-spine-{spine_index:03d}-p-{paragraph_index:04d}
+  page_locator: null
+  page_note: EPUB 为可重排文本，无稳定可复现页码；以 paragraph_id 为主定位
+  git_tracking: ignored
+  local_ignore_note: corpus.local.jsonl 含受版权保护正文，仅本地生成使用，由同目录 .gitignore 忽略
+  paragraph_count: 313
+  included_scope: 作者正文主干
+  excluded_scope:
+    - 目录
+    - CIP 与版权页
+    - 题词及其注释
+    - 译序
+    - 补编
+    - 附编《反抗者》节译
+chapters:
+  - chapter: 荒诞推理
+    sections:
+      - 卷首语
+      - 荒诞与自杀
+      - 荒诞的藩篱
+      - 哲学的自杀
+      - 荒诞自由
+  - chapter: 荒诞人
+    sections:
+      - 荒诞人
+      - 唐璜主义
+      - 戏剧
+      - 征服
+  - chapter: 荒诞创作
+    sections:
+      - 荒诞创作
+      - 哲学与小说
+      - 基里洛夫
+      - 没有前途的创作
+  - chapter: 西西弗神话
+    sections:
+      - 西西弗神话

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="720" height="340" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+  <rect width="720" height="340" fill="#fcfcfb"/>
+  <defs>
+    <marker id="arrow-default" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#555555"/>
+    </marker>
+    <marker id="arrow-c0" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#2a78d6"/>
+    </marker>
+    <marker id="arrow-c1" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#1baf7a"/>
+    </marker>
+    <marker id="arrow-c2" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#eda100"/>
+    </marker>
+    <marker id="arrow-c3" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 8 4, 0 8" fill="#4a3aa7"/>
+    </marker>
+  </defs>
+  <path d="M 170.0,100.0 L 205.0,100.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 335.0,100.0 L 365.0,100.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 505.0,100.0 L 530.0,100.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 600.0,131.0 L 600.0,209.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 525.0,240.0 L 510.0,240.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <path d="M 360.0,240.0 L 340.0,240.0" stroke="#555555" stroke-width="2" fill="none" marker-end="url(#arrow-default)"/>
+  <rect x="40.0" y="69.0" width="130.0" height="62.0" fill="#d1fae5" stroke="#1baf7a" stroke-width="2" rx="8"/>
+  <text x="105.0" y="90.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 0</text>
+  <text x="105.0" y="104.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">边界冻结</text>
+  <text x="105.0" y="118.2" font-size="9" fill="#888888" text-anchor="middle">DEC-001~004 已确认</text>
+  <rect x="205.0" y="69.0" width="130.0" height="62.0" fill="#fee2e2" stroke="#d03b3b" stroke-width="2" rx="8"/>
+  <text x="270.0" y="90.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 1</text>
+  <text x="270.0" y="104.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">协议补证</text>
+  <text x="270.0" y="118.2" font-size="9" fill="#888888" text-anchor="middle">当前：BLK-004</text>
+  <rect x="365.0" y="69.0" width="140.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="435.0" y="90.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 2</text>
+  <text x="435.0" y="104.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">摄入身份闭环</text>
+  <text x="435.0" y="118.2" font-size="9" fill="#888888" text-anchor="middle">blocked</text>
+  <rect x="530.0" y="69.0" width="140.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="600.0" y="90.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 3</text>
+  <text x="600.0" y="104.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">evidence 进 Tutor</text>
+  <text x="600.0" y="118.2" font-size="9" fill="#888888" text-anchor="middle">后置</text>
+  <rect x="525.0" y="209.0" width="150.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="600.0" y="230.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 4</text>
+  <text x="600.0" y="244.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">首本 EPUB 摄入</text>
+  <text x="600.0" y="258.2" font-size="9" fill="#888888" text-anchor="middle">后置</text>
+  <rect x="360.0" y="209.0" width="150.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="435.0" y="230.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 5</text>
+  <text x="435.0" y="244.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">正式索引 baseline</text>
+  <text x="435.0" y="258.2" font-size="9" fill="#888888" text-anchor="middle">后置</text>
+  <rect x="200.0" y="209.0" width="140.0" height="62.0" fill="#fef3c7" stroke="#eda100" stroke-width="2" rx="8"/>
+  <text x="270.0" y="230.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">Phase 6</text>
+  <text x="270.0" y="244.2" font-size="12" fill="#333333" text-anchor="middle" font-weight="bold">真实 API E2E</text>
+  <text x="270.0" y="258.2" font-size="9" fill="#888888" text-anchor="middle">最终验收</text>
+  <text x="360.0" y="25.0" font-size="13" fill="#52514e" text-anchor="middle">蛇形折行：前段向右，末段向左，小窗口友好</text>
+</svg>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Foundation · Program Cockpit</title>
+
+<meta name="generator" content="ARIS render-html (dashboard, v1)">
+<meta name="aris:source-path" content="docs/designs/2026-07-28-rag-foundation-program-cockpit.md">
+<meta name="aris:source-sha256" content="27ad31e91bb923d0ff0d122f45cea58626fa61f85cec2c2b3a9e4178ac4a5ffd">
+<meta name="aris:generated-at" content="2026-07-28 08:43 UTC">
+
+<!-- MathJax 3 -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+
+
+<style>
+:root {
+  --bg: #fdfcf7;
+  --bg-soft: #f4f1ea;
+  --bg-card: #ffffff;
+  --bg-code: #f8f5ec;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-muted: #6b6b6b;
+  --primary: #1a4a8c;
+  --primary-soft: #2d6cb8;
+  --accent: #b8390e;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --info-bg: #dbeafe;
+  --good-bg: #d1fae5;
+  --good: #065f46;
+  --bad-bg: #fee2e2;
+  --bad: #991b1b;
+  --border: #d6d0c0;
+  --border-soft: #e8e3d5;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+}
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+}
+
+header.hero {
+  border-bottom: 3px double var(--primary);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+header.hero .eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+header.hero h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+  font-style: italic;
+}
+header.hero .byline {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+header.hero .byline strong { color: var(--ink); font-weight: 600; }
+header.hero .meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+}
+header.hero .meta span strong { color: var(--ink-soft); }
+header.hero .meta code {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0 28px;
+}
+.grid.metrics { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.card .card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.card .card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  letter-spacing: -0.01em;
+}
+.card .card-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+.card.accent .card-value { color: var(--accent); }
+.card.good .card-value { color: var(--good); }
+.card.warn .card-value { color: var(--warn); }
+.card.bad .card-value { color: var(--bad); }
+
+h2 {
+  font-size: 20px;
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-weight: 700;
+}
+h3 { font-size: 16px; margin: 22px 0 8px; color: var(--primary); font-weight: 600; }
+h4 { font-size: 14px; margin: 16px 0 6px; color: var(--ink); font-weight: 600; }
+
+p { margin: 8px 0; }
+ul, ol { padding-left: 20px; margin: 8px 0; }
+ul li, ol li { margin: 3px 0; }
+ul li::marker { color: var(--primary); }
+
+strong { color: var(--accent); font-weight: 600; }
+em { color: var(--ink-soft); }
+
+a { color: var(--primary); }
+a:hover { color: var(--accent); }
+
+code:not(.hljs) {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.86em;
+  background: var(--bg-code);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+  color: var(--accent);
+}
+
+pre {
+  background: #fafaf6;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+pre code, pre code.hljs {
+  background: transparent !important;
+  display: block;
+  padding: 12px 16px !important;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  color: var(--ink);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+thead { background: var(--primary); color: white; }
+th, td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+th { font-weight: 600; font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--bg-soft); }
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  letter-spacing: 0.02em;
+}
+.badge-good { background: var(--good-bg); color: var(--good); }
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.badge-bad { background: var(--bad-bg); color: var(--bad); }
+.badge-info { background: var(--info-bg); color: var(--primary); }
+
+.callout {
+  margin: 14px 0;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border-left: 4px solid;
+  font-size: 14px;
+}
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
+.callout-info .callout-title { color: var(--primary); }
+.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-good { background: var(--good-bg); border-left-color: var(--good); }
+.callout-good .callout-title { color: var(--good); }
+.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.callout-bad .callout-title { color: var(--bad); }
+
+details {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  margin: 10px 0;
+}
+details summary {
+  cursor: pointer;
+  padding: 9px 13px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--primary);
+  list-style: none;
+  user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: "▸ ";
+  margin-right: 4px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-soft); }
+details > :not(summary) { padding: 8px 13px; }
+
+footer.aris-footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
+
+@media (max-width: 600px) {
+  .shell { padding: 20px 16px; }
+  header.hero h1 { font-size: 22px; }
+  .card .card-value { font-size: 24px; }
+}
+@media print {
+  .shell { padding: 0; }
+  body { background: white; }
+  .card { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hero">
+  
+  <h1>RAG Foundation · Program Cockpit</h1>
+  
+  
+  <div class="meta">
+    <span><strong>Source:</strong> <code>docs/designs/2026-07-28-rag-foundation-program-cockpit.md</code></span>
+    <span><strong>SHA256:</strong> <code>27ad31e91bb9</code></span>
+    <span><strong>Rendered:</strong> 2026-07-28 08:43 UTC</span>
+    
+  </div>
+</header>
+
+<h1 id="rag-foundation--program-cockpit">RAG Foundation · Program Cockpit</h1>
+<blockquote><p><strong>定位</strong>：RAG Foundation 的常驻背景地图。它回答“最终去哪、当前在哪、子框架怎么组成、主链哪里断了”。静态背景只在这里维护；单项 Decision Canvas 不再复制。 <strong>当前状态</strong>：Phase 1 协议补证；BLK-004 为当前 blocker。技术裁决仍在 BLK-004 Decision Canvas 中，尚未确认。 <strong>当前决策</strong>：<a href="2026-07-28-rag-blk004-decision-canvas.html">打开 BLK-004 Decision Canvas</a>。 <strong>正式事实源</strong>：blocker 与阶段状态以 <code>2026-07-24-rag-foundation-parallel-todolist.md</code> 为准；已确认决策以 <code>2026-07-27-rag-p0-confirmed-decisions.md</code> 为准。</p></blockquote>
+<hr />
+<h2 id="1-终点与当前位置">1. 终点与当前位置</h2>
+<p>最终验收不是“向量库里有数据”，而是：真实 <code>/api/chat</code> 与 <code>/api/chat/stream</code> 能返回<strong>有权限、可追溯、仅消费当前回合证据</strong>的 grounded answer，并诚实区分无召回、基础设施失败和生成失败（<code>docs/designs/2026-07-27-rag-foundation-execution-order.md:216-232</code>）。</p>
+<p><img src="figures/rag-foundation-phases.svg" alt="RAG Foundation Phase 0–6 进度图" /></p>
+<div class="callout callout-warn"><div class="callout-title">Warning</div><p>当前两项裁决只解除 BLK-004 的前置歧义；即使确认，仍需 canonical bytes、测试向量、provider round-trip 与运行证据，BLK-004 才能从 <code>blocked</code> 变为完成。</p></div>
+<hr />
+<h2 id="2-子框架结构地图">2. 子框架结构地图</h2>
+<p><img src="figures/rag-foundation-architecture.svg" alt="RAG Foundation 子框架分层地图" /></p>
+<p><strong>读图方式</strong>：沿箭头看证据从文件到 Tutor 的生命周期；绿色节点已有代码，黄色节点已有职责/设计但未编码，红色节点是当前缺口或待决边界。BLK-004 左边界是 ChunkingService 产生身份，右边界是 Provider / DB 完整回传身份。</p>
+<p><strong>四条不随单项决策变化的设计约束</strong>：</p>
+<ol><li>通用文档只经 KnowledgeIngestionService 正式摄入；extractor 不生成 ID、不写库（<code>docs/designs/2026-07-27-rag-p0-confirmed-decisions.md:56-79</code>）。</li><li>visibility 管“能不能看”，identity 管“看的是哪块”，两者不可互相替代（同上 <code>:20-40</code>）。</li><li><code>chunk_id</code> 标证据本体，<code>retrieval_id</code> 标一次检索对证据的使用（同上 <code>:115-148</code>）。</li><li>RAG-D 只消费正式产物与 attestation，不补造摄入链（同上 <code>:52-67</code>）。</li></ol>
+<hr />
+<h2 id="3-当前链与目标链">3. 当前链与目标链</h2>
+<p><img src="figures/rag-foundation-dataflow.svg" alt="RAG Foundation 当前与目标数据流" /></p>
+<p>当前代码已有“预构造 dict → embedding → DB → RetrievedEvidence”，但缺少通用“文件 → ChunkingService → KnowledgeIngestionService”摄入段，也缺少“RetrievedEvidence → Tutor prompt”在线投影段。Provider 查询已读取 <code>doc_id</code> 却未回填到 <code>Chunk.metadata</code>，是 BLK-004 的已证实 round-trip 缺口（<code>app/infrastructure/rag/pgvector_provider.py:137-156</code>）。</p>
+<hr />
+<h2 id="4-id-与角色分工">4. ID 与角色分工</h2>
+<p>这张表保留，因为 ID 关系不是空间结构，而是容易混淆的<strong>语义对照</strong>。</p>
+<table><thead><tr><th>标识</th><th>回答的问题</th><th>不能替代</th></tr></thead><tbody><tr><td><code>source_sha256</code></td><td>输入字节是哪一份？</td><td>具体 chunk</td></tr><tr><td><code>doc_id</code></td><td>这是哪份逻辑文档？</td><td>文档内证据块</td></tr><tr><td><code>chunk_id</code></td><td>检索/评测看到哪一块？</td><td>DB row ID、检索请求 ID</td></tr><tr><td><code>source_locator</code></td><td>人去哪里复核？</td><td>跨格式稳定主键</td></tr><tr><td><code>ingestion_run_id</code></td><td>哪次摄入写入这批数据？</td><td>内容 identity</td></tr><tr><td><code>retrieval_id</code></td><td>这批 evidence 属于哪个问题？</td><td><code>doc_id/chunk_id</code></td></tr><tr><td><code>parent_id</code></td><td>这个事件直接由谁产生？</td><td>文档/检索单元身份</td></tr><tr><td>benchmark <code>paragraph_id</code></td><td>gold 在 benchmark corpus 哪里？</td><td>production identity</td></tr></tbody></table>
+<hr />
+<h2 id="5-当前进度地图">5. 当前进度地图</h2>
+<table><thead><tr><th>状态</th><th>项目</th><th>下一步</th></tr></thead><tbody><tr><td>已确认</td><td>DEC-001 visibility；DEC-002 摄入职责；DEC-003 retrieval_id；DEC-004 P0 单次尝试</td><td>作为后续实现约束</td></tr><tr><td>当前 blocker</td><td>BLK-004：stable-ID / provenance 契约</td><td>裁决 <code>chunk_id</code> 存储与 range 基线；RAG-B 补 bytes 与测试向量</td></tr><tr><td>后置</td><td>BLK-006 / 007：后端真实性、正式评测与 E2E</td><td>BLK-004 解除后推进</td></tr></tbody></table>
+<p>→ <a href="2026-07-28-rag-blk004-decision-canvas.html">进入当前 BLK-004 Decision Canvas</a></p>
+<hr />
+<h2 id="6-最小名词表">6. 最小名词表</h2>
+<p>只保留图中出现且望文不能生义的 10 个词；模块职责已在图中标注，不再重复列 40+ 项。</p>
+<table><thead><tr><th>名词</th><th>快速解释</th></tr></thead><tbody><tr><td>Program Cockpit</td><td>常驻背景地图；静态上下文只在这里维护</td></tr><tr><td>Decision Canvas</td><td>单项决策增量包；只放当前裁决所需信息</td></tr><tr><td>provenance</td><td>证据来源与身份链：从哪份输入、哪次切块、如何写入和回传</td></tr><tr><td>canonical bytes</td><td>计算稳定 ID 前、跨实现无歧义的字节表示</td></tr><tr><td>range</td><td>chunk 在规范元素流中的坐标范围</td></tr><tr><td>round-trip</td><td>identity 从写入 DB 到检索返回全程不丢失</td></tr><tr><td>attestation</td><td>版本化摄入证明，记录输入与实际写入结果</td></tr><tr><td>EvidenceProjection</td><td>Orchestrator 投给 Tutor 的受限、已授权证据快照</td></tr><tr><td>grounded answer</td><td>明确由当前正式、已授权证据支撑的回答</td></tr><tr><td>fail closed</td><td>授权信息不明确时默认拒绝，不冒险召回</td></tr></tbody></table>
+<h2 id="7-事实出处索引">7. 事实出处索引</h2>
+<ul><li>blocker 主账本：<code>docs/designs/2026-07-24-rag-foundation-parallel-todolist.md</code></li><li>已确认决策：<code>docs/designs/2026-07-27-rag-p0-confirmed-decisions.md</code></li><li>阶段与验收：<code>docs/designs/2026-07-27-rag-foundation-execution-order.md</code></li><li>Chunking 设计草案：<code>docs/designs/2026-07-24-project-chunking-service-spec.md</code></li><li>实际检索结构：<code>app/infrastructure/rag/coordinator.py:7-175</code></li><li>Provider 存取与缺口：<code>app/infrastructure/rag/pgvector_provider.py:22-187</code></li><li>表结构：<code>app/models/tables.py:92-111</code></li><li>当前 Retriever：<code>app/agents/retriever.py:24-101</code></li><li>当前 Tutor prompt：<code>app/agents/tutor.py:74-97</code></li></ul>
+
+<footer class="aris-footer">
+  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
+  source <code>docs/designs/2026-07-28-rag-foundation-program-cockpit.md</code> ·
+  SHA256 <code>27ad31e91bb9</code> ·
+  generated at 2026-07-28 08:43 UTC.
+  Edit the source Markdown / JSON, then re-render.
+</footer>
+
+</div>
+</body>
+</html>

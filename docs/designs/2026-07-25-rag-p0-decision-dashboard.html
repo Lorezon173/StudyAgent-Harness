@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyAgent RAG P0 决策面板</title>
+
+<meta name="generator" content="ARIS render-html (dashboard, v1)">
+<meta name="aris:source-path" content="docs/designs/2026-07-25-rag-p0-decision-dashboard.md">
+<meta name="aris:source-sha256" content="e52f775e8de1f7e1ce0e6c01b5e6653178b6ea4d07325b6777071b56ba83fc8a">
+<meta name="aris:generated-at" content="2026-07-25 11:57 UTC">
+
+<!-- MathJax 3 -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+
+
+<style>
+:root {
+  --bg: #fdfcf7;
+  --bg-soft: #f4f1ea;
+  --bg-card: #ffffff;
+  --bg-code: #f8f5ec;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-muted: #6b6b6b;
+  --primary: #1a4a8c;
+  --primary-soft: #2d6cb8;
+  --accent: #b8390e;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --info-bg: #dbeafe;
+  --good-bg: #d1fae5;
+  --good: #065f46;
+  --bad-bg: #fee2e2;
+  --bad: #991b1b;
+  --border: #d6d0c0;
+  --border-soft: #e8e3d5;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+}
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+}
+
+header.hero {
+  border-bottom: 3px double var(--primary);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+header.hero .eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+header.hero h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+  font-style: italic;
+}
+header.hero .byline {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+header.hero .byline strong { color: var(--ink); font-weight: 600; }
+header.hero .meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+}
+header.hero .meta span strong { color: var(--ink-soft); }
+header.hero .meta code {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0 28px;
+}
+.grid.metrics { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.card .card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.card .card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  letter-spacing: -0.01em;
+}
+.card .card-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+.card.accent .card-value { color: var(--accent); }
+.card.good .card-value { color: var(--good); }
+.card.warn .card-value { color: var(--warn); }
+.card.bad .card-value { color: var(--bad); }
+
+h2 {
+  font-size: 20px;
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-weight: 700;
+}
+h3 { font-size: 16px; margin: 22px 0 8px; color: var(--primary); font-weight: 600; }
+h4 { font-size: 14px; margin: 16px 0 6px; color: var(--ink); font-weight: 600; }
+
+p { margin: 8px 0; }
+ul, ol { padding-left: 20px; margin: 8px 0; }
+ul li, ol li { margin: 3px 0; }
+ul li::marker { color: var(--primary); }
+
+strong { color: var(--accent); font-weight: 600; }
+em { color: var(--ink-soft); }
+
+a { color: var(--primary); }
+a:hover { color: var(--accent); }
+
+code:not(.hljs) {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.86em;
+  background: var(--bg-code);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+  color: var(--accent);
+}
+
+pre {
+  background: #fafaf6;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+pre code, pre code.hljs {
+  background: transparent !important;
+  display: block;
+  padding: 12px 16px !important;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  color: var(--ink);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+thead { background: var(--primary); color: white; }
+th, td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+th { font-weight: 600; font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--bg-soft); }
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  letter-spacing: 0.02em;
+}
+.badge-good { background: var(--good-bg); color: var(--good); }
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.badge-bad { background: var(--bad-bg); color: var(--bad); }
+.badge-info { background: var(--info-bg); color: var(--primary); }
+
+.callout {
+  margin: 14px 0;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border-left: 4px solid;
+  font-size: 14px;
+}
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
+.callout-info .callout-title { color: var(--primary); }
+.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-good { background: var(--good-bg); border-left-color: var(--good); }
+.callout-good .callout-title { color: var(--good); }
+.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.callout-bad .callout-title { color: var(--bad); }
+
+details {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  margin: 10px 0;
+}
+details summary {
+  cursor: pointer;
+  padding: 9px 13px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--primary);
+  list-style: none;
+  user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: "▸ ";
+  margin-right: 4px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-soft); }
+details > :not(summary) { padding: 8px 13px; }
+
+footer.aris-footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
+
+@media (max-width: 600px) {
+  .shell { padding: 20px 16px; }
+  header.hero h1 { font-size: 22px; }
+  .card .card-value { font-size: 24px; }
+}
+@media print {
+  .shell { padding: 0; }
+  body { background: white; }
+  .card { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hero">
+  <div class="eyebrow">RAG Foundation · Decision Gate</div>
+  <h1>StudyAgent RAG P0 决策面板</h1>
+  
+  
+  <div class="meta">
+    <span><strong>Source:</strong> <code>docs/designs/2026-07-25-rag-p0-decision-dashboard.md</code></span>
+    <span><strong>SHA256:</strong> <code>e52f775e8de1</code></span>
+    <span><strong>Rendered:</strong> 2026-07-25 11:57 UTC</span>
+    
+  </div>
+</header>
+
+<h1 id="rag-p0-决策面板">RAG P0 决策面板</h1>
+<blockquote><p>当前范围：BLK-001 已确认、BLK-002 已确认、BLK-003/005 待确认。 使用方式：先看“决策路径”，再审待确认卡片；本页是阅读视图的源文件，最终事实源仍为 <code>docs/designs/2026-07-24-rag-foundation-parallel-todolist.md</code>。</p></blockquote>
+<h2 id="1-决策路径">1. 决策路径</h2>
+<pre><code class="language-text">可信身份与数据可见性
+  BLK-001：谁能看到什么？                         已确认
+      ↓
+正式摄入链
+  BLK-002：数据如何进入产品索引并留下证明？       已确认
+      ↓
+在线请求关联与证据消费
+  BLK-003/005：证据如何唯一、安全地进入 Tutor？   待确认
+      ↓
+后续 P0
+  BLK-004：Chunk ID / provenance
+  BLK-006：backend / outcome 真实性
+  BLK-007：黄金集 baseline admission</code></pre>
+<h2 id="2-总览">2. 总览</h2>
+<table><thead><tr><th>决策</th><th>核心问题</th><th>当前状态</th><th>主要责任方</th><th>对后续的约束</th></tr></thead><tbody><tr><td>BLK-001</td><td>用户与范围如何隔离</td><td>✅ 已确认</td><td>RAG-C</td><td>摄入与检索都 fail closed</td></tr><tr><td>BLK-002</td><td>文件如何经产品链进入 PgVector</td><td>✅ 已确认</td><td>RAG-A + RAG-B</td><td>必须全有或全无，并生成 attestation</td></tr><tr><td>BLK-003/005</td><td>一次检索如何关联并只生成一次 Tutor 回复</td><td>🟡 待确认</td><td>RAG-C</td><td>决定在线事件协议与路由状态</td></tr></tbody></table>
+<h2 id="3-blk-001用户与范围隔离">3. BLK-001：用户与范围隔离</h2>
+<h3 id="31-已证实事实">3.1 已证实事实</h3>
+<ul><li>JWT 身份已经通过 <code>get_current_user</code> 验签，并验证用户仍存在。</li><li>chat 与 chat-stream 使用 JWT 用户 ID，不信任 <code>ChatRequest.user_id</code>。</li><li><code>WorkspaceState.user_id</code> 已有可信身份。</li><li>可信身份没有继续进入 Retriever、Coordinator 和 Provider。</li><li>PgVector 写入已有 <code>scope/user_id</code>，但 PG 和 SQLite 查询均无过滤。</li></ul>
+<h3 id="32-已确认方案">3.2 已确认方案</h3>
+<div class="callout callout-good"><div class="callout-title">OK</div><p><strong>Provider 在排序和 LIMIT 前执行授权过滤；历史歧义行先 fail closed，再审计迁移。</strong></p></div>
+<table><thead><tr><th>存储行</th><th>行为</th></tr></thead><tbody><tr><td><code>global + owner=NULL</code></td><td>公共可见</td></tr><tr><td><code>private + owner=当前用户</code></td><td>本人可见</td></tr><tr><td><code>private + owner=其他用户</code></td><td>不可见</td></tr><tr><td><code>private + owner=NULL</code></td><td>不可见 + 审计</td></tr><tr><td><code>global + owner≠NULL</code></td><td>不可见 + 审计</td></tr><tr><td>未知或缺失 scope</td><td>不可见 + 审计</td></tr><tr><td>缺失认证身份</td><td><code>invalid-request</code>，不检索</td></tr></tbody></table>
+<h3 id="33-冻结边界">3.3 冻结边界</h3>
+<ul><li>P0 scope 仅支持 <code>global/private</code>。</li><li>不复用语义不同的 <code>MemoryScope</code>。</li><li>身份只来自 JWT，不来自请求体、用户文本或 LLM。</li><li>类型化 visibility 上下文沿检索链单向传递。</li><li>Provider 负责执行授权；Coordinator、Tutor 不做事后补救。</li><li><code>shared/course</code> 后置。</li></ul>
+<h3 id="34-验收">3.4 验收</h3>
+<ul><li>PG 与 SQLite 得到相同授权集合。</li><li>未授权高相似数据不能占据 top-k。</li><li>evidence、citation、Tutor prompt 无未授权 sentinel。</li><li>歧义行有审计可观测性。</li></ul>
+<h2 id="4-blk-002正式产品摄入主链">4. BLK-002：正式产品摄入主链</h2>
+<h3 id="41-已证实事实">4.1 已证实事实</h3>
+<p>当前存在但未连接：</p>
+<pre><code class="language-text">文件 → Extractor → str
+
+list[dict] → RAGCoordinator.index_documents → PgVectorProvider</code></pre>
+<p>中间缺失：</p>
+<pre><code class="language-text">适配 → 规范化 → Chunking → metadata/identity
+→ KnowledgeIngestionService → 可审计写入结果</code></pre>
+<h3 id="42-已确认职责">4.2 已确认职责</h3>
+<table><thead><tr><th>组件</th><th>做什么</th><th>不做什么</th></tr></thead><tbody><tr><td>EpubExtractor</td><td><code>.epub → str</code></td><td>不切块、不写库、不生成 attestation</td></tr><tr><td>ChunkingService</td><td>元素/文本 → ChunkDocument</td><td>无 IO、不调 Provider、不做认证</td></tr><tr><td>KnowledgeIngestionService</td><td>薄编排：extract/adapt/chunk/index</td><td>不实现解析算法、SQL、embedding</td></tr><tr><td>PgVectorProvider</td><td>embedding、事务、持久化</td><td>不负责文件提取或 chunk 业务规则</td></tr><tr><td>RAG-D</td><td>验证正式产物</td><td>不补造摄入、切块、索引</td></tr></tbody></table>
+<h3 id="43-已确认入口边界">4.3 已确认入口边界</h3>
+<div class="callout callout-good"><div class="callout-title">OK</div><p><strong>KnowledgeIngestionService 是新增通用文档正式摄入的唯一产品服务边界。</strong></p></div>
+<p>覆盖：TXT/MD/CSV/PDF/DOCX/EPUB。</p>
+<p>不追溯覆盖：</p>
+<ul><li>OCR / Code 专用索引能力；</li><li>Provider / Coordinator 单元测试；</li><li>数据库迁移测试。</li></ul>
+<p>本阶段不扩 <code>/api/knowledge</code>，使用受控 runner 与集成测试。</p>
+<h3 id="44-已确认事务与证明">4.4 已确认事务与证明</h3>
+<div class="callout callout-good"><div class="callout-title">OK</div><p><strong>单次 ingestion run 全有或全无。</strong></p></div>
+<ul><li>任一 chunk 写入失败 → 整体 rollback。</li><li>成功必须满足 planned count = written count。</li><li>全有或全无不等于重导幂等。</li><li>replace/upsert/delete 后置。</li></ul>
+<div class="callout callout-good"><div class="callout-title">OK</div><p><strong>Gate 0 先输出版本化 JSON attestation，不新增 <code>ingestion_runs</code> 表。</strong></p></div>
+<p><code>IngestResult/attestation</code> 至少包括：</p>
+<table><thead><tr><th>信息</th><th>用途</th></tr></thead><tbody><tr><td>ingestion_run_id</td><td>关联一次正式摄入</td></tr><tr><td>source_sha256 / format</td><td>证明输入来源</td></tr><tr><td>doc_id</td><td>产品文档身份</td></tr><tr><td>normalizer/chunking version</td><td>支持复算</td></tr><tr><td>planned/written count</td><td>证明完整写入</td></tr><tr><td>backend/dialect</td><td>排除 fake/SQLite 冒充</td></tr><tr><td>scope/owner</td><td>授权审计</td></tr><tr><td>error_code/safe_summary</td><td>安全失败信息</td></tr></tbody></table>
+<h3 id="45-限制">4.5 限制</h3>
+<ul><li>benchmark 不得生成产品 attestation。</li><li>Extractor 空串是 <code>extraction_empty</code> 非成功状态，不进入 index。</li><li>BLK-004 canonical bytes 未通过前，不得写临时 hash 并称 production stable ID。</li></ul>
+<h3 id="46-验收">4.6 验收</h3>
+<ul><li>真实 EPUB 走完整产品链。</li><li>写入失败后无部分数据残留。</li><li>planned/written/DB 实际行数一致。</li><li>JSON 可关联输入 SHA、版本、后端、目标索引与 chunk 数。</li><li>RAG-D 能独立核验该证明。</li></ul>
+<h2 id="5-blk-003005在线-evidence-进入-tutor">5. BLK-003/005：在线 Evidence 进入 Tutor</h2>
+<div class="callout callout-good"><div class="callout-title">OK</div><p><strong>已确认：使用受控 payload <code>retrieval_id</code>，不修改全局 Event schema；第一轮 P0 <code>max_attempts=1</code>，不自动 query expansion。</strong></p></div>
+<h3 id="51-已证实事实">5.1 已证实事实</h3>
+<ul><li>默认 seeds 直接向 Tutor 发 action，没有 Retriever action。</li><li>Retriever 可以产生 <code>RetrievedEvidence/RetrievalFailed</code>。</li><li>Critic 可以评估 teaching evidence 的 RAG 质量。</li><li>Orchestrator 不消费 evidence/failure。</li><li>Tutor prompt 不读取 chunks/citations。</li><li>rule/conductor 生成新 action 时会丢 query、visibility 和证据字段。</li><li><code>WorkspaceState.evidence_pool</code> 没有正式 writer、关联或清理规则。</li></ul>
+<h3 id="52-必须保持的架构边界">5.2 必须保持的架构边界</h3>
+<pre><code class="language-text">Retriever 发事件
+→ Orchestrator 关联、路由和投影
+→ Tutor 只消费 ActionRequested</code></pre>
+<p>禁止：</p>
+<ul><li>Retriever 直接调用 Tutor；</li><li>Tutor 直接调用 Coordinator/Provider；</li><li>Tutor 从“最近 evidence”隐式取证。</li></ul>
+<h3 id="53-已确认决策-a关联字段落点">5.3 已确认决策 A：关联字段落点</h3>
+<table><thead><tr><th></th><th>方案 A：Event 一等字段</th><th>方案 B：受控 payload <code>retrieval_id</code></th><th>方案 C：只用 parent_id</th></tr></thead><tbody><tr><td>改动范围</td><td>全局 Event/存储/回放</td><td>仅检索相关路径</td><td>最小</td></tr><tr><td>直接因果</td><td>支持</td><td>parent_id 保持原职责</td><td>支持</td></tr><tr><td>逻辑 retry 关联</td><td>支持</td><td>支持</td><td>不足</td></tr><tr><td>风险</td><td>局部需求扩散成全局迁移</td><td>每条路径需保真测试</td><td>retry 后关联断裂</td></tr><tr><td>推荐</td><td>不选</td><td><strong>推荐</strong></td><td>不选</td></tr></tbody></table>
+<p>推荐语义：</p>
+<pre><code class="language-text">parent_id = 直接物理因果
+retrieval_id = 一次逻辑检索单元</code></pre>
+<ul><li>初始 Retriever ActionRequested 的 event.id 成为 retrieval_id。</li><li>evidence/failure、retry、Tutor projection 继承 retrieval_id。</li><li><code>attempt</code> 由 Orchestrator 管理。</li></ul>
+<h3 id="54-已确认决策-b第一轮不启用自动-query-expansion">5.4 已确认决策 B：第一轮不启用自动 query expansion</h3>
+<table><thead><tr><th></th><th>方案 A：P0 最多一次 expansion</th><th>方案 B：P0 不自动 expansion</th><th>方案 C：按现有规则无限尝试</th></tr></thead><tbody><tr><td>实现范围</td><td>需新增 query rewrite 契约</td><td>最小</td><td>不可控</td></tr><tr><td>当前实现基础</td><td>没有</td><td>一次原始 query 足够验证主链</td><td>规则名存在但无完整实现</td></tr><tr><td>循环风险</td><td>可控但仍需设计</td><td>最低</td><td>高</td></tr><tr><td>推荐</td><td>后续</td><td><strong>推荐：max_attempts=1</strong></td><td>禁止</td></tr></tbody></table>
+<p>推荐：第一轮 P0 只验证“一次检索安全、唯一地进入 Tutor”。低质量结果受控降级，不自动改写 query。</p>
+<h3 id="55-推荐检索微回合屏障">5.5 推荐检索微回合屏障</h3>
+<p>不建议 evidence 一到就立即 Tutor，因为 Critic 可能稍后判断质量低并触发再次检索。</p>
+<p>推荐：</p>
+<pre><code class="language-text">RetrievedEvidence
+→ Critic 尝试产生 RAGQualityAssessed
+→ Orchestrator 安排 retrieval barrier tick
+→ observation 优先于 tick
+→ tick 时只做一次最终裁决
+   ├─ 当前 P0：生成一次 Tutor action
+   └─ 后续启用 expansion 后：retry 或 Tutor</code></pre>
+<p>Critic 无输出时不能卡死：tick 按机械状态继续，标记 <code>quality_assessment=unavailable</code>。</p>
+<h3 id="56-推荐-evidenceprojection">5.6 推荐 EvidenceProjection</h3>
+<table><thead><tr><th>字段</th><th>用途</th></tr></thead><tbody><tr><td>retrieval_id</td><td>逻辑关联</td></tr><tr><td>retrieval_status</td><td>ok/low_score/empty/degraded/failed/invalid-request</td></tr><tr><td>attempt</td><td>当前尝试</td></tr><tr><td>chunks</td><td>已授权、受限正文</td></tr><tr><td>citations</td><td>来源与定位</td></tr><tr><td>sources_used</td><td>实际 provider</td></tr><tr><td>safe_summary</td><td>安全降级信息</td></tr></tbody></table>
+<p>Tutor 不接触 Provider、Embedding、SQL、原始异常或未关联 evidence pool。</p>
+<h3 id="57-验收">5.7 验收</h3>
+<ul><li>一条 retrieval_id 最多产生一次最终 Tutor action。</li><li>初始 action → evidence/failure → Tutor action → Tutor output 的 parent chain 正确。</li><li>全链 retrieval_id 一致。</li><li>sentinel 确实进入 Tutor LLM user_prompt，而非仅存在于事件。</li><li>连续 Q1/Q2 证据不串轮。</li><li>empty/failed/Critic 无输出都产生一次受控回复，不落入空回复 fallback。</li></ul>
+<h2 id="6-已确认决策记录">6. 已确认决策记录</h2>
+<h3 id="决策-1关联字段">决策 1：关联字段</h3>
+<div class="callout callout-good"><div class="callout-title">OK</div><p>采用受控 payload <code>retrieval_id</code>，不修改全局 Event schema；<code>parent_id</code> 继续表达直接因果。</p></div>
+<h3 id="决策-2第一轮重试策略">决策 2：第一轮重试策略</h3>
+<div class="callout callout-good"><div class="callout-title">OK</div><p>第一轮 P0 设 <code>max_attempts=1</code>，不自动 query expansion；低质量证据受控降级。</p></div>
+<h3 id="决策生效后的实现约束">决策生效后的实现约束</h3>
+<ul><li>初始 Retriever ActionRequested 的 event.id 成为 retrieval_id；</li><li>evidence/failure、未来 retry、Tutor projection 继承 retrieval_id；</li><li>Orchestrator 维护 attempt 和最终回复唯一性；</li><li>默认 seeds 不再并发无证据 Tutor action；</li><li>evidence 经微回合屏障后只生成一次最终 Tutor action；</li><li>Critic quality 缺失时机械降级继续，不允许会话卡死。</li></ul>
+<h2 id="7-决策影响">7. 决策影响</h2>
+<p>若两项均同意：</p>
+<ol><li>RAG-C spec 可把 retrieval_id、微回合屏障、唯一回复写成可实现契约。</li><li>不需要全局 Event/EventStore migration。</li><li>第一轮范围不包含 query rewrite，显著降低接线复杂度。</li><li>后续 BLK-006 只需补齐 outcome 和安全摘要，不必同时解决 retry 算法。</li><li>在线 E2E 可以明确观察“原始问题 → 一次检索 → 一次 Tutor 回复”。</li></ol>
+<h2 id="8-下一步顺序">8. 下一步顺序</h2>
+<pre><code class="language-text">确认 BLK-003/005 两项决策
+  ↓
+BLK-004：Chunk/stable-ID/provenance
+  ↓
+BLK-006：backend/outcome 真实性
+  ↓
+BLK-007：黄金集 baseline admission</code></pre>
+
+<footer class="aris-footer">
+  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
+  source <code>docs/designs/2026-07-25-rag-p0-decision-dashboard.md</code> ·
+  SHA256 <code>e52f775e8de1</code> ·
+  generated at 2026-07-25 11:57 UTC.
+  Edit the source Markdown / JSON, then re-render.
+</footer>
+
+</div>
+</body>
+</html>

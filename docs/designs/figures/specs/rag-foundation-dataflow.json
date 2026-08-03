@@ -1,0 +1,37 @@
+{
+  "title": "RAG Foundation 当前与目标数据流（蛇形）",
+  "canvas": {"width": 760, "height": 680},
+  "style": {"font_family": "system-ui, -apple-system, Segoe UI, sans-serif", "font_size": 13, "bg_color": "#fcfcfb", "palette": ["#2a78d6", "#1baf7a", "#eda100", "#4a3aa7"]},
+  "nodes": [
+    {"id":"current_docs","label":"预构造 list[dict]","x":110,"y":100,"width":155,"height":54,"fill":"#cde2fb","stroke":"#2a78d6"},
+    {"id":"current_coord","label":"RAGCoordinator","x":290,"y":100,"width":155,"height":54,"fill":"#d1fae5","stroke":"#1baf7a"},
+    {"id":"current_pg","label":"PgVectorProvider","x":470,"y":100,"width":165,"height":54,"fill":"#fee2e2","stroke":"#d03b3b"},
+    {"id":"current_db","label":"vector_chunks\ndoc_id 读出未回填","x":650,"y":100,"width":180,"height":62,"fill":"#fee2e2","stroke":"#d03b3b"},
+    {"id":"current_ret","label":"RetrieverAgent","x":650,"y":220,"width":155,"height":54,"fill":"#d1fae5","stroke":"#1baf7a"},
+    {"id":"current_stop","label":"链路停止\nTutor 未消费","x":470,"y":220,"width":155,"height":62,"fill":"#fee2e2","stroke":"#d03b3b"},
+
+    {"id":"file","label":"知识文件","x":110,"y":400,"width":120,"height":52,"fill":"#f0efec","stroke":"#898781"},
+    {"id":"extract","label":"Extractor","x":280,"y":400,"width":120,"height":52,"fill":"#fef3c7","stroke":"#eda100"},
+    {"id":"chunk","label":"ChunkingService\n身份生成","x":450,"y":400,"width":175,"height":64,"fill":"#fee2e2","stroke":"#d03b3b"},
+    {"id":"ingest","label":"IngestionService\n+ attestation","x":650,"y":400,"width":165,"height":64,"fill":"#fef3c7","stroke":"#eda100"},
+    {"id":"store","label":"Provider ⇄ DB\nidentity round-trip","x":650,"y":520,"width":175,"height":64,"fill":"#fee2e2","stroke":"#d03b3b"},
+    {"id":"project","label":"EvidenceProjection\n已授权证据","x":450,"y":520,"width":170,"height":64,"fill":"#fef3c7","stroke":"#eda100"},
+    {"id":"answer","label":"Tutor\ngrounded answer","x":280,"y":520,"width":140,"height":64,"fill":"#f0eefd","stroke":"#4a3aa7"}
+  ],
+  "edges": [
+    {"from":"current_docs","to":"current_coord"},{"from":"current_coord","to":"current_pg"},{"from":"current_pg","to":"current_db"},
+    {"from":"current_db","to":"current_ret"},
+    {"from":"current_ret","to":"current_stop","style":"dashed","color":"#d03b3b"},
+
+    {"from":"file","to":"extract"},{"from":"extract","to":"chunk"},{"from":"chunk","to":"ingest"},
+    {"from":"ingest","to":"store"},
+    {"from":"store","to":"project"},{"from":"project","to":"answer"}
+  ],
+  "groups": [
+    {"id":"current","label":"当前真实链：两端存在，中间与在线消费未闭环","node_ids":["current_docs","current_coord","current_pg","current_db","current_ret","current_stop"],"fill":"#fff7ed","stroke":"#ec835a","padding":20},
+    {"id":"target","label":"目标正式链：身份生成 → 正式摄入 → 完整回传 → 当前回合消费","node_ids":["file","extract","chunk","ingest","store","project","answer"],"fill":"#eff6ff","stroke":"#2a78d6","padding":20}
+  ],
+  "labels": [
+    {"text":"两条链各自 U 形折行；BLK-004 覆盖身份生成到完整回传","x":380,"y":330,"font_size":14,"color":"#d03b3b","anchor":"middle"}
+  ]
+}
