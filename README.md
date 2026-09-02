@@ -293,7 +293,7 @@ uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI k
 
 ## 数据模型与存储
 
-`app/models/tables.py` 定义 8 张 SQLAlchemy 表：`users` / `sessions` / `messages`（含 `(session_id, turn_index, role)` 唯一约束，防重复落库）/ `knowledge` / `evals`（含 ragas 四指标列）/ `mastery_nodes`（含 rationale）/ `mastery_edges` / `vector_chunks`（embedding 列 PG 用 `Vector(1536)`，sqlite 退化 JSON）。
+`app/models/tables.py` 定义 8 张 SQLAlchemy 表：`users` / `sessions` / `messages`（含 `(session_id, turn_index, role)` 唯一约束，防重复落库）/ `knowledge` / `evals`（含 ragas 四指标列）/ `mastery_nodes`（含 rationale）/ `mastery_edges` / `vector_chunks`（embedding 列 PG 用 `Vector(2048)`，sqlite 退化 JSON）。
 
 存储层多数 Store 支持**双模式**——传入 `db` session 走 SQLAlchemy 生产模式，传 `None` 用内存 fallback，便于测试：
 
