@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 @router.post("", response_model=ChatResponse)
 async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
-    from app.orchestration.assembly import run_new_agent_session
+    from app.orchestration.assembly import (
+        OnlineRAGCompositionError, run_online_agent_session,
+    )
     uid_int = current_user["user_id"]
 
     async with async_session() as auth_db:
@@ -31,10 +33,18 @@ async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user))
             DirtyFlag.clear_dirty(uid_int)
 
     # ── 阶段②：运行协作环（不持 DB 连接） ──
-    result = await asyncio.to_thread(
-        run_new_agent_session, req.session_id, uid_int, req.message,
-        None, graph,
-    )
+    # 在线入口 run_online_agent_session 先做 DEC-007 composition 校验：
+    # 非 pgvector / 非 PostgreSQL dialect → fail-fast，分类 503，不回退 fake
+    try:
+        result = await asyncio.to_thread(
+            run_online_agent_session, req.session_id, uid_int, req.message,
+            None, graph,
+        )
+    except OnlineRAGCompositionError as e:
+        logger.exception("online RAG composition failed for session %s",
+                         req.session_id)
+        raise HTTPException(status_code=503, detail={
+            "error_code": e.error_code, "message": e.safe_summary})
 
     # ── 阶段③：持久化（新短连接 → rebind store） ──
     persisted = False

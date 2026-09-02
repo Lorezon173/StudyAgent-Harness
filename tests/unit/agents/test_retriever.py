@@ -103,7 +103,10 @@ def test_handle_low_score_result_returns_low_score_status(agent, ws):
 
 
 def test_handle_low_score_with_mock_provider(ws):
-    """显式构造一个永远返回低分 chunk 的 provider 来测 low_score 状态"""
+    """显式构造一个永远返回低分 chunk 的 provider 来测低分质量子标记。
+
+    DEC-008：low_score 不再是独立状态，降为 ok 的 quality=low 子标记。
+    """
     from app.infrastructure.rag.coordinator import IndexProvider, Chunk, RAGCoordinator
 
     class _LowScoreProvider(IndexProvider):
@@ -124,7 +127,8 @@ def test_handle_low_score_with_mock_provider(ws):
     result = agent.handle(ev, ws)
     assert len(result) == 1
     assert result[0].type == EventType.RETRIEVED_EVIDENCE
-    assert result[0].payload["retrieval_status"] == "low_score"
+    assert result[0].payload["retrieval_status"] == "ok"
+    assert result[0].payload["quality"] == "low"
     assert len(result[0].payload["chunks"]) == 1
 
 
@@ -414,3 +418,187 @@ def test_evaluate_ragas_real_judge():
     assert metrics["degraded"] is False, f"不应降级：{metrics.get('degraded_reason')}"
     for k in ("faithfulness", "answer_relevancy", "context_precision"):
         assert 0.0 <= metrics[k] <= 1.0
+
+
+# ===== RAG-C Phase 2（C-10）：五态 + 入口校验 + 安全摘要 =====
+
+import json as _json
+
+from app.infrastructure.rag.coordinator import Chunk, SearchResult
+
+
+class _StubCoordinator:
+    """可控 Coordinator 替身：记录调用，返回预设 SearchResult 或抛异常。"""
+
+    def __init__(self, result=None, exc=None):
+        self.result = result or SearchResult(
+            chunks=[], total_found=0, sources_used=[], outcome="empty")
+        self.exc = exc
+        self.calls = []
+
+    def search(self, query, sources=None, top_k=5, visibility=None):
+        self.calls.append({"query": query, "sources": sources,
+                           "top_k": top_k, "visibility": visibility})
+        if self.exc:
+            raise self.exc
+        return self.result
+
+
+def _retriever_event(payload):
+    return Event(type=EventType.ACTION_REQUESTED, source=EventSource.ORCHESTRATOR,
+                 session_id="s1", payload={"target": "retriever", **payload})
+
+
+# --- invalid-request：入口拦截，不进入 provider ---
+
+def test_invalid_request_missing_query_skips_provider(ws):
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({"query": ""}), ws)
+    assert result[0].type == EventType.RETRIEVAL_FAILED
+    p = result[0].payload
+    assert p["retrieval_status"] == "invalid-request"
+    assert p["error_code"] == "invalid_request"
+    assert p["safe_summary"]
+    assert stub.calls == []
+
+
+def test_invalid_request_bad_top_k_skips_provider(ws):
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    for bad in (0, -1, 11, "5", 2.5, True):
+        result = agent.handle(_retriever_event({"query": "RAG", "top_k": bad}), ws)
+        assert result[0].payload["retrieval_status"] == "invalid-request", bad
+    assert stub.calls == []
+
+
+def test_restricted_missing_retrieval_id_invalid(ws):
+    """受限请求（带 visibility）缺 retrieval_id → invalid-request（DEC-003）。"""
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({
+        "query": "RAG", "user_id": ws.user_id,
+        "visibility": {"user_id": ws.user_id}}), ws)
+    assert result[0].payload["retrieval_status"] == "invalid-request"
+    assert stub.calls == []
+
+
+def test_restricted_missing_user_identity_invalid(ws):
+    """受限请求 visibility 缺可信身份 → invalid-request，不检索（DEC-001）。"""
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    for bad_vis in ({}, {"user_id": None}, {"user_id": "1"}, "user-1"):
+        result = agent.handle(_retriever_event({
+            "query": "RAG", "user_id": ws.user_id,
+            "visibility": bad_vis, "retrieval_id": "rid-1"}), ws)
+        assert result[0].payload["retrieval_status"] == "invalid-request", bad_vis
+    assert stub.calls == []
+
+
+def test_restricted_missing_payload_user_id_invalid(ws):
+    """受限请求必须显式携带与会话绑定的可信 payload.user_id。"""
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({
+        "query": "RAG", "visibility": {"user_id": ws.user_id},
+        "retrieval_id": "rid-1"}), ws)
+    assert result[0].payload["retrieval_status"] == "invalid-request"
+    assert stub.calls == []
+
+
+def test_restricted_forged_matching_foreign_identity_invalid(ws):
+    """两个 payload 字段即使彼此一致，也不能冒充另一会话用户。"""
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({
+        "query": "RAG", "user_id": 99, "visibility": {"user_id": 99},
+        "retrieval_id": "rid-1"}), ws)
+    assert result[0].payload["retrieval_status"] == "invalid-request"
+    assert stub.calls == []
+
+
+def test_restricted_user_id_mismatch_invalid(ws):
+    """payload.user_id 与 visibility.user_id 不一致 → 按不可信处理。"""
+    stub = _StubCoordinator()
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({
+        "query": "RAG", "user_id": 2,
+        "visibility": {"user_id": 1}, "retrieval_id": "rid-1"}), ws)
+    assert result[0].payload["retrieval_status"] == "invalid-request"
+    assert stub.calls == []
+
+
+# --- 受限请求贯通 visibility / retrieval_id ---
+
+def test_restricted_valid_request_passes_visibility_and_id(ws):
+    ok_result = SearchResult(
+        chunks=[Chunk(content="证据", score=0.9, source="vector")],
+        total_found=1, sources_used=["vector"], outcome="ok")
+    stub = _StubCoordinator(result=ok_result)
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({
+        "query": "RAG", "sources": ["vector"], "user_id": ws.user_id,
+        "visibility": {"user_id": ws.user_id}, "retrieval_id": "rid-1"}), ws)
+    assert result[0].type == EventType.RETRIEVED_EVIDENCE
+    assert result[0].payload["retrieval_status"] == "ok"
+    assert result[0].payload["retrieval_id"] == "rid-1"
+    assert stub.calls[0]["visibility"].user_id == ws.user_id
+    assert stub.calls[0]["sources"] == ["vector"]
+
+
+# --- degraded / failed 聚合映射 ---
+
+def test_degraded_outcome_event(ws):
+    degraded = SearchResult(
+        chunks=[Chunk(content="部分证据", score=0.8, source="vector")],
+        total_found=1, sources_used=["vector"], outcome="degraded",
+        attempted_providers=["vector", "boom"], failed_providers=["boom"],
+        error_code="provider_degraded")
+    stub = _StubCoordinator(result=degraded)
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({"query": "RAG"}), ws)
+    assert result[0].type == EventType.RETRIEVED_EVIDENCE
+    p = result[0].payload
+    assert p["retrieval_status"] == "degraded"
+    assert p["provider_failures"] == ["boom"]
+    assert p["error_code"] == "provider_degraded"
+    assert p["safe_summary"] == "部分知识来源不可用"
+    assert len(p["chunks"]) == 1  # 成功证据保留
+
+
+def test_failed_outcome_event(ws):
+    failed = SearchResult(chunks=[], total_found=0, sources_used=[],
+                          outcome="failed", attempted_providers=["vector"],
+                          failed_providers=["vector"], error_code="db_error")
+    stub = _StubCoordinator(result=failed)
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({"query": "RAG"}), ws)
+    assert result[0].type == EventType.RETRIEVAL_FAILED
+    p = result[0].payload
+    assert p["retrieval_status"] == "failed"
+    assert p["error_code"] == "db_error"
+    assert p["safe_summary"] == "知识库服务暂时不可用"
+
+
+# --- 异常路径：payload 不泄露内部细节（DEC-009）---
+
+def test_exception_payload_does_not_leak_sensitive_details(ws):
+    stub = _StubCoordinator(exc=RuntimeError(
+        "psycopg connect refused: postgresql://admin:secret@10.0.0.1/db"))
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({"query": "RAG"}), ws)
+    assert result[0].type == EventType.RETRIEVAL_FAILED
+    p = result[0].payload
+    assert p["retrieval_status"] == "failed"
+    assert p["error_code"] == "db_error"
+    dumped = _json.dumps(p, ensure_ascii=False, default=str)
+    for secret in ("secret", "psycopg", "postgresql://", "10.0.0.1"):
+        assert secret not in dumped, secret
+
+
+def test_timeout_exception_classified_as_timeout(ws):
+    stub = _StubCoordinator(exc=TimeoutError("slow"))
+    agent = RetrieverAgent(coordinator=stub)
+    result = agent.handle(_retriever_event({"query": "RAG"}), ws)
+    assert result[0].payload["error_code"] == "timeout"
+    assert result[0].payload["safe_summary"] == "检索超时，请稍后重试"

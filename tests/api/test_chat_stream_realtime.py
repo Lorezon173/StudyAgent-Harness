@@ -36,7 +36,7 @@ def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
         return NewStackResult(reply="最终回答", mastery_score=80, turn_count=11,
                               mode_path=["socratic"], cost_est_usd=None, events=[])
 
-    monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run)
+    monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
 
     try:
         client = TestClient(app)

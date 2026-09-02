@@ -54,7 +54,7 @@ def test_chat_rejects_null_owned_existing_session_before_generation(monkeypatch,
                 try:
                     fake_run = Mock(return_value=_FakeResult())
                     monkeypatch.setattr(
-                        "app.orchestration.assembly.run_new_agent_session",
+                        "app.orchestration.assembly.run_online_agent_session",
                         fake_run,
                     )
                     response = client.post(
@@ -85,7 +85,7 @@ def test_chat_rejects_other_users_session_before_generation(monkeypatch, db_fixt
                 try:
                     fake_run = Mock(return_value=_FakeResult())
                     monkeypatch.setattr(
-                        "app.orchestration.assembly.run_new_agent_session",
+                        "app.orchestration.assembly.run_online_agent_session",
                         fake_run,
                     )
                     response = client.post(
@@ -116,7 +116,7 @@ def test_stream_rejects_other_users_session_before_sse(monkeypatch, db_fixture):
                 try:
                     fake_run = Mock(return_value=_FakeResult())
                     monkeypatch.setattr(
-                        "app.orchestration.assembly.run_new_agent_session",
+                        "app.orchestration.assembly.run_online_agent_session",
                         fake_run,
                     )
                     response = client.post(

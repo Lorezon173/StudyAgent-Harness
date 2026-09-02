@@ -6,6 +6,8 @@
 
 项目仅保留 `app/` 事件驱动 5-Agent 协作环。`/api/chat` 与 `/api/chat/stream` 始终运行真实 LLM 教学流程，并在完成后持久化会话、消息和掌握度图谱；不再提供旧 LangGraph/FakeLLM 回退路径或运行时切换开关。
 
+> **在线 RAG 运行前提（Phase 2）**：两个在线 chat 入口会在进入协作环前校验 `rag_backend=pgvector`、实际 vector provider 为 `PgVectorProvider`、数据库 dialect 为 PostgreSQL。任一条件不满足即明确失败（普通 chat 返回 HTTP 503；SSE 发分类错误事件），不会静默回退到 fake/SQLite。fake 和 SQLite 仅用于非在线的单元、集成或离线评测路径。
+
 ## 架构概览
 
 新栈遵循四层单向依赖，严禁反向引用：
@@ -41,7 +43,7 @@
 |---|---|---|---|---|
 | **Tutor** | tutor | `ActionRequested`（target=tutor） | `TutorAsked` / `TutorExplained` / `TutorRequestedRecap` / `TutorOfferedAnalogy` | 只生成教学内容（提问/讲解/复述/类比），按 action 分派；不评判 |
 | **Critic** | critic | `UserMessage` / `RetrievedEvidence` | `MasteryAssessed` / `ConfusionDetected` / `ContradictionDetected` / `LowConfidenceDetected` / `RAGQualityAssessed` | 只判文本语义层；单次 LLM 调用产 JSON 拆多条 emit；RAG 质量仅 teaching 场景评（省成本） |
-| **Retriever** | retriever | `ActionRequested`（target=retriever） | `RetrievedEvidence` / `RetrievalFailed` | 机械层检索，委托 `RAGCoordinator.search`；按 `max_score<0.3` 机械判检索状态；不评语义质量 |
+| **Retriever** | retriever | `ActionRequested`（target=retriever） | `RetrievedEvidence` / `RetrievalFailed` | 机械层检索，委托 `RAGCoordinator.search`；受限请求按 authenticated session identity 执行 global/private visibility 过滤；结果区分 `ok` / `empty` / `degraded` / `failed` / `invalid-request`，低分为 `ok + quality=low`；不评语义质量 |
 | **Conductor** | conductor | `ConductorRequested` | `ConductorDecided` | LLM 决策兜底；只在已有观察上路由，观察不足时请求补观察；不直接发 ActionRequested（由 Orchestrator 转译） |
 | **Curator** | curator | `MasteryAssessed` / `TopicEntered` | `ProfileUpdated` / `GraphNodeStrengthened` / `GraphPrereqWeakDetected` | 只判结构层（图谱 PREREQ 边 + 前置掌握度）；双时机：实测(observed) / 历史画像(historical) |
 
@@ -132,6 +134,8 @@ app/specs/
 - **RAGAS 集成**：`RetrieverAgent.evaluate()` 在有 golden 数据时调用 `ragas.evaluate`（faithfulness / answer_relevancy / context_precision，对齐 RAGAS 0.4.3 API），RAGAS 不可用或无 key 时优雅降级回启发式分数。
 - **Tutor 评估参考 DeepEval**：规划用 G-Eval 自定义教学指标三维度（`explanation_completeness` / `guidance_quality` / `clarity`）替换 `Tutor.evaluate()` 的字符级占位。**诚实标注：DeepEval 为 Phase 3 待建项**——当前 `app/agents/tutor.py:99` 仍是字符 Counter 交并比占位，deepeval 依赖尚未引入（仅列为技术栈规划，见下）。
 
+> **RAG Foundation 当前状态**：EPUB extractor、通用 Chunking/KnowledgeIngestion、RAG 可见性与错误语义基础、RAG-D 只读评测工具已分别落地并通过代码/SQLite 维度验证；真实 PostgreSQL + pgvector + embedding 的 EPUB 正式摄入、在线 evidence→Tutor 接线、产品 Retriever baseline 尚未完成，不能将离线/fake/SQLite 结果表述为生产闭环。详见 [RAG 工作文档区](docs/rag-work/README.md) 及其主清单。
+
 > **诚实标注**：评估框架已实现并有测试覆盖，但**尚未接到在线 API 或 CLI**——`/api/eval` 端点只读 `EvalStore`，不调用任何 bench；benches 当前仅由 `tests/eval/` 驱动。
 
 ## RAG 检索
@@ -141,16 +145,19 @@ app/specs/
 - **`fake`（默认）**：内存 `FakeRAGStore`，字符重叠计分，保证测试无需外部依赖
 - **`pgvector`（生产真向量）**：`PgVectorProvider`（`app/infrastructure/rag/pgvector_provider.py`）+ `EmbeddingService`（`app/infrastructure/rag/embedding.py`），PG 用 `<=>` 余弦距离近邻检索，SQLite 降级为字符匹配
 
+**在线检索安全与故障语义（Phase 2）**：受限检索的可信身份必须同时与当前会话用户、动作 payload 与 visibility 上下文一致；仅 `scope=global,user_id=NULL` 和 `scope=private,user_id=当前用户` 可在检索候选集中出现，历史歧义/未知 scope 行 fail closed。过滤发生在 PG/SQLite 的排序、去重、`LIMIT`、citation 与后续生成输入之前。Provider 正常空结果、部分失败、全部失败与无效请求分别归约为 `empty`、`degraded`、`failed`、`invalid-request`；对外只返回分类错误码和安全摘要，原始异常、SQL、连接串和堆栈只写内部日志。
+
 **真向量检索配置**（`app/core/config.py`）：
 - `embedding_model`：默认 `doubao-embedding-vision`（方舟 API，2048 维），可切换 OpenAI 官方模型
 - `embedding_dim`：默认 2048，须与向量表 `Vector(dim)` 一致
 - `openai_base_url`：方舟端点 `https://ark.cn-beijing.volces.com/api/coding/v3`，或 OpenAI 官方留空
-- 向量表 `vector_chunks`（`app/models/tables.py`）存储 chunk + embedding + metadata，Alembic 迁移 `20260622_add_vector_chunks_table.py` 自动建表
+- 向量表 `vector_chunks`（`app/models/tables.py`）存储 chunk、`doc_id`、可空 `chunk_id`、embedding 与 metadata；迁移 `20260729_add_vector_chunk_id.py` 在既有向量表上补该 provenance 列
+- 新增通用文档 Gate 0 服务：`ChunkingService` 负责无状态切块与 DEC-012 stable ID，`KnowledgeIngestionService` 负责提取→适配→切块→`index_documents` 编排；当前为 append-only，不承诺重导幂等、替换或删除
 - `EmbeddingService` 直接调 OpenAI SDK（绕过 langchain 预分词），分批调用（batch=10，方舟 API 限制）
 
-其他 Provider：`OCRProvider`（图片文本提取，懒依赖 pytesseract+PIL）、`CodeIndexProvider`（Python AST 按函数/类粒度切片）、`extractors/`（PDF/DOCX/TXT 提取，所有重依赖惰性 import + 优雅降级）。
+其他 Provider：`OCRProvider`（图片文本提取，懒依赖 pytesseract+PIL）、`CodeIndexProvider`（Python AST 按函数/类粒度切片）、`extractors/`（TXT/MD/CSV、PDF、DOCX、EPUB 文本提取；PDF/DOCX 重依赖惰性 import + 优雅降级，EPUB 为内置标准库实现）。
 
-> 这些惰性依赖（pdfplumber / PyPDF2 / python-docx / pytesseract / Pillow）**不在任何 extra 里声明**，缺失时对应解析路径降级，不阻断启动。
+> 这些惰性依赖（pdfplumber / PyPDF2 / python-docx / pytesseract / Pillow）**不在任何 extra 里声明**，缺失时对应解析路径降级，不阻断启动。EPUB 提取器（`app/infrastructure/rag/extractors/epub_extractor.py`）仅使用 Python 标准库（zipfile / xml.etree / html.parser），不引入第三方依赖。
 
 ## 技术栈
 
@@ -200,15 +207,15 @@ app/                            # 事件驱动新栈（主体）
 └── ui/ · worker/               # Chainlit / Celery（均为可选桩）
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
-alembic/versions/               # 6 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint → session_user_id 回填 → M3 user_id 类型统一
-tests/                          # 默认：494 passed / 1 skipped / 8 deselected（实测全绿）
+alembic/versions/               # 7 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint → session_user_id 回填 → M3 user_id 类型统一 → vector_chunk_id
+tests/                          # 默认：597 passed / 1 skipped / 8 deselected（实测全绿）
 scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
 Dockerfile                      # 多阶段：node 构建前端 → uv 装后端 → 精简 runtime（启动自跑 alembic 迁移）
 .dockerignore                   # 构建上下文裁剪 + 密钥防泄漏
 docker-compose.yml              # pgvector/pgvector:pg16（db）+ app（deploy profile，默认仅起 db 供本地 uvicorn 开发）
 .github/workflows/              # ci.yml（ruff + pytest）/ release.yml（构建推送 ghcr 镜像）
 
-docs/                           # 设计 spec / 决策看板（designs/）+ RAG 基础并行工作流状态（rag-foundation-status/）+ 会话交接（claude-chat/）
+docs/                           # 设计 spec / 决策看板（rag-work/，含 plans/specs/decision-canvas/dispatch/status）+ 会话交接（claude-chat/）
 benchmarks/                     # RAG 基准集（语料 + 评测题目 + 标注指南）
 ```
 
@@ -231,11 +238,12 @@ cp .env.example .env
 # 3. 数据库迁移（首次或拉新代码后）
 uv run alembic upgrade head
 
-# 4. 启动 PostgreSQL（可选；开发默认 sqlite 开箱即用，无需此步）
+# 4. 启动 PostgreSQL（在线 chat 的 RAG 前置条件）
 docker compose up -d
-# 然后在 .env 中启用 PG 连接串：
+# 然后在 .env 中启用 PG 连接串并显式开启 pgvector：
 # DATABASE_URL=postgresql+asyncpg://studyagent:studyagent@localhost:5432/studyagent
-# 并设 rag_backend=pgvector 启用真向量检索
+# RAG_BACKEND=pgvector
+# 未满足这两项时 /api/chat 与 /api/chat/stream 会 fail-fast（不回退 fake）。
 
 # 5. 启动服务
 set -a && source .env && set +a
@@ -249,7 +257,7 @@ npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（
 cd ..
 
 # 6. 运行测试
-uv run pytest tests/ -v                # 默认排除 integration（494 passed / 1 skipped）
+uv run pytest tests/ -v                # 默认排除 integration（597 passed / 1 skipped）
 uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
 
@@ -301,7 +309,7 @@ store = SessionStore(db=None)
 
 `SessionStore` 契约：`title` 首写生效（first-write-wins）；`save()` 不内部 commit；`list_by_user()` 统一返回 `{session_id, title, updated_at}`，按 updated_at 降序。
 
-迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）→ `d50dd837b8e6`（回填 sessions.user_id）→ `m3_unify_user_id_type`（MasteryNode/Edge 两表 user_id 从 String 统一为 Integer + ForeignKey，与 session/knowledge/vector_chunk 对齐）。
+迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）→ `d50dd837b8e6`（回填 sessions.user_id）→ `m3_unify_user_id_type`（MasteryNode/Edge 两表 user_id 从 String 统一为 Integer + ForeignKey，与 session/knowledge/vector_chunk 对齐）→ `20260729_chunk_id`（vector_chunks 增加可空 `chunk_id` provenance 列）。
 
 ## 关键枚举
 
@@ -319,7 +327,7 @@ store = SessionStore(db=None)
 ## 测试
 
 ```
-默认测试：494 passed / 1 skipped / 8 deselected（实测全绿）
+默认测试：597 passed / 1 skipped / 8 deselected（实测全绿）
 
 tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
 tests/unit/agents/          5 Agent 契约与行为 + AgentBase

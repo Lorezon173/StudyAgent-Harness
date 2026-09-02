@@ -19,6 +19,18 @@ from app.infrastructure.rag.embedding import EmbeddingService
 from app.core.config import settings
 
 
+def _sql_or_metadata(sql_value, metadata: dict, key: str):
+    """读侧 identity 归一：SQL 顶层值是权威来源（B3-05）。
+
+    legacy 行 SQL 列为 NULL/空串时，回退保留 metadata 中合法的
+    ``doc_id/chunk_id``，不抹掉 provenance；两者皆无时保留原 SQL
+    值（None/空串），保证返回 metadata 的回传面键稳定。
+    """
+    if sql_value:
+        return sql_value
+    return metadata.get(key) or sql_value
+
+
 class PgVectorProvider(IndexProvider):
     """PG + pgvector 向量检索后端（同步接口）。"""
 
@@ -57,14 +69,17 @@ class PgVectorProvider(IndexProvider):
             self._conn = engine.connect()
         return self._conn
 
-    def index(self, docs: list[dict]) -> None:
+    def index(self, docs: list[dict]) -> int | None:
         """索引一批文档：embed + 写入向量表。
 
         Args:
             docs: 文档列表，每个 doc 含 {"content": str, "metadata": dict, ...}
+
+        Returns:
+            写入确认条数（commit 成功即确认）；空列表返回 0。
         """
         if not docs:
-            return
+            return 0
 
         # 批量 embed
         contents = [d.get("content", "") for d in docs]
@@ -74,46 +89,54 @@ class PgVectorProvider(IndexProvider):
         conn = self._get_conn()
         dialect = conn.dialect.name
 
-        for doc, emb in zip(docs, embeddings):
-            content = doc.get("content", "")
-            metadata = doc.get("metadata", {})
-            doc_id = doc.get("doc_id", "")
-            source = doc.get("source", "vector")
-            scope = doc.get("scope", "global")
-            user_id = doc.get("user_id", None)
+        try:
+            for doc, emb in zip(docs, embeddings):
+                content = doc.get("content", "")
+                metadata = doc.get("metadata", {})
+                doc_id = doc.get("doc_id") or metadata.get("doc_id", "")
+                chunk_id = doc.get("chunk_id") or metadata.get("chunk_id")
+                source = doc.get("source", "vector")
+                scope = doc.get("scope", "global")
+                user_id = doc.get("user_id", None)
 
-            if dialect == "postgresql":
-                # PostgreSQL: embedding 存为 pgvector 的 vector 类型
-                # 使用 CAST(:embedding AS vector) 避免 ::vector 与 psycopg3 参数解析冲突
-                emb_str = "[" + ",".join(map(str, emb)) + "]"
-                conn.execute(
-                    text("""
-                    INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, metadata_json)
-                    VALUES (:user_id, :scope, :content, CAST(:embedding AS vector), :source, :doc_id, :metadata_json)
-                    """),
-                    {"user_id": user_id, "scope": scope, "content": content,
-                     "embedding": emb_str, "source": source, "doc_id": doc_id,
-                     "metadata_json": json.dumps(metadata)}
-                )
-            else:
-                # SQLite: embedding 存为 JSON 字符串
-                conn.execute(
-                    text("""
-                    INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, metadata_json)
-                    VALUES (:user_id, :scope, :content, :embedding, :source, :doc_id, :metadata_json)
-                    """),
-                    {"user_id": user_id, "scope": scope, "content": content,
-                     "embedding": json.dumps(emb), "source": source, "doc_id": doc_id,
-                     "metadata_json": json.dumps(metadata)}
-                )
-        conn.commit()
+                if dialect == "postgresql":
+                    # PostgreSQL: embedding 存为 pgvector 的 vector 类型
+                    # 使用 CAST(:embedding AS vector) 避免 ::vector 与 psycopg3 参数解析冲突
+                    emb_str = "[" + ",".join(map(str, emb)) + "]"
+                    conn.execute(
+                        text("""
+                        INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, chunk_id, metadata_json)
+                        VALUES (:user_id, :scope, :content, CAST(:embedding AS vector), :source, :doc_id, :chunk_id, :metadata_json)
+                        """),
+                        {"user_id": user_id, "scope": scope, "content": content,
+                         "embedding": emb_str, "source": source, "doc_id": doc_id,
+                         "chunk_id": chunk_id, "metadata_json": json.dumps(metadata)}
+                    )
+                else:
+                    # SQLite: embedding 存为 JSON 字符串
+                    conn.execute(
+                        text("""
+                        INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, chunk_id, metadata_json)
+                        VALUES (:user_id, :scope, :content, :embedding, :source, :doc_id, :chunk_id, :metadata_json)
+                        """),
+                        {"user_id": user_id, "scope": scope, "content": content,
+                         "embedding": json.dumps(emb), "source": source, "doc_id": doc_id,
+                         "chunk_id": chunk_id, "metadata_json": json.dumps(metadata)}
+                    )
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        return len(docs)
 
-    def search(self, query: str, top_k: int = 5) -> list[Chunk]:
+    def search(self, query: str, top_k: int = 5, visibility=None) -> list[Chunk]:
         """检索：embed query + 近邻查询 + 转 Chunk。
 
         Args:
             query: 查询文本
             top_k: 返回前 k 个最相关 chunk
+            visibility: 受限检索可见性上下文（DEC-001）；None 保持旧全量行为。
+                PG/SQLite 分支执行同一授权谓词，且先于排序/LIMIT。
 
         Returns:
             Chunk 列表，按 score 降序（score 越大越相关）
@@ -132,43 +155,68 @@ class PgVectorProvider(IndexProvider):
             # PostgreSQL: 用 pgvector 的 <=> 计算余弦距离
             # 使用 CAST(:embedding AS vector) 避免 ::vector 与 psycopg3 参数解析冲突
             emb_str = "[" + ",".join(map(str, query_emb)) + "]"
+            params = {"embedding": emb_str, "top_k": top_k}
+            visibility_where = ""
+            if visibility is not None:
+                # DEC-001 授权谓词：global+无主 或 private+本人；歧义/未知 scope fail closed。
+                # WHERE 先于 ORDER BY / LIMIT 执行（过滤在排序与限额之前）。
+                visibility_where = """
+                WHERE (scope = 'global' AND user_id IS NULL)
+                   OR (scope = 'private' AND user_id = :uid)
+                """
+                params["uid"] = visibility.user_id
             result = conn.execute(
-                text("""
-                SELECT content, embedding <=> CAST(:embedding AS vector) AS distance, source, doc_id, metadata_json
+                text(f"""
+                SELECT content, embedding <=> CAST(:embedding AS vector) AS distance, source, doc_id, chunk_id, metadata_json
                 FROM vector_chunks
+                {visibility_where}
                 ORDER BY distance
                 LIMIT :top_k
                 """),
-                {"embedding": emb_str, "top_k": top_k}
+                params
             )
             rows = result.fetchall()
             chunks = []
             for row in rows:
-                content, distance, source, doc_id, metadata_json = row
-                # score 校准：distance → score（越大越相关）
+                content, distance, source, doc_id, chunk_id, metadata_json = row
                 score = 1.0 / (1.0 + float(distance))
                 metadata = json.loads(metadata_json) if isinstance(metadata_json, str) else metadata_json
+                metadata = metadata or {}
+                metadata["doc_id"] = _sql_or_metadata(doc_id, metadata, "doc_id")
+                metadata["chunk_id"] = _sql_or_metadata(chunk_id, metadata, "chunk_id")
                 chunks.append(Chunk(
                     content=content,
                     score=score,
                     source=source,
-                    metadata=metadata or {}
+                    metadata=metadata
                 ))
             return chunks
 
         else:
             # SQLite: 无向量索引，降级为简单字符匹配（仅用于测试）
+            # visibility 与 PG 分支同一授权谓词，在 SQL 内过滤（先于字符打分排序与截断）。
+            params = {"limit": top_k * 10}
+            visibility_where = ""
+            if visibility is not None:
+                visibility_where = """
+                    WHERE (scope = 'global' AND user_id IS NULL)
+                       OR (scope = 'private' AND user_id = :uid)
+                """
+                params["uid"] = visibility.user_id
             result = conn.execute(
-                text("SELECT content, source, doc_id, metadata_json FROM vector_chunks LIMIT :limit"),
-                {"limit": top_k * 10}
+                text(f"SELECT content, source, doc_id, chunk_id, metadata_json FROM vector_chunks{visibility_where} LIMIT :limit"),
+                params
             )
             rows = result.fetchall()
             chunks = []
             for row in rows:
-                content, source, doc_id, metadata_json = row
+                content, source, doc_id, chunk_id, metadata_json = row
                 # 简单字符重叠作为 score
                 score = sum(1 for w in query if w in content)
                 metadata = json.loads(metadata_json) if isinstance(metadata_json, str) else {}
+                metadata = metadata or {}
+                metadata["doc_id"] = _sql_or_metadata(doc_id, metadata, "doc_id")
+                metadata["chunk_id"] = _sql_or_metadata(chunk_id, metadata, "chunk_id")
                 chunks.append(Chunk(
                     content=content,
                     score=float(score),
@@ -178,6 +226,16 @@ class PgVectorProvider(IndexProvider):
             # 按 score 降序排序，取 top_k
             chunks.sort(key=lambda c: c.score, reverse=True)
             return chunks[:top_k]
+
+    @property
+    def dialect_name(self) -> str:
+        """从同步 DB URL 推导 dialect（postgresql / sqlite）。
+
+        供在线 composition fail-fast 校验（DEC-007）消费；不建立真实连接，
+        连接不可达等运行时错误由检索时机的 db_error 分类承担。
+        """
+        from sqlalchemy.engine import make_url
+        return make_url(self._db_url).get_backend_name()
 
     @property
     def doc_count(self) -> int:

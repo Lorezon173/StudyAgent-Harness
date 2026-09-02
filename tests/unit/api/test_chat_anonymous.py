@@ -46,7 +46,7 @@ def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
         cost_est_usd: float | None = None
 
     monkeypatch.setattr(
-        "app.orchestration.assembly.run_new_agent_session",
+        "app.orchestration.assembly.run_online_agent_session",
         lambda *a, **kw: FakeResult(),
     )
 
@@ -87,7 +87,7 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
         cost_est_usd: float | None = None
 
     monkeypatch.setattr(
-        "app.orchestration.assembly.run_new_agent_session",
+        "app.orchestration.assembly.run_online_agent_session",
         lambda *a, **kw: FakeResult(),
     )
 
@@ -147,7 +147,7 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
         return NewStackResult(reply="stream anon reply", mastery_score=None,
                               turn_count=1, mode_path=[], cost_est_usd=None, events=[])
 
-    monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run)
+    monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
 
     try:
         client = TestClient(app)

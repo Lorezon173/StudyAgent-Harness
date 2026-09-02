@@ -110,7 +110,7 @@ questions:
   gold_evidence:
   - paragraph_id: sisyphus-spine-010-p-0018
     excerpt: 思想否定自身，并倾向于在引起否定自身的东西中超越自身。
-  - paragraph_id: sisyphus-spine-010-p-0006
+  - paragraph_id: sisyphus-spine-011-p-0005
     excerpt: 否定荒诞赖以生存的对立面中有一项是逃避荒诞
   source_locator:
     chapter: 荒诞推理
@@ -118,7 +118,7 @@ questions:
     page: 
     paragraph:
     - sisyphus-spine-010-p-0018
-    - sisyphus-spine-010-p-0006
+    - sisyphus-spine-011-p-0005
   answer_requirements:
   - 需要核验指定译本中该术语的译法与作者评价。
   - 需要指出作者批评的对象或推理方式，但不得超出证据范围。

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Foundation · BLK-004 Decision Canvas</title>
+
+<meta name="generator" content="ARIS render-html (dashboard, v1)">
+<meta name="aris:source-path" content="docs/rag-work/decision-canvas/2026-07-28-rag-blk004-decision-canvas.md">
+<meta name="aris:source-sha256" content="58006578498b871dc5e3ad491554cf77049776f711badaf47e14739632e6d298">
+<meta name="aris:generated-at" content="2026-07-28 08:42 UTC">
+
+<!-- MathJax 3 -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+
+
+<style>
+:root {
+  --bg: #fdfcf7;
+  --bg-soft: #f4f1ea;
+  --bg-card: #ffffff;
+  --bg-code: #f8f5ec;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-muted: #6b6b6b;
+  --primary: #1a4a8c;
+  --primary-soft: #2d6cb8;
+  --accent: #b8390e;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --info-bg: #dbeafe;
+  --good-bg: #d1fae5;
+  --good: #065f46;
+  --bad-bg: #fee2e2;
+  --bad: #991b1b;
+  --border: #d6d0c0;
+  --border-soft: #e8e3d5;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+}
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+}
+
+header.hero {
+  border-bottom: 3px double var(--primary);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+header.hero .eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+header.hero h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+  font-style: italic;
+}
+header.hero .byline {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+header.hero .byline strong { color: var(--ink); font-weight: 600; }
+header.hero .meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+}
+header.hero .meta span strong { color: var(--ink-soft); }
+header.hero .meta code {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0 28px;
+}
+.grid.metrics { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.card .card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.card .card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  letter-spacing: -0.01em;
+}
+.card .card-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+.card.accent .card-value { color: var(--accent); }
+.card.good .card-value { color: var(--good); }
+.card.warn .card-value { color: var(--warn); }
+.card.bad .card-value { color: var(--bad); }
+
+h2 {
+  font-size: 20px;
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-weight: 700;
+}
+h3 { font-size: 16px; margin: 22px 0 8px; color: var(--primary); font-weight: 600; }
+h4 { font-size: 14px; margin: 16px 0 6px; color: var(--ink); font-weight: 600; }
+
+p { margin: 8px 0; }
+ul, ol { padding-left: 20px; margin: 8px 0; }
+ul li, ol li { margin: 3px 0; }
+ul li::marker { color: var(--primary); }
+
+strong { color: var(--accent); font-weight: 600; }
+em { color: var(--ink-soft); }
+
+a { color: var(--primary); }
+a:hover { color: var(--accent); }
+
+code:not(.hljs) {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.86em;
+  background: var(--bg-code);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+  color: var(--accent);
+}
+
+pre {
+  background: #fafaf6;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin: 12px 0;
+}
+pre code, pre code.hljs {
+  background: transparent !important;
+  display: block;
+  padding: 12px 16px !important;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  color: var(--ink);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+thead { background: var(--primary); color: white; }
+th, td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+th { font-weight: 600; font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--bg-soft); }
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  letter-spacing: 0.02em;
+}
+.badge-good { background: var(--good-bg); color: var(--good); }
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.badge-bad { background: var(--bad-bg); color: var(--bad); }
+.badge-info { background: var(--info-bg); color: var(--primary); }
+
+.callout {
+  margin: 14px 0;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border-left: 4px solid;
+  font-size: 14px;
+}
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
+.callout-info .callout-title { color: var(--primary); }
+.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-good { background: var(--good-bg); border-left-color: var(--good); }
+.callout-good .callout-title { color: var(--good); }
+.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.callout-bad .callout-title { color: var(--bad); }
+
+details {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  margin: 10px 0;
+}
+details summary {
+  cursor: pointer;
+  padding: 9px 13px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--primary);
+  list-style: none;
+  user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: "▸ ";
+  margin-right: 4px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-soft); }
+details > :not(summary) { padding: 8px 13px; }
+
+footer.aris-footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
+
+@media (max-width: 600px) {
+  .shell { padding: 20px 16px; }
+  header.hero h1 { font-size: 22px; }
+  .card .card-value { font-size: 24px; }
+}
+@media print {
+  .shell { padding: 0; }
+  body { background: white; }
+  .card { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hero">
+  
+  <h1>RAG Foundation · BLK-004 Decision Canvas</h1>
+  
+  
+  <div class="meta">
+    <span><strong>Source:</strong> <code>docs/rag-work/decision-canvas/2026-07-28-rag-blk004-decision-canvas.md</code></span>
+    <span><strong>SHA256:</strong> <code>58006578498b</code></span>
+    <span><strong>Rendered:</strong> 2026-07-28 08:42 UTC</span>
+    
+  </div>
+</header>
+
+<h1 id="rag-foundation--blk-004-decision-canvas">RAG Foundation · BLK-004 Decision Canvas</h1>
+<blockquote><p><strong>背景地图</strong>：<a href="2026-07-28-rag-foundation-program-cockpit.html">RAG Foundation Program Cockpit</a>（子框架结构、当前/目标数据流、Phase 进度、ID 分工与最小名词表）。 <strong>本页只处理当前决策增量</strong>：<code>chunk_id</code> 存储位置与 range 坐标基线。 <strong>状态</strong>：两项技术裁决待用户确认；本页不是已确认事实源。</p></blockquote>
+<hr />
+<h2 id="0-三分钟决策摘要">0. 三分钟决策摘要</h2>
+<p>BLK-004 要让每条产品证据拥有可复算、可写入、可检索回传的“出生证明”。子框架全景与 BLK-004 的位置见 Program Cockpit；这里不重复背景。</p>
+<p>当前只需判断两件事：</p>
+<table><thead><tr><th>待确认</th><th>推荐</th><th>现在不决定的后果</th></tr></thead><tbody><tr><td><strong>D-004-1：<code>chunk_id</code> 放哪里</strong></td><td><code>vector_chunks</code> 新增可空顶层列；暂不唯一</td><td>provenance 继续藏在自由 JSON，数据库与 attestation 无法围绕同一 identity 核验</td></tr><tr><td><strong>D-004-2：range 怎么计</strong></td><td>0-based + Unicode code point + 半开 <code>[start,end)</code></td><td>相同文本可产生不同坐标和 ID，RAG-B 无法提交可靠测试向量</td></tr></tbody></table>
+<div class="callout callout-warn"><div class="callout-title">Warning</div><p>同意这两项不等于批准最终 hash 算法，也不等于承诺幂等。canonical bytes 与测试向量仍需 RAG-B 补证。</p></div>
+<hr />
+<h2 id="1-本决策已核验的事实与约束">1. 本决策已核验的事实与约束</h2>
+<table><thead><tr><th>类型</th><th>事实 / 约束</th><th>证据</th></tr></thead><tbody><tr><td>已实现</td><td><code>vector_chunks</code> 有顶层 <code>doc_id</code>，没有顶层 <code>chunk_id</code></td><td><code>app/models/tables.py:92-111</code></td></tr><tr><td>已实现·缺口</td><td>Provider 写入 <code>doc_id/metadata_json</code>；检索 SQL 读出 <code>doc_id</code>，构造 <code>Chunk</code> 时未回填</td><td><code>app/infrastructure/rag/pgvector_provider.py:60-109,137-156</code></td></tr><tr><td>已实现</td><td><code>Chunk</code> 只有 <code>content/score/source/metadata</code>，无一等 <code>doc_id/chunk_id</code></td><td><code>app/infrastructure/rag/coordinator.py:7-14</code></td></tr><tr><td>已确认</td><td>生产 ID 与 benchmark <code>paragraph_id</code> 分离；顶层 <code>doc_id</code> 是读侧权威来源；Gate 0 append-only</td><td><code>docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md:222-230</code></td></tr><tr><td>spec 冲突</td><td>旧 Chunking spec 把 <code>canonical_element_range</code> 写成闭区间</td><td><code>docs/rag-work/specs/2026-07-24-project-chunking-service-spec.md:312-320</code></td></tr><tr><td>未冻结</td><td>canonical bytes serializer、stable-ID generator、公开复算测试向量</td><td>同上 <code>:312-353</code>；主账本 <code>:232-240</code></td></tr></tbody></table>
+<hr />
+<h2 id="2-两个决策对主链的具体影响">2. 两个决策对主链的具体影响</h2>
+<p>背景数据流见 <a href="2026-07-28-rag-foundation-program-cockpit.html#3-当前链与目标链">Program Cockpit §3</a>。本轮只改变红色边界内的契约：</p>
+<pre><code class="language-text">ChunkingService 生成 ChunkDocument
+  │ D-004-2 冻结 range 语义 → 未来 stable-ID 输入无坐标歧义
+  ↓
+KnowledgeIngestionService → PgVectorProvider → vector_chunks
+  │ D-004-1 新增顶层 chunk_id → 写入/查询有权威槽位
+  ↓
+PgVectorProvider.search → Chunk.metadata
+  │ 读侧必须回填顶层 doc_id/chunk_id → provenance round-trip 闭合
+  ↓
+Retriever / attestation / baseline / E2E 才能引用同一 evidence identity</code></pre>
+<table><thead><tr><th>决策</th><th>必须同步的模块/产物</th><th>明确不在本轮做</th></tr></thead><tbody><tr><td>D-004-1 顶层 <code>chunk_id</code></td><td>migration、<code>app/models/tables.py</code>、Provider 写/读契约、PG/SQLite fixture 与契约测试</td><td>唯一约束、去重、replace/upsert/delete</td></tr><tr><td>D-004-2 半开 range</td><td>待建 ChunkingService 的 range 数据结构、Chunking spec、测试向量</td><td>Unicode normalization form、空白顺序、hash framing</td></tr></tbody></table>
+<hr />
+<h2 id="3-决策一chunkid-放在哪里">3. 决策一：<code>chunk_id</code> 放在哪里？</h2>
+<table><thead><tr><th></th><th>A：新增 SQL 顶层 <code>chunk_id</code>（推荐）</th><th>B：只放 <code>metadata_json</code></th><th>C：暂不持久化</th></tr></thead><tbody><tr><td>做法</td><td>migration 增加可空列；正式协议通过后新摄入必填；暂不唯一</td><td>JSON 内保存，Provider 校验 key</td><td>只用 row ID / chunk_index</td></tr><tr><td>收益</td><td>DB、检索、attestation、评测共享同一 identity 面</td><td>能保存，schema 改动小</td><td>最快得到 prototype</td></tr><tr><td>代价 / 风险</td><td>bytes 协议冻结前不能填临时 production 值</td><td>易缺失、重命名、被 metadata 覆盖；查询/约束弱</td><td>无法可靠回查同一 chunk</td></tr><tr><td>适用目标</td><td>正式产品链</td><td>过渡性内部实现</td><td>演示原型</td></tr></tbody></table>
+<p><strong>推荐 D-004-1：选择 A，分两步实施。</strong></p>
+<ol><li>先批准独立、可空的顶层 provenance 列；不加唯一约束，不改变 append-only。</li><li>canonical bytes/range 和测试向量通过复核后，新摄入正式 chunk 才必须写稳定 <code>chunk_id</code>；此前禁止用临时 hash、row ID 或 <code>chunk_index</code> 冒充 production stable ID。</li></ol>
+<p><strong>判据</strong>：可审计的存储槽位现在就能冻结，最终 hash 算法可以等证据充分后再冻结；两件事无需捆绑。</p>
+<hr />
+<h2 id="4-决策二range-使用什么基线">4. 决策二：range 使用什么基线？</h2>
+<table><thead><tr><th></th><th>A：0-based + Unicode code point + 半开 <code>[start,end)</code>（推荐）</th><th>B：1-based + 闭区间 <code>[start,end]</code></th><th>C：只留 chunk_index / locator</th></tr></thead><tbody><tr><td>切片复算</td><td>直接 <code>text[start:end]</code></td><td>需 <code>+1/-1</code> 转换</td><td>无法精确复算</td></tr><tr><td>相邻 / 空范围</td><td><code>A.end == B.start</code>，语义统一</td><td>需额外边界规则</td><td>无统一规则</td></tr><tr><td>跨实现</td><td>明确单位，不依赖 UTF-8 byte/tokenizer</td><td>仍需另约定计数单位</td><td>各格式自行解释</td></tr><tr><td>代价</td><td>修订旧 spec 的“闭区间”草案</td><td>与旧草案表面一致，但更易边界错</td><td>放弃可复算 stable ID</td></tr></tbody></table>
+<p><strong>推荐 D-004-2：选择 A。</strong></p>
+<pre><code class="language-text">- element 序号：0-based
+- element 内 offset：Unicode code point
+- 区间：半开 [start, end)
+- identity 输入：规范元素范围 + 规范 chunk 文本
+- source_locator：仅作人类回查与审计，不作稳定主键</code></pre>
+<p><strong>判据</strong>：与 Python 字符串切片直接对应；相邻范围和空范围无歧义；比闭区间少一层边界换算。</p>
+<div class="callout callout-warn"><div class="callout-title">Warning</div><p>本裁决只冻结坐标，不冻结 Unicode normalization form、换行/空白顺序或 hash framing。</p></div>
+<hr />
+<h2 id="5-影响传播与冻结边界">5. 影响传播与冻结边界</h2>
+<table><thead><tr><th>下游</th><th>D-004-1 的影响</th><th>D-004-2 的影响</th></tr></thead><tbody><tr><td>Phase 2</td><td>migration、模型、Provider round-trip、fixture</td><td>ChunkingService range 类型与 ID 输入</td></tr><tr><td>Phase 4</td><td>attestation 可按 chunk identity 关联 DB</td><td>相同输入可复算 chunk 边界</td></tr><tr><td>Phase 5/6</td><td>检索证据可被评测和在线审计直接引用</td><td>gold locator 可与产品 chunk 做可解释映射</td></tr></tbody></table>
+<p><strong>确认后仍保持 <code>blocked</code> 的事项</strong>：</p>
+<ul><li>canonical document/chunk bytes；</li><li>UTF-8、Unicode normalization、换行与空白处理顺序；</li><li>无歧义 serialization / framing；</li><li>至少两组覆盖 Unicode、CRLF、空白与相邻 range 的测试向量；</li><li>provider round-trip 的 PG/SQLite 运行证据。</li></ul>
+<hr />
+<h2 id="6-实施与验收门槛">6. 实施与验收门槛</h2>
+<h3 id="rag-b-先补证">RAG-B 先补证</h3>
+<table><thead><tr><th>待补证</th><th>通过标准</th></tr></thead><tbody><tr><td>canonical document bytes</td><td>不同运行环境对同一输入得到相同 <code>doc_id</code></td></tr><tr><td>canonical chunk bytes</td><td>字段边界不可碰撞，顺序可机械验证</td></tr><tr><td>测试向量</td><td>独立实现对 Unicode/CRLF/空白/相邻 range 得到相同 ID</td></tr><tr><td>Provider round-trip</td><td><code>doc_id/chunk_id/source_locator</code> 写入后不丢失、不冲突</td></tr></tbody></table>
+<h3 id="happy-path-与失败路径">Happy-path 与失败路径</h3>
+<table><thead><tr><th>路径</th><th>必须验证</th></tr></thead><tbody><tr><td>Happy-path</td><td>同一规范输入重复生成相同 doc/chunk ID；PG 检索回传相同 identity；attestation 可关联 DB 行</td></tr><tr><td>冲突</td><td>顶层身份与 metadata 不一致时写前拒绝，不产生部分写入</td></tr><tr><td>Unicode/换行</td><td>按冻结规则通过公开测试向量</td></tr><tr><td>授权</td><td>未授权高相似 chunk 在排序与 LIMIT 前过滤；identity 不泄露</td></tr><tr><td>基础设施</td><td>migration/schema 不满足时诚实失败，不用 fake/手工 schema 冒充通过</td></tr></tbody></table>
+<hr />
+<h2 id="7-现在请确认">7. 现在请确认</h2>
+<ol><li><strong>D-004-1</strong>：新增可空顶层 <code>chunk_id</code>；正式协议通过后新摄入必填；不加唯一约束、不承诺幂等。</li><li><strong>D-004-2</strong>：range 采用 <strong>0-based + Unicode code point + 半开 <code>[start,end)</code></strong>；格式 locator 只用于审计。</li></ol>
+<p>确认后才会：</p>
+<ul><li>将两项写入 <code>2026-07-27-rag-p0-confirmed-decisions.md</code> 和主账本；</li><li>修订 Chunking spec 中冲突的 range/存储提案；</li><li>分发 RAG-B 补证，<strong>不会直接把 BLK-004 标成已解除</strong>。</li></ul>
+<p>← <a href="2026-07-28-rag-foundation-program-cockpit.html">需要回看整体结构与进度时，返回 Program Cockpit</a></p>
+
+<footer class="aris-footer">
+  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
+  source <code>docs/rag-work/decision-canvas/2026-07-28-rag-blk004-decision-canvas.md</code> ·
+  SHA256 <code>58006578498b</code> ·
+  generated at 2026-07-28 08:42 UTC.
+  Edit the source Markdown / JSON, then re-render.
+</footer>
+
+</div>
+</body>
+</html>

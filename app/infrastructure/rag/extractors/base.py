@@ -20,9 +20,10 @@ def get_extractor(file_path: str) -> "Extractor | None":
     from app.infrastructure.rag.extractors.text_extractor import TextExtractor
     from app.infrastructure.rag.extractors.pdf_extractor import PDFExtractor
     from app.infrastructure.rag.extractors.docx_extractor import DocxExtractor
+    from app.infrastructure.rag.extractors.epub_extractor import EpubExtractor
 
     ext = os.path.splitext(file_path)[1].lower()  # 带点，如 ".txt"
-    for cls in [TextExtractor, PDFExtractor, DocxExtractor]:
+    for cls in [TextExtractor, PDFExtractor, DocxExtractor, EpubExtractor]:
         if ext in cls.extensions:
             return cls()
     return None

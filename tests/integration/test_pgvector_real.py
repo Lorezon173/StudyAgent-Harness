@@ -69,6 +69,7 @@ def pg_provider():
                 embedding vector(2048),
                 source TEXT DEFAULT 'vector',
                 doc_id TEXT DEFAULT '',
+                chunk_id TEXT,
                 metadata_json JSONB DEFAULT '{}'::jsonb,
                 created_at TIMESTAMP DEFAULT NOW()
             )

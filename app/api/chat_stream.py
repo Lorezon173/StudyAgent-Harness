@@ -23,7 +23,9 @@ _SENTINEL = object()
 
 @router.post("/stream")
 async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current_user)):
-    from app.orchestration.assembly import run_new_agent_session
+    from app.orchestration.assembly import (
+        OnlineRAGCompositionError, run_online_agent_session,
+    )
     uid_int = current_user["user_id"]
 
     async with async_session() as auth_db:
@@ -45,7 +47,7 @@ async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current
             loop.call_soon_threadsafe(queue.put_nowait, ev)
 
         task = asyncio.create_task(asyncio.to_thread(
-            run_new_agent_session, req.session_id, uid_int, req.message,
+            run_online_agent_session, req.session_id, uid_int, req.message,
             None, graph, cb,
         ))
         task.add_done_callback(
@@ -61,6 +63,19 @@ async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current
 
         try:
             result = await task   # 取结果 + re-raise 工作线程异常
+        except OnlineRAGCompositionError as e:
+            # DEC-007 在线 composition fail-fast：分类错误事件，不回退 fake
+            logger.exception("online RAG composition failed for session %s",
+                             req.session_id)
+            error_event = {
+                "type": "error",
+                "code": "RAG_BACKEND_UNAVAILABLE",
+                "message": e.safe_summary,
+                "error_code": e.error_code,
+                "retryable": False,
+            }
+            yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"
+            return
         except Exception as e:
             logger.exception("collab loop failed for session %s", req.session_id)
             error_event = {

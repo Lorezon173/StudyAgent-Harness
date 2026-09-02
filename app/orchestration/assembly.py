@@ -97,11 +97,14 @@ def _read_cost(session_id: str) -> float | None:
         return None
 
 
-def build_new_stack(user_id: int, graph=None):
+def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None = None):
     """装配 EventBus + 5 Agent + Orchestrator。返回 (bus, orchestrator, store)。
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
     由调用方在用完后 close。
+
+    retriever 可显式注入（DEC-007 在线 composition 经 run_online_agent_session
+    注入 pgvector 检索链）；默认 RetrieverAgent() 保持单元路径 fake 可测。
 
     注：Curator.handle 只读写内存图（MasteryGraph），不触 MasteryGraphStore 的
     异步方法，故 mg_store 构造即可、无需 await init/close。若 Curator 行为变更，
@@ -118,7 +121,7 @@ def build_new_stack(user_id: int, graph=None):
     agents = [
         TutorAgent(),
         CriticAgent(),
-        RetrieverAgent(),
+        retriever if retriever is not None else RetrieverAgent(),
         ConductorAgent(),
         Curator(graph=graph, store=graph._store),
     ]
@@ -129,15 +132,83 @@ def build_new_stack(user_id: int, graph=None):
     return bus, orchestrator, store
 
 
+class OnlineRAGCompositionError(RuntimeError):
+    """DEC-007 在线 composition fail-fast：分类安全异常。
+
+    三条件（backend=pgvector / vector provider=PgVectorProvider /
+    dialect=postgresql）任一不满足即抛出；API 层捕获后映射为
+    backend_unavailable 分类响应。异常消息只含配置事实（backend 名、
+    dialect 名），不含连接串等内部细节。
+    """
+    error_code = "backend_unavailable"
+    safe_summary = "检索服务当前不可用"
+
+
+def validate_online_rag_composition(coordinator) -> None:
+    """DEC-007 三条件校验（可单测，供 BLK-007 admission gate 消费）。
+
+    校验基于配置与装配结果：dialect 从 PgVectorProvider 的同步 DB URL
+    推导（不建立真实连接）；连接不可达等运行时错误由检索时机的
+    db_error 分类承担。
+    """
+    from app.core.config import settings
+    from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+
+    if settings.rag_backend != "pgvector":
+        raise OnlineRAGCompositionError(
+            f"online composition requires rag_backend='pgvector' "
+            f"(got '{settings.rag_backend}')")
+    vector = coordinator.get_provider("vector")
+    if not isinstance(vector, PgVectorProvider):
+        raise OnlineRAGCompositionError(
+            "online composition requires PgVectorProvider as the vector provider")
+    if vector.dialect_name != "postgresql":
+        raise OnlineRAGCompositionError(
+            f"online composition requires postgresql dialect "
+            f"(got '{vector.dialect_name}')")
+
+
+def build_online_rag_coordinator():
+    """在线检索链 composition（DEC-007）：显式注入 PgVectorProvider 并校验。
+
+    显式注入而非依赖 RAGCoordinator 的 settings 默认分支：在线路径
+    不静默回退 fake；不满足三条件立即抛 OnlineRAGCompositionError。
+    """
+    from app.infrastructure.rag.coordinator import RAGCoordinator
+    from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+
+    coordinator = RAGCoordinator(vector_provider=PgVectorProvider())
+    validate_online_rag_composition(coordinator)
+    return coordinator
+
+
+def run_online_agent_session(session_id: str, user_id: int, user_message: str,
+                             current_topic: str | None = None,
+                             graph=None, on_event=None) -> NewStackResult:
+    """在线 API 会话入口：先完成 DEC-007 composition 校验（fail-fast）。
+
+    与单元直连 run_new_agent_session 的区别仅在检索链 composition：
+    在线必须 pgvector + PostgreSQL；单元/离线路径仍可用 fake/SQLite。
+    校验失败在种子创建 / 协作环之前抛出，不进入检索。
+    """
+    coordinator = build_online_rag_coordinator()
+    return run_new_agent_session(
+        session_id, user_id, user_message, current_topic, graph, on_event,
+        retriever=RetrieverAgent(coordinator=coordinator))
+
+
 def run_new_agent_session(session_id: str, user_id: int, user_message: str,
                           current_topic: str | None = None,
-                          graph=None, on_event=None) -> NewStackResult:
+                          graph=None, on_event=None,
+                          retriever: RetrieverAgent | None = None) -> NewStackResult:
     """新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。
 
-    同步函数；API 层用 asyncio.to_thread 调用。
+    同步函数；API 层用 asyncio.to_thread 调用。retriever 参数供
+    run_online_agent_session 注入在线检索链；默认 None 时保持原行为。
     """
     topic = current_topic or user_message
-    bus, orchestrator, store = build_new_stack(user_id, graph=graph)
+    bus, orchestrator, store = build_new_stack(user_id, graph=graph,
+                                               retriever=retriever)
     try:
         ws = WorkspaceState(session_id=session_id, user_id=user_id,
                             current_topic=topic)

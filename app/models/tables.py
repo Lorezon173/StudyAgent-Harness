@@ -107,5 +107,6 @@ class VectorChunkTable(Base):
     embedding = Column(Vector(2048), nullable=True)  # PG: vector(2048); sqlite: 迁移时退化为 TEXT
     source = Column(String(16), nullable=False, default="vector")
     doc_id = Column(String(256), default="")
+    chunk_id = Column(String(256), nullable=True)
     metadata_json = Column(JSON, default=dict)  # 不能用 'metadata'（SQLAlchemy 保留字）
     created_at = Column(DateTime, server_default=func.now())

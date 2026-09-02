@@ -60,6 +60,7 @@ def sqlite_provider():
             embedding TEXT,
             source TEXT DEFAULT 'vector',
             doc_id TEXT DEFAULT '',
+            chunk_id TEXT,
             metadata_json TEXT DEFAULT '{}'
         )
     """))
@@ -233,7 +234,36 @@ def test_search_chunk_fields(sqlite_provider):
     assert chunk.content == "测试内容"
     assert chunk.source == "test_source"
     assert isinstance(chunk.score, float)
-    assert chunk.metadata == {"key": "value"}
+    assert chunk.metadata == {"key": "value", "doc_id": "test_doc", "chunk_id": None}
+
+
+def test_search_round_trips_sql_identity_and_chunk_id(sqlite_provider):
+    sqlite_provider.index([{
+        "content": "有 provenance 的测试内容",
+        "doc_id": "sql-authority",
+        "metadata": {
+            "doc_id": "stale-metadata",
+            "chunk_id": "chunk-123",
+            "source_locator": {"file_path": "book.epub"},
+        },
+    }])
+
+    chunk = sqlite_provider.search("provenance", top_k=1)[0]
+    assert chunk.metadata["doc_id"] == "sql-authority"
+    assert chunk.metadata["chunk_id"] == "chunk-123"
+    assert chunk.metadata["source_locator"] == {"file_path": "book.epub"}
+
+
+def test_index_uses_metadata_chunk_id_when_top_level_is_none(sqlite_provider):
+    sqlite_provider.index([{
+        "content": "metadata chunk id 不应丢失",
+        "doc_id": "doc-1",
+        "chunk_id": None,
+        "metadata": {"chunk_id": "metadata-chunk"},
+    }])
+
+    chunk = sqlite_provider.search("metadata", top_k=1)[0]
+    assert chunk.metadata["chunk_id"] == "metadata-chunk"
 
 
 def test_doc_count_empty(sqlite_provider):
@@ -298,3 +328,108 @@ def test_metadata_json_serialization(sqlite_provider):
     assert metadata["nested"] == {"key": "value"}
     assert metadata["list"] == [1, 2, 3]
     assert metadata["unicode"] == "中文"
+
+
+# ===== RAG-C Phase 2（C-09）：SQLite 降级分支 visibility 过滤（DEC-001）=====
+
+from app.infrastructure.rag.coordinator import VisibilityContext
+
+
+def _index_visibility_matrix(provider):
+    """写入 DEC-001 矩阵全行型：规范 2 行 + 歧义 3 行 + 未知 scope 1 行。"""
+    provider.index([
+        {"content": "全局无主文档", "scope": "global", "user_id": None},
+        {"content": "用户1私有文档", "scope": "private", "user_id": 1},
+        {"content": "用户2私有文档", "scope": "private", "user_id": 2},
+        {"content": "无主私有文档", "scope": "private", "user_id": None},
+        {"content": "带主全局文档", "scope": "global", "user_id": 9},
+        {"content": "共享范围文档", "scope": "shared", "user_id": 1},
+    ])
+
+
+def test_search_sqlite_visibility_matrix(sqlite_provider):
+    """用户1受限检索：仅 global+无主 与 本人 private 可见，其余 fail closed。"""
+    _index_visibility_matrix(sqlite_provider)
+    chunks = sqlite_provider.search("文档", top_k=10, visibility=VisibilityContext(user_id=1))
+    assert {c.content for c in chunks} == {"全局无主文档", "用户1私有文档"}
+
+
+def test_search_sqlite_visibility_other_user(sqlite_provider):
+    """用户2受限检索：换人后仅其本人 private 可见（跨用户隔离）。"""
+    _index_visibility_matrix(sqlite_provider)
+    chunks = sqlite_provider.search("文档", top_k=10, visibility=VisibilityContext(user_id=2))
+    assert {c.content for c in chunks} == {"全局无主文档", "用户2私有文档"}
+
+
+def test_search_sqlite_filters_before_limit(sqlite_provider):
+    """过滤先于排序/LIMIT：未授权行即使字符命中打平也不得抢占 top-k。"""
+    sqlite_provider.index(
+        [{"content": "机器学习机器学习机器学习", "scope": "private", "user_id": 99}]
+        + [{"content": f"机器学习基础第{i}讲", "scope": "global", "user_id": None}
+           for i in range(3)]
+    )
+    chunks = sqlite_provider.search("机器学习", top_k=1,
+                                    visibility=VisibilityContext(user_id=1))
+    assert len(chunks) == 1
+    assert "基础" in chunks[0].content
+
+    # 无 visibility 时旧行为保留：全部行参与排序（回归边界）
+    plain = sqlite_provider.search("机器学习", top_k=1)
+    assert plain[0].content == "机器学习机器学习机器学习"
+
+
+def test_index_supports_private_and_global_rows(sqlite_provider):
+    """索引写侧支持 private/global 数据（RAG-C 最小集）。"""
+    sqlite_provider.index([
+        {"content": "公共行", "scope": "global", "user_id": None},
+        {"content": "私人行", "scope": "private", "user_id": 5},
+    ])
+    assert sqlite_provider.doc_count == 2
+    conn = sqlite_provider._get_conn()
+    rows = conn.execute(text("SELECT scope, user_id FROM vector_chunks ORDER BY id")).fetchall()
+    assert rows == [("global", None), ("private", 5)]
+
+
+# ===== RAG-B B3-05：写侧空顶层 doc_id 回退 metadata；legacy NULL/空串读侧保留 =====
+
+
+def test_index_falls_back_to_metadata_doc_id_when_top_level_empty(sqlite_provider):
+    """顶层 doc_id 为空串时回退 metadata 合法值，不写出空串 identity 行。"""
+    written = sqlite_provider.index([{
+        "content": "顶层为空回退 metadata",
+        "doc_id": "",
+        "metadata": {"doc_id": "meta-doc"},
+    }])
+    assert written == 1
+
+    conn = sqlite_provider._get_conn()
+    sql_doc_id = conn.execute(text("SELECT doc_id FROM vector_chunks")).scalar()
+    assert sql_doc_id == "meta-doc"
+
+    chunk = sqlite_provider.search("回退", top_k=1)[0]
+    assert chunk.metadata["doc_id"] == "meta-doc"
+
+
+@pytest.mark.parametrize("legacy_doc_id", [None, ""])
+def test_search_preserves_metadata_identity_for_legacy_rows(
+    sqlite_provider, legacy_doc_id
+):
+    """legacy 行（SQL doc_id/chunk_id 为 NULL/空串）读侧不得抹掉 metadata
+    中合法 identity（B3-05）；PG 分支走同一 _sql_or_metadata 归一逻辑，
+    真实 PG 验证见 integration。"""
+    conn = sqlite_provider._get_conn()
+    conn.execute(
+        text("""
+        INSERT INTO vector_chunks (user_id, scope, content, embedding, source, doc_id, chunk_id, metadata_json)
+        VALUES (NULL, 'global', 'legacy 行内容', '[]', 'vector', :doc_id, NULL, :metadata_json)
+        """),
+        {
+            "doc_id": legacy_doc_id,
+            "metadata_json": json.dumps({"doc_id": "legacy-doc", "chunk_id": "legacy-chunk"}),
+        },
+    )
+    conn.commit()
+
+    chunk = sqlite_provider.search("legacy", top_k=1)[0]
+    assert chunk.metadata["doc_id"] == "legacy-doc"
+    assert chunk.metadata["chunk_id"] == "legacy-chunk"

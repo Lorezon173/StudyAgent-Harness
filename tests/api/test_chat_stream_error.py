@@ -33,7 +33,7 @@ def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch, auth_heade
     def fake_run_crash(session_id, user_id, message, current_topic=None, graph=None, on_event=None):
         raise RuntimeError("agent boom")
 
-    monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run_crash)
+    monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run_crash)
 
     try:
         client = TestClient(app)

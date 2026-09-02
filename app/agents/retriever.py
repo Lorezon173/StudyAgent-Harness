@@ -9,6 +9,7 @@
 绝不评判"证据够不够好"（语义质量归 Critic 的 RAGQualityAssessed）。
 """
 
+import logging
 import time
 from collections import Counter
 
@@ -16,9 +17,28 @@ from app.agents.base import AgentBase
 from app.harness.enums import EventType, EventSource
 from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
-from app.infrastructure.rag.coordinator import RAGCoordinator
+from app.infrastructure.rag.coordinator import RAGCoordinator, VisibilityContext
+
+logger = logging.getLogger(__name__)
 
 LOW_SCORE_THRESHOLD = 0.3
+TOP_K_DEFAULT = 5
+TOP_K_MAX = 10
+
+# DEC-009（spec §G）：payload 只允许分类错误码 + 安全摘要；
+# str(exc)/SQL/连接串/堆栈只进内部日志。
+SAFE_SUMMARIES = {
+    "backend_unavailable": "检索服务当前不可用",
+    "db_error": "知识库服务暂时不可用",
+    "embedding_failed": "知识索引服务暂时不可用",
+    "provider_degraded": "部分知识来源不可用",
+    "invalid_request": "当前请求无法检索知识",
+    "timeout": "检索超时，请稍后重试",
+}
+
+
+def _safe_summary(error_code: str | None) -> str:
+    return SAFE_SUMMARIES.get(error_code or "", "知识库服务暂时不可用")
 
 
 class RetrieverAgent(AgentBase):
@@ -34,53 +54,121 @@ class RetrieverAgent(AgentBase):
     # --- AgentBase 契约 ---
 
     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
-        """处理 ActionRequested(target=retriever)，委托 RAGCoordinator 检索。"""
+        """处理 ActionRequested(target=retriever)，委托 RAGCoordinator 检索。
+
+        RAG-C Phase 2（C-10）：入口校验（DEC-008 invalid-request）在调用
+        provider 之前完成；异常/失败 payload 只含分类错误码 + 安全摘要。
+        """
         payload = event.payload or {}
 
         # 过滤：只处理 target=retriever 的请求
         if payload.get("target") != EventSource.RETRIEVER.value:
             return []
 
-        query = payload.get("query", "")
-        top_k = payload.get("top_k", 5)
+        query = payload.get("query")
+        top_k = payload.get("top_k", TOP_K_DEFAULT)
         sources = payload.get("sources", None)
         purpose = payload.get("purpose", None)
+        retrieval_id = payload.get("retrieval_id")
+        visibility_payload = payload.get("visibility")
+
+        if self._is_invalid_request(query, top_k, visibility_payload,
+                                    retrieval_id, payload.get("user_id"), ws):
+            return [self._emit_failure(
+                ws, parent_id=event.id, retrieval_status="invalid-request",
+                error_code="invalid_request", query=query,
+                retrieval_id=retrieval_id)]
+
+        visibility = None
+        if visibility_payload is not None:
+            visibility = VisibilityContext(user_id=visibility_payload["user_id"])
 
         try:
             return self._do_retrieve_and_emit(
                 query=query, top_k=top_k, sources=sources,
                 purpose=purpose, parent_id=event.id, ws=ws,
+                visibility=visibility, retrieval_id=retrieval_id,
             )
         except Exception as exc:
-            return [self.emit(
-                EventType.RETRIEVAL_FAILED, ws,
-                payload={
-                    "reason": str(exc),
-                    "retrieval_status": "timeout",
-                    "query": query,
-                },
-                parent_id=event.id,
-            )]
+            # DEC-009：完整异常只进内部日志；对外只有分类码 + 安全摘要
+            logger.exception("retrieval failed unexpectedly")
+            error_code = "timeout" if isinstance(exc, TimeoutError) else "db_error"
+            return [self._emit_failure(
+                ws, parent_id=event.id, retrieval_status="failed",
+                error_code=error_code, query=query, retrieval_id=retrieval_id)]
+
+    @staticmethod
+    def _is_invalid_request(query, top_k, visibility_payload,
+                            retrieval_id, user_id, ws: WorkspaceState) -> bool:
+        """入口契约校验：返回 True 表示 invalid-request（不进入 provider）。
+
+        非受限请求（无 visibility）只要求 query/top_k 合法，保持旧路径；
+        受限请求必须把 payload 与 visibility 身份绑定到可信会话用户，且带
+        retrieval_id（DEC-001/003），不能由 action payload 冒充其他用户。
+        """
+        if not isinstance(query, str) or not query.strip():
+            return True
+        if isinstance(top_k, bool) or not isinstance(top_k, int) \
+                or not (1 <= top_k <= TOP_K_MAX):
+            return True
+        if visibility_payload is None:
+            return False
+        if not isinstance(visibility_payload, dict):
+            return True
+        vis_uid = visibility_payload.get("user_id")
+        if isinstance(vis_uid, bool) or not isinstance(vis_uid, int):
+            return True
+        if isinstance(user_id, bool) or not isinstance(user_id, int):
+            return True
+        if user_id != ws.user_id or vis_uid != ws.user_id:
+            return True
+        return not (isinstance(retrieval_id, str) and retrieval_id.strip())
+
+    def _emit_failure(self, ws: WorkspaceState, *, parent_id: str | None,
+                      retrieval_status: str, error_code: str | None,
+                      query, retrieval_id) -> Event:
+        """构造安全的 RetrievalFailed（DEC-009：无 str(exc)/SQL/堆栈）。"""
+        payload = {
+            "retrieval_status": retrieval_status,
+            "error_code": error_code,
+            "safe_summary": _safe_summary(error_code),
+            "query": query if isinstance(query, str) else "",
+        }
+        if isinstance(retrieval_id, str) and retrieval_id:
+            payload["retrieval_id"] = retrieval_id
+        return self.emit(EventType.RETRIEVAL_FAILED, ws,
+                         payload=payload, parent_id=parent_id)
 
     # --- 检索 + 机械判定 ---
 
     def _do_retrieve_and_emit(self, *, query: str, top_k: int,
                               sources: list[str] | None, purpose: str | None,
-                              parent_id: str, ws: WorkspaceState) -> list[Event]:
-        """执行检索并按纯机械指标判定 retrieval_status。"""
+                              parent_id: str, ws: WorkspaceState,
+                              visibility: VisibilityContext | None = None,
+                              retrieval_id: str | None = None) -> list[Event]:
+        """执行检索并按纯机械指标判定 retrieval_status（DEC-008 五态）。"""
         t0 = time.time()
-        result = self._coordinator.search(query, sources=sources, top_k=top_k)
+        result = self._coordinator.search(query, sources=sources, top_k=top_k,
+                                          visibility=visibility)
         latency_ms = (time.time() - t0) * 1000
+
+        # 全部 provider 失败 → RetrievalFailed（DEC-008/009）
+        if result.outcome == "failed":
+            return [self._emit_failure(
+                ws, parent_id=parent_id, retrieval_status="failed",
+                error_code=result.error_code or "db_error",
+                query=query, retrieval_id=retrieval_id)]
 
         chunks = result.chunks
         scores = [c.score for c in chunks]
         max_score = max(scores) if scores else 0.0
 
-        # 机械判定 retrieval_status（§3.6）
-        if not chunks:
+        # 机械判定 retrieval_status（§3.6 + DEC-008）：
+        # low_score 不再是独立状态，降为 ok 的 quality=low 子标记
+        if result.outcome == "degraded":
+            retrieval_status = "degraded"
+        elif not chunks:
             retrieval_status = "empty"
-        elif max_score < LOW_SCORE_THRESHOLD:
-            retrieval_status = "low_score"
         else:
             retrieval_status = "ok"
 
@@ -94,8 +182,16 @@ class RetrieverAgent(AgentBase):
             "query": query,
             "latency_ms": latency_ms,
         }
+        if chunks and max_score < LOW_SCORE_THRESHOLD:
+            payload["quality"] = "low"
+        if retrieval_status == "degraded":
+            payload["error_code"] = result.error_code or "provider_degraded"
+            payload["safe_summary"] = _safe_summary(payload["error_code"])
+            payload["provider_failures"] = list(result.failed_providers)
         if purpose:
             payload["purpose"] = purpose
+        if isinstance(retrieval_id, str) and retrieval_id:
+            payload["retrieval_id"] = retrieval_id
 
         return [self.emit(EventType.RETRIEVED_EVIDENCE, ws,
                           payload=payload, parent_id=parent_id)]

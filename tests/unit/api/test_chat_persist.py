@@ -69,7 +69,7 @@ def _patch_new_stack(monkeypatch, result=None):
         return result
 
     monkeypatch.setattr(
-        "app.orchestration.assembly.run_new_agent_session",
+        "app.orchestration.assembly.run_online_agent_session",
         fake_run,
     )
 
@@ -259,7 +259,7 @@ def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
             def fake_run(session_id, user_id, message, *args, **kw):
                 return NewStackResult(reply="R", mastery_score=80, turn_count=11,
                                       mode_path=["socratic"], cost_est_usd=None, events=[])
-            monkeypatch.setattr("app.orchestration.assembly.run_new_agent_session", fake_run)
+            monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
 
             async with session_factory() as db:
                 # Patch async_session so chat()'s internal sessions resolve to our test db
