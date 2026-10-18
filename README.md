@@ -2,11 +2,27 @@
 
 基于苏格拉底教学法的多 Agent 学习框架。系统不直接灌输答案，而是通过诊断 → 讲解 → 复述 → 追问的交互循环，引导学习者主动构建理解，并在过程中持续评估掌握度、维护知识图谱画像。
 
+## 普通教学 MVP 与交付流程调整建议
+
+[2026-10-18 MVP、基线、分支与 CI/CD 建议稿](superpowers/project-baseline/2026-10-18-mvp-branching-cicd-raw.md)依据用户选择，将首版目标收敛为登录、普通教学与会话保存/恢复，书籍检索随后补上；部署顺序为本机 Docker → 单台服务器。文档说明当前缺口、候选基底保存与验证、短分支/独立工作目录、回归及发布门禁。本轮仅整理建议，尚未执行分支重组、业务或 CI 配置修改，也不代表 MVP 或真实运行关卡已通过；既有 RAG 契约与验收状态保持原有口径。
+
+后续按用户要求核查历史：[历史聊天 MVP 核查与 CI/CD 三层计划](superpowers/project-baseline/2026-10-18-historical-mvp-audit-and-cicd-plan-raw.md)推荐以 `d83c505`（2026-07-31）作为普通聊天功能起点。用户已确认 **MVP 使用 main、当前 RAG 成果转入新建 feature-rag**，并先检查 CI/CD 缺漏；[第 11 节核查](superpowers/project-baseline/2026-10-18-historical-mvp-audit-and-cicd-plan-raw.md#11-用户确认后的-cicd-缺漏核查)记录发布门禁、镜像/迁移阻断、前端与 PG 回归、服务器交付/恢复等 15 项缺口及远端未知项。历史版本仍含早期 RAG；前轮测试收集受缺依赖阻断、Docker 引擎不可用，尚未认定为干净发布基线。本轮仅完成缺口检查，未重组 Git 分支或修改流水线，不扩大历史侧栏/完整上下文恢复需求。
+
+## RAG 模块全貌与阶段导览
+
+[2026-10-18 RAG 全貌说明](docs/rag-work/decision-canvas/2026-10-18-rag-module-overview.html)从文件摄入、权限检索、离线评测和在线教学消费四条链路介绍当前实现，逐阶段说明 S0～S6 的实现基线、已完成工作、剩余工作及验收条件，并对照 T00～T14 工作包与依赖关系。页面附中文术语和源码/文档依据；10 月 18 日重新核对工作区，历史离线验收和 10 月 17 日环境盘点不冒充新一轮真实运行验证。
+
+## RAG MVP 决策入口
+
+[2026-10-17 缺口决策网页](docs/rag-work/decision-canvas/2026-10-17-rag-readiness-decision.html)汇总 T01 的 8 类环境与资产缺口、T05/T08/T09 的 9 项计划审阅问题，以及已确认决策、冻结 spec、DAG 和执行计划中的原文依据。可比较处理选项并导出 Markdown 草案；选择仅保存在本机浏览器，不执行变更，也不放行 G1～G6。页面为离线独立 HTML，配套 JSON 保存证据快照。 新增按 Visual Explainer 规范重构的[图解决策版](docs/rag-work/decision-canvas/2026-10-17-rag-readiness-visual.html)，以并行推进图、验收依赖图和缺口状态图作为阅读主线；可编辑源文件为同目录 `.src.html`。
+
 ## 单栈现状
 
 项目仅保留 `app/` 事件驱动 5-Agent 协作环。`/api/chat` 与 `/api/chat/stream` 始终运行真实 LLM 教学流程，并在完成后持久化会话、消息和掌握度图谱；不再提供旧 LangGraph/FakeLLM 回退路径或运行时切换开关。
 
 > **在线 RAG 运行前提（Phase 2）**：两个在线 chat 入口会在进入协作环前校验 `rag_backend=pgvector`、实际 vector provider 为 `PgVectorProvider`、数据库 dialect 为 PostgreSQL。任一条件不满足即明确失败（普通 chat 返回 HTTP 503；SSE 发分类错误事件），不会静默回退到 fake/SQLite。fake 和 SQLite 仅用于非在线的单元、集成或离线评测路径。
+
+图解版现附有页内中文阅读说明：解释图例、任务与关卡编号、8 类缺口的决策含义，以及草案选择和导出步骤。
 
 ## 架构概览
 
@@ -135,6 +151,30 @@ app/specs/
 - **Tutor 评估参考 DeepEval**：规划用 G-Eval 自定义教学指标三维度（`explanation_completeness` / `guidance_quality` / `clarity`）替换 `Tutor.evaluate()` 的字符级占位。**诚实标注：DeepEval 为 Phase 3 待建项**——当前 `app/agents/tutor.py:99` 仍是字符 Counter 交并比占位，deepeval 依赖尚未引入（仅列为技术栈规划，见下）。
 
 > **RAG Foundation 当前状态**：EPUB extractor、通用 Chunking/KnowledgeIngestion、RAG 可见性与错误语义基础、RAG-D 只读评测工具已分别落地并通过代码/SQLite 维度验证；真实 PostgreSQL + pgvector + embedding 的 EPUB 正式摄入、在线 evidence→Tutor 接线、产品 Retriever baseline 尚未完成，不能将离线/fake/SQLite 结果表述为生产闭环。详见 [RAG 工作文档区](docs/rag-work/README.md) 及其主清单。
+
+最新顺序与 MVP 范围见 [2026-10-15 RAG 修订执行方案](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md)：最小契约确认 → 可信性修复 → 真实环境 → 正式摄入与证明 → 检索基线 → 在线证据消费 → 联合验收。方案汇总 27 类问题、优先级和三层执行包，已纳入[执行方案 review](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan-review.md)的五项补修：完整 20 题放行、embedding 配置绑定、迁移目标守卫、提交后只读恢复、无效 judge 分数降级。用户已于 2026-10-16 确认方案；首批 T02/T03/T04 的当前实施与验收状态见下方主窗口记录。
+
+[DAG 与并发调度](superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md)区分硬依赖、推荐顺序及共享文件/数据库独占规则；当前容量为主会话加最多三个子代理，在线离线实现可提前并行，真实摄入/完整20题基线/联合验收仍按放行门执行。
+
+[执行就绪性核查](superpowers/rag-foundation/2026-10-16-execution-readiness-audit.md)后已完成 [T00契约冻结及勘误](superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md)：[当前rag-mvp-contracts-v1.0.1](docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md)固定跨任务接口/版本/错误与数据字段，原v1快照保留。[T02/T03/T04独立plan索引](docs/rag-work/plans/2026-10-16-execution-plan-index.md)及[计划复查关闭记录](docs/rag-work/plans/2026-10-16-first-wave-plan-rereview.md)已就绪；用户已授权三个 gpt-6-luna / xhigh 子代理在 `codex/rag-mvp-first-wave` 实施，已完成[主窗口审阅、修订与组合离线验收](docs/rag-work/evidence/2026-10-16-first-wave-execution.md)。环境盘点和真实环境验收尚未启动，其他模块plan及冻结契约未因本次实施改变；本地测试或文档review不代表G1等正式运行门通过。
+
+2026-10-16 用户已确认 T02/T03/T04 本批验收，完成项与后续待办见[主清单](docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md)。
+
+本批最终组合回归 **547 passed、1 deselected**；静态检查只有已确认的既有 E402 导入位置告警。
+
+下一批按 DAG 编写 [T08 摄入与恢复](docs/rag-work/plans/2026-10-16-t08-execution-plan.md)、[T09 准入与报告](docs/rag-work/plans/2026-10-16-t09-execution-plan.md)、[T05 迁移目标守卫](docs/rag-work/plans/2026-10-16-t05-execution-plan.md)独立三层计划；[主窗口计划审阅记录](docs/rag-work/plans/2026-10-16-second-wave-plan-review.md)跟踪修订与待确认设计。本轮仅规划，尚未开始这三包编码。 2026-10-17[正式计划review](docs/rag-work/plans/2026-10-17-second-wave-plan-review.md)确认7项P1、2项P2，需修订并复核后再派发；首批验收保持不变。
+
+本批新增 [T01 环境与资产只读盘点计划](docs/rag-work/plans/2026-10-17-t01-execution-plan.md)，为迁移守卫、摄入和基线准入提供有来源的资源信息。用户已授权并完成[只读盘点覆盖](docs/rag-work/evidence/t01/2026-10-17-inventory.md)：本机EPUB路径未解析、corpus缺失、关键依赖/锁版本及可信资源登记存在缺口，资源就绪仍blocked；未进行PG/embedding探测或真实验收。
+
+本批实现包括：摄入准备与写入分离（`prepare_file` / `ingest_prepared`，保留 `ingest_file`）、SDK响应索引和写前向量校验、稳定评测状态与单次多 k 指标、20题执行计数，以及纯数据形式的 embedding 身份和摄入证明构造/核验。未新增 HTTP API；运行意图持久化、恢复、正式准入接线和真实环境验证仍由后续任务完成。
+
+[本轮方案审阅](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan-review.md)建议在契约冻结前补齐 20 题完整执行放行、embedding 身份绑定和迁移目标传递，并细化提交后证明恢复及 judge 非有限分数降级；本轮受控复现不代表真实 PG 或正式 baseline 已验收。
+
+原 Phase 的实现基线、已完成工作、剩余 Todo 见[阶段进展与三层规划](superpowers/rag-foundation/2026-10-13-progress-and-todolist.md)，已按 review 核验补充待办；既有 DEC 和权威主清单保持原有审批/单写者边界。
+
+[子代理审阅记录](superpowers/rag-foundation/2026-10-13-plan-review.md)列出执行前需补齐的多 k 指标、基线数据隔离、摄入证明契约及真实事务原子性验收；总体推进顺序可以保留，执行细节仍需确认。
+
+[针对性核验记录](superpowers/rag-foundation/2026-10-13-review-verification.md)包含定向测试与受控复现：已有异常回滚在 SQLite 验证通过，但 provider 的短 embedding 结果会造成条件性写入计数误报；评测检索失败状态传播、证明字段有效性及日志关联仍有缺口。真实 PostgreSQL 验收尚未完成。
 
 > **诚实标注**：评估框架已实现并有测试覆盖，但**尚未接到在线 API 或 CLI**——`/api/eval` 端点只读 `EvalStore`，不调用任何 bench；benches 当前仅由 `tests/eval/` 驱动。
 

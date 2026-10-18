@@ -28,12 +28,16 @@ class EmbeddingService:
         self.model = model or settings.embedding_model
         self.api_key = api_key or settings.openai_api_key
         self.base_url = base_url or settings.openai_base_url
+        dimension = settings.embedding_dim
+        if isinstance(dimension, bool) or not isinstance(dimension, int) or dimension <= 0:
+            raise ValueError("embedding_dim 必须为正整数")
+        self._dim = dimension
         self._client = None
 
     @property
     def dim(self) -> int:
-        """返回当前模型的向量维度。"""
-        return settings.embedding_dim
+        """返回实例创建时绑定的向量维度。"""
+        return self._dim
 
     @property
     def client(self):
@@ -78,15 +82,40 @@ class EmbeddingService:
             return [[0.0] * self.dim] * len(texts)
 
         # 分批调用 API（方舟限制：单次最多 10 条）
-        BATCH_SIZE = 10
+        batch_size = 10
         all_embeddings = []
-        for i in range(0, len(non_empty_texts), BATCH_SIZE):
-            batch = non_empty_texts[i:i + BATCH_SIZE]
+        for i in range(0, len(non_empty_texts), batch_size):
+            batch = non_empty_texts[i:i + batch_size]
             response = self.client.embeddings.create(
                 model=self.model,
                 input=batch,
             )
-            all_embeddings.extend([item.embedding for item in response.data])
+            data = getattr(response, "data", None)
+            if not isinstance(data, (list, tuple)) or len(data) != len(batch):
+                raise ValueError("embedding 响应数量不匹配")
+
+            ordered_embeddings = [None] * len(batch)
+            seen_indices = set()
+            for item in data:
+                index = getattr(item, "index", None)
+                if (
+                    isinstance(index, bool)
+                    or not isinstance(index, int)
+                    or index < 0
+                    or index >= len(batch)
+                    or index in seen_indices
+                ):
+                    raise ValueError("embedding 响应索引无效")
+                try:
+                    embedding = item.embedding
+                except AttributeError as exc:
+                    raise ValueError("embedding 响应条目无效") from exc
+                ordered_embeddings[index] = embedding
+                seen_indices.add(index)
+
+            if len(seen_indices) != len(batch):
+                raise ValueError("embedding 响应索引不完整")
+            all_embeddings.extend(ordered_embeddings)
 
         # 将结果映射回原始索引位置
         result = []

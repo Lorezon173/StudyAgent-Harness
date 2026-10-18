@@ -1,0 +1,2260 @@
+<!doctype html>
+<html lang="zh-CN" data-register="paper">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>当前 RAG：从一本书到有依据的教学</title><link rel="stylesheet" href="kit.css" data-ve-kit>
+<style>
+:root{--bg:#f7f4eb;--surface:#efecdf;--text:#253643;--text-dim:#53616a;--accent:#1b5478;--border:#d6d5ca;--border-bright:#84949a;--t-body:17px;--t-small:14px;--t-label:12px;--t-h1:clamp(34px,5vw,60px);--t-h2:30px;--s-1:4px;--s-2:8px;--s-3:12px;--s-4:20px;--s-5:28px;--s-6:40px;--s-8:72px;--r-1:3px;--r-2:6px;color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--bg);color:var(--text);font:var(--t-body)/1.8 "Atkinson Hyperlegible Next","Microsoft YaHei",sans-serif}h1,h2,h3,p,figure{margin:0}h1,h2,h3{font-family:"Newsreader","Noto Serif SC","SimSun",serif;line-height:1.35}h1{font-size:var(--t-h1);max-width:16em;font-weight:500;margin:var(--s-3) 0 var(--s-4)}h2{font-size:var(--t-h2);font-weight:500;margin-bottom:var(--s-4)}h3{font-size:22px;margin-bottom:var(--s-2)}a{color:var(--accent);text-underline-offset:3px}button,input,summary{font:inherit}button{cursor:pointer;color:var(--accent);background:transparent;border:1px solid var(--border-bright);border-radius:var(--r-1);padding:var(--s-2) var(--s-3)}button:hover,button:focus-visible{background:var(--surface)}:focus-visible{outline:3px solid var(--accent);outline-offset:3px}code,.mono{font-family:"Atkinson Hyperlegible Mono","Consolas",monospace;font-size:var(--t-small);overflow-wrap:anywhere}p+p{margin-top:var(--s-3)}strong{font-weight:700}.book{max-width:1460px;margin:auto;display:grid;grid-template-columns:225px minmax(0,1fr);gap:var(--s-6);padding:var(--s-6)}.toc{position:sticky;top:var(--s-4);align-self:start;font-size:var(--t-small);max-height:94vh;overflow:auto;padding-right:var(--s-3)}.toc .edition{font-size:var(--t-label);letter-spacing:1px;color:var(--text-dim);border-top:3px solid var(--accent);padding-top:var(--s-3);margin-bottom:var(--s-4)}.toc a{display:block;padding:var(--s-2) 0;text-decoration:none;border-bottom:1px solid var(--border)}.toc a:hover{text-decoration:underline}.toc small{display:block;color:var(--text-dim);margin-top:var(--s-4)}main{display:block!important;padding:0!important;margin:0!important;min-width:0;max-width:1110px}.js-motion main>*{opacity:1!important;transform:none!important;transition:none!important;animation:none!important}header+figure{margin-top:var(--s-5)!important}header{padding:var(--s-4) 0 var(--s-6);border-bottom:1px solid var(--border-bright)}.eyebrow,.kicker{font-size:var(--t-label);letter-spacing:1px;color:var(--accent);font-family:"Consolas",monospace}.lead{font-size:21px;max-width:48em}.meta{font-size:var(--t-small);color:var(--text-dim);margin-top:var(--s-4)}section{margin-top:var(--s-8);scroll-margin-top:var(--s-4)}.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--s-5);margin-top:var(--s-5)}.note{background:var(--surface);padding:var(--s-4);border-radius:var(--r-2)}.note h3{font-size:20px}.tag{font:var(--t-label)/1.5 "Consolas",monospace;border:1px solid var(--border-bright);display:inline-block;padding:2px 7px;border-radius:var(--r-1);margin-right:var(--s-2)}.warn{color:#7b4216;border-color:#986b42}.muted{color:var(--text-dim)}.readmap{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4);margin-top:var(--s-5)}.readmap>div{border-top:2px solid var(--accent);padding-top:var(--s-3)}.readmap small{display:block;color:var(--text-dim);font-size:var(--t-small)}figure{margin:var(--s-5) 0}.frame{background:transparent!important;border:1px solid var(--border);border-radius:var(--r-2);padding:var(--s-4);overflow:auto}figcaption{font-size:var(--t-small);color:var(--text-dim);margin-top:var(--s-3)}.fig-n{color:var(--accent);margin-right:var(--s-2);font-family:Consolas,monospace}.flow{display:flex;align-items:stretch;gap:var(--s-3)}.flow .step{flex:1;min-width:0}.step b{display:block;font-size:18px}.step small{font-size:var(--t-small);display:block;color:var(--text-dim)}.arrow{align-self:center;color:var(--accent);font-size:24px}.pending{border-style:dashed!important}.flow .step{border:1px solid var(--border-bright);padding:var(--s-3);background:var(--bg)}.stages-nav{display:flex;flex-wrap:wrap;gap:var(--s-2);margin:var(--s-4) 0}.stages-nav a{padding:var(--s-2) var(--s-3);border:1px solid var(--border-bright);text-decoration:none}.toolbar{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center;margin:var(--s-4) 0}input[type=search]{flex:1;min-width:180px;border:1px solid var(--border-bright);background:var(--bg);color:var(--text);padding:var(--s-3)}.table-wrap{overflow:auto;border-top:1px solid var(--border-bright);margin-top:var(--s-4)}table{border-collapse:collapse;width:100%;font-size:var(--t-body)}th,td{vertical-align:top;text-align:left;padding:var(--s-3);border-bottom:1px solid var(--border);min-width:135px}th{font-weight:600;background:var(--surface);font-size:var(--t-small)}td:first-child,th:first-child{padding-left:0}.details-list{border-top:1px solid var(--border-bright)}details{padding:var(--s-4) 0;border-bottom:1px solid var(--border)}summary{cursor:pointer;font-weight:600;font-size:19px;color:var(--accent)}details[open]>summary{margin-bottom:var(--s-4)}.detail-body{padding-left:var(--s-4)}.fields{display:grid;grid-template-columns:150px minmax(0,1fr);gap:var(--s-3) var(--s-4);margin:var(--s-4) 0}.fields dt{font-weight:600;color:var(--text-dim)}.fields dd{margin:0;overflow-wrap:anywhere}.stage{border-top:2px solid var(--accent);padding-top:var(--s-4);margin-top:var(--s-6)}.stage-title{display:flex;gap:var(--s-4);align-items:baseline}.stage-title .mono{font-size:22px;color:var(--accent)}.status-line{margin:var(--s-3) 0}.stage-panels{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);margin:var(--s-4) 0}.stage-panels>div{border-top:1px solid var(--border);padding-top:var(--s-3)}.stage-panels h4{margin:0 0 var(--s-2);font-size:var(--t-body)}ul,ol{padding-left:1.5em;margin:var(--s-2) 0}li+li{margin-top:var(--s-2)}.evidence{font-size:var(--t-small);padding:3px 8px;margin:var(--s-1) var(--s-1) var(--s-1) 0;overflow-wrap:anywhere;text-align:left}.evidence:before{content:'↗ ';font-weight:bold}.source-list{font-size:var(--t-small);overflow-wrap:anywhere}.source-list>div{padding:var(--s-3) 0;border-bottom:1px solid var(--border)}.dag{min-width:900px;width:100%;height:auto}.dag text{font-family:"Microsoft YaHei",sans-serif;font-size:14px;fill:var(--text)}.dag .box{fill:var(--bg);stroke:var(--border-bright);stroke-width:1.5}.dag .gate{fill:var(--surface);stroke:var(--accent);stroke-width:1.5}.dag .hard{fill:none;stroke:var(--accent);stroke-width:1.5;marker-end:url(#dag-arrow)}.dag .soft{fill:none;stroke:#956638;stroke-width:1.5;stroke-dasharray:6 5;marker-end:url(#dag-soft)}.edge-list{font-size:var(--t-small);line-height:1.9;overflow-wrap:anywhere}.glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-4) var(--s-6)}.glossary dt{font-weight:600;color:var(--accent)}.glossary dd{margin:var(--s-1) 0 0}.empty{padding:var(--s-4);border:1px dashed var(--border-bright)}dialog{color:var(--text);background:var(--bg);border:1px solid var(--border-bright);border-radius:var(--r-2);padding:var(--s-5);width:min(760px,94vw);max-height:85vh;overflow:auto}dialog::backdrop{background:#172b3b88}.dialog-head{display:flex;justify-content:space-between;gap:var(--s-4);align-items:start}dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface);padding:var(--s-4);font:var(--t-small)/1.8 Consolas,monospace}footer{margin:var(--s-8) 0 var(--s-4);border-top:1px solid var(--border-bright);padding-top:var(--s-4);font-size:var(--t-small);color:var(--text-dim)}[hidden]{display:none!important}@media(max-width:1050px){.book{grid-template-columns:1fr;padding:var(--s-5);gap:0}.toc{position:static;max-height:none;padding:0;margin-bottom:var(--s-5);display:flex;gap:var(--s-3);flex-wrap:wrap}.toc .edition{width:100%;margin:0}.toc a{border:0;padding:var(--s-1) 0}.toc small{display:none}.intro-grid{grid-template-columns:1fr}}@media(max-width:650px){:root{--t-body:16px;--t-h2:26px;--s-8:48px}.book{padding:var(--s-4)}.lead{font-size:18px}.readmap{grid-template-columns:1fr 1fr}.flow{flex-direction:column}.arrow{transform:rotate(90deg);line-height:1.1}.stage-panels,.glossary{grid-template-columns:1fr}.fields{grid-template-columns:1fr;gap:var(--s-1)}.fields dd{margin-bottom:var(--s-3)}.frame{padding:var(--s-3)}th,td{min-width:160px}.detail-body{padding-left:0}.stage-title{gap:var(--s-3)}dialog{padding:var(--s-4)}}@media print{.toc,.toolbar,button,.stages-nav{display:none}.book{display:block;padding:0}.frame,.table-wrap{overflow:visible}details{break-inside:avoid}body{font-size:12px}.dag{min-width:0}section{margin-top:30px}}
+.dag{min-width:1200px}.stage-panels{grid-template-columns:repeat(2,minmax(0,1fr))}.stage-panels>div{min-width:0;overflow-wrap:anywhere}.book,.toc,.note,.readmap>div{min-width:0;overflow-wrap:anywhere}@media(max-width:650px){.stage-panels{grid-template-columns:minmax(0,1fr)}}
+</style></head><body>
+<div class="book"><nav class="toc" aria-label="阅读目录"><div class="edition">STUDYAGENT / 技术说明册<br>RAG · 2026.10.18</div><a href="#meaning">先理解 RAG 做什么</a><a href="#chains">四条工作链路</a><a href="#modules">模块与代码职责</a><a href="#stages">S0—S6 阶段详解</a><a href="#dependencies">依赖与验收门</a><a href="#tasks">T00—T14 工作包</a><a href="#next">阻塞与并发推进</a><a href="#terms">中文术语表</a><a href="#sources">证据与阅读边界</a><small>本页只解释现状。<br>所有交互均在本地运行。<br>点击“证据”可查看来源行号。</small></nav>
+<main><header id="meaning"><p class="eyebrow">从资料，到检索，再到教学使用</p><h1>当前 RAG：<br>让教学回答有书可查，<br>还需完成真实闭环。</h1><p class="lead">RAG 是“检索增强生成”：先从资料里找与问题相关的内容，再把找到的证据交给模型。当前仓库已有提取、切块、存储和检索等实现；<strong>真实单书摄入、20 题基线、在线 Tutor 消费证据，仍须分别验收。</strong></p>
+<figure data-ref="rag-intuition"><div class="frame"><div class="flow" role="img" aria-label="一本书先加工成可检索索引，用户问题检索授权证据，证据再进入教学；最后一段当前仍待接线验收"><div class="step" data-ref="ingestion"><b>一本书</b><small>提取正文 → 切成片段<br>正文片段转向量并写入索引</small></div><span class="arrow" aria-hidden="true">→</span><div class="step" data-ref="retrieval"><b>用户的问题</b><small>查找相近片段<br>按用户权限筛出证据</small></div><span class="arrow" aria-hidden="true">→</span><div class="step pending" data-ref="online"><b>有依据的教学</b><small>规划目标：Tutor 使用当前轮证据<br>默认在线接线与真实消费尚待验收</small></div></div></div><figcaption><span class="fig-n">图 1</span>RAG 不是把整本书塞给模型；它先找证据，再要求教学环节正确使用。虚线框表示尚待完成的在线闭环。</figcaption></figure>
+<div class="intro-grid"><div><h3>为什么教学系统需要它？</h3><p>用户可能问一本指定书的概念、论证或原文依据。模型自身知识无法证明回答来自这本书。RAG 把“从哪里找到的内容”作为可检查的输入，让教师 Agent 有机会结合教材解释，而不只依赖模型记忆。</p><p>贯穿例子：把一本 EPUB 用于回答，先提取和切块，再生成向量、写入索引、生成证明、跑 20 题检索，最后把当前轮证据交给 Tutor。前半已有基础代码；runner、强准入和线上闭环尚待接线；真实验收尚未完成。</p><p>但“找到了相关片段”还不等于“解释正确”。系统还必须处理权限、检索失败、错轮证据，以及模型是否实际消费了证据。这些正是当前修订计划要补齐的闭环。</p></div><aside class="note"><h3>先记住三个判断层次</h3><p><b>代码存在</b>：仓库能找到实现。</p><p><b>受控回归通过</b>：用指定测试证明边界行为。</p><p><b>真实验收通过</b>：用真实资产、真实依赖与可追溯证据验证完整链路。三者不能互相替代。</p></aside></div><div class="readmap"><div><b>看链路</b><small>数据怎样流动，谁处理输入输出</small></div><div><b>看阶段</b><small>先补可信性，再做真实运行</small></div><div><b>看依赖</b><small>哪些必须等待，哪些可以并行</small></div><div><b>看证据</b><small>每个结论追到文件与行号</small></div></div></header>
+<section id="boundaries"><p class="kicker">现状边界</p><h2>已经有组件，还没有可宣称完成的 MVP</h2><div id="boundary-content"></div></section>
+<section id="chains"><p class="kicker">工作机制</p><h2>四条链路分别回答四个问题</h2><p>摄入解决“书怎样进入索引”，检索解决“问题怎样找到证据”，离线评测解决“检索质量与故障怎样被量化”，在线教学解决“证据怎样真正影响这一轮回答”。它们共享产品检索主链，但产物和验收职责不同。</p><div id="chains-content"></div></section>
+<section id="modules"><p class="kicker">模块边界</p><h2>按职责读代码，比按文件名猜架构更准确</h2><p>下面只描述当前核实过的模块。接口存在不代表生产资源可用；规划目标会在详细说明里单独标出。</p><div class="toolbar"><label for="search">查模块或任务</label><input id="search" type="search" placeholder="例如 embedding、T08、权限、评测" autocomplete="off"><button id="expand-all" type="button">展开全部详情</button><button id="collapse-all" type="button">收起全部详情</button></div><p id="search-status" class="meta" aria-live="polite"></p><div id="modules-content" class="details-list"></div></section>
+<section id="stages"><p class="kicker">本轮修订顺序</p><h2>S0—S6 不是七个文件夹，而是七种交付结果</h2><p>采用 2026-10-15 修订方案的阶段编号；旧材料中的 Phase 仅作历史对照。每阶段分别列出实现基线、已完成、剩余、输入输出和验收条件，避免把计划清单当作完成清单。</p><div class="stages-nav" id="stage-nav" aria-label="阶段跳转"></div><div id="stages-content"></div></section>
+<section id="dependencies"><p class="kicker">先后与并行</p><h2>实线是硬前置，虚线是资源交接或推荐顺序</h2><p>G1—G6 是验收门，代表下游能否被放行。当前六道正式验收门尚未放行；G1 是可信性集成回归门，可用离线证据验收。依赖满足后仍要检查资源与写入权，不能只看箭头就启动正式任务。</p><div id="dag-content"></div></section>
+<section id="tasks"><p class="kicker">执行颗粒度</p><h2>T00—T14 把阶段拆成可交接的工作包</h2><p>S 编号讲“阶段结果”，T 编号讲“谁交付哪一包”。同一阶段可横跨多个包；同一个共享契约也会服务多个阶段。</p><div id="tasks-content" class="details-list"></div></section>
+<section id="next"><p class="kicker">如何继续</p><h2>先解除可信性与资源阻塞，再推进真实链路</h2><div id="next-content"></div></section>
+<section id="terms"><p class="kicker">术语不应成为阅读门槛</p><h2>把实现用语翻译成具体工作</h2><dl class="glossary" id="glossary"></dl></section>
+<section id="sources" class="sources"><p class="kicker">可核对的依据</p><h2>证据说明现状，也限定结论</h2><p>本页为 2026-10-18 的静态说明快照。下方来源来自当前代码和规划核查；页面生成过程没有运行数据库、embedding 或正式评测，也没有修改业务计划。历史 547 项测试结果只按历史记录引用，不作为本次新验证。</p><div id="sources-content" class="source-list"></div><details><summary>查看内嵌核查数据（便于离线审阅）</summary><pre id="raw-data" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px"></pre></details></section>
+<footer>阅读顺序：先理解用途与四链路，再看阶段、依赖和工作包。正文的“尚未验收”表示缺少相应完成证据，不自动等于相关代码完全不存在。所有图均为本地 HTML/SVG，无远程脚本、无业务执行。</footer></main></div>
+<dialog id="evidence-dialog" aria-labelledby="evidence-title"><div class="dialog-head"><h3 id="evidence-title">证据</h3><button id="close-evidence" type="button" aria-label="关闭证据">关闭</button></div><p id="evidence-location" class="mono"></p><p><a id="evidence-link" href="#">打开本地相对来源</a></p><pre id="evidence-excerpt"></pre><p class="meta">行号来自本页核查快照；浏览器打开本地 Markdown / Python 文件的方式取决于本机设置。</p></dialog>
+<script id="architecture-data" type="application/json">{
+  "schemaVersion": "rag-architecture-audit-v1",
+  "date": "2026-10-18",
+  "method": "只读源码与文档审计；只写本 JSON。未运行测试、SDK、PG、embedding 或正式验收。行号来自本次工作区源码。",
+  "statusBasis": [
+    {
+      "path": "README.md",
+      "line": 147
+    },
+    {
+      "path": "README.md",
+      "line": 163
+    },
+    {
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 5
+    }
+  ],
+  "modules": [
+    {
+      "id": "extract",
+      "title": "文件提取：把文件变成文本",
+      "plainPurpose": "老基础提取器支持文本、PDF、DOCX；RAG Foundation 增加 EPUB，按书脊顺序抽取章节正文。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/extractors/base.py",
+          "line": 19
+        },
+        {
+          "path": "app/infrastructure/rag/extractors/epub_extractor.py",
+          "line": 106
+        }
+      ],
+      "inputs": [
+        "本机文件路径"
+      ],
+      "outputs": [
+        "纯文本"
+      ],
+      "functions": [
+        {
+          "name": "get_extractor",
+          "purpose": "按扩展名选提取器，不支持时返回 None"
+        },
+        {
+          "name": "EpubExtractor.extract",
+          "purpose": "读取 EPUB 包、按 OPF spine 顺序解析正文"
+        }
+      ],
+      "implemented": [
+        "提取器与工厂代码存在"
+      ],
+      "limitations": [
+        "代码存在不证明正式 EPUB 来源已可用；T01 记录本机路径映射未知",
+        "提取文本与 OCR/代码专用索引分开"
+      ]
+    },
+    {
+      "id": "chunk",
+      "title": "通用切块与稳定身份",
+      "plainPurpose": "将长文规范化、切为带来源的小块，使写库、检索和评测能追踪同一文档。",
+      "files": [
+        {
+          "path": "app/harness/chunking_service.py",
+          "line": 97
+        },
+        {
+          "path": "app/harness/chunking_service.py",
+          "line": 136
+        }
+      ],
+      "inputs": [
+        "文本或结构元素",
+        "namespace、scope、user_id、版本",
+        "chunk_size/overlap/hard_limit"
+      ],
+      "outputs": [
+        "ChunkDocument：content/doc_id/chunk_id/metadata/scope/user_id"
+      ],
+      "functions": [
+        {
+          "name": "compute_doc_id",
+          "purpose": "由导入命名空间与规范化正文生成文档身份"
+        },
+        {
+          "name": "compute_chunk_id",
+          "purpose": "生成块身份"
+        },
+        {
+          "name": "chunk_text / chunk_elements",
+          "purpose": "普通文本切块并保留原子元素及 provenance"
+        }
+      ],
+      "implemented": [
+        "RAG Foundation 已有切块服务与身份协议"
+      ],
+      "limitations": [
+        "这是文本与身份处理，不执行 embedding 或数据库写入"
+      ]
+    },
+    {
+      "id": "ingest",
+      "title": "摄入编排：准备与写入分开",
+      "plainPurpose": "老的单次摄入接口保留；本轮 T02 将提取切块快照与真实写入拆开，避免为证明或重试重复切块。",
+      "files": [
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 129
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 186
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 476
+        }
+      ],
+      "inputs": [
+        "文件路径与权限",
+        "切块策略",
+        "RAGCoordinator"
+      ],
+      "outputs": [
+        "PreparedIngestion 不可变快照",
+        "无正文 manifest/摘要",
+        "IngestResult 写入确认"
+      ],
+      "functions": [
+        {
+          "name": "prepare_file",
+          "purpose": "校验参数、提取一次、切块一次、验证源文件哈希未变化；不调用 embedding 或写库"
+        },
+        {
+          "name": "ingest_prepared",
+          "purpose": "校验快照并恰好调用一次 index_documents，区分 ok 与 index_unconfirmed"
+        },
+        {
+          "name": "ingest_file",
+          "purpose": "兼容入口，组合准备和写入"
+        }
+      ],
+      "implemented": [
+        "T02 快照冻结、摘要、provenance 一致性检查已存在"
+      ],
+      "limitations": [
+        "不包含正式运行意图持久化、恢复调度、完整 T08 runner",
+        "index_unconfirmed 的 0 不代表已确认零写入",
+        "/api/knowledge 仅元数据 CRUD，未接此文件摄入服务"
+      ]
+    },
+    {
+      "id": "embedding",
+      "title": "Embedding：文本转换为向量",
+      "plainPurpose": "原有统一 SDK 向量服务；T02 增加响应数量与 index 校验，按输入顺序恢复结果。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/embedding.py",
+          "line": 17
+        },
+        {
+          "path": "app/infrastructure/rag/embedding.py",
+          "line": 66
+        }
+      ],
+      "inputs": [
+        "单条或批量文本",
+        "模型、端点、key、配置维度"
+      ],
+      "outputs": [
+        "按输入顺序排列的向量"
+      ],
+      "functions": [
+        {
+          "name": "embed_one",
+          "purpose": "单条转换，空文本给零向量"
+        },
+        {
+          "name": "embed_many",
+          "purpose": "每批最多 10 条；检查 SDK 响应数量、索引范围及重复索引"
+        }
+      ],
+      "implemented": [
+        "实例绑定维度、SDK 懒加载、空文本位置恢复"
+      ],
+      "limitations": [
+        "配置维度不是服务真实维度验收",
+        "此审计未构造 SDK 或访问远端服务"
+      ]
+    },
+    {
+      "id": "vector",
+      "title": "向量库 Provider：写入与相似度查询",
+      "plainPurpose": "旧基础设施中的真实 PG 路径负责向量持久化与近邻查询；本轮 T02 强化写前完整向量校验。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 75
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 172
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 271
+        }
+      ],
+      "inputs": [
+        "ChunkDocument 批次",
+        "query/top_k/VisibilityContext"
+      ],
+      "outputs": [
+        "commit 后写入条数",
+        "带 score 与 provenance 的 Chunk 列表"
+      ],
+      "functions": [
+        {
+          "name": "index",
+          "purpose": "检查数量、维度、有限数值后才连接数据库；整个批次 commit，异常尝试 rollback"
+        },
+        {
+          "name": "search",
+          "purpose": "PG 用余弦距离排序，score=1/(1+distance)；授权 SQL 过滤先于排序与 LIMIT"
+        },
+        {
+          "name": "dialect_name",
+          "purpose": "只解析 URL 的数据库类型，不验证可达性"
+        }
+      ],
+      "implemented": [
+        "PG/pgvector 分支与 SQLite 测试分支均存在"
+      ],
+      "limitations": [
+        "SQLite 用字符重叠，不能代替真实向量服务验收",
+        "现有实现为 INSERT，不应宣称幂等 upsert 或自动恢复",
+        "真实 PG 事务、维度与权限尚未由本次审计验证"
+      ]
+    },
+    {
+      "id": "coordinator",
+      "title": "检索协调器与多源基础",
+      "plainPurpose": "统一管理 vector/OCR/code Provider，去重排序并保留故障语义。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 79
+        },
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 142
+        },
+        {
+          "path": "app/infrastructure/rag/ocr.py",
+          "line": 11
+        },
+        {
+          "path": "app/infrastructure/rag/code_index.py",
+          "line": 15
+        },
+        {
+          "path": "app/infrastructure/rag/store.py",
+          "line": 43
+        }
+      ],
+      "inputs": [
+        "query、sources、top_k、visibility"
+      ],
+      "outputs": [
+        "SearchResult：chunks/outcome/attempted/failed/error_code"
+      ],
+      "functions": [
+        {
+          "name": "search",
+          "purpose": "聚合多源，按相同 content 去重并按 score 排序；受限检索仅允许 vector"
+        },
+        {
+          "name": "index_documents",
+          "purpose": "向指定 Provider 写入并透传确认条数，缺失或未确认返回 None"
+        },
+        {
+          "name": "register_provider",
+          "purpose": "显式注册 OCR/代码索引等后端"
+        }
+      ],
+      "implemented": [
+        "已有多 Provider 协议、fake 字符匹配、PG Provider",
+        "OCR 可选 pytesseract；代码索引以 Python AST 提取符号"
+      ],
+      "limitations": [
+        "OCR/code 使用内存 FakeRAGStore，未默认装入在线链",
+        "受限路径拒绝非 vector",
+        "RAGStore 的 LlamaIndex 外壳仍返回空列表，不应宣称已实现 LlamaIndex/Chroma 生产链"
+      ]
+    },
+    {
+      "id": "retriever",
+      "title": "Retriever：事件接口与离线评测入口",
+      "plainPurpose": "将协作环检索动作转换为证据或安全失败事件；evaluate 为离线测量提供一次检索多项指标。",
+      "files": [
+        {
+          "path": "app/agents/retriever.py",
+          "line": 174
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 231
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 274
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 331
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 130
+        }
+      ],
+      "inputs": [
+        "ActionRequested(target=retriever)",
+        "可信 ws.user_id 与 visibility",
+        "离线 query/golden_chunks/golden_answer/top_k"
+      ],
+      "outputs": [
+        "RetrievedEvidence / RetrievalFailed",
+        "稳定评测结构与 recall@1/3/5、precision proxy、冗余度、judge 可用性"
+      ],
+      "functions": [
+        {
+          "name": "handle",
+          "purpose": "验证检索请求并绑定受限请求身份到可信会话"
+        },
+        {
+          "name": "_do_retrieve_and_emit",
+          "purpose": "区分 ok/empty/degraded/failed；低分是 quality=low，不是失败"
+        },
+        {
+          "name": "evaluate",
+          "purpose": "一次 search 计算多 k 机械指标，可选调用 RAGAS，非法或不可用 judge 保留 null 与降级原因"
+        }
+      ],
+      "implemented": [
+        "基础事件检索已有；T03 增加稳定状态、单次多 k、judge 分数边界检查"
+      ],
+      "limitations": [
+        "离线 evaluate 未传 visibility，不能当作在线用户权限验证",
+        "机械召回采用文本包含匹配，是 proxy",
+        "RAGAS response 使用 golden_answer，不是在线 Tutor 回答质量验收"
+      ]
+    },
+    {
+      "id": "proof",
+      "title": "身份与摄入证明：纯数据核验",
+      "plainPurpose": "T04 将 embedding 配置身份、预期清单、摄入结果和数据库快照交叉核对，避免仅凭写入计数声称可信。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/embedding_identity.py",
+          "line": 48
+        },
+        {
+          "path": "app/infrastructure/rag/embedding_identity.py",
+          "line": 74
+        },
+        {
+          "path": "app/harness/ingestion_attestation.py",
+          "line": 420
+        },
+        {
+          "path": "app/harness/ingestion_attestation.py",
+          "line": 622
+        },
+        {
+          "path": "app/infrastructure/rag/contracts.py",
+          "line": 303
+        }
+      ],
+      "inputs": [
+        "EmbeddingBinding 与服务配置",
+        "intent/manifest/IngestResult/IndexSnapshot",
+        "独立 AttestationExpectation"
+      ],
+      "outputs": [
+        "公开 embedding 身份/指纹",
+        "完整成功证明或 ContractCheck 分类失败"
+      ],
+      "functions": [
+        {
+          "name": "describe_embedding",
+          "purpose": "读取并复核配置与绑定端点，可初始化 SDK 对象但不调用 embedding 网络接口"
+        },
+        {
+          "name": "fingerprint_embedding",
+          "purpose": "对规范化公开身份生成摘要"
+        },
+        {
+          "name": "build_attestation",
+          "purpose": "交叉核验意图、结果、身份与快照后构造成功证明"
+        },
+        {
+          "name": "validate_attestation",
+          "purpose": "依据独立预期与完整快照验证证明"
+        }
+      ],
+      "implemented": [
+        "T04 数据契约、身份、证明构造和核验函数存在"
+      ],
+      "limitations": [
+        "不会自行连接 PG 读取快照或持久化 intent",
+        "不等于 T08 的摄入/提交后恢复 runner 已实现",
+        "当前 RAG-D 准入仍未调用这套完整核验，T09 正式接线待做",
+        "alias_unpinned 表示未绑定独立模型版本"
+      ]
+    },
+    {
+      "id": "baseline",
+      "title": "RAG-D：只读产品基线工具",
+      "plainPurpose": "以固定资产与题目检验产品 Retriever，拒绝假后端；T03 增加完整执行计数和基础设施失败状态。",
+      "files": [
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 105
+        },
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 211
+        },
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 273
+        }
+      ],
+      "inputs": [
+        "manifest/corpus/questions",
+        "RetrieverAgent、settings",
+        "attestation 与 corpus_isolation"
+      ],
+      "outputs": [
+        "blocked / infrastructure_inconclusive / completed(_judge_degraded) 报告",
+        "expected/attempted/valid/failed/not_run 计数"
+      ],
+      "functions": [
+        {
+          "name": "validate_assets",
+          "purpose": "核验资产、哈希与人工 verified 的题目"
+        },
+        {
+          "name": "validate_admission",
+          "purpose": "检查 backend/provider/dialect/provider-set 及旧证明和隔离结构"
+        },
+        {
+          "name": "run_baseline",
+          "purpose": "每题调用一次 evaluate，基础设施失败即停止并报告未执行数"
+        }
+      ],
+      "implemented": [
+        "只读 baseline 工具与计数存在"
+      ],
+      "limitations": [
+        "不能把工具存在或本地测试通过称为正式 baseline 完成",
+        "当前 admission 仍为旧字段检查，未接完整 T04 证明、真实快照与独立身份绑定",
+        "T01 记录 corpus 缺失、EPUB 本机路径未解析、可信环境登记未知"
+      ]
+    },
+    {
+      "id": "online",
+      "title": "在线消费：已校验装配，证据到 Tutor 仍有断点",
+      "plainPurpose": "chat 与 SSE 显式装配 PG 检索链并拒绝 fake/SQLite，但这只保证选择正确后端，不保证真实服务可用或教学回答已消费证据。",
+      "files": [
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 147
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 171
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 185
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 200
+        },
+        {
+          "path": "app/api/chat.py",
+          "line": 36
+        },
+        {
+          "path": "app/api/chat_stream.py",
+          "line": 50
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 74
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 87
+        },
+        {
+          "path": "app/harness/workspace_state.py",
+          "line": 20
+        }
+      ],
+      "inputs": [
+        "JWT 会话用户",
+        "用户消息、topic",
+        "PG Provider"
+      ],
+      "outputs": [
+        "协作环事件、reply、mastery、持久化会话结果"
+      ],
+      "functions": [
+        {
+          "name": "validate_online_rag_composition",
+          "purpose": "验证 rag_backend=pgvector、实际 Provider 类型、URL dialect=postgresql；不探测网络"
+        },
+        {
+          "name": "run_online_agent_session",
+          "purpose": "校验后将显式 Retriever 注入五 Agent 协作环"
+        },
+        {
+          "name": "TutorAgent._ask / _explain",
+          "purpose": "当前 prompt 主要传 topic/模式，没有把检索 chunks 注入生成上下文"
+        }
+      ],
+      "implemented": [
+        "在线装配与 fail-fast 已有",
+        "assembly 初始种子是用户消息、主题和 Tutor 提问，不是预检索动作"
+      ],
+      "limitations": [
+        "evidence_pool 仍为占位字段，不能仅因字段存在宣称在线证据消费完成",
+        "缺少 evidence→Tutor 选择、关联、注入与闭环验收",
+        "真实 PostgreSQL + embedding + 正式摄入 + 在线回答尚未联合验收"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "title": "入库链路",
+      "steps": [
+        "文件 → extractor 纯文本",
+        "prepare_file → ChunkingService → 冻结 documents 与无正文 manifest",
+        "ingest_prepared → Coordinator.index_documents → PgVectorProvider.index",
+        "embed_many → 全批向量检查 → INSERT → commit → IngestResult",
+        "未来 T08：受控运行意图、真实快照与提交后恢复；目前只有 T04 证明函数可供接线"
+      ],
+      "evidence": [
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 186
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 476
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "title": "检索链路",
+      "steps": [
+        "ActionRequested(target=retriever) → 入口参数与可信身份校验",
+        "Coordinator.search → 受限请求仅 vector",
+        "Provider：global 无主或 private 本人 → PG 向量距离 → top_k",
+        "Coordinator 去重聚合 → Retriever 产证据或安全失败事件"
+      ],
+      "evidence": [
+        {
+          "path": "app/agents/retriever.py",
+          "line": 186
+        },
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 142
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 172
+        }
+      ]
+    },
+    {
+      "title": "离线评测链路",
+      "steps": [
+        "validate_assets → 资产及 verified 题目校验",
+        "validate_admission → 当前旧准入检查",
+        "run_baseline → 每题一次 Retriever.evaluate",
+        "一次 search → recall@1/3/5 与其他机械 proxy → 可选 RAGAS judge",
+        "报告执行计数和降级；正式 T09 强准入接线与真实20题产品基线仍待完成"
+      ],
+      "evidence": [
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 273
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 331
+        }
+      ]
+    },
+    {
+      "title": "在线教学消费链路",
+      "steps": [
+        "chat/SSE → run_online_agent_session",
+        "配置/Provider/dialect 三项校验 → 注入 Retriever",
+        "五 Agent 协作环：事件驱动调度",
+        "当前 Tutor 生成仍使用 topic/模式 prompt；检索证据到生成上下文的连接未完成",
+        "因此在线后端装配完成 ≠ 在线 RAG 教学闭环验收"
+      ],
+      "evidence": [
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 185
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 87
+        },
+        {
+          "path": "README.md",
+          "line": 147
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "RAG",
+      "meaning": "先检索相关资料，再让生成模型消费证据；只有检索代码不等于完整 RAG 闭环"
+    },
+    {
+      "term": "Provider",
+      "meaning": "检索/索引后端协议实现；vector、OCR、code 是不同来源"
+    },
+    {
+      "term": "embedding",
+      "meaning": "文本对应的数值向量；模型、维度、部署与版本影响向量可比性"
+    },
+    {
+      "term": "provenance",
+      "meaning": "文档/块身份、来源位置、版本与哈希等可追踪信息"
+    },
+    {
+      "term": "attestation",
+      "meaning": "把意图、清单、写入结果、身份和独立快照绑定的摄入证明；纯数据核验不能自行证明外部服务事实"
+    },
+    {
+      "term": "baseline",
+      "meaning": "在固定真实产品索引和可信资产上执行的检索基线；fake/SQLite 测试不能替代"
+    },
+    {
+      "term": "judge_degraded",
+      "meaning": "语义评委分数部分不可用，机械检索结果仍可记录；缺失分数保留 null"
+    },
+    {
+      "term": "T02/T03/T04",
+      "meaning": "本轮已落地的摄入可信性、评测可信性与纯证明契约增强"
+    },
+    {
+      "term": "T05/T08/T09",
+      "meaning": "迁移目标守卫、正式摄入恢复、正式准入报告执行包；当前 README 明示仍为计划与待修订状态"
+    }
+  ]
+}</script><script id="stages-data" type="application/json">{
+  "schemaVersion": "rag-stages-audit-v1",
+  "auditDate": "2026-10-18",
+  "language": "zh-CN",
+  "title": "RAG MVP阶段、任务与正式门证据核对",
+  "auditScope": "10月18日仅重新读取当前仓库文档及少量代码入口，未重新验证环境、依赖、资产、测试、PG、embedding、迁移或正式baseline。",
+  "summary": "T00契约已冻结；T01盘点覆盖完成但资源blocked；T02/T03/T04代码存在并有历史离线验收。T05/T08/T09计划9项待修，T06/T10及真实运行包尚缺独立plan。正式G1至G6均未通过。",
+  "progressCaveat": "0/6是正式门证据通过数，不是项目完成度0%；不按工作包数量估算百分比。547 passed、1 deselected仅2026-10-16历史离线结果，不能当本次验证或真实环境证据。",
+  "contract": {
+    "version": "rag-mvp-contracts-v1.0.1",
+    "declaredSha256": "31379383758b82c82d5fe583f371e590f4b187ad0371744edcef635743b41f95",
+    "evidence": [
+      {
+        "path": "superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md",
+        "line": 85,
+        "endLine": 85
+      },
+      {
+        "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+        "line": 222,
+        "endLine": 238
+      }
+    ]
+  },
+  "phases": [
+    {
+      "id": "S0",
+      "name": "最小契约与问题归档",
+      "originalHeading": "S0：最小契约与问题归档（原 Phase 0）",
+      "goal": [
+        "S0-01 将 R01～R27 映射到原 BLK、任务、执行责任及验收材料位置，逐项区分缺陷/待实现/环境未知/后置。",
+        "S0-02 归档 C §F/§G 与 §H 投影/citation；当前v1.0.1已冻结为5块、单块2000、正文总6000字符、5引用（原raw待确认措辞属于历史）。",
+        "S0-03 确认 E1～E4 的报告、证明、隔离及错误契约；批准后再更新对应 spec，注明本 raw 文件与原 DEC 来源。",
+        "S0-04 只读盘点 PG/embedding/本地书籍与 corpus 可用性，不打印密钥；记录当前测试/CI 条件。",
+        "S0-05 修正立即影响派工的状态/链接，补交接安排；非阻断历史格式清理随阶段完成。",
+        "S0-06 确认无密钥 embedding 配置指纹、模型/部署及参数绑定规则；确认 Alembic 使用 fixture 已预检连接的唯一注入路径，禁止测试迁移静默回退 settings。",
+        "S0-07 确认完整 20 题放行不变量、逐指标 judge 有效性规则、产品预计划接口及提交后只读恢复契约，不把失败尝试报告视为取得基线。"
+      ],
+      "implementationBaseline": "共享 DEC 已冻结；review 已逐项核验；有原三层总规划，A 提取器等无需重做。",
+      "completed": [
+        "T00共享契约v1.0.1冻结及勘误完成；T01只读盘点覆盖完成，资源就绪blocked。"
+      ],
+      "remaining": [
+        "补齐可信资源、合法本机EPUB与corpus、解释器/依赖同步方案；持续维护问题映射与交接。"
+      ],
+      "entry": "已确认MVP方案，按DAG硬前置推进；包级实现须独立三层plan及审阅。",
+      "exit": "门 G0：执行包范围和候选字段经用户确认；环境缺口有明确记录。不以文档数量代替确认，也不在这一步启动业务编码。 G0是设计/范围确认与资源缺口归档条件，不计入六个正式门；T00冻结和T01 covered不意味着S0所有清单已逐项完成。",
+      "tasks": [
+        "T00",
+        "T01"
+      ],
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 75,
+          "endLine": 90
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        },
+        {
+          "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+          "line": 189,
+          "endLine": 197
+        }
+      ],
+      "inputs": [
+        "冻结DEC、实际代码、review核验、历史三层规划",
+        "T01资产及环境来源声明与观察"
+      ],
+      "outputs": [
+        "版本化共享契约、问题映射、独立执行包与资源缺口账本"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。",
+      "rawChecklistCaveat": "goal保留raw原清单的历史设计措辞；当前跨任务字段以已冻结v1.0.1为准。S0-02投影5块/每块2000/总6000字符/5引用已冻结，不再是待确认候选；其余清单不得因此全勾。"
+    },
+    {
+      "id": "S1",
+      "name": "修复可信性底座",
+      "originalHeading": "S1：修复可信性底座（原 Phase 2 + D 工具补修）",
+      "goal": [
+        "S1-01 对 provider embedding 数量、维度作边界验证，修复虚假成功计数，补服务贯通回归；不先重构整个 embedding 模块。",
+        "S1-02 evaluate 保留检索 outcome、分类码、来源与检索耗时；runner 区分成功空结果、基础设施失败、部分来源失败及 judge 降级。",
+        "S1-03 补齐版本化证明消费校验，拒绝空 ID/版本、bool/None/负计数及错误 owner；隔离声明需绑定实际目标和可核验产物证据。",
+        "S1-04 从单次 top-5 派生 Recall@1/3/5，旧 recall_at_k 保留；mechanical context-precision proxy 不被 RAGAS 同名值覆盖。",
+        "S1-05 日志关联与歧义行审计设计落地；在线尚无 seed 时先用带 ID 请求测试，S5 再接真实生成路径。补已有错误类别的准确映射，不新建全套错误系统。",
+        "S1-06 将复现变成必要回归，跑相关测试和检查；记录结果及已知 CI 阻断。",
+        "S1-07 强化正式题集 validator 与完成计数断言：恰有 20 个唯一非空题 ID，全部 verified_v1 且 gold 合法；全 draft、部分未验证、重复/空 ID 均不得进入正式评测。",
+        "S1-08 对 judge 每项分数校验存在性、数值类型、有限性与已确认范围；部分缺失、NaN、Infinity 均标记相应 enrichment 不可用并降级；报告输出严格 JSON，不以 0 代替缺失分数。"
+      ],
+      "implementationBaseline": "正常写入、权限过滤、五态 SearchResult、部分安全日志、单 k 评测与 runner 已存在；99 项定向测试为既有证据，不覆盖新增复现。",
+      "completed": [
+        "T02/T03/T04实现、定向复审、用户确认及历史组合离线验收完成。"
+      ],
+      "remaining": [
+        "T09正式准入/报告接入与T10日志审计尚未实施，不能把三包离线验收等同G1。"
+      ],
+      "entry": "参见对应tasks硬前置；可以契约替身提前设计/离线实现，不能提前完成真实里程碑。",
+      "exit": "门 G1：两文档一 embedding 不可能成功；数据库失败或零题执行不标 completed/completed_judge_degraded；无效证明/未完整验证题集不能准入；两种排名输出不同 Recall@1；无效 judge 分数不伪装有效值且 JSON 无非有限值；日志可关联且无正文/密钥泄露。全量测试通过不替代这些行为断言。",
+      "tasks": [
+        "T02",
+        "T03",
+        "T04",
+        "T09",
+        "T10"
+      ],
+      "status": "partial",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 91,
+          "endLine": 107
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "docs/embeddings/SearchResult、冻结共享证明/身份/评测契约"
+      ],
+      "outputs": [
+        "可信写入确认、稳定评测信封、多k指标、严格准入消费与安全关联诊断"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    },
+    {
+      "id": "S2",
+      "name": "正式 schema 与真实环境",
+      "originalHeading": "S2：正式 schema 与真实环境（原 I-01/F-01）",
+      "goal": [
+        "S2-01 fixture 复用正式迁移/schema；由显式测试配置打开并预检实际连接，经 Alembic connection 属性传入 env.py 的独立分支。测试路径缺失注入即失败，不允许 settings URL 回退；DDL/清理前核对数据库/schema/资源标识，确保测试目标不同于业务/基线目标。",
+        "S2-02 从干净测试 PG 跑正式迁移，核对扩展、字段、实际 provider/dialect、embedding 维度与当前表一致，并记录实际 embedding 配置/指纹而非只读维度。",
+        "S2-03 测试 PG 中途写入失败 rollback、正常写入实数、doc/chunk/locator 往返。",
+        "S2-04 在权限测试库执行两用户、公共、私有、歧义及排序前过滤对抗；产出可追溯证据。",
+        "S2-05 新增 settings 指向 A、fixture 指向 B 的对抗用例；迁移与清理只允许 B 发生变化，A 不执行 DDL/DML。错误库/schema、缺少资源标识或连接注入均在变更前拒绝。"
+      ],
+      "implementationBaseline": "SQLite 正式 7 步迁移及回程已有验证，PG 待实测，provider fixture 仍分叉。",
+      "completed": [
+        "SQLite正式迁移历史验证可复用；真实PG尚无完成证据。"
+      ],
+      "remaining": [
+        "修订T05三项P1，完成独立计划确认后实现；T07待G1、T05及资源条件齐备后真实验证。"
+      ],
+      "entry": "参见对应tasks硬前置；可以契约替身提前设计/离线实现，不能提前完成真实里程碑。",
+      "exit": "门 G2：迁移目标传递与变更前预检成立，真实 PG 迁移/embedding/事务/过滤通过；不可用标基础设施未确认，禁止 fake 代验。环境受阻时可继续不依赖真实库的 S5 实现与测试，但不得勾选真实里程碑。",
+      "tasks": [
+        "T05",
+        "T07"
+      ],
+      "status": "not_accepted",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 108,
+          "endLine": 119
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "T05守卫实现、G1集成证据、T01可信独立测试资源与embedding来源"
+      ],
+      "outputs": [
+        "正式schema fixture及实际PG迁移/向量/事务/权限验证证据（G2）"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    },
+    {
+      "id": "S3",
+      "name": "正式摄入与产品证明",
+      "originalHeading": "S3：正式摄入与产品证明（原 F-02～F-06）",
+      "goal": [
+        "S3-01 真实 EPUB hash/内容检查；固定 namespace、normalizer、chunk policy 版本，不擅自调参。",
+        "S3-02 通过产品 service 准备计划，写库前持久化无正文运行意图、计划清单、目标为空的前态及 embedding 指纹；本目标独占且未决 run 不允许另一摄入。随后同一准备结果写入一次，从实际库核对数量和完整产物，不靠 docs 长度推断。",
+        "S3-03 输出成功证明或非成功运行记录；校验库目标、版本、scope/owner、输入 SHA 和实际 embedding 指纹，一致后才放行。",
+        "S3-04 检索回读身份、正文和实际 locator；记录纯文本路径的定位限制。",
+        "S3-05 保存隔离证据并验证 gate 消费；提交后证明未落盘时，以预先落盘的意图/计划/空库前态执行只读恢复；完整数量、多重身份、内容摘要、scope/owner 及目标/配置全部吻合才补写证明，不再次 index。无意图、非空前态、并发写入或不一致时保持未准入并交人工处置。",
+        "S3-06 覆盖提交成功后、证明落盘前退出的恢复验收；覆盖无清单、重复行、部分行、错目标和模型指纹不符时不能补证或自动重导。"
+      ],
+      "implementationBaseline": "Extractor、ChunkingService、KnowledgeIngestionService 已有；完整证明生成与首本书真实兼容尚未验收。",
+      "completed": [
+        "已有Extractor/Chunking/KnowledgeIngestion；T02准备/写入分离和T04纯证明接口已离线验收。"
+      ],
+      "remaining": [
+        "修订T08四项问题并完成runner/恢复；待G2后由T11执行唯一正式摄入和产品证明。"
+      ],
+      "entry": "参见对应tasks硬前置；可以契约替身提前设计/离线实现，不能提前完成真实里程碑。",
+      "exit": "门 G3：真实索引与成功 JSON 证明及 embedding 指纹一致；预意图/计划和提交后恢复路径可验证；基线资源没有权限对抗样本或其他书产物；append-only 边界明确。目标文件缺失/解析空串/写入未确认或恢复不唯一均不能产生成功证明。",
+      "tasks": [
+        "T08",
+        "T11"
+      ],
+      "status": "not_accepted",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 120,
+          "endLine": 132
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "G2真实环境、T08 runner、合法本机EPUB、固定策略与独占空目标"
+      ],
+      "outputs": [
+        "预意图/计划、真实产品产物多重清单、成功证明或非成功记录、只读恢复证据（G3）"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    },
+    {
+      "id": "S4",
+      "name": "20 题真实检索基线",
+      "originalHeading": "S4：20 题真实检索基线（原 Phase 5）",
+      "goal": [
+        "S4-01 正式题集恰有 20 个非空唯一题 ID、全部 verified_v1 且 gold 校验通过；validator 与六项 gate 全绿，provider 集合严格 vector-only；运行前比较实际目标、清单和查询 embedding 指纹，无漂移才开始。",
+        "S4-02 每题 evaluate/检索至多一次，单次 top-5 派生多 k，保存题 ID、指标、耗时、来源与安全状态。",
+        "S4-03 真正检索基础设施失败时保留已运行结果，报告 inconclusive/未跑数，不重试或当零召回平均；成功 empty 可记有效零召回。",
+        "S4-04 judge 不可用、部分缺失/无效分数仅影响对应 enrichment；无效项写 null 与安全原因，不能填有效 0，健康检索机械指标保留，完整 20 题健康执行时才可标 completed_judge_degraded。",
+        "S4-05 人工复核零召回、高冗余和混源迹象，区分 proxy 局限、内容缺失与检索问题；写首次基线报告。"
+      ],
+      "implementationBaseline": "20 题资产和只读工具存在，正式分数未产出；需消费 S1 修复与 S3 证明。",
+      "completed": [
+        "T03同次多k、20题计数、故障停止与judge校验已离线验收；题集结构盘点完成。"
+      ],
+      "remaining": [
+        "T09两项P1修订与实现；补齐EPUB/corpus后正式validator、20题真实运行及人工复核。"
+      ],
+      "entry": "参见对应tasks硬前置；可以契约替身提前设计/离线实现，不能提前完成真实里程碑。",
+      "exit": "门 G4：正式题集 20 题全部有效执行，且有效题数=20、失败数=0、未跑数=0，题 ID 与已准入集合一一对应，检索配置与成功证明一致，才能以 completed 或 completed_judge_degraded 放行；低召回仍是有效执行，不新增质量阈值。inconclusive、blocked、零调用或部分完成只保留尝试记录，不能放行 G4/G6。报告可审计且为严格 JSON。不能以“分数不高”直接修改策略重跑并挑选最好结果；修复后另编号重跑，不覆盖首次结果。",
+      "tasks": [
+        "T09",
+        "T12"
+      ],
+      "status": "not_accepted",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 133,
+          "endLine": 144
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "G3成功证明、实际隔离索引、实际查询身份、完整合法20题/corpus"
+      ],
+      "outputs": [
+        "同一索引上完整20题raw metrics、严格JSON报告、异常题人工复核（G4）"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    },
+    {
+      "id": "S5",
+      "name": "在线检索证据进入 Tutor",
+      "originalHeading": "S5：在线检索证据进入 Tutor（原 C-12～C-17）",
+      "goal": [
+        "S5-01 认证上下文创建完整 vector-only 检索种子；取消无证据最终 Tutor 抢跑；保真 seed/rule/conductor。",
+        "S5-02 Orchestrator 管理 retrieval_id 状态与屏障；关联 Critic 观察，缺质量观察可继续，重复事件不重复发最终动作。",
+        "S5-03 按确认的 §H 投影，将当前轮正文/来源/状态注入 Tutor；证据是数据，不允许替代控制身份或动作契约。",
+        "S5-04 覆盖五态、低质量与未授权情形的受控回复；不静默回退 fake 或空回复。",
+        "S5-05 sentinel、两连续请求、迟到质量/重复 Tick、跨用户和引用截断验证；普通/SSE 共用核心路径。"
+      ],
+      "implementationBaseline": "两个入口已有真实后端 fail-fast；证据仍未完成在线消费。",
+      "completed": [
+        "既有检索与权限基础存在；当前轮授权证据进入Tutor完整链尚未完成。"
+      ],
+      "remaining": [
+        "T06/T10独立三层计划与实现；T13在G3及相关实现齐备后执行真实双入口、安全/故障验证。"
+      ],
+      "entry": "参见对应tasks硬前置；可以契约替身提前设计/离线实现，不能提前完成真实里程碑。 T06可提前离线实现；G5仍需T13真实当前轮证据消费，不能以T06代替。",
+      "exit": "门 G5：当前问题→检索→受控证据→Tutor 输入的实际关联成立；每个 retrieval 最多一个最终 Tutor 动作；无权限/上轮正文不进入当前生成，全部相关日志能追踪。",
+      "tasks": [
+        "T06",
+        "T10",
+        "T13"
+      ],
+      "status": "not_accepted",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 145,
+          "endLine": 156
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "冻结在线契约、认证上下文、T06离线实现、T10日志和G3真实索引"
+      ],
+      "outputs": [
+        "当前轮授权EvidenceProjection、Tutor实际消费因果链、最多一次最终动作及安全/故障证据（G5）"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    },
+    {
+      "id": "S6",
+      "name": "MVP 联合验收与交接",
+      "originalHeading": "S6：MVP 联合验收与交接（原 Phase 6）",
+      "goal": [
+        "S6-01 使用同一受证明本书索引验证真实普通/SSE 入口，核对本轮实际查询 embedding 配置指纹与摄入证明一致，检查正文与来源实际消费；同维度但模型/部署/参数不同也拒绝旧索引。",
+        "S6-02 真实两用户、多轮与失败路径；区分召回、投影、生成和基础设施失败。",
+        "S6-03 运行相关回归及必要 CI，核对本轮引入问题；更新 README、主清单、交接，状态文件由对应唯一写者回写。",
+        "S6-04 保存本轮证明、基线和验收证据索引，列明 proxy、文件级 locator、append-only 及未定教学质量阈值。"
+      ],
+      "implementationBaseline": "验收设计已有，真实联合证据尚无。",
+      "completed": [
+        "联合验收设计已归档；正式完成证据尚无。"
+      ],
+      "remaining": [
+        "G4/G5后联合回归、必要CI、证据索引与文档交接。"
+      ],
+      "entry": "S6-01/02真实在线验证由T13承接，硬前置G3/T06/T10/T04；T14联合验收须G4/G5。",
+      "exit": "门 G6（MVP 完成）：G1～G5 均有实证，其中 G4 必须是同一受证明索引/配置上的完整 20 题有效基线，不接受失败尝试代替；真实双入口及安全/故障验证通过，文档一致。可声称“单书真实 RAG 教学链路可用并有基线”，不能声称已证明教学效果或达到未定义质量阈值。",
+      "tasks": [
+        "T13",
+        "T14"
+      ],
+      "status": "not_accepted",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 157,
+          "endLine": 167
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 15,
+          "endLine": 29
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 23
+        }
+      ],
+      "inputs": [
+        "同一受证明索引、G4正式基线、G5真实双入口/安全证据"
+      ],
+      "outputs": [
+        "联合回归/必要CI结果、最终证据索引、README/主清单/交接及G6结论"
+      ],
+      "ioProvenance": "基于10月15日raw职责与任务映射作事实概括；当前已完成/未完成另见状态，不把预期输出视为既有产物。"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T00",
+      "scope": "S0-01/02/03/05/06/07；主控",
+      "status": "contract_frozen",
+      "planStatus": "已完成，当前契约v1.0.1",
+      "executionStatus": "仅文档契约完成",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "方案确认"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "固定字段、错误、证明/恢复、embedding指纹、迁移注入和投影契约；同步 spec 引用 raw 来源；本轮确认不需要重复请求同一方案批准",
+      "acceptance": "raw血缘、版本、接口/错误/字段、追溯、自查与独立review完整；只满足G0契约条件。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 70,
+          "endLine": 70
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 9,
+          "endLine": 9
+        }
+      ]
+    },
+    {
+      "id": "T01",
+      "scope": "S0-04；只读资源盘点",
+      "status": "inventory_covered_readiness_blocked",
+      "planStatus": "用户已授权执行",
+      "executionStatus": "盘点覆盖完成；资源就绪blocked，未探测PG/embedding",
+      "resourceReadiness": "blocked",
+      "hardPrerequisites": [
+        "方案确认"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "资产/源SHA可用性、PG/embedding条件、测试/lint现状；不运行写库迁移、不泄露密钥",
+      "acceptance": "盘点覆盖和缺口责任完整即可交付；ready与covered分离，不代替PG/embedding探测。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 71,
+          "endLine": 71
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 10,
+          "endLine": 10
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "scope": "E1 + E3 的 prepare_file/ingest_prepared",
+      "status": "implemented_offline_accepted",
+      "planStatus": "SDK 索引对应已补，文档复核通过",
+      "executionStatus": "实施完成、定向复审及主窗口组合离线回归通过",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "可信写入、准备结果和无正文计划接口；服务贯通用例，默认接口兼容",
+      "acceptance": "短长向量/维度/SDK索引写前拒绝、事务提交计数可信；准备快照不可变、导出前完整校验。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 72,
+          "endLine": 72
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 11,
+          "endLine": 11
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "scope": "E2；S1-02/04/07/08",
+      "status": "implemented_offline_accepted",
+      "planStatus": "judge 汇总一致性已补，文档复核通过",
+      "executionStatus": "实施完成、两轮定向复审及最终组合离线回归通过",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "同次多k、outcome保真、20题不变量、judge逐项校验及严格JSON；不与另一代理同时改评测文件",
+      "acceptance": "五态信封、多k单搜索、20唯一verified、首错停止、judge逐项有效性和严格JSON离线回归。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 73,
+          "endLine": 73
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 12,
+          "endLine": 12
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "scope": "E3 共享schema、指纹与验证纯逻辑",
+      "status": "implemented_offline_accepted",
+      "planStatus": "独立离线与组合回归边界已补，文档复核通过",
+      "executionStatus": "实施完成、定向复审及主窗口组合离线回归通过",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "生产与消费共同调用的证明验证/embedding指纹接口；独立新文件，不抢改 T02 的 embedding.py",
+      "acceptance": "纯类型/摘要/身份/证明拒绝矩阵通过；实际运行的源、目标、隔离与查询身份仍须后续绑定。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 74,
+          "endLine": 74
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 13,
+          "endLine": 13
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "scope": "E4；S2-01/05 的迁移入口与守卫实现",
+      "status": "plan_revision_required",
+      "planStatus": "2026-10-17正式review：3项P1待修订，不可派发",
+      "executionStatus": "未实施",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "env.py 接受已预检连接；A/B目标对抗的离线/受控验证，不宣称真实PG已完成",
+      "acceptance": "A/B仅B变更、漏注入/错目标变更前拒绝、schema解析范围和实例唯一绑定、事务所有权矩阵。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 75,
+          "endLine": 75
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 14,
+          "endLine": 14
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "scope": "E5；S5-01～05 的离线核心",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制",
+      "executionStatus": "未实施",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "按冻结spec文件所有权单写；主会话分配写权。"
+      ],
+      "deliverables": "seed/rule/conductor、Orchestrator、Tutor、Critic、投影及假数据回归；不改 T03 的 retriever.py，不假称真实证据已验收",
+      "acceptance": "seed/rule/conductor保真、当前轮投影、Tick屏障最多一次Tutor动作、五态/重复/迟到/权限离线验证。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 76,
+          "endLine": 76
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 15,
+          "endLine": 15
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "scope": "E4；I-01及S2真实验证",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待G1/T05/T01",
+      "executionStatus": "未执行",
+      "resourceReadiness": "unknown",
+      "hardPrerequisites": [
+        "T05",
+        "T01",
+        "G1"
+      ],
+      "resourceDependencies": [
+        "独占独立测试PG；不得污染业务/基线资源。"
+      ],
+      "deliverables": "fixture消费正式schema、实际PG迁移/维度/事务/权限/identity验证；独立测试资源、无基线污染；包含G2复核",
+      "acceptance": "实际PG正式迁移、扩展/向量/配置、事务rollback、身份/locator往返、两用户/歧义过滤实证，复核G2。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 77,
+          "endLine": 77
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 16,
+          "endLine": 16
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "scope": "E3；S3 runner与恢复实现/受控测试",
+      "status": "plan_revision_required",
+      "planStatus": "2026-10-17正式review：2项P1、2项P2待修订",
+      "executionStatus": "未实施",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T02",
+        "T04"
+      ],
+      "resourceDependencies": [
+        "provider快照接口与T10串行交接；同target writer/基线保护协议需统一。"
+      ],
+      "deliverables": "持久化预意图和计划、写入一次、实际产物核对、提交后只读补证；正式摄入另由 T11 完成",
+      "acceptance": "先持久化可发现占用和意图/计划、写一次、完整多重清单核验、提交后只读补证；缺行/重复/角色不符不成功。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 78,
+          "endLine": 78
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 17,
+          "endLine": 17
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "scope": "E2/E3；S1-03与S4报告消费层",
+      "status": "plan_revision_required",
+      "planStatus": "2026-10-17正式review：2项P1待修订",
+      "executionStatus": "未实施",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T03",
+        "T04"
+      ],
+      "resourceDependencies": [
+        "rag_d.py/test_rag_d.py承接T03；与T08统一保护协议。"
+      ],
+      "deliverables": "benchmark调用共享schema，绑定目标/指纹/隔离证据、完成计数；可用受控输入验证，不造产品证明",
+      "acceptance": "同live provider实际目标、指纹、证明、隔离全绑定；snapshot前保护到baseline finally释放；完整D3及失败计数。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 79,
+          "endLine": 79
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 18,
+          "endLine": 18
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "scope": "E5；S1-05",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待文件写权交接",
+      "executionStatus": "未实施",
+      "resourceReadiness": "not_required_for_offline_scope",
+      "hardPrerequisites": [
+        "T00"
+      ],
+      "resourceDependencies": [
+        "T02释放provider/embedding/ingestion写权；T03释放retriever写权；T08 provider变更须串行。"
+      ],
+      "deliverables": "关联上下文、无正文歧义审计及已有错误归类；写入还受 T02/T03 完成约束",
+      "acceptance": "retrieval上下文贯通、无正文歧义审计、已有错误准确分类、未知异常安全日志、不泄露正文或秘密。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 80,
+          "endLine": 80
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 19,
+          "endLine": 19
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "scope": "S3-01～06真实运行",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待G2/T08",
+      "executionStatus": "未执行",
+      "resourceReadiness": "unknown",
+      "hardPrerequisites": [
+        "G2",
+        "T08"
+      ],
+      "resourceDependencies": [
+        "唯一摄入writer，本书目标/证明目录独占；未决run未处理禁止新run。"
+      ],
+      "deliverables": "本书索引、预意图、产物多重清单、成功证明、恢复验收；包含G3复核，独占目标",
+      "acceptance": "G3：独占空前态、真实源SHA和完整产品产物/成功证明一致、提交后恢复实证、禁止重导冒充恢复。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 81,
+          "endLine": 81
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 20,
+          "endLine": 20
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "scope": "S4-01～05",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待G3/T09",
+      "executionStatus": "未执行",
+      "resourceReadiness": "unknown",
+      "hardPrerequisites": [
+        "G3",
+        "T09"
+      ],
+      "resourceDependencies": [
+        "同一provider连接串行20题，每题至多一次；全程持有target保护。"
+      ],
+      "deliverables": "完整20题一次运行、raw报告、指标与异常题复核；judge可降级，检索失败不能放行G4",
+      "acceptance": "G4：20有效/0失败/0未跑、ID一一对应、同受证明索引和配置、严格JSON及异常题人工复核。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 82,
+          "endLine": 82
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 21,
+          "endLine": 21
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "scope": "E5/E6；S5真实验证、S6-01/02前置",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待G3/T06/T10/T04",
+      "executionStatus": "未执行",
+      "resourceReadiness": "unknown",
+      "hardPrerequisites": [
+        "G3",
+        "T06",
+        "T10",
+        "T04"
+      ],
+      "resourceDependencies": [
+        "T12完成并释放本书资源后推荐执行真实请求；T06文件先交接。"
+      ],
+      "deliverables": "本书查询指纹匹配、普通/SSE、两用户/多轮/重复事件/降级路径；包含G5复核",
+      "acceptance": "G5：真实普通/SSE、查询身份匹配、当前轮授权证据实际进入Tutor、两用户多轮/迟到重复/失败路径。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 83,
+          "endLine": 83
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 22,
+          "endLine": 22
+        }
+      ]
+    },
+    {
+      "id": "T14",
+      "scope": "E6；S6及最终交接",
+      "status": "plan_missing_not_executed",
+      "planStatus": "未编制，等待G4/G5",
+      "executionStatus": "未执行",
+      "resourceReadiness": "unknown",
+      "hardPrerequisites": [
+        "G4",
+        "G5"
+      ],
+      "resourceDependencies": [
+        "主清单/README/批准记录主会话单写。"
+      ],
+      "deliverables": "联合回归、必要CI、证据索引、README/主清单/交接同步；主控核验后G6完成",
+      "acceptance": "G1至G5均有证据、联合回归/必要CI通过、README主清单交接一致，方放行G6。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+          "line": 84,
+          "endLine": 84
+        },
+        {
+          "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+          "line": 23,
+          "endLine": 23
+        }
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "id": "G1",
+      "name": "可信性集成回归",
+      "status": "not_passed",
+      "criteria": "门 G1：两文档一 embedding 不可能成功；数据库失败或零题执行不标 completed/completed_judge_degraded；无效证明/未完整验证题集不能准入；两种排名输出不同 Recall@1；无效 judge 分数不伪装有效值且 JSON 无非有限值；日志可关联且无正文/密钥泄露。全量测试通过不替代这些行为断言。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 106,
+          "endLine": 106
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    },
+    {
+      "id": "G2",
+      "name": "真实环境",
+      "status": "not_passed",
+      "criteria": "门 G2：迁移目标传递与变更前预检成立，真实 PG 迁移/embedding/事务/过滤通过；不可用标基础设施未确认，禁止 fake 代验。环境受阻时可继续不依赖真实库的 S5 实现与测试，但不得勾选真实里程碑。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 118,
+          "endLine": 118
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    },
+    {
+      "id": "G3",
+      "name": "索引与证明一致",
+      "status": "not_passed",
+      "criteria": "门 G3：真实索引与成功 JSON 证明及 embedding 指纹一致；预意图/计划和提交后恢复路径可验证；基线资源没有权限对抗样本或其他书产物；append-only 边界明确。目标文件缺失/解析空串/写入未确认或恢复不唯一均不能产生成功证明。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 131,
+          "endLine": 131
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    },
+    {
+      "id": "G4",
+      "name": "完整20题检索基线",
+      "status": "not_passed",
+      "criteria": "门 G4：正式题集 20 题全部有效执行，且有效题数=20、失败数=0、未跑数=0，题 ID 与已准入集合一一对应，检索配置与成功证明一致，才能以 completed 或 completed_judge_degraded 放行；低召回仍是有效执行，不新增质量阈值。inconclusive、blocked、零调用或部分完成只保留尝试记录，不能放行 G4/G6。报告可审计且为严格 JSON。不能以“分数不高”直接修改策略重跑并挑选最好结果；修复后另编号重跑，不覆盖首次结果。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 143,
+          "endLine": 143
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    },
+    {
+      "id": "G5",
+      "name": "在线授权证据消费",
+      "status": "not_passed",
+      "criteria": "门 G5：当前问题→检索→受控证据→Tutor 输入的实际关联成立；每个 retrieval 最多一个最终 Tutor 动作；无权限/上轮正文不进入当前生成，全部相关日志能追踪。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 155,
+          "endLine": 155
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    },
+    {
+      "id": "G6",
+      "name": "MVP联合完成",
+      "status": "not_passed",
+      "criteria": "门 G6（MVP 完成）：G1～G5 均有实证，其中 G4 必须是同一受证明索引/配置上的完整 20 题有效基线，不接受失败尝试代替；真实双入口及安全/故障验证通过，文档一致。可声称“单书真实 RAG 教学链路可用并有基线”，不能声称已证明教学效果或达到未定义质量阈值。",
+      "evidence": [
+        {
+          "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+          "line": 166,
+          "endLine": 166
+        },
+        {
+          "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+          "line": 29,
+          "endLine": 29
+        }
+      ]
+    }
+  ],
+  "hardEdges": [
+    {
+      "from": "OK",
+      "to": "T00",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 17,
+        "endLine": 17
+      }
+    },
+    {
+      "from": "OK",
+      "to": "T01",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 18,
+        "endLine": 18
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T02",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 19,
+        "endLine": 19
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T03",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 20,
+        "endLine": 20
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T04",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 21,
+        "endLine": 21
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T05",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 22,
+        "endLine": 22
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T06",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 23,
+        "endLine": 23
+      }
+    },
+    {
+      "from": "T02",
+      "to": "T08",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 25,
+        "endLine": 25
+      }
+    },
+    {
+      "from": "T04",
+      "to": "T08",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 26,
+        "endLine": 26
+      }
+    },
+    {
+      "from": "T03",
+      "to": "T09",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 27,
+        "endLine": 27
+      }
+    },
+    {
+      "from": "T04",
+      "to": "T09",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 28,
+        "endLine": 28
+      }
+    },
+    {
+      "from": "T00",
+      "to": "T10",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 30,
+        "endLine": 30
+      }
+    },
+    {
+      "from": "T02",
+      "to": "G1",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 34,
+        "endLine": 34
+      }
+    },
+    {
+      "from": "T03",
+      "to": "G1",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 35,
+        "endLine": 35
+      }
+    },
+    {
+      "from": "T04",
+      "to": "G1",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 36,
+        "endLine": 36
+      }
+    },
+    {
+      "from": "T09",
+      "to": "G1",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 37,
+        "endLine": 37
+      }
+    },
+    {
+      "from": "T10",
+      "to": "G1",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 38,
+        "endLine": 38
+      }
+    },
+    {
+      "from": "G1",
+      "to": "T07",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 40,
+        "endLine": 40
+      }
+    },
+    {
+      "from": "T05",
+      "to": "T07",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 41,
+        "endLine": 41
+      }
+    },
+    {
+      "from": "T01",
+      "to": "T07",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 42,
+        "endLine": 42
+      }
+    },
+    {
+      "from": "T07",
+      "to": "G2",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 43,
+        "endLine": 43
+      }
+    },
+    {
+      "from": "G2",
+      "to": "T11",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 45,
+        "endLine": 45
+      }
+    },
+    {
+      "from": "T08",
+      "to": "T11",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 46,
+        "endLine": 46
+      }
+    },
+    {
+      "from": "T11",
+      "to": "G3",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 47,
+        "endLine": 47
+      }
+    },
+    {
+      "from": "G3",
+      "to": "T12",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 49,
+        "endLine": 49
+      }
+    },
+    {
+      "from": "T09",
+      "to": "T12",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 50,
+        "endLine": 50
+      }
+    },
+    {
+      "from": "T12",
+      "to": "G4",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 51,
+        "endLine": 51
+      }
+    },
+    {
+      "from": "G3",
+      "to": "T13",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 53,
+        "endLine": 53
+      }
+    },
+    {
+      "from": "T06",
+      "to": "T13",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 54,
+        "endLine": 54
+      }
+    },
+    {
+      "from": "T10",
+      "to": "T13",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 55,
+        "endLine": 55
+      }
+    },
+    {
+      "from": "T04",
+      "to": "T13",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 56,
+        "endLine": 56
+      }
+    },
+    {
+      "from": "T13",
+      "to": "G5",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 58,
+        "endLine": 58
+      }
+    },
+    {
+      "from": "G4",
+      "to": "T14",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 59,
+        "endLine": 59
+      }
+    },
+    {
+      "from": "G5",
+      "to": "T14",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 60,
+        "endLine": 60
+      }
+    },
+    {
+      "from": "T14",
+      "to": "G6",
+      "kind": "hard",
+      "evidence": {
+        "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+        "line": 61,
+        "endLine": 61
+      }
+    }
+  ],
+  "issues": [
+    {
+      "id": "RV2-01",
+      "priority": "P1",
+      "task": "T08",
+      "summary": "intent已落盘但pending尚未创建时，新run可绕过未决意图",
+      "requiredRevision": "发布任何需阻止新run的持久意图之前先建立可发现的target占用记录；为marker存在但intent尚不完整的已知未开始写入状态设计只读处置规则。或者给出等效的完整持久登记/扫描机制，不能只靠当前marker缺失判断安全。覆盖两个发布动作之间逐点崩溃，以及随后run/recover的行为。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 11,
+          "endLine": 17
+        }
+      ]
+    },
+    {
+      "id": "RV2-02",
+      "priority": "P1",
+      "task": "T08",
+      "summary": "专用writer证据未绑定实际数据库登录角色",
+      "requiredRevision": "义同连接实际登录角色、有效角色与可信权限审计记录的比对方式；无法确认时在写入或补证明前拒绝。正常与恢复均覆盖“目标相同、账号不同”的受控反例，不泄露DSN或凭证。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 18,
+          "endLine": 24
+        }
+      ]
+    },
+    {
+      "id": "RV2-03",
+      "priority": "P2",
+      "task": "T08",
+      "summary": "预检失败时尚无合法run UUID可构造RunRecord",
+      "requiredRevision": "任何可能返回失败的校验前生成一次本次调用UUID，并在排他记录、intent、manifest、marker和返回值中复用；不要在后续步骤再次生成。明确仅返回诊断ID与需要持久化登记的失败范围。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 25,
+          "endLine": 31
+        }
+      ]
+    },
+    {
+      "id": "RV2-04",
+      "priority": "P2",
+      "task": "T08",
+      "summary": "runtime构造与身份核验先后顺序互相矛盾",
+      "requiredRevision": "明service/provider装配与identity描述两个阶段，或调整唯一顺序；结构字段、helper契约、正常和恢复流程及测试调用顺序必须一致。此次是接口顺序冲突，不声称SDK配置读取本身会发出远端请求。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 32,
+          "endLine": 37
+        }
+      ]
+    },
+    {
+      "id": "RV2-05",
+      "priority": "P1",
+      "task": "T05",
+      "summary": "current_schema校验不足以约束revision的实际解析目标",
+      "requiredRevision": "变更前限制并核验有效schema搜索/对象解析范围，拒绝可能命中未批准业务/基线对象的路径；或将测试资源限定为整个隔离数据库并证明解析范围。仅设置version_table_schema并不能约束全部revision。补“当前schema合法、后续schema有业务表”的反例，真实PG执行留T07。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 40,
+          "endLine": 46
+        }
+      ]
+    },
+    {
+      "id": "RV2-06",
+      "priority": "P1",
+      "task": "T05",
+      "summary": "数据库名加schema不能唯一识别PostgreSQL服务实例",
+      "requiredRevision": "私有可信资源映射中明确可唯一绑定服务实例的标识及同连接只读验证方式，或由受信连接装配方提供可核验的唯一目标绑定。公开失败只输出安全ID；不得通过输出完整URL补识别。覆盖“不同实例、相同数据库名和schema”反例。无需单方改冻结Config.attributes字段。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 47,
+          "endLine": 53
+        }
+      ]
+    },
+    {
+      "id": "RV2-07",
+      "priority": "P1",
+      "task": "T05",
+      "summary": "预检autobegin导致Alembic事务责任改变",
+      "requiredRevision": "录入口是否已有调用方事务；明确预检产生事务的结束方式，以及外部事务由谁提交/回滚。新增事务所有权矩阵和成功/失败边界断言，不能仅用run_migrations惰性spy证明事务正确；本包使用受控事务对象/本地隔离验证，真实PG事务留T07。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 54,
+          "endLine": 61
+        }
+      ]
+    },
+    {
+      "id": "RV2-08",
+      "priority": "P1",
+      "task": "T09",
+      "summary": "真实查询provider未与证明及snapshot的目标绑定",
+      "requiredRevision": "入时核对执行检索的同一provider连接的实际目标与受控资源和快照一致，并固定运行期绑定；不能仅增加一个自报target字符串。provider指向B、其余证据属于A时必须零次evaluate并阻断。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 64,
+          "endLine": 71
+        }
+      ]
+    },
+    {
+      "id": "RV2-09",
+      "priority": "P1",
+      "task": "T09",
+      "summary": "baseline保护在snapshot之后获取，且没有跨包持有/互斥协议",
+      "requiredRevision": "T12受控调用者先取得同target的保护，再读取实际snapshot/核验，持续持有直至baseline结束并finally释放；定义与T08 writer使用的相容/冲突协议或等效的权限冻结机制。T09只消费受控绑定，不独立复制锁实现；离线包用替身验证顺序/冲突/生命周期，实际机制在T07/T12验证。保留摄入UUID和本次report UUID的区分。",
+      "status": "open_plan_revision",
+      "evidence": [
+        {
+          "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+          "line": 72,
+          "endLine": 78
+        }
+      ]
+    }
+  ],
+  "recommendedConcurrency": [
+    {
+      "order": 1,
+      "work": [
+        "T05/T08/T09计划定向修订与跨包保护协议统一",
+        "资源owner补齐T01八类缺口",
+        "T06/T10独立三层plan"
+      ],
+      "condition": "当前可并行规划/只读资源准备，最多三个子代理，主会话负责审阅；此建议不授权产品编码。"
+    },
+    {
+      "order": 2,
+      "work": [
+        "T08 runner",
+        "T09准入报告",
+        "T05迁移守卫"
+      ],
+      "condition": "9项问题修订、定向复核及用户确认计划/私有装配后才可实施；各包硬前置已具备历史离线交付。"
+    },
+    {
+      "order": 3,
+      "work": [
+        "T10日志审计",
+        "T06在线离线核心"
+      ],
+      "condition": "各自plan审阅确认，provider/retriever写权交接；T08/T10不得抢改provider。"
+    },
+    {
+      "order": 4,
+      "work": [
+        "G1集成核验",
+        "T07真实PG"
+      ],
+      "condition": "G1需要T02/T03/T04/T09/T10全部通过；T07另需T05及T01实际资源就绪。"
+    },
+    {
+      "order": 5,
+      "work": [
+        "T11正式摄入→G3",
+        "T12完整20题→G4",
+        "T13真实双入口→G5",
+        "T14→G6"
+      ],
+      "condition": "严格沿硬边；T12到T13是本书资源推荐交接而非新增技术硬依赖；真实资源始终独占。"
+    }
+  ],
+  "evidenceSources": [
+    {
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "role": "S0至S6阶段名称与放行标准唯一raw来源"
+    },
+    {
+      "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+      "role": "任务、硬依赖、资源与调度"
+    },
+    {
+      "path": "docs/rag-work/plans/2026-10-16-execution-plan-index.md",
+      "role": "当前逐包状态与历史增量"
+    },
+    {
+      "path": "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md",
+      "role": "权威主清单"
+    },
+    {
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "role": "第二批9项正式审阅"
+    },
+    {
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "role": "历史T01观察/unknown/blocked边界"
+    },
+    {
+      "path": "docs/rag-work/evidence/2026-10-16-first-wave-execution.md",
+      "role": "首批历史离线验收"
+    },
+    {
+      "path": "superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md",
+      "role": "契约冻结及勘误"
+    },
+    {
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "role": "共享接口"
+    },
+    {
+      "path": "README.md",
+      "role": "产品现状与入口"
+    }
+  ],
+  "phaseModelExplanation": "旧Phase 0/1A-D/2/3/4/5/6是历史模块/建设阶段；S0至S6是2026-10-15 raw修订后的执行顺序，不能互换编号或用旧勾选推断当前门。S5离线实现可提前并行，真实在线验证由T13执行并与S6联接；G5不是T06离线完成即可放行。"
+}
+</script>
+<script id="source-excerpts" type="application/json">{"README.md:147": "147: > **RAG Foundation 当前状态**：EPUB extractor、通用 Chunking/KnowledgeIngestion、RAG 可见性与错误语义基础、RAG-D 只读评测工具已分别落地并通过代码/SQLite 维度验证；真实 PostgreSQL + pgvector + embedding 的 EPUB 正式摄入、在线 evidence→Tutor 接线、产品 Retriever baseline 尚未完成，不能将离线/fake/SQLite 结果表述为生产闭环。详见 [RAG 工作文档区](docs/rag-work/README.md) 及其主清单。\n148: \n149: 最新顺序与 MVP 范围见 [2026-10-15 RAG 修订执行方案](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md)：最小契约确认 → 可信性修复 → 真实环境 → 正式摄入与证明 → 检索基线 → 在线证据消费 → 联合验收。方案汇总 27 类问题、优先级和三层执行包，已纳入[执行方案 review](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan-review.md)的五项补修：完整 20 题放行、embedding 配置绑定、迁移目标守卫、提交后只读恢复、无效 judge 分数降级。用户已于 2026-10-16 确认方案；首批 T02/T03/T04 的当前实施与验收状态见下方主窗口记录。\n150: \n151: [DAG 与并发调度](superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md)区分硬依赖、推荐顺序及共享文件/数据库独占规则；当前容量为主会话加最多三个子代理，在线离线实现可提前并行，真实摄入/完整20题基线/联合验收仍按放行门执行。\n152: \n153: [执行就绪性核查](superpowers/rag-foundation/2026-10-16-execution-readiness-audit.md)后已完成 [T00契约冻结及勘误](superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md)：[当前rag-mvp-contracts-v1.0.1](docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md)固定跨任务接口/版本/错误与数据字段，原v1快照保留。[T02/T03/T04独立plan索引](docs/rag-work/plans/2026-10-16-execution-plan-index.md)及[计划复查关闭记录](docs/rag-work/plans/2026-10-16-first-wave-plan-rereview.md)已就绪；用户已授权三个 gpt-6-luna / xhigh 子代理在 `codex/rag-mvp-first-wave` 实施，已完成[主窗口审阅、修订与组合离线验收](docs/rag-work/evidence/2026-10-16-first-wave-execution.md)。环境盘点和真实环境验收尚未启动，其他模块plan及冻结契约未因本次实施改变；本地测试或文档review不代表G1等正式运行门通过。", "README.md:163": "163: 本批实现包括：摄入准备与写入分离（`prepare_file` / `ingest_prepared`，保留 `ingest_file`）、SDK响应索引和写前向量校验、稳定评测状态与单次多 k 指标、20题执行计数，以及纯数据形式的 embedding 身份和摄入证明构造/核验。未新增 HTTP API；运行意图持久化、恢复、正式准入接线和真实环境验证仍由后续任务完成。\n164: \n165: [本轮方案审阅](superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan-review.md)建议在契约冻结前补齐 20 题完整执行放行、embedding 身份绑定和迁移目标传递，并细化提交后证明恢复及 judge 非有限分数降级；本轮受控复现不代表真实 PG 或正式 baseline 已验收。\n166: \n167: 原 Phase 的实现基线、已完成工作、剩余 Todo 见[阶段进展与三层规划](superpowers/rag-foundation/2026-10-13-progress-and-todolist.md)，已按 review 核验补充待办；既有 DEC 和权威主清单保持原有审批/单写者边界。\n168: \n169: [子代理审阅记录](superpowers/rag-foundation/2026-10-13-plan-review.md)列出执行前需补齐的多 k 指标、基线数据隔离、摄入证明契约及真实事务原子性验收；总体推进顺序可以保留，执行细节仍需确认。", "docs/rag-work/evidence/t01/2026-10-17-inventory.md:5": "5: **inventory_coverage=covered；resource_readiness=blocked。** 计划要求的资产、运行时/CI、PG来源、embedding来源和交接均已核对并记录观察/缺失/未知原因；这表示盘点交付完成，不表示真实环境就绪。T05/T08/T09的9项设计问题及G1～G6状态不变。\n6: \n7: ## 1. 基线、方法与来源\n8: \n9: - 分支：codex/rag-mvp-first-wave；HEAD：6324b9442b6f1671ccb4a19cdacb42bb91597187。\n10: - 冻结spec实际SHA-256：31379383758b82c82d5fe583f371e590f4b187ad0371744edcef635743b41f95，与计划一致。\n11: - 使用项目.venv的Python 3.12.11，平台win32。一次性只读动作通过标准库pathlib/hashlib/tomllib/ast/importlib.metadata和已安装PyYAML解析文件、统计元数据；没有创建探测脚本或生产代码。", "app/infrastructure/rag/extractors/base.py:19": "19:     \"\"\"按文件扩展名匹配合适的提取器。\"\"\"\n20:     from app.infrastructure.rag.extractors.text_extractor import TextExtractor\n21:     from app.infrastructure.rag.extractors.pdf_extractor import PDFExtractor\n22:     from app.infrastructure.rag.extractors.docx_extractor import DocxExtractor\n23:     from app.infrastructure.rag.extractors.epub_extractor import EpubExtractor\n24: \n25:     ext = os.path.splitext(file_path)[1].lower()  # 带点，如 \".txt\"", "app/infrastructure/rag/extractors/epub_extractor.py:106": "106: class EpubExtractor(Extractor):\n107:     extensions = [\".epub\"]\n108: \n109:     def extract(self, file_path: str) -> str:\n110:         \"\"\"提取 EPUB 纯文本；任一环节失败返回空串，不抛异常到上层。\"\"\"\n111:         try:\n112:             with zipfile.ZipFile(file_path) as archive:", "app/harness/chunking_service.py:97": "97: def compute_doc_id(import_namespace: str, text: str) -> tuple[str, str]:\n98:     \"\"\"返回 DEC-012 doc_id 及其 canonical 文本。\"\"\"\n99:     if not import_namespace:\n100:         raise ValueError(\"import_namespace 不得为空\")\n101:     canonical_text = normalize_text(text)\n102:     doc_id = _sha256([\n103:         (\"protocol\", DOC_PROTOCOL.encode(\"utf-8\")),", "app/harness/chunking_service.py:136": "136: class ChunkingService:\n137:     \"\"\"无状态 ChunkDocument 生产者。\"\"\"\n138: \n139:     def chunk_text(\n140:         self,\n141:         text: str,\n142:         context: ChunkingContext,", "app/harness/knowledge_ingestion.py:129": "129: class PreparedIngestion:\n130:     \"\"\"不含运行绑定的摄入快照；所有可变输入在构造时深复制并冻结。\"\"\"\n131: \n132:     schema_version: str\n133:     source_sha256: str\n134:     source_format: str\n135:     import_namespace: str", "app/harness/knowledge_ingestion.py:186": "186:     def prepare_file(\n187:         self,\n188:         file_path: str,\n189:         *,\n190:         import_namespace: str,\n191:         scope: str = \"global\",\n192:         user_id: int | None = None,", "app/harness/knowledge_ingestion.py:476": "476:     def ingest_prepared(self, prepared: PreparedIngestion) -> IngestResult:\n477:         \"\"\"校验准备快照后恰好 index 一次；不重新提取或切块。\"\"\"\n478:         docs = self._validate_prepared(prepared)\n479:         planned = len(docs)\n480:         written = self._coordinator.index_documents(docs, source=\"vector\")\n481:         warnings = list(prepared.warnings)\n482:         if isinstance(written, int) and not isinstance(written, bool) and written == planned:", "app/infrastructure/rag/embedding.py:17": "17: class EmbeddingService:\n18:     \"\"\"文本 embedding 服务，复用 OpenAI 配置。\"\"\"\n19: \n20:     def __init__(self, model: str = \"\", api_key: str = \"\", base_url: str = \"\"):\n21:         \"\"\"初始化 embedding 服务。\n22: \n23:         Args:", "app/infrastructure/rag/embedding.py:66": "66:     def embed_many(self, texts: list[str]) -> list[list[float]]:\n67:         \"\"\"批量将文本转成向量。\n68: \n69:         Args:\n70:             texts: 文本列表\n71: \n72:         Returns:", "app/infrastructure/rag/pgvector_provider.py:75": "75:     def index(self, docs: list[dict]) -> int | None:\n76:         \"\"\"索引一批文档：embed + 写入向量表。\n77: \n78:         Args:\n79:             docs: 文档列表，每个 doc 含 {\"content\": str, \"metadata\": dict, ...}\n80: \n81:         Returns:", "app/infrastructure/rag/pgvector_provider.py:172": "172:     def search(self, query: str, top_k: int = 5, visibility=None) -> list[Chunk]:\n173:         \"\"\"检索：embed query + 近邻查询 + 转 Chunk。\n174: \n175:         Args:\n176:             query: 查询文本\n177:             top_k: 返回前 k 个最相关 chunk\n178:             visibility: 受限检索可见性上下文（DEC-001）；None 保持旧全量行为。", "app/infrastructure/rag/pgvector_provider.py:271": "271:     def dialect_name(self) -> str:\n272:         \"\"\"从同步 DB URL 推导 dialect（postgresql / sqlite）。\n273: \n274:         供在线 composition fail-fast 校验（DEC-007）消费；不建立真实连接，\n275:         连接不可达等运行时错误由检索时机的 db_error 分类承担。\n276:         \"\"\"\n277:         from sqlalchemy.engine import make_url", "app/infrastructure/rag/coordinator.py:79": "79: class RAGCoordinator:\n80:     \"\"\"RAG 协调器：管理多源 IndexProvider，聚合检索结果（§3.6/§9 扩展）。\"\"\"\n81: \n82:     def __init__(self, store=None, vector_provider: IndexProvider | None = None):\n83:         self._store = store or FakeRAGStore()\n84:         self._providers: dict[str, IndexProvider] = {}\n85:         if vector_provider is not None:", "app/infrastructure/rag/coordinator.py:142": "142:     def search(self, query: str, sources: list[str] | None = None,\n143:                top_k: int = 5, visibility: VisibilityContext | None = None) -> SearchResult:\n144:         \"\"\"多源检索：聚合所有（或指定）provider 的结果，按 score 降序 + 去重。\n145: \n146:         visibility=None：保持既有多源/全搜语义（OCR/code 等不受限，二参调用）。\n147:         visibility=VisibilityContext：受限检索（DEC-001），仅 vector provider\n148:         可参与；显式选中其他 provider 时安全失败（failed/invalid_request），", "app/infrastructure/rag/ocr.py:11": "11: class OCRProvider(IndexProvider):\n12:     \"\"\"OCR 图片文本索引 Provider。\n13: \n14:     生产用法：\n15:         provider = OCRProvider()\n16:         provider.index_image(image_bytes, metadata={\"file\": \"slide.png\"})\n17:         results = provider.search(\"注意力机制\")", "app/infrastructure/rag/code_index.py:15": "15: class CodeIndexProvider(IndexProvider):\n16:     \"\"\"代码仓库索引 Provider。\n17: \n18:     用法：\n19:         provider = CodeIndexProvider()\n20:         provider.index_repo(\"/path/to/repo\")\n21:         results = provider.search(\"def train\")", "app/infrastructure/rag/store.py:43": "43: \n44: \n45: class RAGStore:\n46:     \"\"\"生产环境 RAG 存储（LlamaIndex 底座）\"\"\"\n47: \n48:     def __init__(self, scope: str = \"global\"):\n49:         self._scope = scope", "app/agents/retriever.py:174": "174: class RetrieverAgent(AgentBase):\n175:     \"\"\"知识检索 Agent（机械层，不自评语义质量）。\"\"\"\n176: \n177:     source = EventSource.RETRIEVER\n178:     subscriptions = [EventType.ACTION_REQUESTED]\n179:     emittable_types = {EventType.RETRIEVED_EVIDENCE, EventType.RETRIEVAL_FAILED}\n180: ", "app/agents/retriever.py:231": "231:     def _is_invalid_request(query, top_k, visibility_payload,\n232:                             retrieval_id, user_id, ws: WorkspaceState) -> bool:\n233:         \"\"\"入口契约校验：返回 True 表示 invalid-request（不进入 provider）。\n234: \n235:         非受限请求（无 visibility）只要求 query/top_k 合法，保持旧路径；\n236:         受限请求必须把 payload 与 visibility 身份绑定到可信会话用户，且带\n237:         retrieval_id（DEC-001/003），不能由 action payload 冒充其他用户。", "app/agents/retriever.py:274": "274:     def _do_retrieve_and_emit(self, *, query: str, top_k: int,\n275:                               sources: list[str] | None, purpose: str | None,\n276:                               parent_id: str, ws: WorkspaceState,\n277:                               visibility: VisibilityContext | None = None,\n278:                               retrieval_id: str | None = None) -> list[Event]:\n279:         \"\"\"执行检索并按纯机械指标判定 retrieval_status（DEC-008 五态）。\"\"\"\n280:         t0 = time.time()", "app/agents/retriever.py:331": "331:     def evaluate(self, test_case: dict) -> dict:\n332:         \"\"\"以一次 search 生成稳定的检索状态、机械 proxy 与 judge 结果。\"\"\"\n333:         raw_top_k = test_case.get(\"top_k\", TOP_K_DEFAULT) if isinstance(test_case, dict) else None\n334:         top_k = raw_top_k if (isinstance(raw_top_k, int) and not isinstance(raw_top_k, bool)\n335:                               and 1 <= raw_top_k <= TOP_K_MAX) else None\n336:         query = test_case.get(\"query\", \"\") if isinstance(test_case, dict) else None\n337:         golden_chunks = test_case.get(\"golden_chunks\", []) if isinstance(test_case, dict) else None", "app/agents/retriever.py:130": "130: def _compute_mechanical_metrics(retrieved_contents: list[str],\n131:                                 golden_chunks: list[str], top_k: int) -> dict:\n132:     unique_gold = list(dict.fromkeys(golden_chunks))\n133:     returned = retrieved_contents[:top_k]\n134: \n135:     def recall(contents: list[str]) -> float | None:\n136:         if not unique_gold:", "app/infrastructure/rag/embedding_identity.py:48": "48: def fingerprint_embedding(identity: EmbeddingIdentity) -> str:\n49:     \"\"\"Return the canonical identity SHA-256 as lowercase hexadecimal.\"\"\"\n50:     try:\n51:         identity_dict = to_json_dict(identity)\n52:         return hashlib.sha256(canonical_json_bytes(identity_dict)).hexdigest()\n53:     except (AttributeError, TypeError, ValueError):\n54:         raise ValueError(\"identity_mismatch\") from None", "app/infrastructure/rag/embedding_identity.py:74": "74: def describe_embedding(service: Any, binding: EmbeddingBinding) -> EmbeddingIdentity:\n75:     \"\"\"Read and validate the live service model, dimension, and cached SDK endpoint.\n76: \n77:     Accessing ``service.client`` may initialize the SDK object, but this function\n78:     never calls an embedding endpoint. The endpoint is compared in memory only.\n79:     \"\"\"\n80:     if not isinstance(binding, EmbeddingBinding):", "app/harness/ingestion_attestation.py:420": "420: def build_attestation(\n421:     *,\n422:     intent: dict[str, Any],\n423:     manifest: dict[str, Any],\n424:     result: IngestResult,\n425:     snapshot: IndexSnapshot,\n426:     identity: EmbeddingIdentity,", "app/harness/ingestion_attestation.py:622": "622: def validate_attestation(\n623:     attestation: dict[str, Any], *, expected: AttestationExpectation, snapshot: IndexSnapshot\n624: ) -> ContractCheck:\n625:     \"\"\"Validate proof against independent expectations and the supplied full snapshot.\"\"\"\n626:     try:\n627:         return _validate_attestation(attestation, expected=expected, snapshot=snapshot)\n628:     except Exception:", "app/infrastructure/rag/contracts.py:303": "303: class IndexSnapshot:\n304:     target_index_id: str\n305:     database_id: str\n306:     schema_name: str\n307:     row_count: int\n308:     rows: Sequence[ManifestRow]\n309:     manifest_sha256: str", "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py:105": "105: def validate_assets(asset_dir: Path, source_path: Path | None = None) -> AssetBundle:\n106:     \"\"\"验证 manifest、JSONL corpus、题集和 evidence 审计关系，不修改任何资产。\"\"\"\n107:     manifest = _load_yaml(asset_dir / \"source-manifest.yaml\")\n108:     questions_data = _load_yaml(asset_dir / \"questions.v1.yaml\")\n109:     corpus_path = asset_dir / \"corpus.local.jsonl\"\n110:     expected_book_key = manifest.get(\"book_key\")\n111:     if not expected_book_key or questions_data.get(\"book_key\") != expected_book_key:", "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py:211": "211: def validate_admission(agent: Any, settings_obj: Any, attestation: dict[str, Any] | None,\n212:                        corpus_isolation: dict[str, Any] | None,\n213:                        dialect_getter: Callable[[PgVectorProvider], str] = _default_dialect,\n214:                        expected_source_sha256: str | None = None) -> AdmissionResult:\n215:     \"\"\"执行 DEC-010 的 backend/provider/dialect/provider-set/attestation/corpus 六项 gate。\"\"\"\n216:     failures: list[str] = []\n217:     coordinator = getattr(agent, \"_coordinator\", None)", "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py:273": "273: def run_baseline(agent: Any, settings_obj: Any, asset_dir: Path,\n274:                  attestation: dict[str, Any] | None, corpus_isolation: dict[str, Any] | None,\n275:                  source_path: Path | None = None,\n276:                  dialect_getter: Callable[[PgVectorProvider], str] = _default_dialect) -> dict[str, Any]:\n277:     \"\"\"运行只读 baseline；每个 verified case 只调用一次 ``evaluate``。\"\"\"\n278:     try:\n279:         assets = validate_assets(asset_dir, source_path)", "app/orchestration/assembly.py:147": "147: def validate_online_rag_composition(coordinator) -> None:\n148:     \"\"\"DEC-007 三条件校验（可单测，供 BLK-007 admission gate 消费）。\n149: \n150:     校验基于配置与装配结果：dialect 从 PgVectorProvider 的同步 DB URL\n151:     推导（不建立真实连接）；连接不可达等运行时错误由检索时机的\n152:     db_error 分类承担。\n153:     \"\"\"", "app/orchestration/assembly.py:171": "171: def build_online_rag_coordinator():\n172:     \"\"\"在线检索链 composition（DEC-007）：显式注入 PgVectorProvider 并校验。\n173: \n174:     显式注入而非依赖 RAGCoordinator 的 settings 默认分支：在线路径\n175:     不静默回退 fake；不满足三条件立即抛 OnlineRAGCompositionError。\n176:     \"\"\"\n177:     from app.infrastructure.rag.coordinator import RAGCoordinator", "app/orchestration/assembly.py:185": "185: def run_online_agent_session(session_id: str, user_id: int, user_message: str,\n186:                              current_topic: str | None = None,\n187:                              graph=None, on_event=None) -> NewStackResult:\n188:     \"\"\"在线 API 会话入口：先完成 DEC-007 composition 校验（fail-fast）。\n189: \n190:     与单元直连 run_new_agent_session 的区别仅在检索链 composition：\n191:     在线必须 pgvector + PostgreSQL；单元/离线路径仍可用 fake/SQLite。", "app/orchestration/assembly.py:200": "200: def run_new_agent_session(session_id: str, user_id: int, user_message: str,\n201:                           current_topic: str | None = None,\n202:                           graph=None, on_event=None,\n203:                           retriever: RetrieverAgent | None = None) -> NewStackResult:\n204:     \"\"\"新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。\n205: \n206:     同步函数；API 层用 asyncio.to_thread 调用。retriever 参数供", "app/api/chat.py:36": "36:     # 在线入口 run_online_agent_session 先做 DEC-007 composition 校验：\n37:     # 非 pgvector / 非 PostgreSQL dialect → fail-fast，分类 503，不回退 fake\n38:     try:\n39:         result = await asyncio.to_thread(\n40:             run_online_agent_session, req.session_id, uid_int, req.message,\n41:             None, graph,\n42:         )", "app/api/chat_stream.py:50": "50:             run_online_agent_session, req.session_id, uid_int, req.message,\n51:             None, graph, cb,\n52:         ))\n53:         task.add_done_callback(\n54:             lambda _: loop.call_soon_threadsafe(queue.put_nowait, _SENTINEL))\n55: \n56:         while True:", "app/agents/tutor.py:74": "74:     def _ask(self, trigger: Event, ws: WorkspaceState, intent: str,\n75:              kind: str, extra: dict | None = None) -> list[Event]:\n76:         result = self._llm.invoke_json(\n77:             self._spec.compose(\"tutor\", intent),\n78:             f\"主题：{ws.current_topic or ''}\",\n79:             session_id=ws.session_id, node=\"tutor\", intent=intent,\n80:         )", "app/agents/tutor.py:87": "87:     def _explain(self, trigger: Event, ws: WorkspaceState, intent: str,\n88:                  mode: str) -> list[Event]:\n89:         result = self._llm.invoke_json(\n90:             self._spec.compose(\"tutor\", intent),\n91:             f\"主题：{ws.current_topic or ''}\\n模式：{mode}\",\n92:             session_id=ws.session_id, node=\"tutor\", intent=intent,\n93:         )", "app/harness/workspace_state.py:20": "20:     evidence_pool: list[dict] = field(default_factory=list)  # Retriever 最近输出\n21:     critic_state: dict = field(default_factory=dict)         # Critic 最近一次评估\n22:     profile_snapshot: dict = field(default_factory=dict)     # 进入会话时画像快照", "app/agents/retriever.py:186": "186:     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:\n187:         \"\"\"处理 ActionRequested(target=retriever)，委托 RAGCoordinator 检索。\n188: \n189:         RAG-C Phase 2（C-10）：入口校验（DEC-008 invalid-request）在调用\n190:         provider 之前完成；异常/失败 payload 只含分类错误码 + 安全摘要。\n191:         \"\"\"\n192:         payload = event.payload or {}", "superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md:85": "85: 当前执行契约集升级为rag-mvp-contracts-v1.0.1，当前文件SHA-256：`31379383758b82c82d5fe583f371e590f4b187ad0371744edcef635743b41f95`。原v1完整字节按第1节原SHA保存，未删除冻结历史。", "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md:222": "222: 放行材料：T00必须有raw血缘、版本表、上述接口/错误/数据字段、RV追溯、自查和独立review及记录。T00完成后仅表明共享契约可引用；T02/T03/T04仍各需独立plan和文件精确清单，经审阅后才能派发。T01资源盘点不在T00范围，不能据此勾选全部S0。\n223: \n224: ## 5. 核验矩阵与冻结验收\n225: \n226: | 来源 | 冻结位置 | 实现时必需验收 |\n227: |---|---|---|\n228: | R01/13 | D1～D3 | 数据库故障传播至报告，非质量0分；安全来源可审计 |\n229: | R02/09 | A2 | 数量/维度失败写库前拒绝，insert/commit失败rollback；PG另实测 |\n230: | R03/04 | B | 版本/非空/类型/owner/count/target/isolation有效，不只verified布尔 |\n231: | RV-01/R23 | D2/D3 | 20draft、部分draft、重复/空ID拒绝；首题失败0/1/19；完整低召回可完成 |\n232: | RV-02/R24 | C/B/E2 | 同维不同模型/部署拒绝，实际实例与证明匹配，别名版本限制披露 |\n233: | RV-03/R25 | E3 | settings=A/fixture=B仅B变化，漏注入/错目标变更前拒绝 |\n234: | RV-04/R26 | A1/A3/A4 | 预计划先落盘；提交后退出只读核验补证；重复/缺行不准入 |\n235: | RV-05/R27 | D1/D3 | judge缺失/非数值/非有限/越界按项降级，严格JSON，机械指标保留 |\n236: | C §F/G/H | E | 三条件/六码/top_k/投影上限/身份保真/当前轮关联/最多一次动作 |\n237: \n238: 本文没有运行任何实现或真实服务测试。冻结只对接口和设计生效，真实PG/embedding/20题及在线验收继续由G1～G6证据判定。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:75": "75: ### S0：最小契约与问题归档（原 Phase 0）\n76: \n77: **基线/已完成**：共享 DEC 已冻结；review 已逐项核验；有原三层总规划，A 提取器等无需重做。\n78: \n79: **职责与接口**：输入冻结决策、代码、核验报告；输出本轮可执行决策表、资源清单、执行包和问题映射，不写运行状态为 verified。\n80: \n81: - [ ] S0-01 将 R01～R27 映射到原 BLK、任务、执行责任及验收材料位置，逐项区分缺陷/待实现/环境未知/后置。\n82: - [ ] S0-02 确认 C §F/§G 与 §H 投影/citation 候选；候选 5 块、单块 2000、总计 6000 字符、5 引用不自动冻结。\n83: - [ ] S0-03 确认 E1～E4 的报告、证明、隔离及错误契约；批准后再更新对应 spec，注明本 raw 文件与原 DEC 来源。\n84: - [ ] S0-04 只读盘点 PG/embedding/本地书籍与 corpus 可用性，不打印密钥；记录当前测试/CI 条件。\n85: - [ ] S0-05 修正立即影响派工的状态/链接，补交接安排；非阻断历史格式清理随阶段完成。\n86: - [ ] S0-06 确认无密钥 embedding 配置指纹、模型/部署及参数绑定规则；确认 Alembic 使用 fixture 已预检连接的唯一注入路径，禁止测试迁移静默回退 settings。\n87: - [ ] S0-07 确认完整 20 题放行不变量、逐指标 judge 有效性规则、产品预计划接口及提交后只读恢复契约，不把失败尝试报告视为取得基线。\n88: \n89: **门 G0**：执行包范围和候选字段经用户确认；环境缺口有明确记录。不以文档数量代替确认，也不在这一步启动业务编码。\n90: ", "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md:15": "15: - [x] T00：raw来源、版本、模块/类型归属、输入输出/错误、两级清单、恢复、指纹、20题/judge、在线投影和迁移注入已归档；独立审阅修订后通过。\n16: - [x] T01独立三层plan加入本批并完成主窗口定向复核：[环境与资产只读盘点](2026-10-17-t01-execution-plan.md)。\n17: - [x] T01实际盘点覆盖完成：[2026-10-17执行证据](../evidence/t01/2026-10-17-inventory.md)。资源就绪blocked；本机源路径未解析、corpus缺失、依赖/锁差异和可信资源登记缺口已记录，PG/embedding未探测。\n18: - [ ] 资源owner与主控补齐T01缺口：合法EPUB本机路径与corpus、目标解释器/依赖同步方案、PG实例/用途/权限审计及embedding绑定来源；不得以盘点完成解除真实门。\n19: - [x] T02/T03/T04独立plan编制：已分别由子代理完成，[索引](2026-10-16-execution-plan-index.md)。\n20: - [x] T02/T03/T04派发前修订复核：[当前主窗口逐份复查](2026-10-16-first-wave-plan-rereview.md)要求的兼容回归隔离、SDK索引对应、judge一致性已定向修订并通过文档复核。\n21: - [x] 首批实现验收：三个 gpt-6-luna / xhigh 子代理已完成T02/T03/T04，实现复审及最终组合离线回归通过（547 passed、1 deselected），[主窗口验收证据](../evidence/2026-10-16-first-wave-execution.md)。\n22: - [x] T02：准备/写入分离、准备清单与不可变快照、SDK索引对应、写前向量校验及提交确认；158项离线回归，用户确认验收。\n23: - [x] T03：稳定评测状态、多k指标、judge有效性、完整20题计数与失败停止；176项离线回归，用户确认验收。\n24: - [x] T04：共享纯契约、embedding身份/指纹、证明构造与独立核验；213项离线回归，用户确认验收。\n25: - [x] 第二批T08/T09/T05三层plan编写及主窗口定向复核：[审阅与待确认项](2026-10-16-second-wave-plan-review.md)。\n26: - [x] 2026-10-17第二批正式review已完成：[9项需修订问题](2026-10-17-second-wave-plan-review.md)，7项P1、2项P2。\n27: - [ ] 定向修订T05的目标/搜索路径/事务守卫、T08的写前登记/角色绑定/接口顺序、T09的live provider绑定与基线保护协议，并复核关闭。\n28: - [ ] 修订复核通过并由用户确认第二批plan及私有装配/恢复边界后，再派发T08/T09/T05实施；T01只读盘点可推进，T06/T10仍需独立plan。\n29: - [ ] G1～G6：未执行，本轮不宣称真实PG/产品摄入/正式baseline或在线教学链路完成。", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:9": "9: | T00 | [契约冻结记录](../../../superpowers/rag-foundation/2026-10-16-t00-contract-freeze-record.md)及当前勘误 | 已完成，当前契约v1.0.1 | 仅文档契约完成 |", "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md:189": "189: ### E2. 投影与引用\n190: \n191: EvidenceProjection精确字段：schema_version=evidence-projection-v1、retrieval_id、retrieval_status、attempt=1、quality（high/low/acceptable/unavailable）、chunks、citations、sources_used、error_code（六安全码或null）、safe_summary、truncated:bool。\n192: \n193: chunks和citations每项精确为content/source/score，沿用原spec，不新增强制产品ID字段。保序最多5项，每content最多2000 Unicode字符；正文预算6000按chunks正文之和计算，citations与chunks一一对应、复用同一份文本且最多5项。Tutor只渲染一次正文，引用不重复渲染content，因此不会把6000预算翻倍。截断只作用投影副本，设置truncated=true，不改产品chunk/稳定ID。score必须有限数；无权限或关联不符拒绝，不靠截断修补权限。\n194: \n195: Orchestrator在动作payload键evidence_projection中传完整对象；retrieval_id也在动作payload并与对象相等。缺失/错ID投影不能走无证据最终教学旁路。empty/failed/invalid-request投影无chunks/citations；degraded只含成功授权来源并标安全降级，低quality的ok仍保留状态。safe_summary来自既定安全文案，正常ok可为空字符串、empty固定“未找到可用课程证据”，不把异常文本拼入摘要。\n196: \n197: 每retrieval状态request/result/attempt/quality/direct_parent/final_tutor_action_emitted仅会话内存在；Tick屏障最多发一次最终Tutor动作，无quality继续unavailable，迟到观察不重发。不从共享evidence_pool猜当前轮。普通/SSE同核心链路，新增run查询前实际embedding指纹与证明比较，不同即拒绝旧索引。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:91": "91: ### S1：修复可信性底座（原 Phase 2 + D 工具补修）\n92: \n93: **基线/已完成**：正常写入、权限过滤、五态 SearchResult、部分安全日志、单 k 评测与 runner 已存在；99 项定向测试为既有证据，不覆盖新增复现。\n94: \n95: **职责与接口**：输入 docs/embeddings/SearchResult/证明；输出可信写入确认、带 outcome 的评测结果、严格 gate、单次多 k 与安全诊断。\n96: \n97: - [ ] S1-01 对 provider embedding 数量、维度作边界验证，修复虚假成功计数，补服务贯通回归；不先重构整个 embedding 模块。\n98: - [ ] S1-02 evaluate 保留检索 outcome、分类码、来源与检索耗时；runner 区分成功空结果、基础设施失败、部分来源失败及 judge 降级。\n99: - [ ] S1-03 补齐版本化证明消费校验，拒绝空 ID/版本、bool/None/负计数及错误 owner；隔离声明需绑定实际目标和可核验产物证据。\n100: - [ ] S1-04 从单次 top-5 派生 Recall@1/3/5，旧 recall_at_k 保留；mechanical context-precision proxy 不被 RAGAS 同名值覆盖。\n101: - [ ] S1-05 日志关联与歧义行审计设计落地；在线尚无 seed 时先用带 ID 请求测试，S5 再接真实生成路径。补已有错误类别的准确映射，不新建全套错误系统。\n102: - [ ] S1-06 将复现变成必要回归，跑相关测试和检查；记录结果及已知 CI 阻断。\n103: - [ ] S1-07 强化正式题集 validator 与完成计数断言：恰有 20 个唯一非空题 ID，全部 verified_v1 且 gold 合法；全 draft、部分未验证、重复/空 ID 均不得进入正式评测。\n104: - [ ] S1-08 对 judge 每项分数校验存在性、数值类型、有限性与已确认范围；部分缺失、NaN、Infinity 均标记相应 enrichment 不可用并降级；报告输出严格 JSON，不以 0 代替缺失分数。\n105: \n106: **门 G1**：两文档一 embedding 不可能成功；数据库失败或零题执行不标 completed/completed_judge_degraded；无效证明/未完整验证题集不能准入；两种排名输出不同 Recall@1；无效 judge 分数不伪装有效值且 JSON 无非有限值；日志可关联且无正文/密钥泄露。全量测试通过不替代这些行为断言。\n107: ", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:108": "108: ### S2：正式 schema 与真实环境（原 I-01/F-01）\n109: \n110: **基线/已完成**：SQLite 正式 7 步迁移及回程已有验证，PG 待实测，provider fixture 仍分叉。\n111: \n112: - [ ] S2-01 fixture 复用正式迁移/schema；由显式测试配置打开并预检实际连接，经 Alembic connection 属性传入 env.py 的独立分支。测试路径缺失注入即失败，不允许 settings URL 回退；DDL/清理前核对数据库/schema/资源标识，确保测试目标不同于业务/基线目标。\n113: - [ ] S2-02 从干净测试 PG 跑正式迁移，核对扩展、字段、实际 provider/dialect、embedding 维度与当前表一致，并记录实际 embedding 配置/指纹而非只读维度。\n114: - [ ] S2-03 测试 PG 中途写入失败 rollback、正常写入实数、doc/chunk/locator 往返。\n115: - [ ] S2-04 在权限测试库执行两用户、公共、私有、歧义及排序前过滤对抗；产出可追溯证据。\n116: - [ ] S2-05 新增 settings 指向 A、fixture 指向 B 的对抗用例；迁移与清理只允许 B 发生变化，A 不执行 DDL/DML。错误库/schema、缺少资源标识或连接注入均在变更前拒绝。\n117: \n118: **门 G2**：迁移目标传递与变更前预检成立，真实 PG 迁移/embedding/事务/过滤通过；不可用标基础设施未确认，禁止 fake 代验。环境受阻时可继续不依赖真实库的 S5 实现与测试，但不得勾选真实里程碑。\n119: ", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:120": "120: ### S3：正式摄入与产品证明（原 F-02～F-06）\n121: \n122: **基线/已完成**：Extractor、ChunkingService、KnowledgeIngestionService 已有；完整证明生成与首本书真实兼容尚未验收。\n123: \n124: - [ ] S3-01 真实 EPUB hash/内容检查；固定 namespace、normalizer、chunk policy 版本，不擅自调参。\n125: - [ ] S3-02 通过产品 service 准备计划，写库前持久化无正文运行意图、计划清单、目标为空的前态及 embedding 指纹；本目标独占且未决 run 不允许另一摄入。随后同一准备结果写入一次，从实际库核对数量和完整产物，不靠 docs 长度推断。\n126: - [ ] S3-03 输出成功证明或非成功运行记录；校验库目标、版本、scope/owner、输入 SHA 和实际 embedding 指纹，一致后才放行。\n127: - [ ] S3-04 检索回读身份、正文和实际 locator；记录纯文本路径的定位限制。\n128: - [ ] S3-05 保存隔离证据并验证 gate 消费；提交后证明未落盘时，以预先落盘的意图/计划/空库前态执行只读恢复；完整数量、多重身份、内容摘要、scope/owner 及目标/配置全部吻合才补写证明，不再次 index。无意图、非空前态、并发写入或不一致时保持未准入并交人工处置。\n129: - [ ] S3-06 覆盖提交成功后、证明落盘前退出的恢复验收；覆盖无清单、重复行、部分行、错目标和模型指纹不符时不能补证或自动重导。\n130: \n131: **门 G3**：真实索引与成功 JSON 证明及 embedding 指纹一致；预意图/计划和提交后恢复路径可验证；基线资源没有权限对抗样本或其他书产物；append-only 边界明确。目标文件缺失/解析空串/写入未确认或恢复不唯一均不能产生成功证明。\n132: ", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:133": "133: ### S4：20 题真实检索基线（原 Phase 5）\n134: \n135: **基线/已完成**：20 题资产和只读工具存在，正式分数未产出；需消费 S1 修复与 S3 证明。\n136: \n137: - [ ] S4-01 正式题集恰有 20 个非空唯一题 ID、全部 verified_v1 且 gold 校验通过；validator 与六项 gate 全绿，provider 集合严格 vector-only；运行前比较实际目标、清单和查询 embedding 指纹，无漂移才开始。\n138: - [ ] S4-02 每题 evaluate/检索至多一次，单次 top-5 派生多 k，保存题 ID、指标、耗时、来源与安全状态。\n139: - [ ] S4-03 真正检索基础设施失败时保留已运行结果，报告 inconclusive/未跑数，不重试或当零召回平均；成功 empty 可记有效零召回。\n140: - [ ] S4-04 judge 不可用、部分缺失/无效分数仅影响对应 enrichment；无效项写 null 与安全原因，不能填有效 0，健康检索机械指标保留，完整 20 题健康执行时才可标 completed_judge_degraded。\n141: - [ ] S4-05 人工复核零召回、高冗余和混源迹象，区分 proxy 局限、内容缺失与检索问题；写首次基线报告。\n142: \n143: **门 G4**：正式题集 20 题全部有效执行，且有效题数=20、失败数=0、未跑数=0，题 ID 与已准入集合一一对应，检索配置与成功证明一致，才能以 completed 或 completed_judge_degraded 放行；低召回仍是有效执行，不新增质量阈值。inconclusive、blocked、零调用或部分完成只保留尝试记录，不能放行 G4/G6。报告可审计且为严格 JSON。不能以“分数不高”直接修改策略重跑并挑选最好结果；修复后另编号重跑，不覆盖首次结果。\n144: ", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:145": "145: ### S5：在线检索证据进入 Tutor（原 C-12～C-17）\n146: \n147: **基线/已完成**：两个入口已有真实后端 fail-fast；证据仍未完成在线消费。\n148: \n149: - [ ] S5-01 认证上下文创建完整 vector-only 检索种子；取消无证据最终 Tutor 抢跑；保真 seed/rule/conductor。\n150: - [ ] S5-02 Orchestrator 管理 retrieval_id 状态与屏障；关联 Critic 观察，缺质量观察可继续，重复事件不重复发最终动作。\n151: - [ ] S5-03 按确认的 §H 投影，将当前轮正文/来源/状态注入 Tutor；证据是数据，不允许替代控制身份或动作契约。\n152: - [ ] S5-04 覆盖五态、低质量与未授权情形的受控回复；不静默回退 fake 或空回复。\n153: - [ ] S5-05 sentinel、两连续请求、迟到质量/重复 Tick、跨用户和引用截断验证；普通/SSE 共用核心路径。\n154: \n155: **门 G5**：当前问题→检索→受控证据→Tutor 输入的实际关联成立；每个 retrieval 最多一个最终 Tutor 动作；无权限/上轮正文不进入当前生成，全部相关日志能追踪。\n156: ", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:157": "157: ### S6：MVP 联合验收与交接（原 Phase 6）\n158: \n159: **基线/已完成**：验收设计已有，真实联合证据尚无。\n160: \n161: - [ ] S6-01 使用同一受证明本书索引验证真实普通/SSE 入口，核对本轮实际查询 embedding 配置指纹与摄入证明一致，检查正文与来源实际消费；同维度但模型/部署/参数不同也拒绝旧索引。\n162: - [ ] S6-02 真实两用户、多轮与失败路径；区分召回、投影、生成和基础设施失败。\n163: - [ ] S6-03 运行相关回归及必要 CI，核对本轮引入问题；更新 README、主清单、交接，状态文件由对应唯一写者回写。\n164: - [ ] S6-04 保存本轮证明、基线和验收证据索引，列明 proxy、文件级 locator、append-only 及未定教学质量阈值。\n165: \n166: **门 G6（MVP 完成）**：G1～G5 均有实证，其中 G4 必须是同一受证明索引/配置上的完整 20 题有效基线，不接受失败尝试代替；真实双入口及安全/故障验证通过，文档一致。可声称“单书真实 RAG 教学链路可用并有基线”，不能声称已证明教学效果或达到未定义质量阈值。\n167: ", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:70": "70: | T00 | S0-01/02/03/05/06/07；主控 | 方案确认 | 固定字段、错误、证明/恢复、embedding指纹、迁移注入和投影契约；同步 spec 引用 raw 来源；本轮确认不需要重复请求同一方案批准 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:71": "71: | T01 | S0-04；只读资源盘点 | 方案确认 | 资产/源SHA可用性、PG/embedding条件、测试/lint现状；不运行写库迁移、不泄露密钥 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:10": "10: | T01 | [只读盘点plan](2026-10-17-t01-execution-plan.md) / [执行证据](../evidence/t01/2026-10-17-inventory.md) | 用户已授权执行 | 盘点覆盖完成；资源就绪blocked，未探测PG/embedding |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:72": "72: | T02 | E1 + E3 的 prepare_file/ingest_prepared | T00 | 可信写入、准备结果和无正文计划接口；服务贯通用例，默认接口兼容 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:11": "11: | T02 | [写入与预计划](2026-10-16-t02-execution-plan.md) | SDK 索引对应已补，文档复核通过 | 实施完成、定向复审及主窗口组合离线回归通过 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:73": "73: | T03 | E2；S1-02/04/07/08 | T00 | 同次多k、outcome保真、20题不变量、judge逐项校验及严格JSON；不与另一代理同时改评测文件 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:12": "12: | T03 | [评测执行核心](2026-10-16-t03-execution-plan.md) | judge 汇总一致性已补，文档复核通过 | 实施完成、两轮定向复审及最终组合离线回归通过 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:74": "74: | T04 | E3 共享schema、指纹与验证纯逻辑 | T00 | 生产与消费共同调用的证明验证/embedding指纹接口；独立新文件，不抢改 T02 的 embedding.py |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:13": "13: | T04 | [共享证明与身份](2026-10-16-t04-execution-plan.md) | 独立离线与组合回归边界已补，文档复核通过 | 实施完成、定向复审及主窗口组合离线回归通过 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:75": "75: | T05 | E4；S2-01/05 的迁移入口与守卫实现 | T00 | env.py 接受已预检连接；A/B目标对抗的离线/受控验证，不宣称真实PG已完成 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:14": "14: | T05 | [迁移目标守卫](2026-10-16-t05-execution-plan.md) | 2026-10-17正式review：3项P1待修订，不可派发 | 未实施 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:76": "76: | T06 | E5；S5-01～05 的离线核心 | T00 | seed/rule/conductor、Orchestrator、Tutor、Critic、投影及假数据回归；不改 T03 的 retriever.py，不假称真实证据已验收 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:15": "15: | T06 | 在线离线核心，尚无独立plan | 未编制 | 未实施 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:77": "77: | T07 | E4；I-01及S2真实验证 | T05、T01、G1 | fixture消费正式schema、实际PG迁移/维度/事务/权限/identity验证；独立测试资源、无基线污染；包含G2复核 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:16": "16: | T07 | 正式fixture/真实PG，尚无独立plan | 未编制，等待G1/T05/T01 | 未执行 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:78": "78: | T08 | E3；S3 runner与恢复实现/受控测试 | T02、T04 | 持久化预意图和计划、写入一次、实际产物核对、提交后只读补证；正式摄入另由 T11 完成 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:17": "17: | T08 | [runner/恢复/快照](2026-10-16-t08-execution-plan.md) | 2026-10-17正式review：2项P1、2项P2待修订 | 未实施 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:79": "79: | T09 | E2/E3；S1-03与S4报告消费层 | T03、T04 | benchmark调用共享schema，绑定目标/指纹/隔离证据、完成计数；可用受控输入验证，不造产品证明 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:18": "18: | T09 | [gate/正式报告接入](2026-10-16-t09-execution-plan.md) | 2026-10-17正式review：2项P1待修订 | 未实施 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:80": "80: | T10 | E5；S1-05 | T00 | 关联上下文、无正文歧义审计及已有错误归类；写入还受 T02/T03 完成约束 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:19": "19: | T10 | 日志审计，尚无独立plan | 未编制，等待文件写权交接 | 未实施 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:81": "81: | T11 | S3-01～06真实运行 | G2、T08 | 本书索引、预意图、产物多重清单、成功证明、恢复验收；包含G3复核，独占目标 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:20": "20: | T11 | 正式摄入，尚无独立运行plan | 未编制，等待G2/T08 | 未执行 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:82": "82: | T12 | S4-01～05 | G3、T09 | 完整20题一次运行、raw报告、指标与异常题复核；judge可降级，检索失败不能放行G4 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:21": "21: | T12 | 真实20题baseline，尚无独立运行plan | 未编制，等待G3/T09 | 未执行 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:83": "83: | T13 | E5/E6；S5真实验证、S6-01/02前置 | G3、T06、T10、T04 | 本书查询指纹匹配、普通/SSE、两用户/多轮/重复事件/降级路径；包含G5复核 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:22": "22: | T13 | 双入口真实验证，尚无独立plan | 未编制，等待G3/T06/T10/T04 | 未执行 |", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:84": "84: | T14 | E6；S6及最终交接 | G4、G5 | 联合回归、必要CI、证据索引、README/主清单/交接同步；主控核验后G6完成 |", "docs/rag-work/plans/2026-10-16-execution-plan-index.md:23": "23: | T14 | 联合验收交接，尚无独立plan | 未编制，等待G4/G5 | 未执行 |", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:106": "106: **门 G1**：两文档一 embedding 不可能成功；数据库失败或零题执行不标 completed/completed_judge_degraded；无效证明/未完整验证题集不能准入；两种排名输出不同 Recall@1；无效 judge 分数不伪装有效值且 JSON 无非有限值；日志可关联且无正文/密钥泄露。全量测试通过不替代这些行为断言。", "docs/rag-work/plans/2026-07-24-rag-foundation-parallel-todolist.md:29": "29: - [ ] G1～G6：未执行，本轮不宣称真实PG/产品摄入/正式baseline或在线教学链路完成。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:118": "118: **门 G2**：迁移目标传递与变更前预检成立，真实 PG 迁移/embedding/事务/过滤通过；不可用标基础设施未确认，禁止 fake 代验。环境受阻时可继续不依赖真实库的 S5 实现与测试，但不得勾选真实里程碑。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:131": "131: **门 G3**：真实索引与成功 JSON 证明及 embedding 指纹一致；预意图/计划和提交后恢复路径可验证；基线资源没有权限对抗样本或其他书产物；append-only 边界明确。目标文件缺失/解析空串/写入未确认或恢复不唯一均不能产生成功证明。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:143": "143: **门 G4**：正式题集 20 题全部有效执行，且有效题数=20、失败数=0、未跑数=0，题 ID 与已准入集合一一对应，检索配置与成功证明一致，才能以 completed 或 completed_judge_degraded 放行；低召回仍是有效执行，不新增质量阈值。inconclusive、blocked、零调用或部分完成只保留尝试记录，不能放行 G4/G6。报告可审计且为严格 JSON。不能以“分数不高”直接修改策略重跑并挑选最好结果；修复后另编号重跑，不覆盖首次结果。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:155": "155: **门 G5**：当前问题→检索→受控证据→Tutor 输入的实际关联成立；每个 retrieval 最多一个最终 Tutor 动作；无权限/上轮正文不进入当前生成，全部相关日志能追踪。", "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md:166": "166: **门 G6（MVP 完成）**：G1～G5 均有实证，其中 G4 必须是同一受证明索引/配置上的完整 20 题有效基线，不接受失败尝试代替；真实双入口及安全/故障验证通过，文档一致。可声称“单书真实 RAG 教学链路可用并有基线”，不能声称已证明教学效果或达到未定义质量阈值。", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:17": "17:     OK[用户已确认方案] --> T00[T00 契约归档与接口固定]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:18": "18:     OK --> T01[T01 环境与版权资产只读盘点]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:19": "19:     T00 --> T02[T02 写入确认与产品预计划接口]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:20": "20:     T00 --> T03[T03 评测状态 多k 20题 judge校验]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:21": "21:     T00 --> T04[T04 证明schema与embedding指纹]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:22": "22:     T00 --> T05[T05 迁移目标注入与变更前守卫]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:23": "23:     T00 --> T06[T06 在线种子 路由 投影 离线实现]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:25": "25:     T02 --> T08[T08 摄入runner 意图持久化 只读恢复]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:26": "26:     T04 --> T08", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:27": "27:     T03 --> T09[T09 准入与报告对接]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:28": "28:     T04 --> T09", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:30": "30:     T00 --> T10[T10 日志关联 歧义行审计 错误分类]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:34": "34:     T02 --> G1{G1 可信性回归通过}", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:35": "35:     T03 --> G1", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:36": "36:     T04 --> G1", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:37": "37:     T09 --> G1", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:38": "38:     T10 --> G1", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:40": "40:     G1 --> T07[T07 正式fixture与真实PG事务 权限验证]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:41": "41:     T05 --> T07", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:42": "42:     T01 --> T07", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:43": "43:     T07 --> G2{G2 真实环境通过}", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:45": "45:     G2 --> T11[T11 单书正式摄入 产物核验与证明]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:46": "46:     T08 --> T11", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:47": "47:     T11 --> G3{G3 索引与证明一致}", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:49": "49:     G3 --> T12[T12 真实20题基线与人工复核]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:50": "50:     T09 --> T12", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:51": "51:     T12 --> G4{G4 有效20 失败0 未跑0}", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:53": "53:     G3 --> T13[T13 在线接入指纹校验与真实双入口验证]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:54": "54:     T06 --> T13", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:55": "55:     T10 --> T13", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:56": "56:     T04 --> T13", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:58": "58:     T13 --> G5{G5 当前轮授权证据实际消费}", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:59": "59:     G4 --> T14[T14 联合验收 回归与交接]", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:60": "60:     G5 --> T14", "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md:61": "61:     T14 --> G6{G6 MVP完成}", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:11": "11: ### RV2-01 · P1 · intent已落盘但pending尚未创建时，新run可绕过未决意图\n12: \n13: - 定位：[T08计划](2026-10-16-t08-execution-plan.md:85)，及该文件156、183～184、190、195行。\n14: - 触发：intent.json和plan-manifest.json已发布，在创建prepared marker之前进程退出。PG session锁随连接终止而释放，target仍为空。\n15: - 问题：新run仅按target查pending文件，可能因此进入；原run又因缺marker和proof只能inconclusive。没有发现阻止新run的其他持久登记步骤，违反spec A4“未决意图未处理前所有受控写入者不得启动新run”。这与文末已说明的unconfirmed返回值持久化窗口是两件不同的事。\n16: - 修订：在发布任何需阻止新run的持久意图之前先建立可发现的target占用记录；为marker存在但intent尚不完整的已知未开始写入状态设计只读处置规则。或者给出等效的完整持久登记/扫描机制，不能只靠当前marker缺失判断安全。覆盖两个发布动作之间逐点崩溃，以及随后run/recover的行为。\n17: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:18": "18: ### RV2-02 · P1 · 专用writer证据未绑定实际数据库登录角色\n19: \n20: - 定位：[T08计划](2026-10-16-t08-execution-plan.md:70)，及111～113、181、185、192行。\n21: - 触发：资源证据登记受审计的专用writer role，但database_url_env实际使用另一个可写角色；database/schema名字均匹配。\n22: - 问题：计划核对目标和锁，却没有要求从同一连接读取实际session/current role并与权限审计事实绑定。锁只能协调遵守协议的writer，不能补足身份不符的权限证据；仍可能生成排他成功证明。spec A4明确不能排除外部writer时不准成功恢复。\n23: - 修订：定义同连接实际登录角色、有效角色与可信权限审计记录的比对方式；无法确认时在写入或补证明前拒绝。正常与恢复均覆盖“目标相同、账号不同”的受控反例，不泄露DSN或凭证。\n24: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:25": "25: ### RV2-03 · P2 · 预检失败时尚无合法run UUID可构造RunRecord\n26: \n27: - 定位：[T08计划](2026-10-16-t08-execution-plan.md:181)，及161、183行。\n28: - 触发：参数、registry、数据库或lease预检在“生成UUID”之前失败，而流程要求返回RunRecord。\n29: - 依据：[RunRecord](../../../app/infrastructure/rag/contracts.py:378)在构造时无条件验证ingestion_run_id为UUID。\n30: - 修订：在任何可能返回失败的校验前生成一次本次调用UUID，并在排他记录、intent、manifest、marker和返回值中复用；不要在后续步骤再次生成。明确仅返回诊断ID与需要持久化登记的失败范围。\n31: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:32": "32: ### RV2-04 · P2 · runtime构造与身份核验先后顺序互相矛盾\n33: \n34: - 定位：[T08计划](2026-10-16-t08-execution-plan.md:147)，及75、181行。\n35: - 问题：_build_runtime要求调用describe_embedding并返回含已验证Identity的Runtime；run流程却要求完成数据库/lease/空前态校验和排他记录后才describe，而这些前置又要先取得runtime中的provider。\n36: - 修订：拆明service/provider装配与identity描述两个阶段，或调整唯一顺序；结构字段、helper契约、正常和恢复流程及测试调用顺序必须一致。此次是接口顺序冲突，不声称SDK配置读取本身会发出远端请求。\n37: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:40": "40: ### RV2-05 · P1 · current_schema校验不足以约束revision的实际解析目标\n41: \n42: - 定位：[T05计划](2026-10-16-t05-execution-plan.md:57)，及61、106、141行。\n43: - 触发：search_path中测试schema在前、业务schema在后，某待修改表只在业务schema存在。current_schema仍是测试schema，守卫可通过。\n44: - 依据：现有[context recall revision](../../../alembic/versions/20260623_add_ragas_context_recall.py:22)使用无schema限定的op.add_column('evals', ...)；其他revision也存在未限定表操作。\n45: - 修订：在变更前限制并核验有效schema搜索/对象解析范围，拒绝可能命中未批准业务/基线对象的路径；或将测试资源限定为整个隔离数据库并证明解析范围。仅设置version_table_schema并不能约束全部revision。补“当前schema合法、后续schema有业务表”的反例，真实PG执行留T07。\n46: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:47": "47: ### RV2-06 · P1 · 数据库名加schema不能唯一识别PostgreSQL服务实例\n48: \n49: - 定位：[T05计划](2026-10-16-t05-execution-plan.md:106)，及141行。\n50: - 触发：连接误指向另一PG实例，但其数据库名/schema与获批测试目标相同。\n51: - 问题：计划将database_id定义成数据库名，allowlist碰撞集合也仅含(database_id, schema_name)，这两项查询无法识别服务实例差异。\n52: - 修订：在私有可信资源映射中明确可唯一绑定服务实例的标识及同连接只读验证方式，或由受信连接装配方提供可核验的唯一目标绑定。公开失败只输出安全ID；不得通过输出完整URL补识别。覆盖“不同实例、相同数据库名和schema”反例。无需单方改冻结Config.attributes字段。\n53: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:54": "54: ### RV2-07 · P1 · 预检autobegin导致Alembic事务责任改变\n55: \n56: - 定位：[T05计划](2026-10-16-t05-execution-plan.md:57)，及61、104、113行。\n57: - 触发：注入Connection原先不在事务中，守卫先execute只读查询，再context.configure。\n58: - 主控核验：本地已安装Alembic的`.venv/Lib/site-packages/alembic/runtime/migration.py:159`在配置时记录connection.in_transaction()；416行起在外部事务下返回空transaction context。守卫查询会触发SQLAlchemy autobegin，因而“沿用context.begin_transaction”不等于Alembic会负责提交这次连接上的事务。\n59: - 后果：若调用方没有提交，该事务可在连接关闭时回滚，迁移调用返回但实际更新未保留；反过来，直接提交又可能错误提交调用方已有工作。\n60: - 修订：记录入口是否已有调用方事务；明确预检产生事务的结束方式，以及外部事务由谁提交/回滚。新增事务所有权矩阵和成功/失败边界断言，不能仅用run_migrations惰性spy证明事务正确；本包使用受控事务对象/本地隔离验证，真实PG事务留T07。\n61: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:64": "64: ### RV2-08 · P1 · 真实查询provider未与证明及snapshot的目标绑定\n65: \n66: - 定位：[T09计划](2026-10-16-t09-execution-plan.md:145)，及148～149、198行。\n67: - 触发：context、snapshot、proof均属于目标A；agent实际vector provider连接目标B；两者都是PG且embedding配置相同。\n68: - 依据：现有[provider构造](../../../app/infrastructure/rag/pgvector_provider.py:42)可选择独立db_url；[默认dialect探测](../../../benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py:207)只确定方言。计划比较的是声明context/snapshot字段和实际embedding，而没有列出读取并绑定live provider实际数据库/schema/目标的步骤。\n69: - 后果：可能在B上评测，却以A的证明、快照、目标标识输出完成报告。\n70: - 修订：准入时核对执行检索的同一provider连接的实际目标与受控资源和快照一致，并固定运行期绑定；不能仅增加一个自报target字符串。provider指向B、其余证据属于A时必须零次evaluate并阻断。\n71: ", "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md:72": "72: ### RV2-09 · P1 · baseline保护在snapshot之后获取，且没有跨包持有/互斥协议\n73: \n74: - 定位：[T09计划](2026-10-16-t09-execution-plan.md:78)，及76、84、198行；对照T08计划71、163、186行。\n75: - 触发：取snapshot后、取得保护前目标变化；或20题运行中T08 writer并不认识所谓read_only_frozen保护，仍可获得自己的writer lease。\n76: - 问题：active=True等mapping值只能表达声明。计划没有规定保护句柄从snapshot前持续持有到baseline结束、由谁在finally释放，以及它与T08的目标锁是否冲突。\n77: - 修订：由T12受控调用者先取得同target的保护，再读取实际snapshot/核验，持续持有直至baseline结束并finally释放；定义与T08 writer使用的相容/冲突协议或等效的权限冻结机制。T09只消费受控绑定，不独立复制锁实现；离线包用替身验证顺序/冲突/生命周期，实际机制在T07/T12验证。保留摄入UUID和本次report UUID的区分。\n78: "}</script>
+<script>
+'use strict';
+const A=JSON.parse(document.getElementById('architecture-data').textContent),S=JSON.parse(document.getElementById('stages-data').textContent);
+const $=s=>document.querySelector(s),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arr=v=>Array.isArray(v)?v:v==null?[]:[v];
+const txt=v=>typeof v==='string'?v:typeof v==='object'?Object.entries(v).map(([k,x])=>`${k}：${typeof x==='object'?JSON.stringify(x):x}`).join('；'):String(v??'');
+const list=v=>'<ul>'+arr(v).map(x=>'<li>'+esc(txt(x))+'</li>').join('')+'</ul>';
+const field=(k,v)=>'<dt>'+esc(k)+'</dt><dd>'+ (Array.isArray(v)?list(v):esc(txt(v)))+'</dd>';
+const sourceExcerpts=JSON.parse(document.getElementById('source-excerpts').textContent);
+let sources=[],sourceMap=new Map();
+function registerSources(data){for(const s of arr(data.sources)){const id=s.id||s.path+':'+s.line;if(!sourceMap.has(id)){sourceMap.set(id,s);sources.push({...s,id});}}}
+registerSources(A);registerSources(S);
+function refs(v){return arr(v).map(x=>{const id=typeof x==='string'?x:x.id;if(typeof x==='object'&&x.path&&!sourceMap.has(id)){sourceMap.set(id||x.path+':'+x.line,x);}const s=sourceMap.get(id)||x;return '<button type="button" class="evidence" data-source="'+esc(id||s.path+':'+s.line)+'">证据 · '+esc(s.title||s.label||id||s.path)+'</button>';}).join('');}
+function genericObject(obj,exclude=[]){return '<dl class="fields">'+Object.entries(obj).filter(([k,v])=>!exclude.includes(k)&&v!=null).map(([k,v])=>field(k,v)).join('')+'</dl>';}
+const statusNames={unknown:'尚未核实',not_accepted:'尚未验收',partial:'部分完成，仍有缺口',not_started:'尚未启动',blocked:'阻塞',contract_frozen:'契约已冻结',covered_resource_blocked:'盘点已覆盖，资源仍阻塞',implemented_offline_accepted:'已有离线交付',not_passed:'尚未通过',plan_review_blocked:'计划待修订',covered:'盘点已覆盖',not_required_for_offline_scope:'离线范围无需真实资源'};
+const status=v=>statusNames[v]||v;
+function walkEvidence(x){if(!x||typeof x!=='object')return;if(x.path&&x.line){const id=x.path+':'+x.line;if(!sourceMap.has(id)){const s={...x,id,title:x.path.split('/').at(-1)+':'+x.line,href:'../../../'+x.path+'#L'+x.line};sourceMap.set(id,s);sources.push(s);}}Object.values(x).forEach(v=>{if(typeof v==='object')walkEvidence(v);});}
+walkEvidence(A);walkEvidence(S);
+function proof(v){return refs(arr(v).map(x=>typeof x==='string'?x:x.path+':'+x.line));}
+const contractProof=proof(S.contract.evidence);
+$('#boundary-content').innerHTML='<div class="intro-grid"><div><span class="tag">可核实的现状</span>'+list(['T00 共享契约 v1.0.1 已冻结；T02/T03/T04 已有实现与历史离线验收。','T01 inventory_coverage=covered：要求盘点的项目均已核对并记录，包括缺失和未知。','extractor、切块、产品摄入接口、pgvector provider、权限过滤与 Retriever 已有代码。'])+'</div><div><span class="tag warn">尚不可宣称</span>'+list(['真实 EPUB / corpus / PG / embedding 已全部就绪。T01 resource_readiness 仍为 blocked。','正式单书索引、20 题真实基线、普通 chat / SSE 的 Tutor 证据消费均已验收。','G1—G6 已过门，或 T05/T08/T09 的 9 项审阅问题已经关闭。'])+'</div></div><p class="note" style="margin-top:var(--s-4)"><b>当前正式验收门：0 / 6 通过。</b>这只是验收证据计数，不是项目完成度 0%。547 passed、1 deselected 是 2026-10-16 的历史离线结果，本页没有重跑。</p><dl class="fields">'+field('冻结契约',S.contract.version)+field('契约 SHA-256',S.contract.declaredSha256)+'</dl>'+contractProof+proof(A.statusBasis);
+const flowInfo=[{question:'把一本书做成可检索的索引',input:'本机书籍路径、导入命名空间、权限 scope / user_id、切块参数与 embedding 配置。',output:'产品准备结果、文档 / 块身份、向量库行、写入确认；T08/T11 还要形成真实运行证明。',explain:'先提取文本，再形成稳定的片段快照。prepare_file 负责准备，ingest_prepared 负责消费同一快照。Provider 在写入前检查整批向量，提交后返回实际写入结果。正式 runner 和提交后只读恢复是后续工作，不能把纯验证函数当作生产证明。'}, {question:'从当前用户的问题找到授权片段',input:'query、可信 user_id、scope / top_k 等检索参数；由 Retriever 接受检索动作事件。',output:'带来源的证据，或明确的安全失败 / 降级事件；无结果与基础设施故障必须区分。',explain:'Retriever 负责入口语义，Coordinator 负责来源路由、聚合与去重，PgVectorProvider 负责真实向量查询和行级权限条件。受限请求只走 vector 来源；OCR / code 内存 provider 不能被图示成已接入线上受限链路。'}, {question:'用固定题集衡量检索，而不是猜质量',input:'题集、corpus / 来源声明、产品准入材料、同一检索链与可选 judge。',output:'每题检索结果、执行计数、Recall@1/3/5、机械代理指标及可选 judge 结果。',explain:'每题一次检索，用同一次 top-5 的前缀计算多个 k，避免多次检索改变比较条件。judge 是可选补充：judge 不可用可以降级，检索失败却不能被写成有效的质量基线。T09 的强准入与报告接线尚待完成，T12 才负责真实 20 题运行。'}, {question:'让这一轮的教师真正使用这一轮证据',input:'普通 chat 或 SSE 请求、会话身份与问题；规划中还需当前轮检索结果和相关指纹。',output:'目标是 Tutor 使用当前用户有权访问的当前轮证据进行回答；无证据或检索失败须明确降级。',explain:'现有 assembly 能装配 Retriever，但配置、Provider 类型、URL dialect 的校验不会实际连接 PG。默认新会话仍以 USER_MESSAGE / TOPIC_ENTERED / TUTOR_ASK 为种子，Tutor 的当前 prompt 仍围绕 topic / 模式。检索事件到 Orchestrator 屏障、证据投影、Tutor / Critic 消费的完整连接，由 T06/T13 完成与验收。'}];
+$('#chains-content').innerHTML=A.flows.map((f,i)=>'<article style="margin-top:var(--s-6)" data-ref="chain-'+i+'"><p class="kicker">'+esc(f.title)+'</p><h3>'+esc(flowInfo[i].question)+'</h3><figure><div class="frame"><ol role="img" aria-label="'+esc(f.title+'各步骤')+'">'+f.steps.map((x,n)=>'<li data-ref="flow-'+i+'-'+n+'">'+esc(x)+'</li>').join('')+'</ol></div><figcaption><span class="fig-n">图 '+(i+2)+'</span>'+esc(flowInfo[i].question)+'；带“未来 / 待完成”的步骤属于规划产物。</figcaption></figure><p>'+esc(flowInfo[i].explain)+'</p><dl class="fields">'+field('输入',flowInfo[i].input)+field('输出',flowInfo[i].output)+'</dl>'+proof(f.evidence)+'</article>').join('');
+$('#modules-content').innerHTML='<div class="table-wrap"><table><thead><tr><th>模块</th><th>它具体做什么</th><th>当前边界</th></tr></thead><tbody>'+A.modules.map(m=>'<tr><td><a href="#module-'+esc(m.id)+'">'+esc(m.title)+'</a></td><td>'+esc(m.plainPurpose)+'</td><td>'+list(m.limitations)+'</td></tr>').join('')+'</tbody></table></div>'+A.modules.map(m=>'<details id="module-'+esc(m.id)+'" data-searchable data-ref="'+esc(m.id)+'"><summary>'+esc(m.title)+'</summary><div class="detail-body"><p>'+esc(m.plainPurpose)+'</p><dl class="fields">'+field('输入',m.inputs)+field('输出',m.outputs)+field('已有实现',m.implemented)+field('仍需注意',m.limitations)+'</dl><h4>函数与接口</h4>'+list(m.functions.map(f=>f.name+'：'+f.purpose))+'<h4>代码落点</h4>'+proof(m.files)+'</div></details>').join('');
+$('#stage-nav').innerHTML=S.phases.map(p=>'<a href="#stage-'+p.id+'">'+p.id+' '+esc(p.name)+'</a>').join('');
+$('#stages-content').innerHTML=S.phases.map((p,i)=>'<article class="stage" id="stage-'+p.id+'" data-ref="'+p.id+'"><div class="stage-title"><span class="mono">'+p.id+'</span><h3>'+esc(p.name)+'</h3></div><p class="status-line"><span class="tag">'+esc(status(p.status))+'</span>工作包 '+p.tasks.map(t=>'<a href="#task-'+t+'">'+t+'</a>').join(' / ')+'</p><p><b>实现基线：</b>'+esc(p.implementationBaseline)+'</p><figure><div class="frame"><div class="flow" role="img" aria-label="'+esc(p.id+'阶段从输入到输出的工作')+'"><div class="step"><b>接收什么</b><small>'+p.inputs.map(esc).join('<br>')+'</small></div><span class="arrow" aria-hidden="true">→</span><div class="step"><b>'+esc(p.name)+'</b><small>'+esc(p.tasks.join(' / '))+'</small></div><span class="arrow" aria-hidden="true">→</span><div class="step pending"><b>验收要拿到什么</b><small>'+p.outputs.map(esc).join('<br>')+'</small></div></div></div><figcaption><span class="fig-n">图 '+(i+6)+'</span>'+esc(p.ioProvenance)+'</figcaption></figure><div class="stage-panels"><div><h4>当前已完成</h4>'+list(p.completed)+'</div><div><h4>仍然要做</h4>'+list(p.remaining)+'</div></div><dl class="fields">'+field('准入条件',p.entry)+field('退出 / 放行条件',p.exit)+'</dl><details><summary>展开本阶段完整工作清单与历史对照</summary><p class="meta">'+esc(p.originalHeading)+'</p>'+list(p.goal)+(p.rawChecklistCaveat?'<p class="note">'+esc(p.rawChecklistCaveat)+'</p>':'')+'</details>'+proof(p.evidence)+'</article>').join('');
+const taskTitles={'T00':'契约归档与接口固定','T01':'环境与版权资产只读盘点','T02':'写入确认与产品预计划接口','T03':'评测状态、多 k 与 20 题校验','T04':'证明 schema 与 embedding 指纹','T05':'迁移目标注入与变更前守卫','T06':'在线种子、路由与投影离线核心','T07':'正式 fixture 与真实 PG 验证','T08':'摄入 runner、意图持久化与恢复','T09':'强准入与报告消费接线','T10':'日志关联、审计与错误分类','T11':'单书正式摄入与产物证明','T12':'真实 20 题基线与人工复核','T13':'在线接入及真实双入口验证','T14':'联合验收、回归与交接'};
+$('#tasks-content').innerHTML=S.tasks.map(t=>'<details id="task-'+t.id+'" data-searchable data-ref="'+t.id+'"><summary>'+t.id+' · '+esc(taskTitles[t.id])+'</summary><div class="detail-body"><dl class="fields">'+field('阶段映射 / 范围',t.scope)+field('计划状态',t.planStatus)+field('执行状态',t.executionStatus)+field('资源就绪',status(t.resourceReadiness))+field('硬前置',t.hardPrerequisites)+field('资源 / 写入权依赖',t.resourceDependencies)+field('产物与边界',t.deliverables)+field('完成条件',t.acceptance)+'</dl>'+proof(t.evidence)+'</div></details>').join('');
+const positions={OK:[535,20],T00:[535,115],T01:[1020,115],T02:[25,260],T03:[225,260],T04:[425,260],T05:[825,260],T06:[1020,260],T10:[625,260],T08:[110,425],T09:[400,425],G1:[680,550],T07:[835,680],G2:[835,775],T11:[535,900],G3:[535,995],T12:[300,1125],T13:[790,1125],G4:[300,1230],G5:[790,1230],T14:[535,1350],G6:[535,1450]};
+const labels={OK:'已确认方案',G1:'可信性回归',G2:'真实环境',G3:'索引与证明',G4:'完整20题',G5:'当前轮证据消费',G6:'MVP联合完成',T00:'契约',T01:'资源盘点',T02:'写入与预计划',T03:'评测核心',T04:'证明与指纹',T05:'迁移守卫',T06:'在线离线核心',T10:'日志审计',T08:'摄入运行器',T09:'强准入报告',T07:'真实PG验证',T11:'正式摄入',T12:'真实基线',T13:'在线真实验证',T14:'联合验收'};
+const W=155,H=62;
+function edge(e,soft=false){const a=positions[e.from],b=positions[e.to];let x1=a[0]+W/2,y1=a[1]+H,x2=b[0]+W/2,y2=b[1];let d;if(a[1]===b[1]){x1=a[0]+(a[0]<b[0]?W:0);y1=a[1]+H/2;x2=b[0]+(a[0]<b[0]?0:W);y2=b[1]+H/2;d=`M${x1} ${y1} C${x1} ${y1-70},${x2} ${y2-70},${x2} ${y2}`;}else{const mid=(y1+y2)/2;d=`M${x1} ${y1} C${x1} ${mid},${x2} ${mid},${x2} ${y2}`;}return '<path class="'+(soft?'soft':'hard')+'" data-ref="'+e.from+' '+e.to+'" d="'+d+'"><title>'+esc(e.from+' → '+e.to+(soft?'：资源交接 / 推荐顺序':'：硬前置，满足后方可放行'))+'</title></path>';}
+const softEdges=[{from:'T02',to:'T10'},{from:'T03',to:'T10'},{from:'T12',to:'T13'}];
+let svg='<svg class="dag" viewBox="0 0 1200 1540" role="img" aria-label="T00到T14完整依赖有向无环图：实线为35条硬前置，虚线为写入权或本书资源推荐交接。所有G门均未通过。"><defs><marker id="dag-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#1b5478"/></marker><marker id="dag-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#956638"/></marker></defs>'+S.hardEdges.map(e=>edge(e)).join('')+softEdges.map(e=>edge(e,true)).join('');
+for(const [id,[x,y]]of Object.entries(positions)){svg+='<g data-ref="'+id+'">'+(id.startsWith('G')?'<path class="gate" d="M'+(x+18)+' '+y+'H'+(x+W-18)+'L'+(x+W)+' '+(y+H/2)+'L'+(x+W-18)+' '+(y+H)+'H'+(x+18)+'L'+x+' '+(y+H/2)+'Z"/>':'<rect class="box" x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="3"/>')+'<text x="'+(x+12)+'" y="'+(y+23)+'">'+esc(id==='OK'?labels[id]:id)+'</text><text x="'+(x+12)+'" y="'+(y+46)+'">'+esc(id==='OK'?'方案范围已确认':labels[id])+'</text></g>';}
+svg+='</svg>';
+const dagSource={path:'superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md',line:14};walkEvidence(dagSource);
+$('#dag-content').innerHTML='<figure><div class="frame">'+svg+'</div><figcaption><span class="fig-n">图 13</span>完整工作包 DAG。蓝色实线＝产物 / 验证硬前置；棕色虚线＝写入权或本书资源交接。大图保持文字尺寸，可横向滚动。</figcaption></figure><p class="note"><b>特别注意：</b>T12 → T13 只是“先基线、后占用本书在线验证资源”的推荐；T13 的硬前置是 G3、T06、T10、T04。T02 / T03 → T10 是共享文件写权交接，不冒充业务硬依赖。</p><details><summary>按下游节点核对全部硬前置（比在大图中追线更直接）</summary><div class="table-wrap"><table><thead><tr><th>下游节点</th><th>必须已完成的上游</th><th>意味着什么</th></tr></thead><tbody>'+[...new Set(S.hardEdges.map(e=>e.to))].map(to=>'<tr><td>'+esc(to)+' '+esc(labels[to])+'</td><td>'+S.hardEdges.filter(e=>e.to===to).map(e=>esc(e.from)).join(' + ')+'</td><td>所有列出的硬前置都满足，再核对资源 / 写权和本包验收。</td></tr>').join('')+'</tbody></table></div></details><div class="table-wrap"><table><thead><tr><th>正式门</th><th>验收结果</th><th>具体放行标准</th></tr></thead><tbody>'+S.gates.map(g=>'<tr data-ref="'+g.id+'"><td>'+esc(g.id+' '+g.name)+'</td><td>尚未通过</td><td>'+esc(txt(g.criteria))+proof(g.evidence)+'</td></tr>').join('')+'</tbody></table></div>'+proof([dagSource]);
+$('#next-content').innerHTML='<h3>当前阻塞有两类，不能混成“环境不行”</h3><p>一类是计划与接口保护：T05/T08/T09 共 9 项审阅问题尚未关闭，需定向修订、复核与确认。另一类是真实资源：合法本机 EPUB / corpus、依赖、PG 与 embedding 等仍有缺口。前者影响安全实施，后者阻断真实验收。</p><details open><summary>9 项审阅问题：尚待修订与关闭</summary><div class="table-wrap"><table><thead><tr><th>问题 / 包</th><th>当前缺口</th><th>需要怎样修订</th></tr></thead><tbody>'+S.issues.map(r=>'<tr><td>'+esc(r.id+' · '+txt(r.task))+'<br>'+esc(r.priority)+'</td><td>'+esc(r.summary)+'</td><td>'+esc(txt(r.requiredRevision))+proof(r.evidence)+'</td></tr>').join('')+'</tbody></table></div></details><h3 style="margin-top:var(--s-6)">滚动调度：最多 3 个子代理 + 1 个主控</h3><p>主控负责契约、审阅与串行集成。下面是有条件的推进建议，不是已启动的任务；资源不足时保持一个或两个子代理也合理。</p><ol>'+S.recommendedConcurrency.map(w=>'<li><b>'+w.work.map(esc).join('；')+'</b><p>'+esc(w.condition)+'</p></li>').join('')+'</ol><div class="note" style="margin-top:var(--s-5)"><h3>并发边界必须具体到文件和资源</h3>'+list(['provider / embedding / knowledge_ingestion 先由 T02 释放，T10 补日志前交接；T08/T10 不得同时抢改 provider。','retriever 先由 T03 持有，随后交 T10；rag_d.py 由 T03 核心实现再交 T09。T06 不越界修改 Retriever。','T04 的共享证明 / 指纹接口由生产与消费双方共同引用，T08/T09 不能各自复制 schema；跨包保护协议需统一。','正式 PG 迁移与对抗测试资源由 T07 独占；T11 是本书唯一摄入写者，未决恢复前不启动新 run。','T12 同一基线实例串行运行 20 题；完成并释放本书验证资源后交 T13。不要并发改索引、配置或共享连接。','主清单、README 和批准记录由主控单写；包交付需审阅后才释放下游。'])+'</div>'+proof([dagSource]);
+const moreTerms=[['scope / user_id','可见范围与所属用户。当前受限向量检索允许无主的 global 内容，或属于当前用户的 private 内容；异常归属不能当作公开。'],['schema / namespace','schema 是数据库对象的命名空间；import_namespace 是导入身份的一部分。两者用途不同，不能用字符串相同替代实际资源核验。'],['locator / runner','locator 是片段来源定位信息；runner 是受控运行程序，用于组织摄入或评测步骤。程序存在不等于实际运行通过。'],['top_k / Recall@k','top_k 是检索返回的前 k 个结果；Recall@k 表示这些结果覆盖了多少黄金证据。当前机械计算采用文本包含匹配，是代理指标，不是严格的身份级召回。'],['Coordinator / Orchestrator / Critic','Coordinator 协调检索来源并聚合结果；Orchestrator 调度教学事件；Critic 观察内容质量。三者承担不同职责。'],['S / T / E / Phase','S0—S6 是修订执行阶段；T00—T14 是执行工作包；E1—E6 是设计职责；旧 Phase 是历史阶段编号，不能直接当当前 S 进度。'],['A—D / BLK / R / RV','A—D 是历史责任线；BLK 是全局阻塞编号；R01—R27 是本轮问题索引；RV 是方案审阅问题。不同编号体系保留各自含义。'],['fixture','测试所需的数据库 / 数据准备方式。正式 fixture 要消费正式迁移 schema，避免测试与产品各建一套表。'],['SSE','服务器发送事件：把事件持续推送给浏览器的聊天入口。它也必须经过与普通聊天一致的证据授权与消费链。'],['G0 / G1—G6','G0 是设计范围确认与资源缺口归档条件，不在正式六门中；G1—G6 依次检验可信性、真实环境、索引证明、20题基线、在线消费与联合交接。']];
+$('#glossary').innerHTML=[...A.terms.map(t=>[t.term,t.meaning]),...moreTerms].map(([t,m])=>'<div><dt>'+esc(t)+'</dt><dd>'+esc(m)+'</dd></div>').join('');
+
+$('#raw-data').textContent=JSON.stringify({architecture:A,stages:S},null,2);
+$('#sources-content').innerHTML=sources.map(s=>'<div>'+refs([s.id])+'<br><code>'+esc(s.path)+':'+esc(s.line||'?')+'</code></div>').join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-source]');if(!b)return;const s=sourceMap.get(b.dataset.source);if(!s)return;$('#evidence-title').textContent=s.title||s.label||s.id||'来源证据';$('#evidence-location').textContent=s.path+':'+(s.line||'?')+(s.endLine?'–'+s.endLine:'');$('#evidence-link').href=s.href||('../../../'+s.path+'#L'+(s.line||1));$('#evidence-link').textContent=s.href||('../../../'+s.path+'#L'+(s.line||1));$('#evidence-excerpt').textContent=s.excerpt||sourceExcerpts[s.path+':'+s.line]||s.note||'未摘录正文，请打开来源核对。';$('#evidence-dialog').showModal();});
+$('#close-evidence').addEventListener('click',()=>$('#evidence-dialog').close());$('#evidence-dialog').addEventListener('click',e=>{if(e.target===$('#evidence-dialog'))$('#evidence-dialog').close();});
+$('#expand-all').addEventListener('click',()=>document.querySelectorAll('#modules-content details,#tasks-content details').forEach(d=>{if(!d.hidden)d.open=true;}));$('#collapse-all').addEventListener('click',()=>document.querySelectorAll('#modules-content details,#tasks-content details').forEach(d=>d.open=false));
+$('#search').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();let count=0;document.querySelectorAll('[data-searchable]').forEach(el=>{el.hidden=q&&!el.textContent.toLowerCase().includes(q);if(!el.hidden)count++;});$('#search-status').textContent=q?'匹配 '+count+' 个模块 / 工作包；其他章节保持可读。':'';});
+</script></body></html>
+
+

@@ -13,6 +13,9 @@
 """
 
 import json
+import math
+from numbers import Number
+
 from sqlalchemy import text
 from app.infrastructure.rag.coordinator import IndexProvider, Chunk
 from app.infrastructure.rag.embedding import EmbeddingService
@@ -81,16 +84,48 @@ class PgVectorProvider(IndexProvider):
         if not docs:
             return 0
 
-        # 批量 embed
+        dimension = self._embedding.dim
+        if isinstance(dimension, bool) or not isinstance(dimension, int) or dimension <= 0:
+            raise ValueError("embedding dimension 必须为正整数")
+
+        # 批量 embed，并在打开数据库连接前校验整个向量批次。
         contents = [d.get("content", "") for d in docs]
         embeddings = self._embedding.embed_many(contents)
+        current_dimension = self._embedding.dim
+        if (
+            isinstance(current_dimension, bool)
+            or not isinstance(current_dimension, int)
+            or current_dimension != dimension
+        ):
+            raise ValueError("embedding dimension 在批次中发生变化")
+        if not isinstance(embeddings, (list, tuple)) or len(embeddings) != len(docs):
+            raise ValueError("embedding 数量与文档数量不匹配")
 
-        # 写入向量表
+        validated_embeddings = []
+        for embedding in embeddings:
+            if not isinstance(embedding, (list, tuple)) or len(embedding) != dimension:
+                raise ValueError("embedding dimension 与配置不匹配")
+            validated = []
+            for value in embedding:
+                if isinstance(value, bool) or not isinstance(value, Number):
+                    raise ValueError("embedding 必须由有限数值组成")
+                try:
+                    numeric_value = float(value)
+                except (OverflowError, TypeError, ValueError) as exc:
+                    raise ValueError("embedding 必须由有限数值组成") from exc
+                if not math.isfinite(numeric_value):
+                    raise ValueError("embedding 必须由有限数值组成")
+                validated.append(numeric_value)
+            validated_embeddings.append(validated)
+
+        # 写入向量表。仅在所有 embedding 校验通过后才获取连接。
         conn = self._get_conn()
         dialect = conn.dialect.name
 
+        written_count = 0
         try:
-            for doc, emb in zip(docs, embeddings):
+            for index, doc in enumerate(docs):
+                emb = validated_embeddings[index]
                 content = doc.get("content", "")
                 metadata = doc.get("metadata", {})
                 doc_id = doc.get("doc_id") or metadata.get("doc_id", "")
@@ -123,11 +158,16 @@ class PgVectorProvider(IndexProvider):
                          "embedding": json.dumps(emb), "source": source, "doc_id": doc_id,
                          "chunk_id": chunk_id, "metadata_json": json.dumps(metadata)}
                     )
+                written_count += 1
             conn.commit()
         except Exception:
-            conn.rollback()
+            try:
+                conn.rollback()
+            except Exception:
+                # Rollback cannot establish the outcome and must not mask the cause.
+                pass
             raise
-        return len(docs)
+        return written_count
 
     def search(self, query: str, top_k: int = 5, visibility=None) -> list[Chunk]:
         """检索：embed query + 近邻查询 + 转 Chunk。

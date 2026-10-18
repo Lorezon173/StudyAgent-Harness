@@ -10,8 +10,10 @@
 """
 
 import logging
+import math
 import time
 from collections import Counter
+from numbers import Real
 
 from app.agents.base import AgentBase
 from app.harness.enums import EventType, EventSource
@@ -24,6 +26,12 @@ logger = logging.getLogger(__name__)
 LOW_SCORE_THRESHOLD = 0.3
 TOP_K_DEFAULT = 5
 TOP_K_MAX = 10
+EVALUATION_SCHEMA_VERSION = "retriever-evaluation-v1"
+JUDGE_METRIC_RANGES = {
+    "faithfulness": (0.0, 1.0),
+    "answer_relevancy": (-1.0, 1.0),
+    "context_precision": (0.0, 1.0),
+}
 
 # DEC-009（spec §G）：payload 只允许分类错误码 + 安全摘要；
 # str(exc)/SQL/连接串/堆栈只进内部日志。
@@ -39,6 +47,128 @@ SAFE_SUMMARIES = {
 
 def _safe_summary(error_code: str | None) -> str:
     return SAFE_SUMMARIES.get(error_code or "", "知识库服务暂时不可用")
+
+
+def _validate_judge_score(value, *, present: bool, minimum: float,
+                          maximum: float) -> dict:
+    if not present:
+        return {"value": None, "available": False, "safe_reason": "missing"}
+    if isinstance(value, bool) or not isinstance(value, Real):
+        return {"value": None, "available": False, "safe_reason": "non_numeric"}
+    try:
+        score = float(value)
+    except (OverflowError, ValueError):
+        return {"value": None, "available": False, "safe_reason": "non_finite"}
+    if not math.isfinite(score):
+        return {"value": None, "available": False, "safe_reason": "non_finite"}
+    if not minimum <= score <= maximum:
+        return {"value": None, "available": False, "safe_reason": "out_of_range"}
+    return {"value": score, "available": True, "safe_reason": None}
+
+
+def _collect_judge_scores(raw_scores, *, unavailable: bool) -> dict:
+    collected = {}
+    for name, (minimum, maximum) in JUDGE_METRIC_RANGES.items():
+        if unavailable:
+            collected[name] = {
+                "value": None, "available": False, "safe_reason": "unavailable",
+            }
+            continue
+        present = isinstance(raw_scores, dict) and name in raw_scores
+        values = raw_scores.get(name) if present else None
+        if isinstance(values, (list, tuple)):
+            if not values:
+                present = False
+                value = None
+            else:
+                value = values[0]
+        else:
+            value = values
+        collected[name] = _validate_judge_score(
+            value, present=present, minimum=minimum, maximum=maximum)
+    return collected
+
+
+def _new_evaluation_result(top_k, *, retrieval_status: str,
+                           error_code: str | None = None,
+                           sources_used: list[str] | None = None,
+                           attempted_providers: list[str] | None = None,
+                           failed_providers: list[str] | None = None,
+                           latency_ms: float | None = None,
+                           valid_for_quality: bool = False) -> dict:
+    judge_scores = {
+        name: {"value": None, "available": False, "safe_reason": "unavailable"}
+        for name in JUDGE_METRIC_RANGES
+    }
+    return {
+        "schema_version": EVALUATION_SCHEMA_VERSION,
+        "retrieval_status": retrieval_status,
+        "error_code": error_code,
+        "safe_summary": _safe_summary(error_code) if error_code else "",
+        "sources_used": sources_used or [],
+        "attempted_providers": attempted_providers or [],
+        "failed_providers": failed_providers or [],
+        "latency_ms": latency_ms,
+        "top_k": top_k,
+        "valid_for_quality": valid_for_quality,
+        "recall_at_k": None,
+        "recall_at_1": None,
+        "recall_at_3": None,
+        "recall_at_5": None,
+        "context_precision_proxy": None,
+        "redundancy": None,
+        "faithfulness": None,
+        "answer_relevancy": None,
+        "context_precision": None,
+        "judge_scores": judge_scores,
+        "judge_degraded": True,
+        "degraded": True,
+        "degraded_reason": None,
+    }
+
+
+def _compute_mechanical_metrics(retrieved_contents: list[str],
+                                golden_chunks: list[str], top_k: int) -> dict:
+    unique_gold = list(dict.fromkeys(golden_chunks))
+    returned = retrieved_contents[:top_k]
+
+    def recall(contents: list[str]) -> float | None:
+        if not unique_gold:
+            return None
+        matches = 0
+        for gold in unique_gold:
+            if any(gold in content or content in gold for content in contents):
+                matches += 1
+        return matches / len(unique_gold)
+
+    precision_proxy = None
+    if unique_gold:
+        relevant = sum(
+            any(gold in content or content in gold for gold in unique_gold)
+            for content in returned
+        )
+        precision_proxy = relevant / len(returned) if returned else 0.0
+
+    pairs = 0
+    similar = 0
+    for index, left_content in enumerate(returned):
+        left = Counter(left_content)
+        for right_content in returned[index + 1:]:
+            right = Counter(right_content)
+            intersection = sum((left & right).values())
+            union = sum((left | right).values())
+            pairs += 1
+            if union and intersection / union > 0.8:
+                similar += 1
+
+    return {
+        "recall_at_k": recall(returned),
+        "recall_at_1": recall(returned[:1]) if top_k >= 1 else None,
+        "recall_at_3": recall(returned[:3]) if top_k >= 3 else None,
+        "recall_at_5": recall(returned[:5]) if top_k >= 5 else None,
+        "context_precision_proxy": precision_proxy,
+        "redundancy": similar / pairs if pairs else 0.0,
+    }
 
 
 class RetrieverAgent(AgentBase):
@@ -199,163 +329,135 @@ class RetrieverAgent(AgentBase):
     # --- 部件级评估接口（§5.2 RAG 三件套，供 Plan E 调用） ---
 
     def evaluate(self, test_case: dict) -> dict:
-        """部件级评估接口（§5.2 RAG 三件套 + recall@k）。
+        """以一次 search 生成稳定的检索状态、机械 proxy 与 judge 结果。"""
+        raw_top_k = test_case.get("top_k", TOP_K_DEFAULT) if isinstance(test_case, dict) else None
+        top_k = raw_top_k if (isinstance(raw_top_k, int) and not isinstance(raw_top_k, bool)
+                              and 1 <= raw_top_k <= TOP_K_MAX) else None
+        query = test_case.get("query", "") if isinstance(test_case, dict) else None
+        golden_chunks = test_case.get("golden_chunks", []) if isinstance(test_case, dict) else None
+        golden_answer = test_case.get("golden_answer", "") if isinstance(test_case, dict) else None
+        valid_input = (
+            isinstance(query, str) and bool(query.strip())
+            and top_k is not None
+            and isinstance(golden_chunks, list)
+            and all(isinstance(chunk, str) and bool(chunk.strip()) for chunk in golden_chunks)
+            and isinstance(golden_answer, str)
+        )
+        if not valid_input:
+            result = _new_evaluation_result(
+                top_k, retrieval_status="invalid-request", error_code="invalid_request")
+            result["safe_summary"] = SAFE_SUMMARIES["invalid_request"]
+            result["degraded_reason"] = SAFE_SUMMARIES["invalid_request"]
+            return result
 
-        test_case 结构：
-          - query: str             检索查询
-          - golden_chunks: list[str] 人工标注的相关 chunk 内容
-          - golden_answer: str      期望答案（用于 faithfulness）
-          - top_k: int              检索数量（默认 5）
-
-        返回 6 个指标（初期启发式，后续可替换 ragas）。
-        """
-        query = test_case.get("query", "")
-        golden_chunks = test_case.get("golden_chunks", [])
-        golden_answer = test_case.get("golden_answer", "")
-        top_k = test_case.get("top_k", 5)
-
-        # 执行检索
-        t0 = time.time()
-        result = self._coordinator.search(query, sources=None, top_k=top_k)
-        latency_ms = (time.time() - t0) * 1000
-
-        retrieved_contents = [c.content for c in result.chunks]
-        combined = " ".join(retrieved_contents)
-
-        # --- recall@k：golden_chunks 中有多少被检索到 ---
-        if golden_chunks:
-            hit = sum(1 for g in golden_chunks
-                      if any(g in rc or rc in g for rc in retrieved_contents))
-            recall_at_k = hit / len(golden_chunks)
-        else:
-            recall_at_k = 1.0  # 无 golden_chunks 时无法评估，返回满分
-
-        # --- context_precision：检索结果中与 golden_chunks 相关的比例 ---
-        if retrieved_contents and golden_chunks:
-            relevant = sum(1 for rc in retrieved_contents
-                           if any(g in rc or rc in g for g in golden_chunks))
-            context_precision = relevant / len(retrieved_contents)
-        elif retrieved_contents:
-            # 无 golden_chunks：用 query 词重叠作为弱代理
-            query_tokens = set(query)
-            relevant = sum(1 for rc in retrieved_contents
-                           if any(t in rc for t in query_tokens))
-            context_precision = relevant / len(retrieved_contents)
-        else:
-            context_precision = 0.0
-
-        # --- redundancy：检索结果中高度相似 chunk 对的比例（multiset Jaccard，
-        #   即按字符出现次数计算，避免重复字符被 set 折叠） ---
-        n = len(retrieved_contents)
-        if n >= 2:
-            similar_pairs = 0
-            for i in range(n):
-                for j in range(i + 1, n):
-                    ti = Counter(retrieved_contents[i])
-                    tj = Counter(retrieved_contents[j])
-                    inter = sum((ti & tj).values())
-                    union = sum((ti | tj).values())
-                    if union > 0 and inter / union > 0.8:
-                        similar_pairs += 1
-            total_pairs = n * (n - 1) / 2
-            redundancy = similar_pairs / total_pairs if total_pairs > 0 else 0.0
-        else:
-            redundancy = 0.0
-
-        # --- RAGAS 评估三件套（faithfulness/answer_relevancy/context_precision） ---
-        if not golden_answer:
-            # 无 golden_answer 时 faithfulness/answer_relevancy 无意义，降级
-            return {
-                "recall_at_k": round(recall_at_k, 4),
-                "faithfulness": 0.0,
-                "answer_relevancy": 0.0,
-                "context_precision": round(context_precision, 4),  # 保留启发式
-                "latency_ms": round(latency_ms, 2),
-                "redundancy": round(redundancy, 4),
-                "degraded": True,
-                "degraded_reason": "无 golden_answer，无法评估 RAG 三件套",
-            }
-
+        started = time.monotonic()
         try:
-            from ragas import evaluate as ragas_eval
-            from ragas.metrics import (
-                faithfulness as m_faithfulness,
-                answer_relevancy as m_answer_relevancy,
-                context_precision as m_context_precision,
-            )
-            from datasets import Dataset
-            from app.eval.judge import build_judge
+            search_result = self._coordinator.search(query, sources=None, top_k=top_k)
+        except TimeoutError:
+            code = "timeout"
+            result = _new_evaluation_result(
+                top_k, retrieval_status="failed", error_code=code)
+            result["safe_summary"] = SAFE_SUMMARIES[code]
+            result["degraded_reason"] = SAFE_SUMMARIES[code]
+            return result
+        except Exception:
+            code = "backend_unavailable"
+            result = _new_evaluation_result(
+                top_k, retrieval_status="failed", error_code=code)
+            result["safe_summary"] = SAFE_SUMMARIES[code]
+            result["degraded_reason"] = SAFE_SUMMARIES[code]
+            return result
+        elapsed = round(max(0.0, (time.monotonic() - started) * 1000), 3)
+        if not math.isfinite(elapsed):
+            elapsed = None
 
-            # 构造 judge（复用 §5.1.1 不同族校验）
-            judge_handle = build_judge(target_agent_family="anthropic")
+        def provider_names(value):
+            return [item for item in value if isinstance(item, str)] if isinstance(value, list) else []
 
-            if judge_handle is None:
-                # 降级：judge 不可用（同族 / 无 key / 构造失败）
-                return {
-                    "recall_at_k": round(recall_at_k, 4),
-                    "faithfulness": 0.0,
-                    "answer_relevancy": 0.0,
-                    "context_precision": round(context_precision, 4),  # 保留启发式
-                    "latency_ms": round(latency_ms, 2),
-                    "redundancy": round(redundancy, 4),
-                    "degraded": True,
-                    "degraded_reason": "judge 不可用（同族或无 API key）",
-                }
+        chunks = getattr(search_result, "chunks", None)
+        sources_used = provider_names(getattr(search_result, "sources_used", None))
+        attempted = provider_names(getattr(search_result, "attempted_providers", None))
+        failed = provider_names(getattr(search_result, "failed_providers", None))
+        outcome = getattr(search_result, "outcome", None)
+        raw_error_code = getattr(search_result, "error_code", None)
+        error_code = (raw_error_code if isinstance(raw_error_code, str)
+                      and raw_error_code in SAFE_SUMMARIES else None)
 
-            # 包装为 RAGAS Dataset 格式（0.4.3 列名）
-            eval_dataset = Dataset.from_dict({
-                "user_input": [query],
-                "response": [golden_answer],
-                "retrieved_contexts": [retrieved_contents],
-                "reference": [golden_answer],  # context_precision 需要 reference
-            })
+        if outcome == "failed":
+            error_code = error_code or "backend_unavailable"
+            status = "invalid-request" if error_code == "invalid_request" else "failed"
+        elif outcome == "degraded":
+            status = "degraded"
+            error_code = error_code or "provider_degraded"
+        elif isinstance(outcome, str) and outcome in {"ok", "empty"} and isinstance(chunks, list):
+            status = "ok" if chunks else "empty"
+            error_code = None
+        else:
+            status = "failed"
+            error_code = "backend_unavailable"
 
-            # 运行 RAGAS 评估（三指标）
-            ragas_result = ragas_eval(
-                dataset=eval_dataset,
-                metrics=[m_faithfulness, m_answer_relevancy, m_context_precision],
-                llm=judge_handle["llm"],
-                embeddings=judge_handle["embeddings"],
-                raise_exceptions=False,  # 单个失败不崩全局
-            )
+        result = _new_evaluation_result(
+            top_k, retrieval_status=status, error_code=error_code,
+            sources_used=sources_used, attempted_providers=attempted,
+            failed_providers=failed, latency_ms=elapsed,
+            valid_for_quality=status in {"ok", "empty"})
+        if status not in {"ok", "empty"}:
+            result["safe_summary"] = SAFE_SUMMARIES[error_code]
+            result["degraded_reason"] = SAFE_SUMMARIES[error_code]
+            return result
 
-            # 提取分数（ragas_eval 返回 EvaluationResult，[key] → List[float]）
-            scores = ragas_result._scores_dict
-            ragas_faithfulness = float(scores["faithfulness"][0]) if "faithfulness" in scores else 0.0
-            ragas_answer_relevancy = float(scores["answer_relevancy"][0]) if "answer_relevancy" in scores else 0.0
-            ragas_context_precision = float(scores["context_precision"][0]) if "context_precision" in scores else context_precision
+        retrieved_contents = [getattr(chunk, "content", None) for chunk in chunks]
+        if not all(isinstance(content, str) for content in retrieved_contents):
+            result["retrieval_status"] = "failed"
+            result["error_code"] = "backend_unavailable"
+            result["safe_summary"] = SAFE_SUMMARIES["backend_unavailable"]
+            result["valid_for_quality"] = False
+            result["latency_ms"] = elapsed
+            result["degraded_reason"] = SAFE_SUMMARIES["backend_unavailable"]
+            return result
 
-            return {
-                "recall_at_k": round(recall_at_k, 4),
-                "faithfulness": round(ragas_faithfulness, 4),
-                "answer_relevancy": round(ragas_answer_relevancy, 4),
-                "context_precision": round(ragas_context_precision, 4),
-                "latency_ms": round(latency_ms, 2),
-                "redundancy": round(redundancy, 4),
-                "degraded": False,
-            }
+        result.update(_compute_mechanical_metrics(retrieved_contents, golden_chunks, top_k))
 
-        except ImportError:
-            # RAGAS/datasets 未安装，降级到启发式
-            return {
-                "recall_at_k": round(recall_at_k, 4),
-                "faithfulness": 0.0,
-                "answer_relevancy": 0.0,
-                "context_precision": round(context_precision, 4),
-                "latency_ms": round(latency_ms, 2),
-                "redundancy": round(redundancy, 4),
-                "degraded": True,
-                "degraded_reason": "RAGAS 或 datasets 未安装",
-            }
-        except Exception as e:
-            # RAGAS 评估失败，降级
-            return {
-                "recall_at_k": round(recall_at_k, 4),
-                "faithfulness": 0.0,
-                "answer_relevancy": 0.0,
-                "context_precision": round(context_precision, 4),
-                "latency_ms": round(latency_ms, 2),
-                "redundancy": round(redundancy, 4),
-                "degraded": True,
-                "degraded_reason": f"RAGAS 评估失败: {str(e)}",
-            }
+        if golden_answer:
+            try:
+                from ragas import evaluate as ragas_eval
+                from ragas.metrics import (
+                    faithfulness as m_faithfulness,
+                    answer_relevancy as m_answer_relevancy,
+                    context_precision as m_context_precision,
+                )
+                from datasets import Dataset
+                from app.eval.judge import build_judge
+
+                judge_handle = build_judge(target_agent_family="anthropic")
+                if judge_handle is None:
+                    judge_scores = _collect_judge_scores(None, unavailable=True)
+                else:
+                    eval_dataset = Dataset.from_dict({
+                        "user_input": [query],
+                        "response": [golden_answer],
+                        "retrieved_contexts": [retrieved_contents],
+                        "reference": [golden_answer],
+                    })
+                    ragas_result = ragas_eval(
+                        dataset=eval_dataset,
+                        metrics=[m_faithfulness, m_answer_relevancy, m_context_precision],
+                        llm=judge_handle["llm"],
+                        embeddings=judge_handle["embeddings"],
+                        raise_exceptions=False,
+                    )
+                    judge_scores = _collect_judge_scores(
+                        getattr(ragas_result, "_scores_dict", None), unavailable=False)
+            except Exception:
+                judge_scores = _collect_judge_scores(None, unavailable=True)
+        else:
+            judge_scores = _collect_judge_scores(None, unavailable=True)
+
+        result["judge_scores"] = judge_scores
+        for name in JUDGE_METRIC_RANGES:
+            result[name] = judge_scores[name]["value"]
+        result["judge_degraded"] = any(not item["available"] for item in judge_scores.values())
+        result["degraded"] = result["judge_degraded"] or status not in {"ok", "empty"}
+        result["degraded_reason"] = (
+            "部分 judge 分数不可用" if result["judge_degraded"] else None)
+        return result

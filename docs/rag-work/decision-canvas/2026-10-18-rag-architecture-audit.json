@@ -1,0 +1,673 @@
+{
+  "schemaVersion": "rag-architecture-audit-v1",
+  "date": "2026-10-18",
+  "method": "只读源码与文档审计；只写本 JSON。未运行测试、SDK、PG、embedding 或正式验收。行号来自本次工作区源码。",
+  "statusBasis": [
+    {
+      "path": "README.md",
+      "line": 147
+    },
+    {
+      "path": "README.md",
+      "line": 163
+    },
+    {
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 5
+    }
+  ],
+  "modules": [
+    {
+      "id": "extract",
+      "title": "文件提取：把文件变成文本",
+      "plainPurpose": "老基础提取器支持文本、PDF、DOCX；RAG Foundation 增加 EPUB，按书脊顺序抽取章节正文。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/extractors/base.py",
+          "line": 19
+        },
+        {
+          "path": "app/infrastructure/rag/extractors/epub_extractor.py",
+          "line": 106
+        }
+      ],
+      "inputs": [
+        "本机文件路径"
+      ],
+      "outputs": [
+        "纯文本"
+      ],
+      "functions": [
+        {
+          "name": "get_extractor",
+          "purpose": "按扩展名选提取器，不支持时返回 None"
+        },
+        {
+          "name": "EpubExtractor.extract",
+          "purpose": "读取 EPUB 包、按 OPF spine 顺序解析正文"
+        }
+      ],
+      "implemented": [
+        "提取器与工厂代码存在"
+      ],
+      "limitations": [
+        "代码存在不证明正式 EPUB 来源已可用；T01 记录本机路径映射未知",
+        "提取文本与 OCR/代码专用索引分开"
+      ]
+    },
+    {
+      "id": "chunk",
+      "title": "通用切块与稳定身份",
+      "plainPurpose": "将长文规范化、切为带来源的小块，使写库、检索和评测能追踪同一文档。",
+      "files": [
+        {
+          "path": "app/harness/chunking_service.py",
+          "line": 97
+        },
+        {
+          "path": "app/harness/chunking_service.py",
+          "line": 136
+        }
+      ],
+      "inputs": [
+        "文本或结构元素",
+        "namespace、scope、user_id、版本",
+        "chunk_size/overlap/hard_limit"
+      ],
+      "outputs": [
+        "ChunkDocument：content/doc_id/chunk_id/metadata/scope/user_id"
+      ],
+      "functions": [
+        {
+          "name": "compute_doc_id",
+          "purpose": "由导入命名空间与规范化正文生成文档身份"
+        },
+        {
+          "name": "compute_chunk_id",
+          "purpose": "生成块身份"
+        },
+        {
+          "name": "chunk_text / chunk_elements",
+          "purpose": "普通文本切块并保留原子元素及 provenance"
+        }
+      ],
+      "implemented": [
+        "RAG Foundation 已有切块服务与身份协议"
+      ],
+      "limitations": [
+        "这是文本与身份处理，不执行 embedding 或数据库写入"
+      ]
+    },
+    {
+      "id": "ingest",
+      "title": "摄入编排：准备与写入分开",
+      "plainPurpose": "老的单次摄入接口保留；本轮 T02 将提取切块快照与真实写入拆开，避免为证明或重试重复切块。",
+      "files": [
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 129
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 186
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 476
+        }
+      ],
+      "inputs": [
+        "文件路径与权限",
+        "切块策略",
+        "RAGCoordinator"
+      ],
+      "outputs": [
+        "PreparedIngestion 不可变快照",
+        "无正文 manifest/摘要",
+        "IngestResult 写入确认"
+      ],
+      "functions": [
+        {
+          "name": "prepare_file",
+          "purpose": "校验参数、提取一次、切块一次、验证源文件哈希未变化；不调用 embedding 或写库"
+        },
+        {
+          "name": "ingest_prepared",
+          "purpose": "校验快照并恰好调用一次 index_documents，区分 ok 与 index_unconfirmed"
+        },
+        {
+          "name": "ingest_file",
+          "purpose": "兼容入口，组合准备和写入"
+        }
+      ],
+      "implemented": [
+        "T02 快照冻结、摘要、provenance 一致性检查已存在"
+      ],
+      "limitations": [
+        "不包含正式运行意图持久化、恢复调度、完整 T08 runner",
+        "index_unconfirmed 的 0 不代表已确认零写入",
+        "/api/knowledge 仅元数据 CRUD，未接此文件摄入服务"
+      ]
+    },
+    {
+      "id": "embedding",
+      "title": "Embedding：文本转换为向量",
+      "plainPurpose": "原有统一 SDK 向量服务；T02 增加响应数量与 index 校验，按输入顺序恢复结果。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/embedding.py",
+          "line": 17
+        },
+        {
+          "path": "app/infrastructure/rag/embedding.py",
+          "line": 66
+        }
+      ],
+      "inputs": [
+        "单条或批量文本",
+        "模型、端点、key、配置维度"
+      ],
+      "outputs": [
+        "按输入顺序排列的向量"
+      ],
+      "functions": [
+        {
+          "name": "embed_one",
+          "purpose": "单条转换，空文本给零向量"
+        },
+        {
+          "name": "embed_many",
+          "purpose": "每批最多 10 条；检查 SDK 响应数量、索引范围及重复索引"
+        }
+      ],
+      "implemented": [
+        "实例绑定维度、SDK 懒加载、空文本位置恢复"
+      ],
+      "limitations": [
+        "配置维度不是服务真实维度验收",
+        "此审计未构造 SDK 或访问远端服务"
+      ]
+    },
+    {
+      "id": "vector",
+      "title": "向量库 Provider：写入与相似度查询",
+      "plainPurpose": "旧基础设施中的真实 PG 路径负责向量持久化与近邻查询；本轮 T02 强化写前完整向量校验。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 75
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 172
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 271
+        }
+      ],
+      "inputs": [
+        "ChunkDocument 批次",
+        "query/top_k/VisibilityContext"
+      ],
+      "outputs": [
+        "commit 后写入条数",
+        "带 score 与 provenance 的 Chunk 列表"
+      ],
+      "functions": [
+        {
+          "name": "index",
+          "purpose": "检查数量、维度、有限数值后才连接数据库；整个批次 commit，异常尝试 rollback"
+        },
+        {
+          "name": "search",
+          "purpose": "PG 用余弦距离排序，score=1/(1+distance)；授权 SQL 过滤先于排序与 LIMIT"
+        },
+        {
+          "name": "dialect_name",
+          "purpose": "只解析 URL 的数据库类型，不验证可达性"
+        }
+      ],
+      "implemented": [
+        "PG/pgvector 分支与 SQLite 测试分支均存在"
+      ],
+      "limitations": [
+        "SQLite 用字符重叠，不能代替真实向量服务验收",
+        "现有实现为 INSERT，不应宣称幂等 upsert 或自动恢复",
+        "真实 PG 事务、维度与权限尚未由本次审计验证"
+      ]
+    },
+    {
+      "id": "coordinator",
+      "title": "检索协调器与多源基础",
+      "plainPurpose": "统一管理 vector/OCR/code Provider，去重排序并保留故障语义。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 79
+        },
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 142
+        },
+        {
+          "path": "app/infrastructure/rag/ocr.py",
+          "line": 11
+        },
+        {
+          "path": "app/infrastructure/rag/code_index.py",
+          "line": 15
+        },
+        {
+          "path": "app/infrastructure/rag/store.py",
+          "line": 43
+        }
+      ],
+      "inputs": [
+        "query、sources、top_k、visibility"
+      ],
+      "outputs": [
+        "SearchResult：chunks/outcome/attempted/failed/error_code"
+      ],
+      "functions": [
+        {
+          "name": "search",
+          "purpose": "聚合多源，按相同 content 去重并按 score 排序；受限检索仅允许 vector"
+        },
+        {
+          "name": "index_documents",
+          "purpose": "向指定 Provider 写入并透传确认条数，缺失或未确认返回 None"
+        },
+        {
+          "name": "register_provider",
+          "purpose": "显式注册 OCR/代码索引等后端"
+        }
+      ],
+      "implemented": [
+        "已有多 Provider 协议、fake 字符匹配、PG Provider",
+        "OCR 可选 pytesseract；代码索引以 Python AST 提取符号"
+      ],
+      "limitations": [
+        "OCR/code 使用内存 FakeRAGStore，未默认装入在线链",
+        "受限路径拒绝非 vector",
+        "RAGStore 的 LlamaIndex 外壳仍返回空列表，不应宣称已实现 LlamaIndex/Chroma 生产链"
+      ]
+    },
+    {
+      "id": "retriever",
+      "title": "Retriever：事件接口与离线评测入口",
+      "plainPurpose": "将协作环检索动作转换为证据或安全失败事件；evaluate 为离线测量提供一次检索多项指标。",
+      "files": [
+        {
+          "path": "app/agents/retriever.py",
+          "line": 174
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 231
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 274
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 331
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 130
+        }
+      ],
+      "inputs": [
+        "ActionRequested(target=retriever)",
+        "可信 ws.user_id 与 visibility",
+        "离线 query/golden_chunks/golden_answer/top_k"
+      ],
+      "outputs": [
+        "RetrievedEvidence / RetrievalFailed",
+        "稳定评测结构与 recall@1/3/5、precision proxy、冗余度、judge 可用性"
+      ],
+      "functions": [
+        {
+          "name": "handle",
+          "purpose": "验证检索请求并绑定受限请求身份到可信会话"
+        },
+        {
+          "name": "_do_retrieve_and_emit",
+          "purpose": "区分 ok/empty/degraded/failed；低分是 quality=low，不是失败"
+        },
+        {
+          "name": "evaluate",
+          "purpose": "一次 search 计算多 k 机械指标，可选调用 RAGAS，非法或不可用 judge 保留 null 与降级原因"
+        }
+      ],
+      "implemented": [
+        "基础事件检索已有；T03 增加稳定状态、单次多 k、judge 分数边界检查"
+      ],
+      "limitations": [
+        "离线 evaluate 未传 visibility，不能当作在线用户权限验证",
+        "机械召回采用文本包含匹配，是 proxy",
+        "RAGAS response 使用 golden_answer，不是在线 Tutor 回答质量验收"
+      ]
+    },
+    {
+      "id": "proof",
+      "title": "身份与摄入证明：纯数据核验",
+      "plainPurpose": "T04 将 embedding 配置身份、预期清单、摄入结果和数据库快照交叉核对，避免仅凭写入计数声称可信。",
+      "files": [
+        {
+          "path": "app/infrastructure/rag/embedding_identity.py",
+          "line": 48
+        },
+        {
+          "path": "app/infrastructure/rag/embedding_identity.py",
+          "line": 74
+        },
+        {
+          "path": "app/harness/ingestion_attestation.py",
+          "line": 420
+        },
+        {
+          "path": "app/harness/ingestion_attestation.py",
+          "line": 622
+        },
+        {
+          "path": "app/infrastructure/rag/contracts.py",
+          "line": 303
+        }
+      ],
+      "inputs": [
+        "EmbeddingBinding 与服务配置",
+        "intent/manifest/IngestResult/IndexSnapshot",
+        "独立 AttestationExpectation"
+      ],
+      "outputs": [
+        "公开 embedding 身份/指纹",
+        "完整成功证明或 ContractCheck 分类失败"
+      ],
+      "functions": [
+        {
+          "name": "describe_embedding",
+          "purpose": "读取并复核配置与绑定端点，可初始化 SDK 对象但不调用 embedding 网络接口"
+        },
+        {
+          "name": "fingerprint_embedding",
+          "purpose": "对规范化公开身份生成摘要"
+        },
+        {
+          "name": "build_attestation",
+          "purpose": "交叉核验意图、结果、身份与快照后构造成功证明"
+        },
+        {
+          "name": "validate_attestation",
+          "purpose": "依据独立预期与完整快照验证证明"
+        }
+      ],
+      "implemented": [
+        "T04 数据契约、身份、证明构造和核验函数存在"
+      ],
+      "limitations": [
+        "不会自行连接 PG 读取快照或持久化 intent",
+        "不等于 T08 的摄入/提交后恢复 runner 已实现",
+        "当前 RAG-D 准入仍未调用这套完整核验，T09 正式接线待做",
+        "alias_unpinned 表示未绑定独立模型版本"
+      ]
+    },
+    {
+      "id": "baseline",
+      "title": "RAG-D：只读产品基线工具",
+      "plainPurpose": "以固定资产与题目检验产品 Retriever，拒绝假后端；T03 增加完整执行计数和基础设施失败状态。",
+      "files": [
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 105
+        },
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 211
+        },
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 273
+        }
+      ],
+      "inputs": [
+        "manifest/corpus/questions",
+        "RetrieverAgent、settings",
+        "attestation 与 corpus_isolation"
+      ],
+      "outputs": [
+        "blocked / infrastructure_inconclusive / completed(_judge_degraded) 报告",
+        "expected/attempted/valid/failed/not_run 计数"
+      ],
+      "functions": [
+        {
+          "name": "validate_assets",
+          "purpose": "核验资产、哈希与人工 verified 的题目"
+        },
+        {
+          "name": "validate_admission",
+          "purpose": "检查 backend/provider/dialect/provider-set 及旧证明和隔离结构"
+        },
+        {
+          "name": "run_baseline",
+          "purpose": "每题调用一次 evaluate，基础设施失败即停止并报告未执行数"
+        }
+      ],
+      "implemented": [
+        "只读 baseline 工具与计数存在"
+      ],
+      "limitations": [
+        "不能把工具存在或本地测试通过称为正式 baseline 完成",
+        "当前 admission 仍为旧字段检查，未接完整 T04 证明、真实快照与独立身份绑定",
+        "T01 记录 corpus 缺失、EPUB 本机路径未解析、可信环境登记未知"
+      ]
+    },
+    {
+      "id": "online",
+      "title": "在线消费：已校验装配，证据到 Tutor 仍有断点",
+      "plainPurpose": "chat 与 SSE 显式装配 PG 检索链并拒绝 fake/SQLite，但这只保证选择正确后端，不保证真实服务可用或教学回答已消费证据。",
+      "files": [
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 147
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 171
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 185
+        },
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 200
+        },
+        {
+          "path": "app/api/chat.py",
+          "line": 36
+        },
+        {
+          "path": "app/api/chat_stream.py",
+          "line": 50
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 74
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 87
+        },
+        {
+          "path": "app/harness/workspace_state.py",
+          "line": 20
+        }
+      ],
+      "inputs": [
+        "JWT 会话用户",
+        "用户消息、topic",
+        "PG Provider"
+      ],
+      "outputs": [
+        "协作环事件、reply、mastery、持久化会话结果"
+      ],
+      "functions": [
+        {
+          "name": "validate_online_rag_composition",
+          "purpose": "验证 rag_backend=pgvector、实际 Provider 类型、URL dialect=postgresql；不探测网络"
+        },
+        {
+          "name": "run_online_agent_session",
+          "purpose": "校验后将显式 Retriever 注入五 Agent 协作环"
+        },
+        {
+          "name": "TutorAgent._ask / _explain",
+          "purpose": "当前 prompt 主要传 topic/模式，没有把检索 chunks 注入生成上下文"
+        }
+      ],
+      "implemented": [
+        "在线装配与 fail-fast 已有",
+        "assembly 初始种子是用户消息、主题和 Tutor 提问，不是预检索动作"
+      ],
+      "limitations": [
+        "evidence_pool 仍为占位字段，不能仅因字段存在宣称在线证据消费完成",
+        "缺少 evidence→Tutor 选择、关联、注入与闭环验收",
+        "真实 PostgreSQL + embedding + 正式摄入 + 在线回答尚未联合验收"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "title": "入库链路",
+      "steps": [
+        "文件 → extractor 纯文本",
+        "prepare_file → ChunkingService → 冻结 documents 与无正文 manifest",
+        "ingest_prepared → Coordinator.index_documents → PgVectorProvider.index",
+        "embed_many → 全批向量检查 → INSERT → commit → IngestResult",
+        "未来 T08：受控运行意图、真实快照与提交后恢复；目前只有 T04 证明函数可供接线"
+      ],
+      "evidence": [
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 186
+        },
+        {
+          "path": "app/harness/knowledge_ingestion.py",
+          "line": 476
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "title": "检索链路",
+      "steps": [
+        "ActionRequested(target=retriever) → 入口参数与可信身份校验",
+        "Coordinator.search → 受限请求仅 vector",
+        "Provider：global 无主或 private 本人 → PG 向量距离 → top_k",
+        "Coordinator 去重聚合 → Retriever 产证据或安全失败事件"
+      ],
+      "evidence": [
+        {
+          "path": "app/agents/retriever.py",
+          "line": 186
+        },
+        {
+          "path": "app/infrastructure/rag/coordinator.py",
+          "line": 142
+        },
+        {
+          "path": "app/infrastructure/rag/pgvector_provider.py",
+          "line": 172
+        }
+      ]
+    },
+    {
+      "title": "离线评测链路",
+      "steps": [
+        "validate_assets → 资产及 verified 题目校验",
+        "validate_admission → 当前旧准入检查",
+        "run_baseline → 每题一次 Retriever.evaluate",
+        "一次 search → recall@1/3/5 与其他机械 proxy → 可选 RAGAS judge",
+        "报告执行计数和降级；正式 T09 强准入接线与真实20题产品基线仍待完成"
+      ],
+      "evidence": [
+        {
+          "path": "benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py",
+          "line": 273
+        },
+        {
+          "path": "app/agents/retriever.py",
+          "line": 331
+        }
+      ]
+    },
+    {
+      "title": "在线教学消费链路",
+      "steps": [
+        "chat/SSE → run_online_agent_session",
+        "配置/Provider/dialect 三项校验 → 注入 Retriever",
+        "五 Agent 协作环：事件驱动调度",
+        "当前 Tutor 生成仍使用 topic/模式 prompt；检索证据到生成上下文的连接未完成",
+        "因此在线后端装配完成 ≠ 在线 RAG 教学闭环验收"
+      ],
+      "evidence": [
+        {
+          "path": "app/orchestration/assembly.py",
+          "line": 185
+        },
+        {
+          "path": "app/agents/tutor.py",
+          "line": 87
+        },
+        {
+          "path": "README.md",
+          "line": 147
+        }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "term": "RAG",
+      "meaning": "先检索相关资料，再让生成模型消费证据；只有检索代码不等于完整 RAG 闭环"
+    },
+    {
+      "term": "Provider",
+      "meaning": "检索/索引后端协议实现；vector、OCR、code 是不同来源"
+    },
+    {
+      "term": "embedding",
+      "meaning": "文本对应的数值向量；模型、维度、部署与版本影响向量可比性"
+    },
+    {
+      "term": "provenance",
+      "meaning": "文档/块身份、来源位置、版本与哈希等可追踪信息"
+    },
+    {
+      "term": "attestation",
+      "meaning": "把意图、清单、写入结果、身份和独立快照绑定的摄入证明；纯数据核验不能自行证明外部服务事实"
+    },
+    {
+      "term": "baseline",
+      "meaning": "在固定真实产品索引和可信资产上执行的检索基线；fake/SQLite 测试不能替代"
+    },
+    {
+      "term": "judge_degraded",
+      "meaning": "语义评委分数部分不可用，机械检索结果仍可记录；缺失分数保留 null"
+    },
+    {
+      "term": "T02/T03/T04",
+      "meaning": "本轮已落地的摄入可信性、评测可信性与纯证明契约增强"
+    },
+    {
+      "term": "T05/T08/T09",
+      "meaning": "迁移目标守卫、正式摄入恢复、正式准入报告执行包；当前 README 明示仍为计划与待修订状态"
+    }
+  ]
+}

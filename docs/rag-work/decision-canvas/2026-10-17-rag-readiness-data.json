@@ -1,0 +1,1441 @@
+{
+  "meta": {
+    "date": "2026-10-17",
+    "title": "RAG 推进决策台",
+    "subtitle": "先看证据，再选推进方式",
+    "recommendation": "先确定依赖基线与本地资产；并行修订9项设计问题、准备可信资源登记。",
+    "specVersion": "rag-mvp-contracts-v1.0.1",
+    "specSha256": "31379383758b82c82d5fe583f371e590f4b187ad0371744edcef635743b41f95",
+    "inventoryCoverage": "covered",
+    "resourceReadiness": "blocked",
+    "acceptedTasks": [
+      "T00",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "notPassedGates": [
+      "G1",
+      "G2",
+      "G3",
+      "G4",
+      "G5",
+      "G6"
+    ],
+    "counts": {
+      "inventoryItems": 8,
+      "reviewIssues": 9,
+      "passedRealGates": 0,
+      "verifiedLabels": 20
+    },
+    "snapshotHash": "4a150a1111f523be"
+  },
+  "sources": [
+    {
+      "id": "inv-summary",
+      "title": "T01：覆盖完成与资源阻断",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 5,
+      "endLine": 6,
+      "excerpt": "**inventory_coverage=covered；resource_readiness=blocked。** 计划要求的资产、运行时/CI、PG来源、embedding来源和交接均已核对并记录观察/缺失/未知原因；这表示盘点交付完成，不表示真实环境就绪。T05/T08/T09的9项设计问题及G1～G6状态不变。\n",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L5"
+    },
+    {
+      "id": "inv-assets",
+      "title": "T01：资产现状",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 21,
+      "endLine": 24,
+      "excerpt": "| source EPUB | manifest登记一个历史macOS外部路径；声明SHA见下方 | 尚未提供本机Windows映射；没有扩大磁盘搜索，未读取EPUB，exists/实际SHA均unknown | blocked：当前来源未解析 |\n| corpus.local.jsonl | manifest声明已抽取313段；本书.gitignore忽略该正文文件 | 明确登记的book目录位置不存在；字节数、实际摘要、实际段数均null | blocked：本地语料缺失 |\n| questions.v1.yaml | 正式题集文件 | 文件存在，28,690字节；20条mapping、20个唯一非空ID，缺失/重复ID均0；verified_v1=20、draft=0、unknown=0 | 最小结构盘点ready；完整资产准入仍blocked |\n| 题集与manifest关联 | book_key、corpus_version.source_sha256 | 两项声明互相匹配；只证明元数据自洽，不能证明EPUB/正文一致或gold引用有效 | unknown：缺实际源/corpus |",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L21"
+    },
+    {
+      "id": "inv-hashes",
+      "title": "T01：文件指纹",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 32,
+      "endLine": 34,
+      "excerpt": "| benchmarks/rag/books/the-myth-of-sisyphus/source-manifest.yaml | 1896 | 48179b84f1a1254b08150038edb778b92a109124cf33592eef8947b167aa1f0c |\n| benchmarks/rag/books/the-myth-of-sisyphus/questions.v1.yaml | 28690 | e9b41e563bdad3799b02e884ce43cf3dbd4abcb6c0df8e68ba94741b9d37c0f9 |\n| pyproject.toml | 1767 | 18770f95869a6fc9bf8468932f8094bb03d59a55a14a010451b6b1730eadaa20 |",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L32"
+    },
+    {
+      "id": "inv-env",
+      "title": "T01：当前包元数据与锁版本",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 46,
+      "endLine": 60,
+      "excerpt": "| SQLAlchemy | 2.0.49 | 2.0.50 |\n| alembic | 1.18.4 | 1.18.4 |\n| psycopg | 未找到发行元数据 | 3.3.4 |\n| asyncpg | 未找到发行元数据 | 0.31.0 |\n| pgvector | 未找到发行元数据 | 0.4.2 |\n| openai | 2.36.0 | 2.38.0 |\n| ragas | 未找到发行元数据 | 0.4.3 |\n| datasets | 未找到发行元数据 | 4.8.5 |\n| pytest | 9.0.3 | 9.0.3 |\n| pytest-asyncio | 1.3.0 | 1.4.0 |\n| httpx | 0.28.1 | 0.28.1 |\n| PyYAML | 6.0.3 | 6.0.3 |\n| pydantic-settings | 2.14.1 | 2.14.1 |\n| ruff | 未找到发行元数据 | 未列入此次锁文件关键包结果 |\n",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L46"
+    },
+    {
+      "id": "inv-meta",
+      "title": "T01：依赖核查的证据边界",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 61,
+      "endLine": 62,
+      "excerpt": "“未找到发行元数据”不等同于已测试import失败，也不排除其他解释器、源码路径或测试替身；本次没有导入这些库检查功能。SQLAlchemy、openai、pytest-asyncio与锁版本有差异，未证明当前.venv与锁文件同步。未自动安装或升级。\n",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L61"
+    },
+    {
+      "id": "inv-reg",
+      "title": "T01：资源与绑定来源缺口",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 77,
+      "endLine": 83,
+      "excerpt": "| resource_record_ref / target_index_id /用途 | 未提供可核验的真实登记；限定候选枚举无匹配 | unknown；不创建登记，不把测试/计划示例当真实来源 |\n| PG实例唯一绑定、database/schema/search_path | 无可信装配来源；未读取实际数据库 | query_attempted=false；not_probed |\n| session/current role、权限审计、专用writer | 无实际连接与可信审计引用 | unknown；不以角色声明代替权限排他证据 |\n| 只读事务、5s连接/10s语句超时 | 未满足建立连接的前置 | 未建立连接；无事务或连接需要rollback/close，亦未验证这些能力 |\n| binding_record_ref、service/deployment/version来源 | 没有独立可信登记 | unknown；不构造EmbeddingBinding或SDK client |\n| 参数身份、实际配置指纹与alias版本能力 | 仅有代码默认模型/维度；实际服务不可观察 | unknown；无describe/fingerprint实际服务调用 |\n| 真实向量维度、PG扩展/事务/锁 | 未执行相应探测或测试 | 未验证，留T07及后续真实验收 |",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L77"
+    },
+    {
+      "id": "inv-default",
+      "title": "T01：代码默认值不是实际配置",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 71,
+      "endLine": 73,
+      "excerpt": "静态公开默认值：rag_backend=fake、embedding_model=doubao-embedding-vision、embedding_dim=2048。这些是app/core/config.py的代码默认值，不是本次实际settings值，也不代表远端模型或维度。\n\n按存在性检查，以下进程环境键本次均未出现：DATABASE_URL、TEST_PG_URL、RAG_BACKEND、OPENAI_API_KEY、OPENAI_BASE_URL、EMBEDDING_MODEL、EMBEDDING_DIM、RAG_INGEST_CONTROL_DIR、RAG_TEST_TARGET_ALLOWLIST_ROOT、RAG_TEST_TARGET_ALLOWLIST_PATH、RAG_TEST_SQLITE_ROOT。只记录键名与不存在；未取值，.env未读取。因此不能据此断言其他配置来源没有凭据或服务不可用。",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L71"
+    },
+    {
+      "id": "inv-ci",
+      "title": "T01：CI与历史结果的边界",
+      "authority": "实际盘点",
+      "path": "docs/rag-work/evidence/t01/2026-10-17-inventory.md",
+      "line": 65,
+      "endLine": 67,
+      "excerpt": "CI静态事实：push main及pull_request触发；runner=ubuntu-latest；命令为`uv sync --extra dev`、`uvx ruff check .`、`uv run pytest tests/ -v`。eval是独立optional extra，当前CI安装命令未显式选择eval。pytest addopts为`-m 'not integration'`：按marker筛选，非按目录排除，收集仍可能执行模块顶层；这不是数据库/网络隔离机制。本次未访问远端CI，也没有运行上述命令或pytest收集。\n\n首批547 passed、1 deselected及既有E402仅引用[2026-10-16主控历史证据](../2026-10-16-first-wave-execution.md)，不算T01重新验证结果或真实服务证据。",
+      "href": "../evidence/t01/2026-10-17-inventory.md#L65"
+    },
+    {
+      "id": "spec-dec",
+      "title": "冻结spec：DEC边界优先",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 11,
+      "endLine": 12,
+      "excerpt": "沿用 [DEC-001～012](../plans/2026-07-27-rag-p0-confirmed-decisions.md) 和原三份 EPUB/Chunking/在线 spec。本文对本轮新增接口与已有候选值形成共享增量基线；旧 spec 的实施前事实不作为当前状态。若与 DEC 的业务边界冲突，保留 DEC，不允许实现者自行改语义。变更本文冻结字段需主控记录新版本和影响任务，不能各包独立改字段。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L11"
+    },
+    {
+      "id": "spec-nongoal",
+      "title": "冻结spec：本轮非目标",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 13,
+      "endLine": 14,
+      "excerpt": "**非目标**：新上传 API、ingestion_runs 表、Event schema 一等字段、替换/删除/幂等、shared/course 权限、额外回答器、query expansion、严格 identity recall。依赖保持单向。新接口是待实现约定，现有代码没有这些函数不构成归档失败。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L13"
+    },
+    {
+      "id": "spec-a1",
+      "title": "A1：源字节与一次准备",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 69,
+      "endLine": 70,
+      "excerpt": "prepare_file 只通过现有工厂/Extractor/ChunkingService 完成一次提取切块，无 embedding/index/commit。准备前后校验输入字节SHA一致，检测文件变化则失败。所有产物属于同一 doc_id，chunk_index 从0连续，chunk_id 不重复，计数>0。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L69"
+    },
+    {
+      "id": "spec-count",
+      "title": "A2：向量与提交确认",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 75,
+      "endLine": 77,
+      "excerpt": "index 接受空列表返回0。非空时，embedding 数量必须等于docs数量，每个向量长度等于当前绑定维度，元素为非bool有限数值；短/长列表、错维度、NaN/Infinity 在任何insert之前拒绝。成功返回已commit条数，不允许zip截断后返回计划数。任一insert或commit异常整体rollback后抛出。无法证明commit结果时标未决，不能靠返回0假称从未写入。\n\nIngestResult 现有字段/非成功状态保留；status=ok要求planned=written>0。provider返回null/不符时index_unconfirmed，不生成成功证明。bool不是合法计数或用户ID。global owner=null；private owner为正整数；其他组合拒绝。写入层现有dict用user_id，新证明使用owner，两者一对一映射。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L75"
+    },
+    {
+      "id": "spec-manifest",
+      "title": "A3：准备清单和完整快照",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 83,
+      "endLine": 87,
+      "excerpt": "准备级清单由T02生成，精确字段schema_version=prepared-manifest-v1、doc_id、rows、row_count、manifest_sha256；不含run ID、目标或embedding身份。rows按chunk_index展示，每项doc_id/chunk_id/content_sha256为非空str、chunk_index为非负int、scope/owner满足授权组合、source_locator为可序列化JSON对象；不含正文。row_count为正int且等于rows长度，摘要定义见C。\n\n运行级清单由T08将准备级清单装配为envelope，精确字段schema_version=ingestion-manifest-v1、ingestion_run_id(UUID字符串)、target_index_id、doc_id、source_sha256、embedding_fingerprint、rows、row_count、manifest_sha256。rows/row_count/manifest_sha256必须原样消费准备结果，仅加入运行绑定；不重新提取切块。prepare_file不需要也不得猜run ID/实际目标/embedding配置。\n\nIndexSnapshot包含target_index_id、database_id、schema_name、row_count、rows、manifest_sha256。rows为与计划相同的完整行多重集合，必须保留重复行，禁止用set掩盖重复。快照由实际绑定provider只读查询产生，不由调用者仅填写row_count。manifest_sha256只对规范化rows计算；run_id另行绑定，避免计划和实际库没有run列时无法比较。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L83"
+    },
+    {
+      "id": "spec-resource",
+      "title": "A4：资源与排他证据",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 95,
+      "endLine": 97,
+      "excerpt": "resource_record_ref由T07/受控环境配置提供，runner在写库前只读验证目标记录，不能凭CLI字符串直接相信；exclusivity_record_ref由runner记录排他锁/租约与本run的持有证据。isolation_evidence_ref固定指向本run目录下isolation-evidence.json，预意图只记录未来输出路径，不把未生成文件当已验证证据。T08在commit或恢复后重新核对实际快照、资源记录和排他证据，生成该文件：mode、target_index_id、manifest_sha256、row_count、verified_at、resource_record_ref；T09再消费它并核对引用/摘要/目标。恢复仍从intent中的原版本/策略/namespace/warnings和identity构建证明；证明created_at为本次核验时间，run ID保持原值，计数来自实际快照。\n\nexclusive_target是受控运行排他管理记录，不以一个bool自行证明无其他writer；runner对目标持有排他锁/租约，未决意图未处理前所有受控写入者不得启动新run；外部writer无法排除则不准成功恢复。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L95"
+    },
+    {
+      "id": "spec-recover",
+      "title": "A4：恢复范围与未决状态",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 103,
+      "endLine": 104,
+      "excerpt": "MVP仅支持空库首次摄入恢复。recover_ingestion校验预意图/计划、空前态、目标独占证据、实际全部行多重集合、source/config一致；完全吻合才补成功证明。恢复不依赖上次IngestResult或重新提取，只读实际行重建确认计数。全部行为空且无commit不明问题可保留未摄入诊断，不自动重导；部分行、重复、非空前态或无法唯一归属，保持inconclusive/未准入，交人工处置。新目标另run不删除旧库，不引入幂等或upsert。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L103"
+    },
+    {
+      "id": "spec-expect",
+      "title": "B1：独立期望与隔离模式",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 109,
+      "endLine": 110,
+      "excerpt": "AttestationExpectation包含expected_source_sha256、expected_target_index_id、expected_embedding_fingerprint、expected_scope、expected_owner、expected_manifest_sha256、isolation_evidence。字段均显式给出，不从证明本身复制来假装独立核验。isolation_evidence包含mode=isolated_db、target_index_id、manifest_sha256、row_count、verified_at、resource_record_ref；验证实际目标/清单一致，不只看verified=true。MVP不接受provenance_filter模式，后续实现另修版本。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L109"
+    },
+    {
+      "id": "spec-identity",
+      "title": "C：实际embedding身份",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 141,
+      "endLine": 145,
+      "excerpt": "EmbeddingIdentity字段精确为schema_version=embedding-identity-v1、service_id、deployment_id、model、dimension、parameters、model_version、version_binding。dimension为正整数且与实际产生向量一致；parameters为影响向量生成的规范化标量mapping，当前实际请求只有model/input，input不入身份，默认状态用值“service_default”明确表示，不编造当前不存在的temperature等参数。parameters含dimensions与encoding_format两键，值分别为显式请求值或service_default；将来新增影响向量的参数必须同时加入身份，不得忽略。version_binding取pinned（有可信不可变版本）或alias_unpinned（model_version=null）。\n\n公开规范JSON：UTF-8，键按Unicode码点排序，分隔无多余空白，非ASCII不转义，null/true/false按JSON，无NaN/Infinity；不做会改变既有字段语义的Unicode/URL归一化。标识在装配时规范化并验证，不能用两个别名表示同一声明后随意互换。fingerprint=此JSON字节SHA-256的小写十六进制。相同维度但model/deployment/参数不同必须不同指纹并拒绝旧索引；同一证明的自报fingerprint还须与重新计算及实际查询identity相等。\n\n摄入与查询在run内固定实例配置；当前EmbeddingService.dim依赖可变settings，实现时必须确保实际维度与记录一致，发现漂移拒绝，不把配置快照当远端证据。远端别名原地变更但无版本时，指纹只能证明可观察配置一致；所有证明/报告保留alias_unpinned限制，不宣称完全锁定向量空间。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L141"
+    },
+    {
+      "id": "spec-fingerprint",
+      "title": "C：指纹与规范摘要",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 143,
+      "endLine": 145,
+      "excerpt": "公开规范JSON：UTF-8，键按Unicode码点排序，分隔无多余空白，非ASCII不转义，null/true/false按JSON，无NaN/Infinity；不做会改变既有字段语义的Unicode/URL归一化。标识在装配时规范化并验证，不能用两个别名表示同一声明后随意互换。fingerprint=此JSON字节SHA-256的小写十六进制。相同维度但model/deployment/参数不同必须不同指纹并拒绝旧索引；同一证明的自报fingerprint还须与重新计算及实际查询identity相等。\n\n摄入与查询在run内固定实例配置；当前EmbeddingService.dim依赖可变settings，实现时必须确保实际维度与记录一致，发现漂移拒绝，不把配置快照当远端证据。远端别名原地变更但无版本时，指纹只能证明可观察配置一致；所有证明/报告保留alias_unpinned限制，不宣称完全锁定向量空间。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L143"
+    },
+    {
+      "id": "spec-judge",
+      "title": "D1：judge逐项可用性",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 159,
+      "endLine": 160,
+      "excerpt": "judge_scores精确含上述三个judge指标，每项有value（数或null）、available:bool、safe_reason（null或missing/non_numeric/non_finite/out_of_range/unavailable）。拒绝bool及非有限数；faithfulness/context_precision范围[0,1]，answer_relevancy允许[-1,1]以兼容余弦型实现，不擅自把负相似度当系统失败；具体采用的RAGAS版本若声明更窄范围可在实现包记录，但不能无依据改变本输出。缺失值写null，合法0仍是有效分数；部分缺失使judge_degraded=true，保留其他有效项与机械指标。degraded兼容值等于judge_degraded或retrieval_status不在ok/empty；runner不得只看该旧字段。\n",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L159"
+    },
+    {
+      "id": "spec-20",
+      "title": "D2：20条正式题与一次执行",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 167,
+      "endLine": 169,
+      "excerpt": "validator必须恰20条且ID非空唯一、全部verified_v1；question/gold/locator/excerpt/SHA继续原校验，任何draft/重复/缺ID都阻断。每题最多一次evaluate和search，无隐式重试、无为多k重跑。\n\nrunner仅对valid_for_quality=true计有效结果；遇首个检索故障或非法请求/输出结构立即停止，保留诊断而不混入均值。正式题合法但首题数据库失败：有效0、失败1、未跑19、状态infrastructure_inconclusive。judge无效不增加检索失败数，所有20题健康检索可completed_judge_degraded。completed要求有效20/失败0/未跑0/全部judge有效；completed_judge_degraded同样要求20/0/0。结果ID与准入集合严格一一对应，零题执行绝不能completed。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L167"
+    },
+    {
+      "id": "spec-report",
+      "title": "D3：正式报告字段和限制",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 175,
+      "endLine": 179,
+      "excerpt": "rag-baseline-report-v1统一字段：schema_version、status（沿用六状态）、contract_version、run_id(UUID)、created_at、backend、provider、dialect、target_index_id、embedding_config、embedding_fingerprint、attestation_id、artifact_manifest_sha256、isolation_evidence_ref、asset_sha256（source/corpus）、expected_count=20、attempted_count、valid_count、failed_count、not_run_count、results、failures、evaluation_alignment、judge_enrichment、limitations。\n\n运行前blocked报告尚不可得字段必须显式null，而非虚构；results=[]，attempted/valid/failed=0、not_run=20。每条results为case_id与metrics；失败尝试也保留但metrics.valid_for_quality=false；attempted=valid+failed，not_run=20-attempted。invalid assets不创造题ID，expected_count仅表示正式基线要求。\n\nreport failures是安全规则ID/题ID/分类码，不存原始异常。evaluation_alignment固定paragraph-containment proxy，judge_enrichment固定gold-answer/context enrichment。limitations必须包含proxy局限、不代表Tutor质量、alias_unpinned（如适用）。严格JSON禁止NaN/Infinity。健康低分不阻断完成，不新增教学质量分数阈值。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L175"
+    },
+    {
+      "id": "spec-migration",
+      "title": "E3：迁移连接与变更前守卫",
+      "authority": "冻结契约",
+      "path": "docs/rag-work/specs/2026-10-16-rag-mvp-contracts-v1.md",
+      "line": 203,
+      "endLine": 205,
+      "excerpt": "冻结测试参数名：Config.attributes的rag_test_mode=true、connection为fixture已打开的同步连接、rag_test_target为目标记录（target_index_id/database_id/schema_name/resource_record_ref）。测试模式缺连接/记录即拒绝，不能回退settings。env.py仅在非测试且无显式注入时用原settings路径；收到connection按显式连接迁移，不再用settings创建第二连接。\n\n任何DDL/清理前从该连接只读核对真实database/schema、资源记录以及非业务/非基线目标。SQLite测试文件必须解析后落在指定测试目录或为内存连接。settings=A/fixture=B只允许B变化；A绝不先迁移再验证。不在T00启动迁移，也不更改生产迁移revision。",
+      "href": "../specs/2026-10-16-rag-mvp-contracts-v1.md#L203"
+    },
+    {
+      "id": "dec-002",
+      "title": "DEC-002：正式摄入与原子性",
+      "authority": "已确认业务决策",
+      "path": "docs/rag-work/plans/2026-07-27-rag-p0-confirmed-decisions.md",
+      "line": 14,
+      "endLine": 15,
+      "excerpt": "| DEC-002 | BLK-002 | 新文档正式摄入走 A extractor-only + B ingestion；单次摄入全有或全无 | RAG-A、RAG-B | 产品摄入主链与首本书证明 |\n| DEC-003 | BLK-003/005 | 检索关联使用 payload `retrieval_id`；不扩全局 Event schema | RAG-C | 在线因果链与证据隔离 |",
+      "href": "../plans/2026-07-27-rag-p0-confirmed-decisions.md#L14"
+    },
+    {
+      "id": "dec-007",
+      "title": "DEC-007：真实PG、禁止静默回退",
+      "authority": "已确认业务决策",
+      "path": "docs/rag-work/plans/2026-07-27-rag-p0-confirmed-decisions.md",
+      "line": 19,
+      "endLine": 20,
+      "excerpt": "| DEC-007 | BLK-006 | 在线 composition 入口显式校验 PgVectorProvider + PostgreSQL，不满足 fail-fast；fake/SQLite 仅限非在线路径，禁止静默回退 | RAG-C | production 后端真实性与 baseline 准入基础 |\n| DEC-008 | BLK-006 | outcome 五态 `{ok, empty, degraded, failed, invalid-request}`；`low_score` 降为 ok 的质量子标记 | RAG-C | 检索结果可判定状态，支撑受控降级与失败分类 |",
+      "href": "../plans/2026-07-27-rag-p0-confirmed-decisions.md#L19"
+    },
+    {
+      "id": "dec-009",
+      "title": "DEC-009：安全诊断边界",
+      "authority": "已确认业务决策",
+      "path": "docs/rag-work/plans/2026-07-27-rag-p0-confirmed-decisions.md",
+      "line": 21,
+      "endLine": 22,
+      "excerpt": "| DEC-009 | BLK-006 | payload 只放分类错误码 + 安全摘要；原始异常/SQL/连接串/堆栈只进内部日志；coordinator 异常不再静默吞没 | RAG-C | 失败可分类可观测且不泄密 |\n| DEC-010 | BLK-007 | baseline 准入 gate 采用六项版：backend/provider/dialect/provider-set/attestation/corpus 隔离；隔离可走隔离 DB 或正式 identity 生效后的 `doc_id` provenance 过滤 | RAG-D | baseline 只在真实、单一来源的正式索引上运行 |",
+      "href": "../plans/2026-07-27-rag-p0-confirmed-decisions.md#L21"
+    },
+    {
+      "id": "dec-010",
+      "title": "DEC-010：六项准入门",
+      "authority": "已确认业务决策",
+      "path": "docs/rag-work/plans/2026-07-27-rag-p0-confirmed-decisions.md",
+      "line": 22,
+      "endLine": 23,
+      "excerpt": "| DEC-010 | BLK-007 | baseline 准入 gate 采用六项版：backend/provider/dialect/provider-set/attestation/corpus 隔离；隔离可走隔离 DB 或正式 identity 生效后的 `doc_id` provenance 过滤 | RAG-D | baseline 只在真实、单一来源的正式索引上运行 |\n| DEC-011 | BLK-007 | 第一轮评测口径为 paragraph-containment proxy + gold-answer/context enrichment；benchmark locator 不进 runtime identity；严格 identity 映射归 BLK-013 | RAG-D | 黄金集在正式 identity 落地前能诚实产出第一轮基线 |",
+      "href": "../plans/2026-07-27-rag-p0-confirmed-decisions.md#L22"
+    },
+    {
+      "id": "dec-011",
+      "title": "DEC-011：评测口径",
+      "authority": "已确认业务决策",
+      "path": "docs/rag-work/plans/2026-07-27-rag-p0-confirmed-decisions.md",
+      "line": 23,
+      "endLine": 24,
+      "excerpt": "| DEC-011 | BLK-007 | 第一轮评测口径为 paragraph-containment proxy + gold-answer/context enrichment；benchmark locator 不进 runtime identity；严格 identity 映射归 BLK-013 | RAG-D | 黄金集在正式 identity 落地前能诚实产出第一轮基线 |\n| DEC-012 | BLK-004 | canonical bytes 协议冻结（B-04 通过）：doc-v1/doc-norm-1/chunk-v1 + normalize_text 5 步 + length-prefixed framing + 半开 range canonical JSON + V1/V2/V3 回归基线；Phase 2 B/C 线均可编码 | RAG-B | stable ID 可跨实现复算，解锁 Phase 2 编码 |",
+      "href": "../plans/2026-07-27-rag-p0-confirmed-decisions.md#L23"
+    },
+    {
+      "id": "raw-r08",
+      "title": "上层规划R08：真实PG与向量维度",
+      "authority": "已确认MVP范围",
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "line": 50,
+      "endLine": 51,
+      "excerpt": "| R08 | 真实 PG、扩展、连接、embedding 及 2048 维一致性未实测 | P1 | S0 盘点资源，S2 实际探测并保存无密钥证据；不可用则阻断相关验收 |\n| R09 | 真实 run 中途写入失败整体 rollback 未验证；SQLite 已通过 | P1 | S2 独立 PG 对抗：无本轮残留；不重写已存在的事务逻辑 |",
+      "href": "../../../superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md#L50"
+    },
+    {
+      "id": "raw-r16",
+      "title": "上层规划R16：本地资产与hash",
+      "authority": "已确认MVP范围",
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "line": 58,
+      "endLine": 59,
+      "excerpt": "| R16 | corpus/EPUB 本地版权资产是否齐全及 hash 权威尚需核对 | P1 | S0 可用性检查，S3/S4 现有 validator 校验；新增 corpus digest 契约需确认 |\n| R17 | 全局/私有及歧义行真实 PG 隔离、在线两用户/多轮隔离待验证 | P1 | S2 Provider 对抗，S5/S6 在线对抗；无权限正文不进入生成 |",
+      "href": "../../../superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md#L58"
+    },
+    {
+      "id": "raw-s004",
+      "title": "上层规划S0-04：只读盘点",
+      "authority": "已确认MVP范围",
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "line": 84,
+      "endLine": 85,
+      "excerpt": "- [ ] S0-04 只读盘点 PG/embedding/本地书籍与 corpus 可用性，不打印密钥；记录当前测试/CI 条件。\n- [ ] S0-05 修正立即影响派工的状态/链接，补交接安排；非阻断历史格式清理随阶段完成。",
+      "href": "../../../superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md#L84"
+    },
+    {
+      "id": "raw-assets",
+      "title": "E4：合法来源、禁止上传正文",
+      "authority": "已确认MVP范围",
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "line": 242,
+      "endLine": 243,
+      "excerpt": "源资产检查复用既有 SHA/validator，若版权 corpus 缺失按既有合法来源恢复，不上传正文。不对 EPUB 实施泛化重写；真实书籍确实提取缺失时先明确涉及标签/片段及 ID/策略版本影响，再审批最小修复。\n",
+      "href": "../../../superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md#L242"
+    },
+    {
+      "id": "raw-two",
+      "title": "E4：对抗测试与书籍基线分离",
+      "authority": "已确认MVP范围",
+      "path": "superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md",
+      "line": 240,
+      "endLine": 241,
+      "excerpt": "MVP 推荐两类资源：权限/事务对抗测试库可含人工样本；纯本书基线库只含当前成功产物，供评测和受控在线冒烟。隔离核验读取实际 target_index_id、doc/chunk 清单与 scope-owner，和成功证明比较；不接受未经验证的 provenance_filter 模式。若选择过滤模式则新增查询过滤设计与独立证明，不把 visibility WHERE 替代 corpus filter。\n",
+      "href": "../../../superpowers/rag-foundation/2026-10-15-rag-mvp-execution-plan.md#L240"
+    },
+    {
+      "id": "dag-g1",
+      "title": "DAG：G1构成与真实运行顺序",
+      "authority": "已确认调度",
+      "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+      "line": 86,
+      "endLine": 87,
+      "excerpt": "G1 是 S1 的集成门：T02/T03/T04/T09/T10 都必须通过，不允许一个分支完成就直接正式摄入。T05 的迁移实现可提前，真正PG执行留在 T07。\n",
+      "href": "../../../superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md#L86"
+    },
+    {
+      "id": "dag-t07",
+      "title": "DAG：T07的硬前置",
+      "authority": "已确认调度",
+      "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+      "line": 77,
+      "endLine": 78,
+      "excerpt": "| T07 | E4；I-01及S2真实验证 | T05、T01、G1 | fixture消费正式schema、实际PG迁移/维度/事务/权限/identity验证；独立测试资源、无基线污染；包含G2复核 |\n| T08 | E3；S3 runner与恢复实现/受控测试 | T02、T04 | 持久化预意图和计划、写入一次、实际产物核对、提交后只读补证；正式摄入另由 T11 完成 |",
+      "href": "../../../superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md#L77"
+    },
+    {
+      "id": "dag-t11",
+      "title": "DAG：正式摄入到真实基线",
+      "authority": "已确认调度",
+      "path": "superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md",
+      "line": 81,
+      "endLine": 84,
+      "excerpt": "| T11 | S3-01～06真实运行 | G2、T08 | 本书索引、预意图、产物多重清单、成功证明、恢复验收；包含G3复核，独占目标 |\n| T12 | S4-01～05 | G3、T09 | 完整20题一次运行、raw报告、指标与异常题复核；judge可降级，检索失败不能放行G4 |\n| T13 | E5/E6；S5真实验证、S6-01/02前置 | G3、T06、T10、T04 | 本书查询指纹匹配、普通/SSE、两用户/多轮/重复事件/降级路径；包含G5复核 |\n| T14 | E6；S6及最终交接 | G4、G5 | 联合回归、必要CI、证据索引、README/主清单/交接同步；主控核验后G6完成 |",
+      "href": "../../../superpowers/rag-foundation/2026-10-16-rag-mvp-dag-and-scheduling.md#L81"
+    },
+    {
+      "id": "project-python",
+      "title": "项目Python版本下限",
+      "authority": "项目配置",
+      "path": "pyproject.toml",
+      "line": 5,
+      "endLine": 6,
+      "excerpt": "requires-python = \">=3.11\"\ndependencies = [",
+      "href": "../../../pyproject.toml#L5"
+    },
+    {
+      "id": "project-ragas",
+      "title": "项目eval extra与RAGAS版本",
+      "authority": "项目配置",
+      "path": "pyproject.toml",
+      "line": 34,
+      "endLine": 37,
+      "excerpt": "    \"ragas==0.4.3\",\n    \"datasets>=2.0.0\",\n    \"pandas>=2.0.0\",\n    \"scikit-learn>=1.0.0\",",
+      "href": "../../../pyproject.toml#L34"
+    },
+    {
+      "id": "project-marker",
+      "title": "pytest按marker排除integration",
+      "authority": "项目配置",
+      "path": "pyproject.toml",
+      "line": 64,
+      "endLine": 65,
+      "excerpt": "addopts = \"-m 'not integration'\"\ntestpaths = [\"tests\"]",
+      "href": "../../../pyproject.toml#L64"
+    },
+    {
+      "id": "ci-commands",
+      "title": "现有CI安装、lint与测试命令",
+      "authority": "项目配置",
+      "path": ".github/workflows/ci.yml",
+      "line": 19,
+      "endLine": 28,
+      "excerpt": "      - name: Install dependencies\n        # dev extra 含 pytest / pytest-asyncio / httpx\n        run: uv sync --extra dev\n\n      - name: Lint (ruff)\n        # pyproject 未声明 ruff 依赖，用 uvx 按需拉取（读项目 [tool.ruff] 配置）\n        run: uvx ruff check .\n\n      - name: Test (pytest，默认排除 integration)\n        run: uv run pytest tests/ -v",
+      "href": "../../../.github/workflows/ci.yml#L19"
+    },
+    {
+      "id": "t01-probe",
+      "title": "T01：有条件只读探测边界",
+      "authority": "已授权执行计划",
+      "path": "docs/rag-work/plans/2026-10-17-t01-execution-plan.md",
+      "line": 23,
+      "endLine": 24,
+      "excerpt": "- PG 探测的连接超时上限为 5 秒，单条元数据 `SELECT` 的语句超时上限为 10 秒。可信工厂必须在建立连接前应用连接超时，并在第一条查询前建立只读事务、应用语句超时；若任一超时或只读边界不能保证，则不探测。查询只通过该新连接执行；完成后无论成功失败均 rollback 并关闭该连接。不得执行 DDL、DML、迁移、扩展、清理、表扫描或写入探针。查询可连通只表示本次只读身份查询完成，不证明 writer 权限、权限排他、锁有效、事务提交或 T07/G2 通过。\n- 本计划不选择 PostgreSQL 服务唯一标识的最终格式，不决定锁/lease 机制，也不把 database 名、schema 名、host/port 或当前角色的单一值宣称为足够唯一。若登记无法提供可审计的唯一服务实例绑定，保留为待 T07/主控裁定的阻断事实。",
+      "href": "../plans/2026-10-17-t01-execution-plan.md#L23"
+    },
+    {
+      "id": "review-summary",
+      "title": "正式review：9项待修订",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 5,
+      "endLine": 6,
+      "excerpt": "**结论：暂不通过派发。确认9项需修订，其中7项P1、2项P2；另有1项非阻断澄清。** 这次结论更新[前一轮文档复读](2026-10-16-second-wave-plan-review.md)之后的状态，不把历史复读记录改写成当前通过。\n",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L5"
+    },
+    {
+      "id": "review-rv2-01",
+      "title": "意图落盘到未决标记之间存在崩溃窗口",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 11,
+      "endLine": 15,
+      "excerpt": "### RV2-01 · P1 · intent已落盘但pending尚未创建时，新run可绕过未决意图\n\n- 定位：[T08计划](2026-10-16-t08-execution-plan.md:85)，及该文件156、183～184、190、195行。\n- 触发：intent.json和plan-manifest.json已发布，在创建prepared marker之前进程退出。PG session锁随连接终止而释放，target仍为空。\n- 问题：新run仅按target查pending文件，可能因此进入；原run又因缺marker和proof只能inconclusive。没有发现阻止新run的其他持久登记步骤，违反spec A4“未决意图未处理前所有受控写入者不得启动新run”。这与文末已说明的unconfirmed返回值持久化窗口是两件不同的事。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L11"
+    },
+    {
+      "id": "review-rv2-02",
+      "title": "专用writer证据未绑定实际登录角色",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 18,
+      "endLine": 22,
+      "excerpt": "### RV2-02 · P1 · 专用writer证据未绑定实际数据库登录角色\n\n- 定位：[T08计划](2026-10-16-t08-execution-plan.md:70)，及111～113、181、185、192行。\n- 触发：资源证据登记受审计的专用writer role，但database_url_env实际使用另一个可写角色；database/schema名字均匹配。\n- 问题：计划核对目标和锁，却没有要求从同一连接读取实际session/current role并与权限审计事实绑定。锁只能协调遵守协议的writer，不能补足身份不符的权限证据；仍可能生成排他成功证明。spec A4明确不能排除外部writer时不准成功恢复。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L18"
+    },
+    {
+      "id": "review-rv2-03",
+      "title": "预检失败时尚无合法run UUID",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 25,
+      "endLine": 29,
+      "excerpt": "### RV2-03 · P2 · 预检失败时尚无合法run UUID可构造RunRecord\n\n- 定位：[T08计划](2026-10-16-t08-execution-plan.md:181)，及161、183行。\n- 触发：参数、registry、数据库或lease预检在“生成UUID”之前失败，而流程要求返回RunRecord。\n- 依据：[RunRecord](../../../app/infrastructure/rag/contracts.py:378)在构造时无条件验证ingestion_run_id为UUID。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L25"
+    },
+    {
+      "id": "review-rv2-04",
+      "title": "runtime构造与身份核验顺序冲突",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 32,
+      "endLine": 36,
+      "excerpt": "### RV2-04 · P2 · runtime构造与身份核验先后顺序互相矛盾\n\n- 定位：[T08计划](2026-10-16-t08-execution-plan.md:147)，及75、181行。\n- 问题：_build_runtime要求调用describe_embedding并返回含已验证Identity的Runtime；run流程却要求完成数据库/lease/空前态校验和排他记录后才describe，而这些前置又要先取得runtime中的provider。\n- 修订：拆明service/provider装配与identity描述两个阶段，或调整唯一顺序；结构字段、helper契约、正常和恢复流程及测试调用顺序必须一致。此次是接口顺序冲突，不声称SDK配置读取本身会发出远端请求。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L32"
+    },
+    {
+      "id": "review-rv2-05",
+      "title": "current_schema不足以约束revision解析范围",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 40,
+      "endLine": 44,
+      "excerpt": "### RV2-05 · P1 · current_schema校验不足以约束revision的实际解析目标\n\n- 定位：[T05计划](2026-10-16-t05-execution-plan.md:57)，及61、106、141行。\n- 触发：search_path中测试schema在前、业务schema在后，某待修改表只在业务schema存在。current_schema仍是测试schema，守卫可通过。\n- 依据：现有[context recall revision](../../../alembic/versions/20260623_add_ragas_context_recall.py:22)使用无schema限定的op.add_column('evals', ...)；其他revision也存在未限定表操作。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L40"
+    },
+    {
+      "id": "review-rv2-06",
+      "title": "同名数据库与schema不能区分PG实例",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 47,
+      "endLine": 51,
+      "excerpt": "### RV2-06 · P1 · 数据库名加schema不能唯一识别PostgreSQL服务实例\n\n- 定位：[T05计划](2026-10-16-t05-execution-plan.md:106)，及141行。\n- 触发：连接误指向另一PG实例，但其数据库名/schema与获批测试目标相同。\n- 问题：计划将database_id定义成数据库名，allowlist碰撞集合也仅含(database_id, schema_name)，这两项查询无法识别服务实例差异。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L47"
+    },
+    {
+      "id": "review-rv2-07",
+      "title": "预检autobegin后的事务责任不明",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 54,
+      "endLine": 58,
+      "excerpt": "### RV2-07 · P1 · 预检autobegin导致Alembic事务责任改变\n\n- 定位：[T05计划](2026-10-16-t05-execution-plan.md:57)，及61、104、113行。\n- 触发：注入Connection原先不在事务中，守卫先execute只读查询，再context.configure。\n- 主控核验：本地已安装Alembic的`.venv/Lib/site-packages/alembic/runtime/migration.py:159`在配置时记录connection.in_transaction()；416行起在外部事务下返回空transaction context。守卫查询会触发SQLAlchemy autobegin，因而“沿用context.begin_transaction”不等于Alembic会负责提交这次连接上的事务。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L54"
+    },
+    {
+      "id": "review-rv2-08",
+      "title": "实际查询provider未绑定证明目标",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 64,
+      "endLine": 68,
+      "excerpt": "### RV2-08 · P1 · 真实查询provider未与证明及snapshot的目标绑定\n\n- 定位：[T09计划](2026-10-16-t09-execution-plan.md:145)，及148～149、198行。\n- 触发：context、snapshot、proof均属于目标A；agent实际vector provider连接目标B；两者都是PG且embedding配置相同。\n- 依据：现有[provider构造](../../../app/infrastructure/rag/pgvector_provider.py:42)可选择独立db_url；[默认dialect探测](../../../benchmarks/rag/books/the-myth-of-sisyphus/rag_d.py:207)只确定方言。计划比较的是声明context/snapshot字段和实际embedding，而没有列出读取并绑定live provider实际数据库/schema/目标的步骤。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L64"
+    },
+    {
+      "id": "review-rv2-09",
+      "title": "基线保护时序和writer互斥协议不完整",
+      "authority": "正式审阅",
+      "path": "docs/rag-work/plans/2026-10-17-second-wave-plan-review.md",
+      "line": 72,
+      "endLine": 76,
+      "excerpt": "### RV2-09 · P1 · baseline保护在snapshot之后获取，且没有跨包持有/互斥协议\n\n- 定位：[T09计划](2026-10-16-t09-execution-plan.md:78)，及76、84、198行；对照T08计划71、163、186行。\n- 触发：取snapshot后、取得保护前目标变化；或20题运行中T08 writer并不认识所谓read_only_frozen保护，仍可获得自己的writer lease。\n- 问题：active=True等mapping值只能表达声明。计划没有规定保护句柄从snapshot前持续持有到baseline结束、由谁在finally释放，以及它与T08的目标锁是否冲突。",
+      "href": "../plans/2026-10-17-second-wave-plan-review.md#L72"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "INV-01",
+      "title": "本机 EPUB 路径与源字节",
+      "status": "blocked",
+      "priority": "先补资产",
+      "summary": "历史源SHA已登记，本机可读路径与实际SHA尚未核对。",
+      "observations": [
+        {
+          "kind": "声明",
+          "text": "manifest登记历史macOS外部路径及源SHA 341696af…45a7f；这是历史声明。",
+          "sourceId": "inv-assets"
+        },
+        {
+          "kind": "未知",
+          "text": "本次未提供Windows路径映射，没有读取EPUB或扩大磁盘搜索。",
+          "sourceId": "inv-assets"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "raw-r16",
+          "rule": "先核对本地资产可用性与hash来源。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-a1",
+          "rule": "准备前后校验源字节SHA一致，变化即失败。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-expect",
+          "rule": "消费端expected_source_sha256必须独立于证明自身。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "raw-assets",
+          "rule": "只按既有合法来源恢复，不上传正文，不泛化重写EPUB。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "T05/T08/T09的计划修订及离线受控实现仍可推进；无法对本书开展可信的正式摄入。",
+      "overallImpact": "T11/G3不能闭合，T12无法确认题集对应的是实际源版本，后续在线与联合验收受阻。",
+      "without": "继续沿用历史路径或自报SHA，不能证明当前摄入的文件就是题集对应源文件；更换版本后不能继续套用旧hash准入。",
+      "owner": "用户／资产owner提供来源，主控核对",
+      "dependsOn": [
+        "合法本地来源",
+        "精确本机路径"
+      ],
+      "recommended": "same-source",
+      "options": [
+        {
+          "id": "same-source",
+          "label": "提供同一版本的本地源文件（推荐）",
+          "tradeoff": "保持既有题集与抽取基线；实际字节仍必须哈希比对。",
+          "actions": [
+            "提供合法EPUB的精确本机路径",
+            "核对实际SHA与manifest声明",
+            "不改声明以迎合不同文件"
+          ]
+        },
+        {
+          "id": "new-source",
+          "label": "改用其他版本，重新建立资产基线",
+          "tradeoff": "增加hash、段落引用与题集复核工作；需明确版本影响。",
+          "actions": [
+            "记录新版本和合法来源",
+            "单独评审源/语料/题集变更",
+            "验证新hash与全部gold映射后再准入"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "暂缓本书实物，先修离线方案",
+          "tradeoff": "可以推进设计与受控逻辑，T11及之后保持阻断。",
+          "actions": [
+            "保留source未解析状态",
+            "只推进离线修订",
+            "不运行正式本书摄入"
+          ]
+        }
+      ],
+      "acceptance": [
+        "本机文件可读且来源有据",
+        "实际SHA与批准源基线匹配",
+        "源文件检查与题集来源关系可追溯"
+      ]
+    },
+    {
+      "id": "INV-02",
+      "title": "本地 corpus 正文语料",
+      "status": "blocked",
+      "priority": "先补资产",
+      "summary": "登记位置corpus.local.jsonl缺失；313段仅是历史声明。",
+      "observations": [
+        {
+          "kind": "事实",
+          "text": "book目录登记位置的corpus文件不存在，实际字节数、hash、段数均未取得。",
+          "sourceId": "inv-assets"
+        },
+        {
+          "kind": "声明",
+          "text": "manifest声明已抽取313段，局部.gitignore将正文语料排除在版本控制外。",
+          "sourceId": "inv-assets"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "raw-assets",
+          "rule": "源资产核对复用SHA和validator，缺失时按合法来源恢复且不上传正文。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-20",
+          "rule": "gold、locator、excerpt与源SHA必须通过资产校验。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-report",
+          "rule": "正式报告分别记录source与corpus摘要，不能相互替代。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "不能验证现有gold paragraph与正文片段；不影响纯合成数据的测试。",
+      "overallImpact": "T12正式20题基线无法完成可信准入；即使PG已有索引，也不能绕过gold语料核验。",
+      "without": "只凭313段声明或20个verified标签跑分，会失去题目与实际语料的证据关系。",
+      "owner": "资产owner／受控抽取执行者",
+      "dependsOn": [
+        "INV-01或有据可查的合法本地语料副本"
+      ],
+      "recommended": "restore",
+      "options": [
+        {
+          "id": "restore",
+          "label": "恢复可追溯的既有语料（推荐）",
+          "tradeoff": "恢复后仍需计算独立hash并验证paragraph/gold关系。",
+          "actions": [
+            "提供合法来源的本地语料",
+            "计算corpus自身SHA与结构计数",
+            "核对题集paragraph/locator/excerpt"
+          ]
+        },
+        {
+          "id": "extract",
+          "label": "从已核准EPUB按既有规则重新抽取",
+          "tradeoff": "会产生本地正文文件；需另行受控执行并检查段落ID影响。",
+          "actions": [
+            "先确认源字节",
+            "沿既有extract_epub规则执行恢复方案",
+            "核对段落ID、排除范围及全部题目引用"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "暂缓语料恢复",
+          "tradeoff": "离线逻辑可继续，正式baseline保持阻断。",
+          "actions": [
+            "保留corpus缺失记录",
+            "不生成假语料替代正式gold"
+          ]
+        }
+      ],
+      "acceptance": [
+        "语料来自批准源或可追溯副本",
+        "source/corpus摘要独立记录",
+        "全部gold引用可在真实语料中验证",
+        "正文不纳入提交或公开输出"
+      ]
+    },
+    {
+      "id": "INV-03",
+      "title": "20题标签与实际资产准入",
+      "status": "unknown",
+      "priority": "资产齐备后核验",
+      "summary": "20条唯一题目均带verified_v1标签，标签不等于正式准入已通过。",
+      "observations": [
+        {
+          "kind": "事实",
+          "text": "20条mapping、20个唯一非空ID；缺失/重复ID为0；verified_v1=20、draft=0、unknown=0。",
+          "sourceId": "inv-assets"
+        },
+        {
+          "kind": "事实",
+          "text": "book_key与声明source SHA互相匹配。",
+          "sourceId": "inv-assets"
+        },
+        {
+          "kind": "未知",
+          "text": "源与corpus实物链未闭合，本次未运行正式validate_assets或人工复核。",
+          "sourceId": "inv-assets"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "spec-20",
+          "rule": "正式集合必须恰20条、ID非空唯一、全部verified_v1；任一draft/重复/缺ID均阻断。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-20",
+          "rule": "每题最多一次evaluate/search；首个检索或结构故障保留失败尝试并停止。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "dec-011",
+          "rule": "评测是paragraph-containment proxy与gold-answer/context enrichment，不代表Tutor质量。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "无需为了盘点重新标注20题；需要先补齐实际资产，再验证标签对应内容。",
+      "overallImpact": "G4要求有效20、失败0、未跑0；标签数或低分都不能替代有效执行计数。",
+      "without": "可能得到“看似20题完成”却引用缺失、语料不匹配或执行不完整的假基线。",
+      "owner": "主控／T12评测与人工复核者",
+      "dependsOn": [
+        "INV-01",
+        "INV-02",
+        "T09严格准入"
+      ],
+      "recommended": "validate",
+      "options": [
+        {
+          "id": "validate",
+          "label": "保留现有题集，资产齐备后严格复核（推荐）",
+          "tradeoff": "保留已有工作；需用实际语料证实引用、内容与版本一致。",
+          "actions": [
+            "恢复源与corpus",
+            "执行正式资产validator",
+            "仅对确实不匹配项做审阅与修订"
+          ]
+        },
+        {
+          "id": "rework",
+          "label": "源版本变化后重新审阅题集",
+          "tradeoff": "增加标注成本，必须维护20条正式集合与完整来源。",
+          "actions": [
+            "记录版本变更",
+            "复核全部gold与locator",
+            "按正式契约重新形成20题集合"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "暂缓正式题集验收",
+          "tradeoff": "允许合成测试继续，不能声称G4通过。",
+          "actions": [
+            "将20verified标签保留为元数据事实",
+            "不以标签计数冒充实际baseline"
+          ]
+        }
+      ],
+      "acceptance": [
+        "实际源/语料校验通过",
+        "20条均满足正式资产契约",
+        "真实运行有效20／失败0／未跑0",
+        "低召回不人为当成基础设施失败"
+      ]
+    },
+    {
+      "id": "INV-04",
+      "title": "目标解释器、关键依赖与锁文件",
+      "status": "blocked",
+      "priority": "先明确环境",
+      "summary": "Python满足下限；关键发行元数据有缺口，部分版本与uv.lock不同。",
+      "observations": [
+        {
+          "kind": "事实",
+          "text": "当前.venv：Python 3.12.11；SQLAlchemy 2.0.49 / lock 2.0.50；openai 2.36.0 / lock 2.38.0；pytest-asyncio 1.3.0 / lock 1.4.0。",
+          "sourceId": "inv-env"
+        },
+        {
+          "kind": "事实",
+          "text": "psycopg、asyncpg、pgvector、ragas、datasets未找到当前解释器发行元数据。",
+          "sourceId": "inv-env"
+        },
+        {
+          "kind": "边界",
+          "text": "未找到元数据不等于已经测试import失败；没有安装或执行业务库。",
+          "sourceId": "inv-meta"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "project-python",
+          "rule": "项目Python下限>=3.11；当前3.12.11满足版本范围。",
+          "note": "项目明确约束"
+        },
+        {
+          "sourceId": "project-ragas",
+          "rule": "项目eval extra明确声明ragas==0.4.3及评测依赖。",
+          "note": "项目明确配置，不等于所有阶段都必须启用judge"
+        },
+        {
+          "sourceId": "raw-s004",
+          "rule": "S0盘点PG/embedding及测试/CI条件，真实能力需后续验证。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-judge",
+          "rule": "judge不可用按项null/降级；检索失败不能变成有效零分。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "inv-env",
+          "rule": "按锁文件对齐是可复现性建议；不是spec逐包锁死所有发行版本的新增硬规则。",
+          "note": "工程建议，不能把允许范围内版本差异一概称为契约违规"
+        }
+      ],
+      "currentImpact": "计划修订、代码阅读与已隔离的纯逻辑工作可继续；实际模块可导入和完整测试能力尚未证明。",
+      "overallImpact": "真实PG/SDK/judge运行及CI复现有风险；相同代码在不同环境可能出现接口或行为差异。",
+      "without": "可能在真正调用驱动或评测库时失败，也可能本地结果无法复现；此前547项只证明历史受控范围。",
+      "owner": "环境维护者／主控",
+      "dependsOn": [
+        "确认唯一目标.venv与所需extras"
+      ],
+      "recommended": "lock",
+      "options": [
+        {
+          "id": "lock",
+          "label": "以锁文件建立可复现基线（推荐）",
+          "tradeoff": "需先确定解释器与本阶段extras；安装/同步另行执行并记录，不由此页面触发。",
+          "actions": [
+            "固定目标解释器",
+            "审阅base/dev/eval所需依赖同步范围",
+            "对照锁与已装元数据后安排必要验证"
+          ]
+        },
+        {
+          "id": "minimal",
+          "label": "先补运行必需依赖，judge明确降级",
+          "tradeoff": "可减少评测依赖成本；必须记录版本差异和judge不可用限制。",
+          "actions": [
+            "确认PG/SDK运行必需依赖",
+            "记录实际版本与允许范围",
+            "在检索20题健康且其余门通过时才考虑completed_judge_degraded"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "暂缓环境变更，只推进离线修订",
+          "tradeoff": "不影响文档和部分受控逻辑；真实能力仍未验证。",
+          "actions": [
+            "保留依赖缺口记录",
+            "不宣称锁同步、CI或真实PG通过"
+          ]
+        }
+      ],
+      "acceptance": [
+        "目标解释器和依赖来源明确",
+        "关键模块能力在约定隔离范围内验证",
+        "原始依赖差异及工具版本有记录",
+        "真实服务能力由对应后续任务实测"
+      ]
+    },
+    {
+      "id": "INV-05",
+      "title": "PG实例、目标用途与可信资源登记",
+      "status": "unknown",
+      "priority": "并行准备资源",
+      "summary": "尚未提供可核验的PG资源记录与受控连接装配来源。",
+      "observations": [
+        {
+          "kind": "事实",
+          "text": "本次未提供可信resource_record_ref、target_index_id、用途及唯一实例绑定。",
+          "sourceId": "inv-reg"
+        },
+        {
+          "kind": "边界",
+          "text": "计划指定的进程定位键未出现，限定目录未匹配候选登记文件；不能推断其他位置不存在登记或服务器不可用。",
+          "sourceId": "inv-default"
+        },
+        {
+          "kind": "事实",
+          "text": "PG查询0次；未使用默认settings尝试连接。",
+          "sourceId": "inv-reg"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "dec-007",
+          "rule": "实际PgVectorProvider和PostgreSQL条件必须成立，禁止静默回退fake/SQLite。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-migration",
+          "rule": "DDL/清理前在同一已预检连接核对真实目标，不能连接失败后回退settings。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-expect",
+          "rule": "MVP只接受isolated_db，独立expected不能从证明回填。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "raw-two",
+          "rule": "推荐对抗测试资源与纯本书基线资源分离。",
+          "note": "上层规划推荐资源布局"
+        },
+        {
+          "sourceId": "dag-t07",
+          "rule": "T07必须等待T01、T05、G1。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "t01-probe",
+          "rule": "登记与唯一绑定成立后才可只读探测：5秒连接、10秒语句上限；否则不探测。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "可以修订迁移和准入逻辑；缺少可信来源时不会进行真实PG验证。",
+      "overallImpact": "T07/G2无法放行，正式摄入、基线和在线真实验收随后受阻。",
+      "without": "可能误连其他实例或混用业务/基线资源；仅同名database/schema或一个verified布尔不能证明目标正确。",
+      "owner": "PG资源owner／主控／T07",
+      "dependsOn": [
+        "可信资源登记",
+        "唯一实例绑定",
+        "明确测试与基线用途"
+      ],
+      "recommended": "isolate",
+      "options": [
+        {
+          "id": "isolate",
+          "label": "登记独立测试与本书基线资源（推荐）",
+          "tradeoff": "需要资源owner提供真实映射与权限证据；本页不创建数据库。",
+          "actions": [
+            "分别登记测试与基线用途",
+            "提供可核验的实例/目标/装配引用",
+            "T05修订守卫后由T07执行真实验证"
+          ]
+        },
+        {
+          "id": "register-existing",
+          "label": "登记现有的专用资源",
+          "tradeoff": "复用成本低；仍须证明用途隔离、实例唯一性和权限，不能把业务默认库改名充当测试目标。",
+          "actions": [
+            "提交现有专用目标的受控记录",
+            "核验冲突及用途边界",
+            "无法排除混用则保留阻断"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "保持离线，暂缓PG资源",
+          "tradeoff": "能够推进纯逻辑，G2及后续真实门不放行。",
+          "actions": [
+            "不试连默认库",
+            "保留资源unknown",
+            "继续设计修订"
+          ]
+        }
+      ],
+      "acceptance": [
+        "同连接实际目标与可信登记匹配",
+        "可区分同名但不同PG实例",
+        "测试/基线/业务边界明确",
+        "T07完成实际schema、权限和事务验证"
+      ]
+    },
+    {
+      "id": "INV-06",
+      "title": "实际writer角色与运行期排他保护",
+      "status": "unknown",
+      "priority": "先修协议再验证",
+      "summary": "角色、权限审计、pending和baseline保护均未形成真实已核验事实。",
+      "observations": [
+        {
+          "kind": "未知",
+          "text": "实际session/current role、专用writer权限和审计来源均未验证。",
+          "sourceId": "inv-reg"
+        },
+        {
+          "kind": "审阅发现",
+          "text": "T08意图发布窗口与实际role绑定，T05解析/事务边界，T09目标和基线保护仍有未关闭问题。",
+          "sourceId": "review-summary"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "spec-resource",
+          "rule": "exclusive_target不能靠bool自证；无法排除外部writer就不能成功恢复。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-recover",
+          "rule": "MVP只支持空前态、完整多重集合一致的首次摄入恢复；未决不得自动重导。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-migration",
+          "rule": "迁移与清理前必须核对真实目标与安全边界。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "review-rv2-09",
+          "rule": "基线保护应先于快照，持续覆盖整个运行，并与writer互斥。",
+          "note": "正式review修订要求；具体锁实现仍待确认"
+        }
+      ],
+      "currentImpact": "可修订并用替身测试状态机；不能把advisory lock或历史权限声明当成真实排他已成立。",
+      "overallImpact": "证明可能错误归属产物，评测可能读取混合/变化索引；影响G2/G3/G4/G5可信性。",
+      "without": "可能新run绕过未决意图、错误账号写入、迁移命中其他schema，或基线运行中索引变化。",
+      "owner": "主控协调T05/T08/T09；资源owner与T07/T12核验",
+      "dependsOn": [
+        "INV-05",
+        "RV2-01/02/05/06/07/08/09修订"
+      ],
+      "recommended": "repair",
+      "options": [
+        {
+          "id": "repair",
+          "label": "先修9项设计，再验证实际保护（推荐）",
+          "tradeoff": "修订不会自动补环境；仍需权限与锁生命周期的真实证据。",
+          "actions": [
+            "闭合写前持久登记窗口",
+            "绑定实际登录角色与审计",
+            "统一writer与baseline保护时序/释放责任"
+          ]
+        },
+        {
+          "id": "equivalent",
+          "label": "提出等效的隔离与冻结机制",
+          "tradeoff": "可以不采用某一种advisory实现；必须评审等效安全效果与跨包协议。",
+          "actions": [
+            "写明等效权限/冻结来源",
+            "证明相同目标writer与reader保护会冲突",
+            "经计划复核后再实际验证"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "只准备资源，不运行真实写读链",
+          "tradeoff": "可以收集资料，不能据此签发成功证明或基线。",
+          "actions": [
+            "保持未决和权限unknown",
+            "禁止用单一active/verified标记放行"
+          ]
+        }
+      ],
+      "acceptance": [
+        "9项计划问题定向复核关闭",
+        "实际账号与受审计权限相符",
+        "未决状态阻止新run",
+        "保护先于快照且持有到运行结束",
+        "异常出口有明确rollback/close/release责任"
+      ]
+    },
+    {
+      "id": "INV-07",
+      "title": "embedding绑定、配置指纹与版本来源",
+      "status": "unknown",
+      "priority": "并行准备资源",
+      "summary": "只有代码默认模型与维度，没有本次实际服务的独立可信绑定。",
+      "observations": [
+        {
+          "kind": "声明",
+          "text": "代码默认embedding_model=doubao-embedding-vision、embedding_dim=2048；不是本次实际配置或向量实测值。",
+          "sourceId": "inv-default"
+        },
+        {
+          "kind": "未知",
+          "text": "service/deployment/version/binding与参数身份来源未提供，没有SDK构造或远端请求。",
+          "sourceId": "inv-reg"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "spec-identity",
+          "rule": "身份包含service/deployment/model/dimension/parameters/version；同维不同模型不能视为同一向量空间。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-fingerprint",
+          "rule": "对公开规范JSON重算fingerprint，与独立expected及实际查询身份相等。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-identity",
+          "rule": "run内固定实际配置，漂移即拒绝；alias_unpinned必须披露限制。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "raw-r08",
+          "rule": "真实PG/embedding及维度一致性须实测，不能以默认2048代替结果。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "dec-009",
+          "rule": "完整endpoint/密钥不能出现在公开报告或错误中。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "T04纯函数与受控配置测试可以继续；尚不能为真实摄入和查询建立一致身份。",
+      "overallImpact": "T08成功证明、T09正式准入及后续在线查询身份链不闭合。",
+      "without": "可能用同维不同模型查询旧索引，产生无意义相似度，却误认为配置一致；远端别名变化还可能不可观察。",
+      "owner": "embedding服务owner／主控／T07/T09/T12",
+      "dependsOn": [
+        "公开service/deployment登记",
+        "受控内存endpoint绑定",
+        "实际实例配置核对"
+      ],
+      "recommended": "binding",
+      "options": [
+        {
+          "id": "binding",
+          "label": "登记实际服务绑定并优先使用可信固定版本（推荐）",
+          "tradeoff": "版本必须服务端确有可信来源；不能编造pinned声明。",
+          "actions": [
+            "给出公开service/deployment/model与参数来源",
+            "endpoint只在受控内存中精确匹配",
+            "比对实际摄入/查询指纹并安排向量维度验证"
+          ]
+        },
+        {
+          "id": "alias",
+          "label": "使用alias_unpinned并明确披露限制",
+          "tradeoff": "冻结契约允许；只能证明可观察配置一致，不能保证远端别名永不变。",
+          "actions": [
+            "model_version=null并标alias_unpinned",
+            "同run配置固定并检查漂移",
+            "报告保留未固定远端版本限制"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "暂缓远端服务，只验证纯契约",
+          "tradeoff": "不产生真实向量空间证据，正式证明/基线保持阻断。",
+          "actions": [
+            "仅使用合成identity与向量",
+            "不把合成测试当实际服务验证"
+          ]
+        }
+      ],
+      "acceptance": [
+        "绑定来自证明之外的可信来源",
+        "实际service与endpoint/deployment匹配",
+        "指纹和实际维度对应",
+        "同维不同模型反例被拒绝",
+        "alias限制如适用被保留"
+      ]
+    },
+    {
+      "id": "INV-08",
+      "title": "CI范围、离线围栏与可复现验证",
+      "status": "unknown",
+      "priority": "随实现安排验证",
+      "summary": "当前只有工作流声明和历史受控测试结果，没有本次CI执行证据。",
+      "observations": [
+        {
+          "kind": "事实",
+          "text": "CI为ubuntu-latest，安装dev extra，uvx ruff检查全仓，再执行pytest tests/。",
+          "sourceId": "inv-ci"
+        },
+        {
+          "kind": "事实",
+          "text": "默认按integration marker排除；模块收集仍可能执行顶层代码。",
+          "sourceId": "inv-ci"
+        },
+        {
+          "kind": "历史",
+          "text": "547 passed／1 deselected和既有E402属于先前受控范围，不是本次CI或真实服务验收。",
+          "sourceId": "inv-ci"
+        }
+      ],
+      "requirements": [
+        {
+          "sourceId": "project-marker",
+          "rule": "marker筛选不是目录或网络隔离。",
+          "note": "项目配置事实"
+        },
+        {
+          "sourceId": "ci-commands",
+          "rule": "CI当前没有显式选择eval extra，不能据此假定judge已安装。",
+          "note": "项目配置事实"
+        },
+        {
+          "sourceId": "dag-g1",
+          "rule": "G1需T02/T03/T04/T09/T10集成，不是任一局部包变绿。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "dag-t11",
+          "rule": "真实G2/G3/G4/G5及T14交接仍须对应证据。",
+          "note": "硬性执行边界"
+        },
+        {
+          "sourceId": "spec-judge",
+          "rule": "judge可降级但检索失败不能伪装为健康结果。",
+          "note": "硬性执行边界"
+        }
+      ],
+      "currentImpact": "可以按明确范围修订并运行后续隔离测试；不能直接把默认全仓命令当无外联保证。",
+      "overallImpact": "验证范围与生产能力不匹配会导致CI通过但真实链路失败，或收集时误触发外部服务。",
+      "without": "缺少可复现的执行环境、隔离前置和真实门证据，最终G6没有可靠验收依据。",
+      "owner": "主控／CI维护者／T07/T12/T14",
+      "dependsOn": [
+        "INV-04",
+        "模块隔离fixture",
+        "对应实现与真实资源就绪"
+      ],
+      "recommended": "scoped",
+      "options": [
+        {
+          "id": "scoped",
+          "label": "按任务范围分离离线与真实验证（推荐）",
+          "tradeoff": "多维护一层验证边界，但能解释每份结果证明了什么。",
+          "actions": [
+            "先确认fixture与收集安全",
+            "记录解释器/依赖/命令和真实退出码",
+            "将T07/T12等真实验证与离线CI分别归档"
+          ]
+        },
+        {
+          "id": "judge-degraded",
+          "label": "先验证检索主链，judge允许明确降级",
+          "tradeoff": "不输出假judge分；只在检索健康及其他准入成立后适用。",
+          "actions": [
+            "保留每项judge可用性",
+            "验证20题真实检索计数",
+            "报告明确completed_judge_degraded与限制"
+          ]
+        },
+        {
+          "id": "defer",
+          "label": "仅保留历史证据，暂不新增验证",
+          "tradeoff": "能支持追溯旧工作，不能为新实现和真实门背书。",
+          "actions": [
+            "给历史结果标日期/范围",
+            "所有未验证门保持未通过"
+          ]
+        }
+      ],
+      "acceptance": [
+        "明确记录验证范围与隔离前置",
+        "新变更有实际必要回归证据",
+        "既有lint问题与新增问题分开",
+        "真实门依DAG逐项放行而非复用fake结果"
+      ]
+    }
+  ],
+  "reviewIssues": [
+    {
+      "id": "RV2-01",
+      "task": "T08",
+      "priority": "P1",
+      "title": "意图落盘到未决标记之间存在崩溃窗口",
+      "sourceId": "review-rv2-01"
+    },
+    {
+      "id": "RV2-02",
+      "task": "T08",
+      "priority": "P1",
+      "title": "专用writer证据未绑定实际登录角色",
+      "sourceId": "review-rv2-02"
+    },
+    {
+      "id": "RV2-03",
+      "task": "T08",
+      "priority": "P2",
+      "title": "预检失败时尚无合法run UUID",
+      "sourceId": "review-rv2-03"
+    },
+    {
+      "id": "RV2-04",
+      "task": "T08",
+      "priority": "P2",
+      "title": "runtime构造与身份核验顺序冲突",
+      "sourceId": "review-rv2-04"
+    },
+    {
+      "id": "RV2-05",
+      "task": "T05",
+      "priority": "P1",
+      "title": "current_schema不足以约束revision解析范围",
+      "sourceId": "review-rv2-05"
+    },
+    {
+      "id": "RV2-06",
+      "task": "T05",
+      "priority": "P1",
+      "title": "同名数据库与schema不能区分PG实例",
+      "sourceId": "review-rv2-06"
+    },
+    {
+      "id": "RV2-07",
+      "task": "T05",
+      "priority": "P1",
+      "title": "预检autobegin后的事务责任不明",
+      "sourceId": "review-rv2-07"
+    },
+    {
+      "id": "RV2-08",
+      "task": "T09",
+      "priority": "P1",
+      "title": "实际查询provider未绑定证明目标",
+      "sourceId": "review-rv2-08"
+    },
+    {
+      "id": "RV2-09",
+      "task": "T09",
+      "priority": "P1",
+      "title": "基线保护时序和writer互斥协议不完整",
+      "sourceId": "review-rv2-09"
+    }
+  ],
+  "hierarchy": [
+    {
+      "level": "01",
+      "title": "已确认业务边界 · DEC",
+      "description": "限定真实性、权限、正式摄入与评测口径。冻结spec声明与DEC业务边界冲突时保留DEC。",
+      "sourceIds": [
+        "dec-002",
+        "dec-007",
+        "dec-009",
+        "dec-010",
+        "dec-011",
+        "spec-dec"
+      ]
+    },
+    {
+      "level": "02",
+      "title": "已确认MVP规划 · raw",
+      "description": "定义S0到S6范围、问题优先级、资源与资产恢复边界。是spec的设计来源，不能把历史实施前快照当当前事实。",
+      "sourceIds": [
+        "raw-s004",
+        "raw-r08",
+        "raw-r16",
+        "raw-two",
+        "raw-assets"
+      ]
+    },
+    {
+      "level": "03",
+      "title": "冻结接口与验收语义 · spec v1.0.1",
+      "description": "固定字段、身份、恢复、准入、20题与judge规则。私有建议不能绕过冻结契约；变更共享字段要有版本与影响记录。",
+      "sourceIds": [
+        "spec-nongoal",
+        "spec-resource",
+        "spec-expect",
+        "spec-identity",
+        "spec-20",
+        "spec-report",
+        "spec-migration"
+      ]
+    },
+    {
+      "level": "04",
+      "title": "DAG · 真实门与写入权",
+      "description": "规定硬前置与资源独占；计划完成、选择方案和单包测试都不会自动放行G1到G6。",
+      "sourceIds": [
+        "dag-g1",
+        "dag-t07",
+        "dag-t11"
+      ]
+    },
+    {
+      "level": "05",
+      "title": "执行计划与实际证据",
+      "description": "T01已授权执行且覆盖完成；T05/T08/T09仍有9项问题。私有registry、wrapper、锁等仍是待确认设计，不是已有资源事实。",
+      "sourceIds": [
+        "t01-probe",
+        "inv-summary",
+        "review-summary"
+      ]
+    }
+  ],
+  "roadmap": [
+    {
+      "stage": "现在",
+      "title": "确定环境与修订边界",
+      "tasks": [
+        "确认目标解释器及依赖范围",
+        "修订T05/T08/T09的9项问题",
+        "收集合法资产与资源owner信息",
+        "T06在线离线核心另编计划，可提前并行"
+      ],
+      "note": "此阶段无需先开展真实摄入。"
+    },
+    {
+      "stage": "并行准备",
+      "title": "补齐实际资源链",
+      "tasks": [
+        "本机源EPUB与corpus",
+        "PG测试/基线用途与实例身份",
+        "writer权限和embedding绑定来源"
+      ],
+      "note": "缺口可并行补；缺可信登记不试连默认库。"
+    },
+    {
+      "stage": "门禁顺序",
+      "title": "按DAG形成真实证据",
+      "tasks": [
+        "T09/T10等集成完成后G1",
+        "T01/T05/G1就绪后T07→G2",
+        "T08/G2后T11→G3",
+        "T09/G3后T12→G4；G3+T06+T10+T04后T13→G5",
+        "G4/G5后T14→G6"
+      ],
+      "note": "G4与G5是两条验收分支；本书真实资源推荐先T12后T13，非额外硬依赖。judge可按契约降级，检索/资产失败不可放行。"
+    }
+  ],
+  "caveats": [
+    "选择方案只形成浏览器中的决策草案，不表示已授权执行、已补齐资源或验收门通过。",
+    "本页是2026-10-17证据快照，不实时探测环境；.env与敏感配置值未读取。",
+    "依赖锁对齐是可复现性建议；spec没有逐包要求所有发行版本完全等于lock。",
+    "judge降级只适用于检索健康且其他准入成立的20题；不能掩盖PG或资产失败。",
+    "T01覆盖完成可与资源blocked并存；补资源不会自动关闭9项设计问题。"
+  ]
+}

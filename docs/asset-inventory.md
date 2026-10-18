@@ -4,6 +4,13 @@
 > 形态约定与维护规则见 `.claude/rules/solution-presentation.md`（方案呈现规范）。
 > 本文件只存**项目事实**（本项目具体有哪些产物），不存跨项目规矩。
 
+## 2026-10-18 普通教学 MVP 与交付流程建议
+
+| 名字 | 归属子系统 | 功能 | 触发 / 入口 | 位置 | 本轮影响 |
+|---|---|---|---|---|---|
+| MVP、基线、分支与 CI/CD raw 建议稿 | 项目规划 | 记录普通教学优先、本机 Docker 后单服务器的用户选择，以及候选基底、短分支、回归与发布建议；未批准实施 | 根 README 的「普通教学 MVP 与交付流程调整建议」 | `superpowers/project-baseline/2026-10-18-mvp-branching-cicd-raw.md:1` | 🔴 本轮新建 |
+| 历史聊天 MVP 核查与 CI/CD 三层计划 | 项目规划 | 核对 d83c505 历史起点与运行边界；用户已确认 main/feature-rag 分工与实施方向；第 11 节记录 15 项 CI/CD 缺口、证据/关闭条件及远端未知项 | 根 README 的历史核查与 CI/CD 缺口链接 | `superpowers/project-baseline/2026-10-18-historical-mvp-audit-and-cicd-plan-raw.md:1` | 🟡 本轮追加核查 |
+
 ## 字段说明
 
 - **名字**：产物名（脚本/文档/hook/skill/模块/配置等）

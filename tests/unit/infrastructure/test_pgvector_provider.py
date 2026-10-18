@@ -9,11 +9,33 @@ Mock 标注说明：
 """
 
 import json
+from math import inf, nan
+from types import SimpleNamespace
+
 import pytest
 from sqlalchemy import text
 from app.infrastructure.rag.pgvector_provider import PgVectorProvider
 from app.infrastructure.rag.embedding import EmbeddingService
 from app.infrastructure.rag.coordinator import Chunk
+
+
+@pytest.fixture(autouse=True)
+def isolate_pgvector_tests(monkeypatch):
+    """Allow only in-memory SQLite and block every SDK construction by default."""
+    import sqlalchemy
+
+    original_create_engine = sqlalchemy.create_engine
+
+    def guarded_create_engine(url, *args, **kwargs):
+        if str(url) != "sqlite:///:memory:":
+            raise AssertionError("unit tests may create only an in-memory SQLite engine")
+        return original_create_engine(url, *args, **kwargs)
+
+    def fail_openai_factory(*args, **kwargs):
+        raise AssertionError("offline provider test attempted to construct an OpenAI client")
+
+    monkeypatch.setattr(sqlalchemy, "create_engine", guarded_create_engine)
+    monkeypatch.setattr("openai.OpenAI", fail_openai_factory)
 
 
 class FakeEmbeddingService:
@@ -35,6 +57,49 @@ class FakeEmbeddingService:
     def embed_many(self, texts: list[str]) -> list[list[float]]:
         """批量返回固定向量。"""
         return [self.embed_one(t) for t in texts]
+
+
+class _SuppliedEmbeddingService:
+    def __init__(self, vectors, dim=2, dimension_after_embed=None):
+        self._dim = dim
+        self._dimension_after_embed = dimension_after_embed
+        self.vectors = vectors
+        self.calls = 0
+
+    @property
+    def dim(self):
+        return self._dim
+
+    def embed_many(self, texts):
+        self.calls += 1
+        if self._dimension_after_embed is not None:
+            self._dim = self._dimension_after_embed
+        return self.vectors
+
+
+class _RecordingConnection:
+    dialect = SimpleNamespace(name="sqlite")
+
+    def __init__(self):
+        self.execute_calls = []
+        self.commit_calls = 0
+        self.rollback_calls = 0
+
+    def execute(self, statement, parameters=None):
+        self.execute_calls.append((statement, parameters))
+
+    def commit(self):
+        self.commit_calls += 1
+
+    def rollback(self):
+        self.rollback_calls += 1
+
+
+def _recording_provider(embedding_service, monkeypatch):
+    provider = PgVectorProvider(embedding_service=embedding_service, db_url="sqlite:///:memory:")
+    connection = _RecordingConnection()
+    monkeypatch.setattr(provider, "_get_conn", lambda: connection)
+    return provider, connection
 
 
 @pytest.fixture
@@ -71,6 +136,273 @@ def sqlite_provider():
     # 清理
     if provider._conn:
         provider._conn.close()
+
+
+@pytest.mark.parametrize(
+    "vectors",
+    [
+        [[0.1, 0.2]],
+        [[0.1, 0.2], [0.1, 0.2], [0.1, 0.2]],
+        [[], [0.1, 0.2]],
+        [[0.1], [0.1, 0.2]],
+        [[True, 0.2], [0.1, 0.2]],
+        [["0.1", 0.2], [0.1, 0.2]],
+        [[nan, 0.2], [0.1, 0.2]],
+        [[inf, 0.2], [0.1, 0.2]],
+        [[-inf, 0.2], [0.1, 0.2]],
+    ],
+    ids=[
+        "short-batch", "long-batch", "zero-dimension", "wrong-dimension",
+        "bool-value", "non-numeric-value", "nan-value", "positive-infinity",
+        "negative-infinity",
+    ],
+)
+def test_index_rejects_invalid_embedding_batch_before_insert(monkeypatch, vectors):
+    service = _SuppliedEmbeddingService(vectors)
+    provider, connection = _recording_provider(service, monkeypatch)
+
+    with pytest.raises(ValueError):
+        provider.index([{"content": "first"}, {"content": "second"}])
+
+    assert connection.execute_calls == []
+    assert connection.commit_calls == 0
+
+
+def test_index_rejects_embedding_dimension_drift_before_insert(monkeypatch):
+    service = _SuppliedEmbeddingService(
+        [[0.1, 0.2], [0.3, 0.4]], dimension_after_embed=3
+    )
+    provider, connection = _recording_provider(service, monkeypatch)
+
+    with pytest.raises(ValueError):
+        provider.index([{"content": "first"}, {"content": "second"}])
+
+    assert connection.execute_calls == []
+    assert connection.commit_calls == 0
+
+
+def test_index_empty_batch_does_not_embed_or_connect(monkeypatch):
+    service = _SuppliedEmbeddingService([])
+    provider, connection = _recording_provider(service, monkeypatch)
+
+    assert provider.index([]) == 0
+    assert service.calls == 0
+    assert connection.execute_calls == []
+    assert connection.commit_calls == 0
+
+
+@pytest.mark.parametrize("malformation", ["duplicate", "missing", "out_of_range"])
+def test_index_rejects_invalid_sdk_response_indexes_before_connect(
+    monkeypatch, malformation
+):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "embedding_dim", 2)
+    vector = [0.1, 0.2]
+
+    def response_items(batch):
+        if malformation == "duplicate":
+            return [SimpleNamespace(index=0, embedding=vector), SimpleNamespace(index=0, embedding=vector)]
+        if malformation == "missing":
+            return [SimpleNamespace(embedding=vector), SimpleNamespace(index=1, embedding=vector)]
+        return [SimpleNamespace(index=2, embedding=vector), SimpleNamespace(index=0, embedding=vector)]
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.embeddings = self
+
+        def create(self, model, input, **kwargs):
+            return SimpleNamespace(data=response_items(input))
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+    service = EmbeddingService()
+    provider = PgVectorProvider(embedding_service=service, db_url="sqlite:///:memory:")
+    connection_calls = []
+
+    def forbidden_connection():
+        connection_calls.append(True)
+        raise AssertionError("invalid embedding response reached the database")
+
+    monkeypatch.setattr(provider, "_get_conn", forbidden_connection)
+
+    with pytest.raises(ValueError):
+        provider.index([{"content": "first"}, {"content": "second"}])
+
+    assert connection_calls == []
+
+
+def test_index_rejects_invalid_second_sdk_batch_before_connect(monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "embedding_dim", 2)
+    calls = []
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.embeddings = self
+
+        def create(self, model, input, **kwargs):
+            calls.append(list(input))
+            if len(calls) == 1:
+                data = [
+                    SimpleNamespace(index=i, embedding=[0.1, 0.2])
+                    for i in range(len(input))
+                ]
+            else:
+                data = [SimpleNamespace(index=1, embedding=[0.1, 0.2])]
+            return SimpleNamespace(data=data)
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+    provider = PgVectorProvider(
+        embedding_service=EmbeddingService(), db_url="sqlite:///:memory:"
+    )
+    connection_calls = []
+    monkeypatch.setattr(provider, "_get_conn", lambda: connection_calls.append(True))
+
+    with pytest.raises(ValueError):
+        provider.index([{"content": str(i)} for i in range(11)])
+
+    assert [len(batch) for batch in calls] == [10, 1]
+    assert connection_calls == []
+
+
+def test_index_rolls_back_insert_failure(sqlite_provider, monkeypatch):
+    real_connection = sqlite_provider._get_conn()
+    failure = RuntimeError("second insert failed")
+
+    class FailingConnection:
+        dialect = real_connection.dialect
+
+        def __init__(self):
+            self.execute_calls = 0
+            self.commit_calls = 0
+            self.rollback_calls = 0
+
+        def execute(self, statement, parameters=None):
+            self.execute_calls += 1
+            if self.execute_calls == 2:
+                raise failure
+            return real_connection.execute(statement, parameters)
+
+        def commit(self):
+            self.commit_calls += 1
+            return real_connection.commit()
+
+        def rollback(self):
+            self.rollback_calls += 1
+            return real_connection.rollback()
+
+    connection = FailingConnection()
+    monkeypatch.setattr(sqlite_provider, "_get_conn", lambda: connection)
+
+    with pytest.raises(RuntimeError, match="second insert failed"):
+        sqlite_provider.index([{"content": "first"}, {"content": "second"}])
+
+    assert connection.execute_calls == 2
+    assert connection.commit_calls == 0
+    assert connection.rollback_calls == 1
+    assert real_connection.execute(text("SELECT COUNT(*) FROM vector_chunks")).scalar() == 0
+
+
+def test_index_propagates_commit_failure(sqlite_provider, monkeypatch):
+    real_connection = sqlite_provider._get_conn()
+    failure = RuntimeError("commit failed")
+
+    class CommitFailingConnection:
+        dialect = real_connection.dialect
+
+        def __init__(self):
+            self.execute_calls = 0
+            self.commit_calls = 0
+            self.rollback_calls = 0
+
+        def execute(self, statement, parameters=None):
+            self.execute_calls += 1
+            return real_connection.execute(statement, parameters)
+
+        def commit(self):
+            self.commit_calls += 1
+            raise failure
+
+        def rollback(self):
+            self.rollback_calls += 1
+            return real_connection.rollback()
+
+    connection = CommitFailingConnection()
+    monkeypatch.setattr(sqlite_provider, "_get_conn", lambda: connection)
+
+    with pytest.raises(RuntimeError) as raised:
+        sqlite_provider.index([{"content": "first"}])
+
+    assert raised.value is failure
+    assert connection.execute_calls == 1
+    assert connection.commit_calls == 1
+    assert connection.rollback_calls == 1
+    assert real_connection.execute(text("SELECT COUNT(*) FROM vector_chunks")).scalar() == 0
+
+
+def test_index_preserves_primary_error_when_rollback_fails(monkeypatch):
+    primary_error = RuntimeError("insert failed")
+    rollback_error = RuntimeError("rollback failed")
+
+    class RollbackFailingConnection:
+        dialect = SimpleNamespace(name="sqlite")
+
+        def execute(self, statement, parameters=None):
+            raise primary_error
+
+        def commit(self):
+            raise AssertionError("failed insert must not commit")
+
+        def rollback(self):
+            raise rollback_error
+
+    provider = PgVectorProvider(
+        embedding_service=FakeEmbeddingService(dim=2), db_url="sqlite:///:memory:"
+    )
+    monkeypatch.setattr(provider, "_get_conn", lambda: RollbackFailingConnection())
+
+    with pytest.raises(RuntimeError) as raised:
+        provider.index([{"content": "first"}])
+
+    assert raised.value is primary_error
+
+
+def test_index_does_not_retry_after_commit_ack_loss(sqlite_provider, monkeypatch):
+    real_connection = sqlite_provider._get_conn()
+    ack_loss = RuntimeError("commit acknowledgement lost")
+
+    class CommitAckLossConnection:
+        dialect = real_connection.dialect
+
+        def __init__(self):
+            self.execute_calls = 0
+            self.commit_calls = 0
+            self.rollback_calls = 0
+
+        def execute(self, statement, parameters=None):
+            self.execute_calls += 1
+            return real_connection.execute(statement, parameters)
+
+        def commit(self):
+            self.commit_calls += 1
+            real_connection.commit()
+            raise ack_loss
+
+        def rollback(self):
+            self.rollback_calls += 1
+            return real_connection.rollback()
+
+    connection = CommitAckLossConnection()
+    monkeypatch.setattr(sqlite_provider, "_get_conn", lambda: connection)
+
+    with pytest.raises(RuntimeError) as raised:
+        sqlite_provider.index([{"content": "first"}])
+
+    assert raised.value is ack_loss
+    assert connection.execute_calls == 1
+    assert connection.commit_calls == 1
+    assert real_connection.execute(text("SELECT COUNT(*) FROM vector_chunks")).scalar() == 1
 
 
 def test_provider_name():
@@ -132,14 +464,14 @@ def test_index_multiple_docs(sqlite_provider):
         {"content": "文本2", "doc_id": "doc2"},
         {"content": "文本3", "doc_id": "doc3"},
     ]
-    sqlite_provider.index(docs)
+    assert sqlite_provider.index(docs) == 3
 
     assert sqlite_provider.doc_count == 3
 
 
 def test_index_empty_list(sqlite_provider):
     """验证空列表不报错。"""
-    sqlite_provider.index([])
+    assert sqlite_provider.index([]) == 0
     assert sqlite_provider.doc_count == 0
 
 

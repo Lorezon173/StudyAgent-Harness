@@ -8,17 +8,27 @@ Mock 标注说明：
 """
 
 from dataclasses import dataclass
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 from app.infrastructure.rag.embedding import EmbeddingService
 
 
+@pytest.fixture(autouse=True)
+def block_openai_client_by_default(monkeypatch):
+    """Require SDK tests to install their own in-memory OpenAI substitute."""
+    def fail_openai_factory(*args, **kwargs):
+        raise AssertionError("offline embedding test attempted to construct an OpenAI client")
+
+    monkeypatch.setattr("openai.OpenAI", fail_openai_factory)
+
+
 # [MOCK:阶段A] 假 OpenAI embeddings.create 响应对象
 @dataclass
 class FakeEmbeddingItem:
     embedding: list[float]
-    index: int = 0
+    index: int
     object: str = "embedding"
 
 
@@ -28,6 +38,17 @@ class FakeEmbeddingResponse:
     model: str = "fake-model"
     object: str = "list"
     usage: dict[str, Any] | None = None
+
+
+def _install_fake_response(monkeypatch, response_factory):
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            self.embeddings = self
+
+        def create(self, model, input, **kwargs):
+            return response_factory(model, input, **kwargs)
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
 
 
 def test_embedding_service_defaults():
@@ -65,7 +86,10 @@ def test_embed_one_returns_correct_dimension(monkeypatch):
             @staticmethod
             def create(model, input, **kwargs):
                 return FakeEmbeddingResponse(
-                    data=[FakeEmbeddingItem(embedding=fake_embedding) for _ in input]
+                    data=[
+                        FakeEmbeddingItem(embedding=fake_embedding, index=i)
+                        for i, _ in enumerate(input)
+                    ]
                 )
 
         embeddings = _embeddings()
@@ -237,3 +261,108 @@ def test_settings_fallback(monkeypatch):
         config.settings.openai_api_key = original_api_key
         config.settings.openai_base_url = original_base_url
         config.settings.embedding_model = original_model
+
+
+def test_dimension_is_bound_per_instance(monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "embedding_dim", 2048)
+    existing = EmbeddingService()
+    monkeypatch.setattr(settings, "embedding_dim", 3)
+    new = EmbeddingService()
+
+    assert existing.dim == 2048
+    assert new.dim == 3
+
+
+@pytest.mark.parametrize("invalid_dim", [0, -1, True, 1.5, "3", None])
+def test_embedding_service_rejects_invalid_dimension(monkeypatch, invalid_dim):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "embedding_dim", invalid_dim)
+
+    with pytest.raises(ValueError):
+        EmbeddingService()
+
+
+@pytest.mark.parametrize("response_count", [1, 3])
+def test_embed_many_rejects_batch_cardinality_mismatch(monkeypatch, response_count):
+    vector = [0.25] * 2048
+
+    def response_factory(model, input, **kwargs):
+        return FakeEmbeddingResponse(
+            data=[FakeEmbeddingItem(vector, index=i) for i in range(response_count)]
+        )
+
+    _install_fake_response(monkeypatch, response_factory)
+
+    with pytest.raises(ValueError):
+        EmbeddingService().embed_many(["first", "second"])
+
+
+def test_embed_many_orders_batch_by_response_index(monkeypatch):
+    first = [0.1] * 2048
+    second = [0.2] * 2048
+
+    def response_factory(model, input, **kwargs):
+        return FakeEmbeddingResponse(data=[
+            FakeEmbeddingItem(second, index=1),
+            FakeEmbeddingItem(first, index=0),
+        ])
+
+    _install_fake_response(monkeypatch, response_factory)
+
+    assert EmbeddingService().embed_many(["first", "second"]) == [first, second]
+
+
+@pytest.mark.parametrize(
+    "case",
+    ["missing", "duplicate", "negative", "out_of_range", "bool", "string"],
+)
+def test_embed_many_rejects_invalid_response_index(monkeypatch, case):
+    vector = [0.3] * 2048
+    if case == "missing":
+        items = [SimpleNamespace(embedding=vector), SimpleNamespace(embedding=vector)]
+    elif case == "duplicate":
+        items = [FakeEmbeddingItem(vector, index=0), FakeEmbeddingItem(vector, index=0)]
+    elif case == "negative":
+        items = [FakeEmbeddingItem(vector, index=-1), FakeEmbeddingItem(vector, index=1)]
+    elif case == "out_of_range":
+        items = [FakeEmbeddingItem(vector, index=2), FakeEmbeddingItem(vector, index=0)]
+    elif case == "bool":
+        items = [FakeEmbeddingItem(vector, index=True), FakeEmbeddingItem(vector, index=0)]
+    else:
+        items = [FakeEmbeddingItem(vector, index="0"), FakeEmbeddingItem(vector, index=1)]
+
+    _install_fake_response(
+        monkeypatch,
+        lambda model, input, **kwargs: FakeEmbeddingResponse(data=items),
+    )
+
+    with pytest.raises(ValueError):
+        EmbeddingService().embed_many(["first", "second"])
+
+
+def test_embed_many_validates_each_batch_and_restores_empty_positions(monkeypatch):
+    inputs = ["a", "", "b", "c", "", "d", "e", "f", "g", "", "h", "i", "j", "k"]
+    batch_inputs = []
+
+    def response_factory(model, input, **kwargs):
+        batch_inputs.append(list(input))
+        return FakeEmbeddingResponse(data=[
+            FakeEmbeddingItem([float(ord(value))] * 2048, index=i)
+            for i, value in enumerate(input)
+        ])
+
+    _install_fake_response(monkeypatch, response_factory)
+
+    result = EmbeddingService().embed_many(inputs)
+
+    assert [len(batch) for batch in batch_inputs] == [10, 1]
+    non_empty_values = {value for value in inputs if value}
+    for index, value in enumerate(inputs):
+        if value:
+            assert result[index] == [float(ord(value))] * 2048
+        else:
+            assert result[index] == [0.0] * 2048
+    assert len(non_empty_values) == 11
