@@ -327,7 +327,7 @@ store = SessionStore(db=None)
 ## 测试
 
 ```
-默认测试：597 passed / 1 skipped / 8 deselected（实测全绿）
+本机默认选择回归（已补锁定统计测试依赖）：607 passed / 1 skipped / 8 deselected
 
 tests/unit/harness/         事件系统、枚举、可观测性、画像图谱、教学策略、编排器
 tests/unit/agents/          5 Agent 契约与行为 + AgentBase
@@ -345,11 +345,11 @@ tests/integration/          pgvector 真检索、端到端场景（默认 desele
 
 ## CI/CD 与 Docker 部署
 
-**CI**（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：push 到 main 或任意 PR 触发 `uvx ruff check .` + `uv run pytest tests/`（默认排除 integration）。
+**CI**（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：push 到 main 或任意 PR 触发；先 `uv sync --locked --extra dev`，再 `python3 scripts/ruff_baseline.py --output artifacts/ruff/ci`，最后 `uv run pytest tests/ -v`（默认排除 integration）。Ruff 由收集器精确固定为 0.17.1；失败证据仍上传，失败时测试不会被记作通过。普通功能分支 push 本身不触发当前 CI。
 
 **镜像发布**（[`.github/workflows/release.yml`](.github/workflows/release.yml)）：push 到 main 或打 `v*` tag → 多阶段构建（[Dockerfile](Dockerfile)：node 构建前端 → uv 装后端 → 精简 runtime）→ 推 `ghcr.io/<owner>/studyagent-harness`（tag `latest` + 短 sha），用仓库自带 `GITHUB_TOKEN`，无需配 secret。
 
-**本地全栈部署**（[docker-compose.yml](docker-compose.yml)）：
+**本地全栈部署入口**（[docker-compose.yml](docker-compose.yml)）：以下为现有命令；Dockerfile 迁移目录和同步驱动配置仍待修复，本轮未完成构建/启动验收。
 
 ```bash
 cp .env.example .env                       # 填 OPENAI_API_KEY
