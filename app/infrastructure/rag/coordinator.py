@@ -1,6 +1,6 @@
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-import logging
 
 from app.infrastructure.rag.store import FakeRAGStore
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from app.models.schemas import KnowledgeCreateRequest, KnowledgeResponse
 from app.infrastructure.storage.knowledge_store import KnowledgeStore
+from app.models.schemas import KnowledgeCreateRequest, KnowledgeResponse
 
 router = APIRouter(prefix="/knowledge", tags=["knowledge"])
 _store = KnowledgeStore()

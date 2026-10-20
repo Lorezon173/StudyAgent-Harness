@@ -1,8 +1,10 @@
+from typing import ClassVar
+
 from app.agents.base import CuratorBase
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
+from app.harness.mastery_graph import EdgeType, MasteryGraph
 from app.harness.workspace_state import WorkspaceState
-from app.harness.mastery_graph import MasteryGraph, EdgeType
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
@@ -23,8 +25,8 @@ class Curator(CuratorBase):
     """
 
     source = EventSource.CURATOR
-    subscriptions = [EventType.MASTERY_ASSESSED, EventType.TOPIC_ENTERED]
-    emittable_types = {
+    subscriptions: ClassVar[list[EventType]] = [EventType.MASTERY_ASSESSED, EventType.TOPIC_ENTERED]
+    emittable_types: ClassVar[set[EventType]] = {
         EventType.PROFILE_UPDATED,
         EventType.GRAPH_NODE_STRENGTHENED,
         EventType.GRAPH_PREREQ_WEAK_DETECTED,

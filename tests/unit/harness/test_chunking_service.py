@@ -1,3 +1,5 @@
+import pytest
+
 from app.harness.chunking_service import (
     ChunkElement,
     ChunkingContext,
@@ -7,9 +9,6 @@ from app.harness.chunking_service import (
     compute_doc_id,
     normalize_text,
 )
-
-import pytest
-
 
 # ===== B3-01：canonical 元素流从 canonical 全文重建（等价表示同 ID）=====
 

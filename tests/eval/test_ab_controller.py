@@ -1,9 +1,8 @@
-import pytest
 
 from app.eval.ab_controller import (
-    run_parameter_ab,
-    run_ablation_experiment,
     AblationConfig,
+    run_ablation_experiment,
+    run_parameter_ab,
 )
 
 
@@ -61,7 +60,7 @@ class TestABController:
         assert result["recommendation"] == "keep"
 
     def test_make_ablation_agent_map_disables_agent(self):
-        from app.eval.ab_controller import make_ablation_agent_map, StubAgent
+        from app.eval.ab_controller import StubAgent, make_ablation_agent_map
 
         class _RealAgent:
             source = "curator"

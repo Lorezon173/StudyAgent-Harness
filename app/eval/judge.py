@@ -59,6 +59,7 @@ def build_judge(target_agent_family: str) -> dict | None:
     # 4. 构造 llm + embeddings
     try:
         from langchain_openai import ChatOpenAI
+
         from app.infrastructure.rag.embedding import EmbeddingService
 
         llm = ChatOpenAI(

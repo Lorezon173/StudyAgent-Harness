@@ -1,7 +1,12 @@
 from app.harness.enums import (
-    Stage, Intent, GateStatus, MasteryLevel,
-    ErrorKind, RecoveryAction, RetrievalMode,
-    MemoryScope, AgentRole, EvalMetric,
+    ActionKind,
+    AgentRole,
+    EvalMetric,
+    EventSource,
+    EventType,
+    Intent,
+    Stage,
+    TeachingMode,
 )
 
 
@@ -33,7 +38,6 @@ def test_eval_metric_values():
     assert EvalMetric.RELEVANCY == "relevancy"
 
 
-from app.harness.enums import EventType, EventSource, TeachingMode, ActionKind
 
 
 def test_event_type_covers_whitelist():

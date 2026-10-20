@@ -1,6 +1,6 @@
 from app.api._sse_projection import project_event
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 
 
 def _ev(t, source, payload):

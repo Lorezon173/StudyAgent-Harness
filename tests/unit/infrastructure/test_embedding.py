@@ -10,7 +10,6 @@ Mock 标注说明：
 from dataclasses import dataclass
 from typing import Any
 
-import pytest
 from app.infrastructure.rag.embedding import EmbeddingService
 
 

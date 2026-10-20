@@ -1,6 +1,8 @@
+from typing import ClassVar
+
 from app.agents.base import AgentBase
+from app.harness.enums import ActionKind, EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
@@ -16,8 +18,8 @@ class TutorAgent(AgentBase):
     """
 
     source = EventSource.TUTOR
-    subscriptions = [EventType.ACTION_REQUESTED]
-    emittable_types = {
+    subscriptions: ClassVar[list[EventType]] = [EventType.ACTION_REQUESTED]
+    emittable_types: ClassVar[set[EventType]] = {
         EventType.TUTOR_ASKED,
         EventType.TUTOR_EXPLAINED,
         EventType.TUTOR_REQUESTED_RECAP,

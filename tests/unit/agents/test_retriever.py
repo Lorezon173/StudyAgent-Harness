@@ -1,9 +1,13 @@
+import json as _json
+
 import pytest
-from app.agents.retriever import RetrieverAgent, LOW_SCORE_THRESHOLD
+
 from app.agents.base import AgentBase
-from app.harness.enums import EventType, EventSource
+from app.agents.retriever import RetrieverAgent
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event, check_ownership
 from app.harness.workspace_state import WorkspaceState
+from app.infrastructure.rag.coordinator import Chunk, SearchResult
 
 
 @pytest.fixture
@@ -107,7 +111,7 @@ def test_handle_low_score_with_mock_provider(ws):
 
     DEC-008：low_score 不再是独立状态，降为 ok 的 quality=low 子标记。
     """
-    from app.infrastructure.rag.coordinator import IndexProvider, Chunk, RAGCoordinator
+    from app.infrastructure.rag.coordinator import Chunk, IndexProvider, RAGCoordinator
 
     class _LowScoreProvider(IndexProvider):
         name = "lowscore"
@@ -366,7 +370,8 @@ def test_evaluate_ragas_happy_path_extraction():
     本测试 mock 掉 build_judge 与 ragas_eval 本身，但保留真实的
     ragas.metrics import、Dataset 构造、_scores_dict 提取，覆盖该链路。
     """
-    from unittest.mock import patch, MagicMock
+    from unittest.mock import MagicMock, patch
+
     import pytest
 
     pytest.importorskip("ragas")
@@ -422,9 +427,7 @@ def test_evaluate_ragas_real_judge():
 
 # ===== RAG-C Phase 2（C-10）：五态 + 入口校验 + 安全摘要 =====
 
-import json as _json
 
-from app.infrastructure.rag.coordinator import Chunk, SearchResult
 
 
 class _StubCoordinator:

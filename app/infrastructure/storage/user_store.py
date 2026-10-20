@@ -1,7 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models.tables import UserTable
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.core.security import hash_password
+from app.models.tables import UserTable
 
 
 class UserStore:

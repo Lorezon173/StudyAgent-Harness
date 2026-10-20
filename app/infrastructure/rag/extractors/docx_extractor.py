@@ -1,10 +1,12 @@
 """DOCX 文本提取器（可选依赖 python-docx）。"""
 
+from typing import ClassVar
+
 from app.infrastructure.rag.extractors.base import Extractor
 
 
 class DocxExtractor(Extractor):
-    extensions = [".docx"]
+    extensions: ClassVar[list[str]] = [".docx"]
 
     def extract(self, file_path: str) -> str:
         try:

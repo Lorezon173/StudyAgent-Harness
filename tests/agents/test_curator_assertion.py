@@ -6,12 +6,13 @@ Verifies:
 - Existing Curator: handle is synchronous
 """
 import inspect
+from typing import ClassVar
 
 import pytest
 
 from app.agents.base import CuratorBase
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 from app.harness.workspace_state import WorkspaceState
 
 
@@ -20,8 +21,8 @@ def test_curator_base_allows_sync_handle():
 
     class GoodCurator(CuratorBase):
         source = EventSource.CURATOR
-        subscriptions = [EventType.MASTERY_ASSESSED]
-        emittable_types = set()
+        subscriptions: ClassVar[list[EventType]] = [EventType.MASTERY_ASSESSED]
+        emittable_types: ClassVar[set[EventType]] = set()
 
         def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
             return []
@@ -34,10 +35,10 @@ def test_curator_base_rejects_async_handle():
 
     with pytest.raises(TypeError, match="must be synchronous"):
 
-        class BadCurator(CuratorBase):  # noqa: F841
+        class BadCurator(CuratorBase):
             source = EventSource.CURATOR
-            subscriptions = [EventType.MASTERY_ASSESSED]
-            emittable_types = set()
+            subscriptions: ClassVar[list[EventType]] = [EventType.MASTERY_ASSESSED]
+            emittable_types: ClassVar[set[EventType]] = set()
 
             async def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:
                 return []

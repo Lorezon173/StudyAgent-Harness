@@ -6,14 +6,19 @@ import tempfile
 def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
     from fastapi.testclient import TestClient
     from sqlalchemy import create_engine
-    from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-    from app.main import app
-    from app.core.database import Base
-    import app.models.tables as _tables  # noqa: F401 — 注册表模型到 Base.metadata（别名避免遮蔽 app）
+    from sqlalchemy.ext.asyncio import (
+        AsyncSession,
+        async_sessionmaker,
+        create_async_engine,
+    )
+
     import app.api.chat_stream as cs
-    from app.orchestration.assembly import NewStackResult
+    import app.models.tables as _tables  # noqa: F401 — 注册表模型到 Base.metadata（别名避免遮蔽 app）
+    from app.core.database import Base
+    from app.harness.enums import EventSource, EventType
     from app.harness.events import Event
-    from app.harness.enums import EventType, EventSource
+    from app.main import app
+    from app.orchestration.assembly import NewStackResult
 
     # 隔离 DB：用临时 sqlite 文件，避免污染开发库 + 保证可重复运行（幂等）。
     # 表用同步 engine 建好（不触异步事件循环），请求侧再用 async engine 读同一文件。
@@ -53,7 +58,7 @@ def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
     # 逐事件：至少一个 agent_event + 一个 final
     assert "agent_event" in body
     assert "TutorAsked" in body
-    final_lines = [l for l in body.splitlines() if l.startswith("data:") and "final" in l]
+    final_lines = [line for line in body.splitlines() if line.startswith("data:") and "final" in line]
     assert final_lines, "应有 final 事件"
     payload = json.loads(final_lines[-1][len("data:"):].strip())
     assert payload["reply"] == "最终回答"

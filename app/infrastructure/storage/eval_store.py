@@ -1,8 +1,6 @@
 import threading
 from collections import OrderedDict
 
-from app.infrastructure.storage.session_store import SessionStore
-
 _MAX_EVALS = 1000
 
 

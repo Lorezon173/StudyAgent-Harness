@@ -1,6 +1,5 @@
 """tests/eval/test_judge.py —— judge 适配层与不同族校验测试"""
 
-import pytest
 
 from app.eval import judge
 from app.eval.judge import build_judge, infer_family

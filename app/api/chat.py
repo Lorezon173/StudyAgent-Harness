@@ -1,24 +1,26 @@
 import asyncio
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.models.schemas import ChatRequest, ChatResponse
-from app.core.database import async_session
-from app.core.security import get_current_user
 from app.api._dirty_flag import DirtyFlag
 from app.api._persist import ensure_session_writable, persist_turn
+from app.core.database import async_session
+from app.core.security import get_current_user
 from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+from app.models.schemas import ChatRequest, ChatResponse
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=ChatResponse)
-async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
+async def chat(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)]):
     from app.orchestration.assembly import (
-        OnlineRAGCompositionError, run_online_agent_session,
+        OnlineRAGCompositionError,
+        run_online_agent_session,
     )
     uid_int = current_user["user_id"]
 
@@ -44,7 +46,7 @@ async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user))
         logger.exception("online RAG composition failed for session %s",
                          req.session_id)
         raise HTTPException(status_code=503, detail={
-            "error_code": e.error_code, "message": e.safe_summary})
+            "error_code": e.error_code, "message": e.safe_summary}) from e
 
     # ── 阶段③：持久化（新短连接 → rebind store） ──
     persisted = False

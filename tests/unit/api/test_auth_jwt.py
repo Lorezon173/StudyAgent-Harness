@@ -10,12 +10,12 @@ Verifies:
 import asyncio
 
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from starlette.testclient import TestClient
 
-from app.main import app
 from app.core.database import Base, get_db
 from app.core.security import verify_password
+from app.main import app
 
 
 @pytest.fixture()

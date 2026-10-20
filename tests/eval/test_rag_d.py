@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from hashlib import sha256
 import importlib.util
 import json
-from pathlib import Path
 import sys
+from hashlib import sha256
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -135,7 +135,7 @@ def test_validator_rejects_corpus_version_or_locator_drift(assets_dir):
     write_assets(assets_dir)
     questions = questions_path.read_text(encoding="utf-8")
     questions_path.write_text(questions.replace("- paragraph-1", "- missing-locator", 1), encoding="utf-8")
-    with pytest.raises(rag_d.AssetValidationError, match="source_locator.paragraph"):
+    with pytest.raises(rag_d.AssetValidationError, match=r"source_locator\.paragraph"):
         rag_d.validate_assets(assets_dir)
 
 

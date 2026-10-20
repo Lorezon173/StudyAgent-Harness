@@ -4,9 +4,8 @@
 全部在 Event 对象列表上做旁路分析，不影响在线流量。
 """
 
-from app.harness.events import Event
 from app.harness.enums import EventType
-
+from app.harness.events import Event
 
 # ---- 因果链构建 ----
 

@@ -1,6 +1,14 @@
 import pytest
 
-from app.infrastructure.rag.coordinator import RAGCoordinator
+from app.infrastructure.rag.code_index import CodeIndexProvider
+from app.infrastructure.rag.coordinator import (
+    Chunk,
+    IndexProvider,
+    RAGCoordinator,
+    SearchResult,
+    VisibilityContext,
+)
+from app.infrastructure.rag.ocr import OCRProvider
 from app.infrastructure.rag.store import FakeRAGStore
 
 
@@ -30,7 +38,6 @@ def test_fake_rag_store_query():
 
 # ===== Task 1: IndexProvider protocol + Chunk/SearchResult data classes =====
 
-from app.infrastructure.rag.coordinator import Chunk, SearchResult, IndexProvider
 
 
 def test_chunk_defaults():
@@ -50,7 +57,7 @@ def test_search_result_empty():
 def test_index_provider_is_abstract():
     """IndexProvider 是抽象协议，不能直接实例化。"""
     with pytest.raises(TypeError):
-        IndexProvider()  # noqa  # 抽象类不可实例化
+        IndexProvider()  # 抽象类不可实例化
 
 
 def test_index_provider_subclass_must_implement_all():
@@ -60,13 +67,11 @@ def test_index_provider_subclass_must_implement_all():
         pass
 
     with pytest.raises(TypeError):
-        _BadProvider()  # noqa
+        _BadProvider()
 
 
 # ===== Task 5: multi-provider orchestration =====
 
-from app.infrastructure.rag.ocr import OCRProvider
-from app.infrastructure.rag.code_index import CodeIndexProvider
 
 
 def test_rag_coordinator_register_provider():
@@ -154,7 +159,6 @@ def test_rag_coordinator_vector_provider_registered_by_default():
 
 # ===== RAG-C Phase 2（C-09）：VisibilityContext 受限检索 + provider outcome =====
 
-from app.infrastructure.rag.coordinator import VisibilityContext
 
 
 class _FailingProvider(IndexProvider):

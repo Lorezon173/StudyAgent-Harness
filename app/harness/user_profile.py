@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
-
 DEFAULT_PREFERENCES = {
     "explanation_style": "verbal",    # visual | verbal | mathematical
     "pace": "normal",                 # slow | normal | fast

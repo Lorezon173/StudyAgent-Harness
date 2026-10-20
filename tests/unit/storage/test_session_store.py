@@ -7,10 +7,9 @@ Covers:
 - C3: save() does NOT commit internally (caller commits)
 """
 import asyncio
-import time
+from datetime import datetime
 
 from app.infrastructure.storage.session_store import SessionStore
-
 
 # ---------------------------------------------------------------------------
 # Memory-mode tests
@@ -117,6 +116,7 @@ class TestSessionStoreDB:
 
                     # Verify title directly from DB
                     from sqlalchemy import select
+
                     from app.models.tables import SessionTable
                     result = await session.execute(
                         select(SessionTable).where(SessionTable.id == "s1")
@@ -143,6 +143,7 @@ class TestSessionStoreDB:
                     await session.commit()
 
                     from sqlalchemy import select
+
                     from app.models.tables import SessionTable
                     result = await session.execute(
                         select(SessionTable).where(SessionTable.id == "s1")
@@ -207,15 +208,18 @@ class TestSessionStoreDB:
                     await session.commit()
 
                     from sqlalchemy import select
+
                     from app.models.tables import SessionTable
 
                     result = await session.execute(
                         select(SessionTable).where(SessionTable.id == "s1")
                     )
-                    updated_at_1 = result.scalar_one().updated_at
+                    first_row = result.scalar_one()
+                    first_row.updated_at = datetime(2000, 1, 1)
+                    await session.commit()
+                    updated_at_1 = first_row.updated_at
 
-                    # Wait to ensure CURRENT_TIMESTAMP advances (SQLite has 1s precision)
-                    time.sleep(1.1)
+                    # A fixed past timestamp avoids SQLite second-precision timing races.
 
                     # Second save with identical state
                     await store.save("s1", {}, user_id=1)
@@ -255,6 +259,7 @@ class TestSessionStoreDB:
 
                     # Row should not exist
                     from sqlalchemy import select
+
                     from app.models.tables import SessionTable
                     result = await session.execute(
                         select(SessionTable).where(SessionTable.id == "s1")
@@ -273,11 +278,18 @@ class TestSessionStoreDB:
                 async with session_factory() as session:
                     store = SessionStore(db=session)
 
-                    # Create two sessions with a time gap to ensure distinct updated_at
+                    # Pin the first session to the past for deterministic ordering.
                     await store.save("s1", {}, user_id=1, title="First")
                     await session.commit()
 
-                    time.sleep(1.1)
+                    from sqlalchemy import update
+
+                    from app.models.tables import SessionTable
+                    await session.execute(
+                        update(SessionTable).where(SessionTable.id == "s1")
+                        .values(updated_at=datetime(2000, 1, 1))
+                    )
+                    await session.commit()
 
                     await store.save("s2", {}, user_id=1, title="Second")
                     await session.commit()

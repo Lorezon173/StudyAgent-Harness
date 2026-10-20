@@ -10,13 +10,13 @@
 """
 
 from app.agents.retriever import RetrieverAgent
-from app.harness.enums import EventType, EventSource
-from app.harness.events import Event
+from app.harness.enums import EventSource, EventType
 from app.harness.eventbus import EventBus
+from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
-from app.orchestration.collab_loop import run_collab_loop
-from app.infrastructure.rag.ocr import OCRProvider
 from app.infrastructure.rag.code_index import CodeIndexProvider
+from app.infrastructure.rag.ocr import OCRProvider
+from app.orchestration.collab_loop import run_collab_loop
 
 
 # ── 测试用内存 EventStore ───────────────────────────────────────────────

@@ -91,7 +91,7 @@ class EmbeddingService:
         # 将结果映射回原始索引位置
         result = []
         embed_idx = 0
-        for i, text in enumerate(texts):
+        for text in texts:
             if text:
                 result.append(all_embeddings[embed_idx])
                 embed_idx += 1

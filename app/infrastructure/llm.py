@@ -1,7 +1,8 @@
 import json
-import time
 import logging
+import time
 from dataclasses import dataclass
+from typing import ClassVar
 
 logger = logging.getLogger("study_agent")
 
@@ -31,7 +32,7 @@ class TokenBudgetExceeded(Exception):
 class FakeLLM:
     """测试替身"""
 
-    RESPONSES = {
+    RESPONSES: ClassVar[dict[str, str]] = {
         "掌握度评估": '{"mastery_score": 65, "mastery_level": "partial", "mastery_rationale": "基本概念掌握，细节不足"}',
         "意图分类": '{"intent": "teach_loop", "confidence": 0.9}',
         "学习总结": "本次学习了二分查找的核心概念，掌握程度为中等。",
@@ -68,8 +69,7 @@ class FakeLLM:
 
     def stream(self, system_prompt: str, user_prompt: str, **kwargs):
         response = self.invoke(system_prompt, user_prompt, **kwargs)
-        for char in response:
-            yield char
+        yield from response
 
     def summarize_memories(self, memories: list[str]) -> str:
         return f"[摘要] 共{len(memories)}条记忆的压缩结果"
@@ -180,8 +180,9 @@ class LLMService:
     def stream(self, system_prompt: str, user_prompt: str,
                session_id: str = "", node: str = "", intent: str = "",
                **kwargs):
-        from langchain_core.messages import SystemMessage, HumanMessage
-        from app.harness.observability import get_observability, LLMSpan
+        from langchain_core.messages import HumanMessage, SystemMessage
+
+        from app.harness.observability import LLMSpan, get_observability
         obs = get_observability()
         start = time.monotonic()
         collected = []
@@ -212,8 +213,9 @@ class LLMService:
 
     def _call_with_span(self, llm, system_prompt: str, user_prompt: str,
                          session_id: str, node: str, intent: str) -> str:
-        from langchain_core.messages import SystemMessage, HumanMessage
-        from app.harness.observability import get_observability, LLMSpan
+        from langchain_core.messages import HumanMessage, SystemMessage
+
+        from app.harness.observability import LLMSpan, get_observability
         obs = get_observability()
         start = time.monotonic()
         response = llm.invoke([

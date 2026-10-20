@@ -1,6 +1,8 @@
+from typing import ClassVar
+
 from app.agents.base import AgentBase
+from app.harness.enums import ActionKind, EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
@@ -18,8 +20,8 @@ class ConductorAgent(AgentBase):
     """
 
     source = EventSource.CONDUCTOR
-    subscriptions = [EventType.CONDUCTOR_REQUESTED]
-    emittable_types = {EventType.CONDUCTOR_DECIDED}
+    subscriptions: ClassVar[list[EventType]] = [EventType.CONDUCTOR_REQUESTED]
+    emittable_types: ClassVar[set[EventType]] = {EventType.CONDUCTOR_DECIDED}
 
     def __init__(self, llm: LLMService | None = None,
                  spec_loader: SpecLoader | None = None):

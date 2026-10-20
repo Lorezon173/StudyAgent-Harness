@@ -14,11 +14,16 @@ def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch, auth_heade
     """Collab loop raises → SSE yields structured error event, stream ends cleanly."""
     from fastapi.testclient import TestClient
     from sqlalchemy import create_engine
-    from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-    from app.main import app
-    from app.core.database import Base
-    import app.models.tables as _tables  # noqa: F401
+    from sqlalchemy.ext.asyncio import (
+        AsyncSession,
+        async_sessionmaker,
+        create_async_engine,
+    )
+
     import app.api.chat_stream as cs
+    import app.models.tables as _tables  # noqa: F401
+    from app.core.database import Base
+    from app.main import app
 
     # DB isolation (same pattern as test_chat_stream_realtime.py)
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)

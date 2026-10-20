@@ -1,18 +1,20 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.models.schemas import EvalResponse
 from app.infrastructure.storage.eval_store import EvalStore
 from app.infrastructure.storage.session_store import SessionStore
+from app.models.schemas import EvalResponse
 
 router = APIRouter(prefix="/eval", tags=["eval"])
 _store = EvalStore()
 
 
 @router.get("/{session_id}", response_model=list[EvalResponse])
-async def get_evals(session_id: str, db: AsyncSession = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def get_evals(session_id: str, db: Annotated[AsyncSession, Depends(get_db)], current_user: Annotated[dict, Depends(get_current_user)]):
     session = await SessionStore(db).get(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="会话不存在")
@@ -37,7 +39,7 @@ async def get_evals(session_id: str, db: AsyncSession = Depends(get_db), current
 
 
 @router.post("/{session_id}/rerun", response_model=EvalResponse)
-async def rerun_eval(session_id: str, db: AsyncSession = Depends(get_db), current_user: dict = Depends(get_current_user)):
+async def rerun_eval(session_id: str, db: Annotated[AsyncSession, Depends(get_db)], current_user: Annotated[dict, Depends(get_current_user)]):
     session = await SessionStore(db).get(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="会话不存在")

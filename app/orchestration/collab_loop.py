@@ -1,9 +1,9 @@
 import heapq
 import itertools
 
-from app.harness.events import Event, priority_of
-from app.harness.enums import EventType, EventSource
+from app.harness.enums import EventSource, EventType
 from app.harness.eventbus import EventBus
+from app.harness.events import Event, priority_of
 from app.harness.workspace_state import WorkspaceState
 
 MAX_TURNS = 50

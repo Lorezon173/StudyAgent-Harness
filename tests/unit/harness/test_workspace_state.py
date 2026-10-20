@@ -1,5 +1,5 @@
-from app.harness.workspace_state import WorkspaceState
 from app.harness.enums import TeachingMode
+from app.harness.workspace_state import WorkspaceState
 
 
 def test_workspace_state_defaults():

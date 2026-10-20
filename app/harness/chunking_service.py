@@ -6,10 +6,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import hashlib
 import re
 import unicodedata
+from dataclasses import dataclass, field
 from typing import Any
 
 DOC_PROTOCOL = "doc-v1"
@@ -89,9 +89,9 @@ def _canonical_range(
     if (end_element, end_offset) < (start_element, start_offset):
         raise ValueError("range 必须是非降序半开区间")
     return (
-        '{"end":{"element":%d,"offset":%d},'
-        '"start":{"element":%d,"offset":%d}}'
-    ) % (end_element, end_offset, start_element, start_offset)
+        f'{{"end":{{"element":{int(end_element)},"offset":{int(end_offset)}}},'
+        f'"start":{{"element":{int(start_element)},"offset":{int(start_offset)}}}}}'
+    )
 
 
 def compute_doc_id(import_namespace: str, text: str) -> tuple[str, str]:
@@ -192,7 +192,7 @@ class ChunkingService:
             if not pending:
                 return
             text = "\n\n".join(element.text for _, element in pending)
-            start_index, first = pending[0]
+            start_index, _first = pending[0]
             end_index, last = pending[-1]
             docs.extend(self._documents_for_text(
                 text, doc_id, context, policy,

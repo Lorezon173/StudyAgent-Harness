@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,7 +39,7 @@ class MessageStore:
                 "role": role,
                 "content": content,
                 "turn_index": turn_index,
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
             })
             return msg_id
 

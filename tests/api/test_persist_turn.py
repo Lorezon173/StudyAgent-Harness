@@ -1,4 +1,10 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+from sqlalchemy.exc import IntegrityError, OperationalError
+
 import app.models.tables  # noqa: F401 — 确保 create_all 前表模型已注册到 Base.metadata
+from app.api._persist import persist_turn
 
 
 def test_persist_turn_writes_session_messages_and_returns_turn_index(db_fixture):
@@ -25,7 +31,9 @@ def test_persist_turn_saves_graph(db_fixture):
         try:
             from app.api._persist import persist_turn
             from app.harness.mastery_graph import MasteryGraph
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 graph = MasteryGraph(user_id=1, store=SQLAlchemyMasteryStore(db))
                 graph.add_node("二分查找", "二分查找", mastery=70.0)
@@ -63,10 +71,8 @@ def test_persist_turn_rolls_back_and_returns_none_on_error(db_fixture):
 
 # ===== 批次一新增测试 =====
 
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from sqlalchemy.exc import IntegrityError, OperationalError
-from app.api._persist import persist_turn
+
+
 
 
 @pytest.mark.asyncio

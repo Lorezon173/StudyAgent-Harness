@@ -1,4 +1,4 @@
-from app.eval.kernel import TestCase, EvalResult
+from app.eval.kernel import EvalResult, TestCase
 
 
 class ComponentBench:

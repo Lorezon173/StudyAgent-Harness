@@ -1,9 +1,9 @@
 import os
 import tempfile
 
-from app.infrastructure.storage.event_store import EventStore
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
+from app.infrastructure.storage.event_store import EventStore
 
 
 def _make_store() -> tuple[EventStore, str]:

@@ -1,6 +1,17 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, JSON, ForeignKey, UniqueConstraint
-from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import (
+    JSON,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
+from sqlalchemy.sql import func
+
 from app.core.database import Base
 
 

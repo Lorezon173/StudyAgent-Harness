@@ -1,12 +1,12 @@
 """Tests for refactored sessions API with db injection."""
 import asyncio
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.main import app
 from app.core.database import Base, get_db
-from app.infrastructure.storage.session_store import SessionStore
 from app.infrastructure.storage.message_store import MessageStore
+from app.infrastructure.storage.session_store import SessionStore
+from app.main import app
 
 
 def _run(coro):

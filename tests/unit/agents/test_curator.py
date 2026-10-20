@@ -1,14 +1,14 @@
 import asyncio
-import tempfile
 import os
+import tempfile
 
 import pytest
 
 from app.agents.curator import Curator
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event, check_ownership
-from app.harness.enums import EventType, EventSource
-from app.harness.workspace_state import WorkspaceState
 from app.harness.mastery_graph import MasteryGraph
+from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 
 
@@ -212,7 +212,7 @@ def test_curator_cannot_emit_critic_event():
 
 def test_curator_evaluate_returns_metrics():
     async def _test():
-        curator, ws, store, path = await _setup_curator()
+        curator, _ws, store, path = await _setup_curator()
         curator.graph.add_node("A", "前置A", mastery=80)
         curator.graph.add_node("B", "主题B", mastery=50)
         curator.graph.add_doc_order_edge(from_topic="A", to_topic="B")
@@ -230,7 +230,7 @@ def test_curator_evaluate_returns_metrics():
 
 def test_curator_evaluate_partial_coverage():
     async def _test():
-        curator, ws, store, path = await _setup_curator()
+        curator, _ws, store, path = await _setup_curator()
         curator.graph.add_node("A", "前置A", mastery=80)
         metrics = curator.evaluate({
             "graph_nodes": {"A": 80, "B": 50},

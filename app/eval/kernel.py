@@ -75,14 +75,16 @@ class EvalKernel:
     def run_collaboration_bench(self, session_id: str, event_store=None) -> dict:
         """委托 CollaborationBench（§5.4）。"""
         from app.eval.collaboration_bench import (
-            collaboration_report_from_store, compute_collaboration_metrics)
+            collaboration_report_from_store,
+            compute_collaboration_metrics,
+        )
         if event_store is None:
             return compute_collaboration_metrics(session_id, events=[])
         return collaboration_report_from_store(event_store, session_id)
 
     def run_ablation(self, config, control_sys, treatment_sys, scenarios) -> dict:
         """委托 ABController 组件消融（§5.5）。config 可为 dict 或 AblationConfig。"""
-        from app.eval.ab_controller import run_ablation_experiment, AblationConfig
+        from app.eval.ab_controller import AblationConfig, run_ablation_experiment
         if isinstance(config, dict):
             config = AblationConfig(
                 name=config.get("name", "ablation"),

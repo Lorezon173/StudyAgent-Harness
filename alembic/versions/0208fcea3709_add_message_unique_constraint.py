@@ -5,16 +5,15 @@ Revises: 20260623_ragas_recall
 Create Date: 2026-06-28 20:11:10.253658
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 from alembic import op
 
-
 # revision identifiers, used by Alembic.
 revision: str = '0208fcea3709'
-down_revision: Union[str, Sequence[str], None] = '20260623_ragas_recall'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = '20260623_ragas_recall'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

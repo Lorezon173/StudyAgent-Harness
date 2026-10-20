@@ -6,18 +6,19 @@ fixture 里手动倒水 ―― 让真实 EventBus / 回合屏障 / TeachingPolic
 """
 import os
 import tempfile
+from typing import ClassVar
 
 import pytest
 
 from app.agents.base import AgentBase
-from app.agents.tutor import TutorAgent
-from app.agents.critic import CriticAgent
 from app.agents.conductor import ConductorAgent
-from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, TeachingMode
+from app.agents.critic import CriticAgent
+from app.agents.tutor import TutorAgent
+from app.harness.enums import EventSource, EventType, TeachingMode
 from app.harness.eventbus import EventBus
-from app.harness.workspace_state import WorkspaceState
+from app.harness.events import Event
 from app.harness.orchestrator import Orchestrator
+from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.storage.event_store import EventStore
 from app.orchestration.collab_loop import run_collab_loop
 
@@ -25,10 +26,10 @@ from app.orchestration.collab_loop import run_collab_loop
 class _ScriptedUser(AgentBase):
     """脚本化用户：根据 Tutor 抛出的事件序列依次回复。"""
     source = EventSource.USER
-    subscriptions = [EventType.TUTOR_ASKED,
+    subscriptions: ClassVar[list[EventType]] = [EventType.TUTOR_ASKED,
                      EventType.TUTOR_REQUESTED_RECAP,
                      EventType.TUTOR_OFFERED_ANALOGY]
-    emittable_types = {EventType.USER_MESSAGE}
+    emittable_types: ClassVar[set[EventType]] = {EventType.USER_MESSAGE}
 
     def __init__(self, replies: list[str]):
         self._replies = list(replies)
@@ -150,5 +151,5 @@ def test_socratic_feynman_analogy_mastered_loop_exit(mock_llm_invoke_json, _stor
 def test_e2e_no_emit_violation_throughout():
     """端到端跑下来不应有任何越权 emit（#14 全局不变量）。"""
     from app.harness.events import EVENT_OWNERSHIP
-    for et, owner in EVENT_OWNERSHIP.items():
+    for _et, owner in EVENT_OWNERSHIP.items():
         assert owner is not None

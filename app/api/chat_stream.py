@@ -2,18 +2,19 @@ import asyncio
 import json
 import logging
 import sys
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
-from app.models.schemas import ChatRequest
-from app.core.database import async_session
-from app.core.security import get_current_user
-from app.api._sse_projection import project_event
 from app.api._dirty_flag import DirtyFlag
 from app.api._persist import ensure_session_writable, persist_turn
+from app.api._sse_projection import project_event
+from app.core.database import async_session
+from app.core.security import get_current_user
 from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+from app.models.schemas import ChatRequest
 
 router = APIRouter(prefix="/chat", tags=["chat-stream"])
 logger = logging.getLogger(__name__)
@@ -22,9 +23,10 @@ _SENTINEL = object()
 
 
 @router.post("/stream")
-async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current_user)):
+async def chat_stream(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)]):
     from app.orchestration.assembly import (
-        OnlineRAGCompositionError, run_online_agent_session,
+        OnlineRAGCompositionError,
+        run_online_agent_session,
     )
     uid_int = current_user["user_id"]
 
@@ -76,7 +78,7 @@ async def chat_stream(req: ChatRequest, current_user: dict = Depends(get_current
             }
             yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"
             return
-        except Exception as e:
+        except Exception:
             logger.exception("collab loop failed for session %s", req.session_id)
             error_event = {
                 "type": "error",

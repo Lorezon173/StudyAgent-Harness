@@ -1,19 +1,16 @@
-import json
 from dataclasses import asdict
+from pathlib import Path
 
 import pytest
-
-from app.eval.kernel import TestCase, EvalResult, ScenarioDefinition
-from app.eval.kernel import EvalKernel
-
-from pathlib import Path
 import yaml
-from app.eval.system_bench import SystemBench
+
+from app.eval.ab_controller import AblationConfig, run_ablation_experiment
 from app.eval.collaboration_bench import compute_collaboration_metrics
-from app.eval.ab_controller import run_ablation_experiment, AblationConfig
+from app.eval.kernel import EvalKernel, EvalResult, ScenarioDefinition, TestCase
 from app.eval.selection_reporter import SelectionReporter
+from app.eval.system_bench import SystemBench
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 
 
 class TestDataClasses:
@@ -257,7 +254,7 @@ class TestEndToEnd:
 
 class TestGoldenTraceWiring:
     def test_golden_trace_consumable(self):
-        from tests.golden.golden_traces import GOLDEN_TRACES, GOLDEN_TRACE_ZERO_RAG
+        from tests.golden.golden_traces import GOLDEN_TRACE_ZERO_RAG, GOLDEN_TRACES
         assert "zero_rag" in GOLDEN_TRACES
         assert GOLDEN_TRACE_ZERO_RAG["expected_mode_path"] == \
             ["Socratic", "Feynman", "Analogy"]

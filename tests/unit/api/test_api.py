@@ -1,11 +1,11 @@
 import asyncio
-from httpx import AsyncClient, ASGITransport
+
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from starlette.testclient import TestClient
 
-from app.main import app
 from app.core.database import Base, get_db
+from app.main import app
 
 
 @pytest.fixture()
@@ -82,6 +82,7 @@ def test_sessions_empty(auth_headers):
 def test_eval_empty(db_client, auth_headers):
     """GET /api/eval/{session_id} 返回 eval 列表；需 seed session 通过所有权校验。"""
     import asyncio
+
     from app.infrastructure.storage.session_store import SessionStore
 
     # db_client 已 override get_db 到一个固定 session；seed 同一 session

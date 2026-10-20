@@ -1,5 +1,4 @@
 """Tests for SQLAlchemyMasteryStore (复刻旧 MasteryGraphStore 4 方法契约)."""
-import pytest
 
 import app.models.tables  # noqa: F401 — ensure tables are registered with Base.metadata before create_all
 
@@ -8,7 +7,9 @@ def test_save_load_nodes_roundtrip(db_fixture):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
         try:
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 store = SQLAlchemyMasteryStore(db)
                 await store.save_nodes(1, [{
@@ -31,7 +32,9 @@ def test_save_nodes_upsert_updates(db_fixture):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
         try:
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 store = SQLAlchemyMasteryStore(db)
                 await store.save_nodes(1, [{"topic_id": "t", "topic_name": "t",
@@ -54,7 +57,9 @@ def test_save_load_edges_roundtrip(db_fixture):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
         try:
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 store = SQLAlchemyMasteryStore(db)
                 await store.save_edges(1, [{
@@ -75,7 +80,9 @@ def test_load_empty_user_returns_defaults(db_fixture):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
         try:
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 store = SQLAlchemyMasteryStore(db)
                 nodes = await store.load_nodes(99999)

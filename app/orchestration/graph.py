@@ -2,14 +2,13 @@ import operator
 from dataclasses import dataclass
 from typing import Annotated, Any, TypedDict
 
-from langgraph.graph import END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+from langgraph.graph import END, StateGraph
 
 from app.agents.conductor import ConductorAgent
 from app.agents.critic import CriticAgent
 from app.agents.tutor import TutorAgent
-from app.harness.enums import EventType
 from app.harness.eventbus import EventBus
 from app.harness.orchestrator import Orchestrator
 from app.orchestration.collab_loop import run_collab_loop

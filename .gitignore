@@ -8,3 +8,6 @@ __pycache__/
 .evolve/_inbox/
 .superpowers/
 .playwright-mcp/
+
+# Ruff 可复现扫描证据（本机/CI 生成）
+artifacts/ruff/

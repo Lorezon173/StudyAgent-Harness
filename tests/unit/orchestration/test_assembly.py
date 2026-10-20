@@ -1,9 +1,12 @@
-from app.orchestration.assembly import (
-    extract_reply, extract_mastery_score, extract_mode_path,
-)
-from app.orchestration.assembly import run_new_agent_session, NewStackResult
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
+from app.orchestration.assembly import (
+    NewStackResult,
+    extract_mastery_score,
+    extract_mode_path,
+    extract_reply,
+    run_new_agent_session,
+)
 
 
 def _ev(t, payload, source=EventSource.TUTOR):
@@ -105,7 +108,7 @@ def test_run_new_agent_session_no_emit_violation(mock_llm_invoke_json):
         result = run_new_agent_session(
             session_id="asm-3", user_id=3, user_message="我已经懂了")
     except EmitViolationError as e:
-        raise AssertionError(f"出现越权 emit：{e}")
+        raise AssertionError(f"出现越权 emit：{e}") from e
     assert result.reply  # 有回复
     # mastered 经 Conductor 决策走到 loop_exit 末态（spec §4.3）
     assert result.mastery_score == 95

@@ -27,9 +27,10 @@ class OCRProvider(IndexProvider):
     def extract_text(self, image_bytes: bytes) -> str:
         """从图片字节提取文本。pytesseract 不可用时返回空字符串。"""
         try:
+            import io
+
             import pytesseract
             from PIL import Image
-            import io
             img = Image.open(io.BytesIO(image_bytes))
             return pytesseract.image_to_string(img) or ""
         except ImportError:

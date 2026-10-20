@@ -1,4 +1,4 @@
-import app.models.tables  # ensure tables are registered before create_all
+import app.models.tables  # noqa: F401 - register model tables before metadata.create_all
 
 
 def test_profile_reads_real_sessions_and_avg_mastery(db_fixture):
@@ -7,7 +7,9 @@ def test_profile_reads_real_sessions_and_avg_mastery(db_fixture):
         try:
             from app.api.profile import get_profile
             from app.infrastructure.storage.session_store import SessionStore
-            from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
+            from app.infrastructure.storage.sqlalchemy_mastery_store import (
+                SQLAlchemyMasteryStore,
+            )
             async with session_factory() as db:
                 await SessionStore(db).save("s1", state={}, user_id=1, title="t1")
                 await SessionStore(db).save("s2", state={}, user_id=1, title="t2")

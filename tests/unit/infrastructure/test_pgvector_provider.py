@@ -9,11 +9,12 @@ Mock 标注说明：
 """
 
 import json
+
 import pytest
 from sqlalchemy import text
+
+from app.infrastructure.rag.coordinator import Chunk, VisibilityContext
 from app.infrastructure.rag.pgvector_provider import PgVectorProvider
-from app.infrastructure.rag.embedding import EmbeddingService
-from app.infrastructure.rag.coordinator import Chunk
 
 
 class FakeEmbeddingService:
@@ -332,7 +333,6 @@ def test_metadata_json_serialization(sqlite_provider):
 
 # ===== RAG-C Phase 2（C-09）：SQLite 降级分支 visibility 过滤（DEC-001）=====
 
-from app.infrastructure.rag.coordinator import VisibilityContext
 
 
 def _index_visibility_matrix(provider):
@@ -433,3 +433,18 @@ def test_search_preserves_metadata_identity_for_legacy_rows(
     chunk = sqlite_provider.search("legacy", top_k=1)[0]
     assert chunk.metadata["doc_id"] == "legacy-doc"
     assert chunk.metadata["chunk_id"] == "legacy-chunk"
+
+
+@pytest.mark.parametrize("embedding_count", [0, 1, 3])
+def test_index_rejects_embedding_count_mismatch_before_writing(sqlite_provider, monkeypatch, embedding_count):
+    """Malformed embedding batches must never insert a prefix or erase existing data."""
+    sqlite_provider.index([{"content": "existing"}])
+    monkeypatch.setattr(
+        sqlite_provider._embedding, "embed_many",
+        lambda contents: [[0.1]] * embedding_count,
+    )
+    docs = [{"content": "first"}, {"content": "second"}]
+    with pytest.raises(ValueError, match="embedding count"):
+        sqlite_provider.index(docs)
+    rows = sqlite_provider._get_conn().execute(text("SELECT content FROM vector_chunks")).fetchall()
+    assert rows == [("existing",)]

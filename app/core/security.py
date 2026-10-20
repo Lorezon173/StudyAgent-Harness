@@ -4,12 +4,13 @@
 - create_access_token: HS256 JWT 签发
 - get_current_user: FastAPI 依赖函数，验签 + 过期检查
 """
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
+from typing import Annotated
 
 import bcrypt
-from jose import jwt, JWTError
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -30,7 +31,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(user_id: int) -> str:
     """签发 JWT（HS256，payload 含 user_id + exp）。"""
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
+    expire = datetime.now(UTC) + timedelta(minutes=settings.jwt_expire_minutes)
     return jwt.encode(
         {"user_id": user_id, "exp": expire},
         settings.jwt_secret_key,
@@ -39,8 +40,8 @@ def create_access_token(user_id: int) -> str:
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    db: AsyncSession = Depends(get_db),
+    token: Annotated[str, Depends(oauth2_scheme)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict:
     """FastAPI 依赖：验签 + 检查过期 + 提取 user_id + 确认用户仍存在。"""
     try:
@@ -57,5 +58,5 @@ async def get_current_user(
             raise HTTPException(status_code=401, detail="用户不存在")
 
         return {"user_id": user_id}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="token 验证失败")
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail="token 验证失败") from e

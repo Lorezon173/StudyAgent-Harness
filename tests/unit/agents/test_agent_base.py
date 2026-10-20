@@ -1,15 +1,17 @@
+from typing import ClassVar
+
 import pytest
 
 from app.agents.base import AgentBase
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event, check_ownership
-from app.harness.enums import EventType, EventSource
 from app.harness.workspace_state import WorkspaceState
 
 
 class _EchoTutor(AgentBase):
     source = EventSource.TUTOR
-    subscriptions = [EventType.USER_MESSAGE]
-    emittable_types = {EventType.TUTOR_ASKED}
+    subscriptions: ClassVar[list[EventType]] = [EventType.USER_MESSAGE]
+    emittable_types: ClassVar[set[EventType]] = {EventType.TUTOR_ASKED}
 
     def handle(self, event, ws):
         return [self.emit(EventType.TUTOR_ASKED, ws, payload={"q": "why?"},

@@ -1,4 +1,3 @@
-import pytest
 
 from app.eval.selection_reporter import SelectionReporter
 

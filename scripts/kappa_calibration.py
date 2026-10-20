@@ -15,7 +15,7 @@
 
     # 跳过 test-retest
     python scripts/kappa_calibration.py --skip-test-retest
-"""
+"""  # noqa: RUF002 - mathematical Spearman rho
 from __future__ import annotations
 
 import argparse
@@ -99,7 +99,7 @@ def geval_evaluate(
             metric.measure(test_case)
             scores.append(float(metric.score))
         except Exception as e:
-            warnings.warn(f"样本 {i} G-Eval 评估失败，跳过: {type(e).__name__}: {e}")
+            warnings.warn(f"样本 {i} G-Eval 评估失败，跳过: {type(e).__name__}: {e}", stacklevel=2)
             scores.append(0.0)
     return scores
 
@@ -120,7 +120,7 @@ def human_judge_correlation(
 
     返回 {"pearson_r": float, "pearson_p": float,
            "spearman_rho": float, "spearman_p": float}。
-    """
+    """  # noqa: RUF002 - mathematical Spearman rho
     pr, pp = pearsonr(human_scores, geval_scores)
     sr, sp = spearmanr(human_scores, geval_scores)
     return {
@@ -148,14 +148,14 @@ def print_analysis(
     # 基本统计
     print(f"\n样本数: {len(human_scores)}")
     print(f"人类评分均值: {sum(human_scores) / len(human_scores):.2f}  "
-          f"范围: {min(human_scores)}–{max(human_scores)}")
+          f"范围: {min(human_scores)}–{max(human_scores)}")  # noqa: RUF001 - display range separator
     print(f"G-Eval  均值: {sum(geval_scores) / len(geval_scores):.2f}  "
-          f"范围: {min(geval_scores):.3f}–{max(geval_scores):.3f}")
+          f"范围: {min(geval_scores):.3f}–{max(geval_scores):.3f}")  # noqa: RUF001 - display range separator
 
     # 相关性
     print("\n── 相关性 ──")
     print(f"  Pearson  r = {corr['pearson_r']:.3f}  (p = {corr['pearson_p']:.4f})")
-    print(f"  Spearman ρ = {corr['spearman_rho']:.3f}  (p = {corr['spearman_p']:.4f})")
+    print(f"  Spearman ρ = {corr['spearman_rho']:.3f}  (p = {corr['spearman_p']:.4f})")  # noqa: RUF001 - mathematical Spearman rho
 
     # 通过判定
     r = corr["pearson_r"]
@@ -166,7 +166,7 @@ def print_analysis(
         print("   建议:")
         print("   1. 修订 evaluation_steps，使评分维度与人类标注标准对齐")
         print("   2. 检查样本是否覆盖了评分量表的各个档位")
-        print("   3. 增加样本数量（当前 n={}）".format(len(human_scores)))
+        print(f"   3. 增加样本数量（当前 n={len(human_scores)}）")
 
     # 逐样本对照
     print("\n── 逐样本对照 ──")
@@ -176,7 +176,7 @@ def print_analysis(
         h = int(row["human_score"])
         g = geval_scores[i]
         diff = g - (h / 5.0)  # 人类分归一化到 0-1 再比较
-        print(f"  {i:>3}  {str(row['topic']):<12}  {h:>5}  {g:>6.3f}  {diff:>+6.3f}")
+        print(f"  {i:>3}  {row['topic']!s:<12}  {h:>5}  {g:>6.3f}  {diff:>+6.3f}")
 
     print()
 
@@ -209,14 +209,13 @@ def main() -> None:
     # 2. test-retest κ（可选）
     if not args.skip_test_retest:
         if "human_score_t1" in df.columns and df["human_score_t1"].notna().any():
-            t0 = df["human_score"].dropna().astype(int).tolist()
-            t1 = df["human_score_t1"].dropna().astype(int).tolist()
-            # 只取两轮都有值的样本
-            valid = [(a, b) for a, b in zip(t0, t1) if pd.notna(b)]
-            if valid:
-                v0, v1 = zip(*valid)
-                kappa = test_retest_kappa(list(v0), list(v1))
-                print(f"\n── test-retest κ ──")
+            # Keep original row alignment when either round has missing scores.
+            valid = df[["human_score", "human_score_t1"]].dropna().astype(int)
+            if not valid.empty:
+                kappa = test_retest_kappa(
+                    valid["human_score"].tolist(), valid["human_score_t1"].tolist(),
+                )
+                print("\n── test-retest κ ──")
                 print(f"  Cohen's κ = {kappa:.3f}  (n={len(valid)})")
                 if kappa < 0.6:
                     print("  ⚠️  test-retest κ < 0.6，人类标注自身一致性偏低，建议先稳定标注标准")

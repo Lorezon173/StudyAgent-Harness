@@ -20,10 +20,12 @@
 """
 
 import os
+
 import pytest
 from sqlalchemy import create_engine, text
-from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+
 from app.infrastructure.rag.embedding import EmbeddingService
+from app.infrastructure.rag.pgvector_provider import PgVectorProvider
 
 
 def _pg_available() -> bool:

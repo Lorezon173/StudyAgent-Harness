@@ -4,7 +4,6 @@ from datetime import datetime
 
 from app.infrastructure.storage.message_store import MessageStore
 
-
 # ---------------------------------------------------------------------------
 # Memory-mode tests
 # ---------------------------------------------------------------------------

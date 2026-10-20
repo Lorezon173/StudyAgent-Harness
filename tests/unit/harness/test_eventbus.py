@@ -3,10 +3,10 @@ import tempfile
 
 import pytest
 
+from app.harness.enums import EventSource, EventType
 from app.harness.eventbus import EventBus
+from app.harness.events import EmitViolationError, Event
 from app.infrastructure.storage.event_store import EventStore
-from app.harness.events import Event, EmitViolationError
-from app.harness.enums import EventType, EventSource
 
 
 def _make_bus() -> tuple[EventBus, EventStore, str]:

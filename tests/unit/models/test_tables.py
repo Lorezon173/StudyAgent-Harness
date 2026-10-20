@@ -26,7 +26,7 @@ class TestMessageTable:
 
     def test_session_id_is_foreign_key(self):
         mapper = inspect(MessageTable)
-        fk = list(mapper.columns["session_id"].foreign_keys)[0]
+        fk = next(iter(mapper.columns["session_id"].foreign_keys))
         assert fk.target_fullname == "sessions.id"
 
     def test_session_id_is_indexed(self):

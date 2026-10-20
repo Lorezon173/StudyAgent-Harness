@@ -1,7 +1,9 @@
 import os
 import tempfile
 import zipfile
+
 import pytest
+
 from app.infrastructure.rag.extractors.base import Extractor, get_extractor
 from app.infrastructure.rag.extractors.epub_extractor import EpubExtractor
 from app.infrastructure.rag.extractors.text_extractor import TextExtractor
@@ -55,7 +57,7 @@ def test_get_extractor_returns_none_for_unknown():
 
 def test_extractor_is_abstract():
     with pytest.raises(TypeError):
-        Extractor()  # noqa
+        Extractor()
 
 
 # ---------- EPUB ----------

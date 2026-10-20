@@ -5,7 +5,6 @@ Task 11 给 chat / chat_stream 加了 Depends(get_current_user)。
 会被鉴权层挡在 401，根本到不了业务逻辑。
 故此文件改为验证：未带 Authorization → 401，保护业务逻辑不被匿名流量触达。
 """
-import asyncio
 import os
 import tempfile
 from contextlib import asynccontextmanager
@@ -13,7 +12,6 @@ from contextlib import asynccontextmanager
 from starlette.testclient import TestClient
 
 from app.main import app
-
 
 # ── Non-streaming tests ──
 
@@ -32,10 +30,9 @@ def _make_client_for_chat(monkeypatch, db_session):
 
 def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
     """无 Authorization → 401，业务逻辑（含 MasteryGraph 构造）不被触达。"""
-    from unittest.mock import patch
-
     # Patch run_new_agent_session to return a fake result (不应被调用)
     from dataclasses import dataclass, field
+    from unittest.mock import patch
 
     @dataclass
     class FakeResult:
@@ -106,6 +103,7 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
 
                     # 被鉴权层拦截，无消息持久化
                     from sqlalchemy import select
+
                     from app.models.tables import MessageTable
                     r = await session.execute(
                         select(MessageTable).where(MessageTable.session_id == "s-anon-persist")
@@ -126,11 +124,17 @@ def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
 def test_anonymous_stream_no_mastery_graph(monkeypatch):
     """无 Authorization → 401，流式端点同样被鉴权层拦截。"""
     from unittest.mock import patch
+
     from sqlalchemy import create_engine
-    from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-    from app.core.database import Base
-    import app.models.tables as _tables  # noqa: F401
+    from sqlalchemy.ext.asyncio import (
+        AsyncSession,
+        async_sessionmaker,
+        create_async_engine,
+    )
+
     import app.api.chat_stream as cs
+    import app.models.tables as _tables  # noqa: F401
+    from app.core.database import Base
 
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
     tmp.close()

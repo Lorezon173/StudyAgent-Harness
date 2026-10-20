@@ -2,8 +2,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 
 
 class EventStore:

@@ -85,9 +85,9 @@ class CodeIndexProvider(IndexProvider):
         total = 0
         for fp in files:
             try:
-                with open(fp, "r", encoding="utf-8") as f:
+                with open(fp, encoding="utf-8") as f:
                     source = f.read()
-            except (IOError, UnicodeDecodeError):
+            except (OSError, UnicodeDecodeError):
                 continue
             docs = self.index_file(fp, source)
             total += len(docs)

@@ -6,6 +6,7 @@
 import posixpath
 import zipfile
 from html.parser import HTMLParser
+from typing import ClassVar
 from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
@@ -104,7 +105,7 @@ class _BlockTextParser(HTMLParser):
 
 
 class EpubExtractor(Extractor):
-    extensions = [".epub"]
+    extensions: ClassVar[list[str]] = [".epub"]
 
     def extract(self, file_path: str) -> str:
         """提取 EPUB 纯文本；任一环节失败返回空串，不抛异常到上层。"""

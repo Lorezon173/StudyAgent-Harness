@@ -10,8 +10,9 @@ Note: All tests are synchronous to avoid event loop interference with
 test_sessions_api.py (which uses asyncio.run()). get_current_user will be
 tested via integration tests in Task 11 (endpoint auth).
 """
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
+import pytest
 from jose import jwt
 
 
@@ -39,8 +40,8 @@ def test_verify_password_wrong():
 
 def test_create_access_token_contains_user_id():
     """create_access_token 生成的 JWT 包含正确的 user_id。"""
-    from app.core.security import create_access_token
     from app.core.config import settings
+    from app.core.security import create_access_token
 
     token = create_access_token(user_id=42)
     payload = jwt.decode(token, settings.jwt_secret_key, algorithms=["HS256"])
@@ -51,24 +52,23 @@ def test_create_access_token_contains_user_id():
 def test_expired_token_is_detectable():
     """过期 token 可被 jwt.decode 检测到（ExpiredSignatureError）。"""
     from jose import ExpiredSignatureError
+
     from app.core.config import settings
 
     expired_payload = {
         "user_id": 1,
-        "exp": datetime.now(timezone.utc) - timedelta(hours=1),
+        "exp": datetime.now(UTC) - timedelta(hours=1),
     }
     expired_token = jwt.encode(expired_payload, settings.jwt_secret_key, algorithm="HS256")
 
-    try:
+    with pytest.raises(ExpiredSignatureError):
         jwt.decode(expired_token, settings.jwt_secret_key, algorithms=["HS256"])
-        assert False, "Should have raised ExpiredSignatureError"
-    except ExpiredSignatureError:
-        pass
 
 
 def test_forged_token_is_detectable():
     """伪造 token（错误密钥）可被 jwt.decode 检测到（JWTError）。"""
     from jose import JWTError
+
     from app.core.config import settings
 
     forged_token = jwt.encode(
@@ -77,8 +77,5 @@ def test_forged_token_is_detectable():
         algorithm="HS256",
     )
 
-    try:
+    with pytest.raises(JWTError):
         jwt.decode(forged_token, settings.jwt_secret_key, algorithms=["HS256"])
-        assert False, "Should have raised JWTError"
-    except JWTError:
-        pass

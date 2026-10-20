@@ -1,6 +1,8 @@
 import json
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+
 from app.models.tables import SessionTable
 
 

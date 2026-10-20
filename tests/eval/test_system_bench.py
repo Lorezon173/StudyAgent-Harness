@@ -1,9 +1,7 @@
-import pytest
-import yaml
 from pathlib import Path
 
-from app.eval.system_bench import SystemBench
 from app.eval.kernel import ScenarioDefinition
+from app.eval.system_bench import SystemBench
 
 SCENARIOS_YAML = (Path(__file__).resolve().parent.parent.parent /
                   "app/eval/scenarios/standard_scenarios.yaml")
@@ -21,7 +19,7 @@ class TestScenarioLoading:
     def test_scenario_has_process_assertions(self):
         bench = SystemBench()
         scenarios = bench.load_scenarios(str(SCENARIOS_YAML))
-        sc = [s for s in scenarios if s.name == "零基础学习RAG"][0]
+        sc = next(s for s in scenarios if s.name == "零基础学习RAG")
         assert "expected_mode_path" in sc.expected
         assert "must_contain_events" in sc.expected
         assert "must_not_contain_events" in sc.expected
@@ -102,8 +100,8 @@ class TestSystemBench:
         assert "偏离" in str(result["errors"])
 
     def test_assess_accepts_event_objects(self):
+        from app.harness.enums import EventSource, EventType
         from app.harness.events import Event
-        from app.harness.enums import EventType, EventSource
         bench = SystemBench()
         trace = [
             Event(type=EventType.TUTOR_EXPLAINED, source=EventSource.TUTOR,

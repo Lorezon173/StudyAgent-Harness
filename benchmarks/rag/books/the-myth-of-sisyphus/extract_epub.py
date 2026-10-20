@@ -10,8 +10,8 @@ import re
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
-from zipfile import ZipFile
 from xml.etree import ElementTree as ET
+from zipfile import ZipFile
 
 DEFAULT_EPUB = Path("/Users/ywwl/Downloads/6006-西西弗神话/西西弗神话.epub")
 DEFAULT_OUTPUT = Path(__file__).with_name("corpus.local.jsonl")

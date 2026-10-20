@@ -1,8 +1,8 @@
 import pytest
 
 from app.agents.conductor import ConductorAgent
+from app.harness.enums import ActionKind, EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 
 

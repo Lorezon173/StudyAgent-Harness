@@ -2,7 +2,6 @@ import asyncio
 import os
 import tempfile
 from dataclasses import dataclass
-from typing import Any
 
 import pytest
 
@@ -60,7 +59,12 @@ class DbFixture:
 
         Returns (engine, session_factory). Caller must call `await engine.dispose()`.
         """
-        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from sqlalchemy.ext.asyncio import (
+            AsyncSession,
+            async_sessionmaker,
+            create_async_engine,
+        )
+
         from app.core.database import Base
 
         engine = create_async_engine(f"sqlite+aiosqlite:///{self.db_path}", echo=False)
@@ -108,8 +112,8 @@ def auth_headers():
     副作用：覆写 app.main.app 的 get_current_user 依赖为返回
     ``{"user_id": user_id}``，测试结束后自动还原。
     """
-    from app.main import app
     from app.core.security import create_access_token, get_current_user
+    from app.main import app
 
     # 进入时捕获原 override（可能为 None）
     original_override = app.dependency_overrides.get(get_current_user)

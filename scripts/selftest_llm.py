@@ -11,7 +11,7 @@ def main():
     from app.core.config import settings
     key = settings.openai_api_key
     print("【1】settings 读取 .env")
-    print(f"    openai_api_key: {'已设置 (len=%d)' % len(key) if key else '空 ❌'}")
+    print(f"    openai_api_key: {f'已设置 (len={len(key)})' if key else '空 ❌'}")
     print(f"    openai_base_url: {settings.openai_base_url or '(官方默认)'}")
     print(f"    openai_model: {settings.openai_model}")
     if not key or key == "sk-your-key-here":

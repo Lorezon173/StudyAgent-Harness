@@ -1,18 +1,20 @@
 import os
-from pathlib import Path
 from contextlib import asynccontextmanager
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from app.core.database import init_db
+from fastapi.staticfiles import StaticFiles
+
 from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
-from app.api.chat_stream import router as chat_stream_router
 from app.api.chat_multi import router as chat_multi_router
+from app.api.chat_stream import router as chat_stream_router
 from app.api.eval import router as eval_router
 from app.api.knowledge import router as knowledge_router
-from app.api.sessions import router as sessions_router
 from app.api.profile import router as profile_router
+from app.api.sessions import router as sessions_router
+from app.core.database import init_db
 
 
 @asynccontextmanager
@@ -52,8 +54,8 @@ if os.path.exists("web/dist"):
             try:
                 candidate = (DIST / full_path).resolve()
                 candidate.relative_to(DIST)
-            except (ValueError, OSError):
-                raise HTTPException(status_code=404)
+            except (ValueError, OSError) as e:
+                raise HTTPException(status_code=404) from e
             if candidate.is_file():
                 return FileResponse(candidate)
             # ③ 带扩展名的缺失资源 → 404，不伪装成 HTML

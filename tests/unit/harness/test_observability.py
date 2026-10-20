@@ -1,6 +1,9 @@
 from app.harness.observability import (
-    LLMSpan, SessionStats, Observability,
-    FakeObservability, ConsoleObservability, get_observability,
+    ConsoleObservability,
+    FakeObservability,
+    LLMSpan,
+    SessionStats,
+    get_observability,
 )
 
 

@@ -367,3 +367,71 @@ curl http://localhost:8000/health          # 健康检查
 - `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点无 user_id 绑定不加鉴权。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
+
+## Ruff 可复现诊断基线
+
+本地分支 `codex/ruff-main-baseline` 从远端 main `6324b9442b6f1671ccb4a19cdacb42bb91597187` 建立。
+首次阶段固定工具和检查策略并收集证据；后续用户批准按七类清单整改存量诊断。
+
+Ruff 通过 `uvx --index-url https://pypi.tuna.tsinghua.edu.cn/simple --from ruff==0.17.1 ruff`
+在独立工具环境中精确固定，业务依赖与原 `uv.lock` 保持不变。采用批准规划中的独立工具替代方案，
+因为完整项目锁解析需要缺失的 eval 元数据且官方源超时；不将 Ruff 声称为项目锁文件依赖。
+Ruff 本身没有 Python 运行时依赖，显式镜像参数仅用于该工具，不改变项目依赖源。
+
+用户授权清华镜像后的 Windows wheel 已与官方 PyPI 公布的 SHA256 核验一致：
+`ruff-0.17.1-py3-none-win_amd64.whl`，10097955 字节，
+`5df76f16580fab58d0f6c98a3ac254a4abceb7b2489b8b678335869cff77b3d7`。
+这项本机 wheel 核验不代表 Linux CI 的 wheel 已在本机执行验证。
+
+本机正式证据通过下列默认 CLI 入口生成，manifest 标记 `execution_mode=pinned-tool`，
+输出到 `artifacts/ruff/final-1`、`artifacts/ruff/final-2`。两次文件清单与规范化诊断须逐项一致。
+首次真实检查发现 2427 条诊断，原始证据保留；后续整改后的全仓检查为 0 条诊断。
+证据如实保留源提交和 dirty 状态，不代表 Linux CI 或产品 pytest 已运行通过。
+
+在仓库根目录使用 Python 3.11 或以上版本：
+
+```sh
+python scripts/ruff_baseline.py --output artifacts/ruff/reproduce-1
+python scripts/ruff_baseline.py --output artifacts/ruff/reproduce-2
+python -m unittest discover -s tests -p test_ruff_baseline.py
+```
+
+Ruff 精确固定为 0.17.1，并以 `required-version` 再校验。最低源码目标是 `py311`；
+关闭 preview、自动修复和 unsafe fixes。规则选择 `E4/E7/E9/F`（基础错误与名称）、
+`I`（导入顺序）、`UP`（现代 Python）、`B`（常见缺陷）、`ASYNC`（异步误用）、
+`RUF`（Ruff 专项）。暂不建立文档字符串、全套注解、复杂度或全套安全规则政策；
+旧报告中未启用规则的诊断不能视为已经修复。没有 blanket ignore；仅为数学符号、模型注册和分阶段导入保留带理由的窄规则例外。
+
+收集器显式使用仓库配置，对全仓 Python 执行无缓存检查；遵循 Ruff 默认生成物排除和
+Git ignore，另排除 `.venv_test` 与 `artifacts/ruff/`，不排除 tests、alembic、benchmarks 或 spike。
+每次必须写入新目录，不覆盖已有证据。输出包含原始版本/设置/文件列表/JSON/stderr、
+相对 POSIX 路径诊断、规则与路径计数、源 SHA、dirty 状态、diff、未跟踪文件 hash、
+配置与业务锁文件 SHA256、命令和退出码。两次复现须逐项比较 `files.json` 与 `diagnostics.json`，
+而非只比较诊断数量；时间、机器路径、平台信息不参与此比较。
+
+退出 0 表示无诊断，1 表示存在诊断（证据仍保存，CI 仍失败），2 表示配置、工具、解析或保存错误。
+Git/uv 环境采集也逐项校验退出码并保留命令、stdout、stderr；采集失败返回 2，未知工作树状态不会写成 clean。
+错误保留原始输出，不能解释为零诊断。CI 使用相同入口，并用 `always()` 上传证据。
+Ruff 失败后原有 pytest 步骤会跳过，不能称为产品测试通过；本机结果也不代表 Linux CI 实跑结果。
+
+
+### 2026-10-20 存量 lint 整改验收
+
+按已确认计划完成七类整改。2062 条常用中文标点诊断通过精确七字符
+`allowed-confusables` 政策处理；另外 5 处数学/范围符号保留原文并注明窄规则理由。
+其余 360 条完成源码或必要窄例外整改；Ruff 规则集及 py311 目标保持，未全局关闭规则。
+
+导入与冗余清理保留模型注册/初始化顺序；FastAPI 依赖改用 Annotated，类级元数据用
+ClassVar 明确共享契约，原容器类型不变。向量批次先校验文档与向量数量，失败前不写入；
+κ 校准按同一 CSV 行成对处理缺失值；异步会话测试用固定旧时间验证更新，不再阻塞等待。
+新增 3 个向量数量不匹配用例和 1 个真实校准 dry-run 用例，均先取得旧实现红灯再转绿。
+
+验证：全仓 Ruff 0 诊断；完整默认回归 607 passed、1 skipped、8 deselected，7 subtests passed。
+唯一 skip 为未安装 ragas 的可选用例；8 个 integration 按既有 marker 默认排除。
+本机为原锁定 dev 依赖，另按原锁包哈希补充统计测试依赖；kappa 新用例在本机真实执行，
+未装统计可选依赖时明确跳过。`uv lock --check --offline` 通过，业务 `uv.lock` 无改动。
+没有运行真实模型或 Docker/PostgreSQL 集成测试。修复以独立分支交付，通过草稿 PR 验证 Linux CI；未经确认不合并 main。
+
+完整回归日志：`artifacts/ruff/remediation-tests.log` / `.xml`；整改后正式双跑证据使用
+`artifacts/ruff/remediated-1`、`remediated-2`，原 final-1/final-2 保留。
+复现时使用从未存在的新输出目录，不覆盖历史证据。

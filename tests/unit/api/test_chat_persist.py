@@ -8,15 +8,11 @@ Verifies:
 import asyncio
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Any
 
-from fastapi import HTTPException
 from starlette.testclient import TestClient
 
-from app.main import app
 from app.infrastructure.storage.message_store import MessageStore
-from app.infrastructure.storage.session_store import SessionStore
-
+from app.main import app
 
 # ── Helpers ──
 
@@ -76,6 +72,7 @@ def _patch_new_stack(monkeypatch, result=None):
 
 async def _count_sessions(db_session):
     from sqlalchemy import select
+
     from app.models.tables import SessionTable
     r = await db_session.execute(select(SessionTable))
     return len(r.scalars().all())
@@ -83,6 +80,7 @@ async def _count_sessions(db_session):
 
 async def _get_session_row(db_session, session_id):
     from sqlalchemy import select
+
     from app.models.tables import SessionTable
     r = await db_session.execute(select(SessionTable).where(SessionTable.id == session_id))
     return r.scalar_one_or_none()
@@ -90,6 +88,7 @@ async def _get_session_row(db_session, session_id):
 
 async def _get_messages(db_session, session_id):
     from sqlalchemy import select
+
     from app.models.tables import MessageTable
     r = await db_session.execute(
         select(MessageTable)
@@ -248,10 +247,10 @@ def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()
         try:
-            from app.orchestration.assembly import NewStackResult
             import app.api.chat as chat_mod
             from app.api.chat import chat
             from app.models.schemas import ChatRequest
+            from app.orchestration.assembly import NewStackResult
 
             # fake_run 接收 chat.py 透传的 5 个位置参数
             # (session_id, user_id, message, current_topic, graph)，

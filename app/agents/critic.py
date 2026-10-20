@@ -1,6 +1,8 @@
+from typing import ClassVar
+
 from app.agents.base import AgentBase
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, MasteryLevel
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
@@ -16,8 +18,8 @@ class CriticAgent(AgentBase):
     """
 
     source = EventSource.CRITIC
-    subscriptions = [EventType.USER_MESSAGE, EventType.RETRIEVED_EVIDENCE]
-    emittable_types = {
+    subscriptions: ClassVar[list[EventType]] = [EventType.USER_MESSAGE, EventType.RETRIEVED_EVIDENCE]
+    emittable_types: ClassVar[set[EventType]] = {
         EventType.MASTERY_ASSESSED,
         EventType.CONFUSION_DETECTED,
         EventType.CONTRADICTION_DETECTED,

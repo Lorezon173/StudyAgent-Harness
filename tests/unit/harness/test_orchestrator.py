@@ -1,12 +1,13 @@
-from pathlib import Path
 
-import pytest
 
-from app.harness.orchestrator import RuleEngine, load_rules, Orchestrator
 from app.harness.enums import (
-    ActionKind, MasteryLevel, EventType, EventSource, TeachingMode,
+    ActionKind,
+    EventSource,
+    EventType,
+    TeachingMode,
 )
 from app.harness.events import Event
+from app.harness.orchestrator import Orchestrator, RuleEngine, load_rules
 from app.harness.workspace_state import WorkspaceState
 
 

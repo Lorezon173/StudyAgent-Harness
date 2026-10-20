@@ -1,9 +1,7 @@
-import tempfile
 import os
-import pytest
-from app.infrastructure.rag.code_index import CodeIndexProvider
-from app.infrastructure.rag.coordinator import Chunk
+import tempfile
 
+from app.infrastructure.rag.code_index import CodeIndexProvider
 
 SAMPLE_CODE = '''
 """A simple math module."""

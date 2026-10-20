@@ -6,19 +6,18 @@
 """
 from dataclasses import dataclass, field
 
-from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, ActionKind, TeachingMode
-
-from app.agents.tutor import TutorAgent
-from app.agents.critic import CriticAgent
-from app.agents.retriever import RetrieverAgent
 from app.agents.conductor import ConductorAgent
+from app.agents.critic import CriticAgent
 from app.agents.curator import Curator
+from app.agents.retriever import RetrieverAgent
+from app.agents.tutor import TutorAgent
+from app.harness.enums import ActionKind, EventSource, EventType, TeachingMode
 from app.harness.eventbus import EventBus
+from app.harness.events import Event
+from app.harness.mastery_graph import MasteryGraph
 from app.harness.orchestrator import Orchestrator
 from app.harness.teaching_policy import TeachingPolicy
 from app.harness.workspace_state import WorkspaceState
-from app.harness.mastery_graph import MasteryGraph
 from app.infrastructure.storage.event_store import EventStore
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 from app.orchestration.collab_loop import run_collab_loop

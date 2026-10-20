@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from app.harness.events import Event, check_ownership
 from app.harness.enums import EventType
+from app.harness.events import Event, check_ownership
 from app.infrastructure.storage.event_store import EventStore
 
 

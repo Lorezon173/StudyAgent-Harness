@@ -12,7 +12,7 @@ def cohens_kappa(annotator_a: list[str], annotator_b: list[str]) -> float:
     if n == 0:
         return 1.0
 
-    observed = sum(1 for a, b in zip(annotator_a, annotator_b) if a == b) / n
+    observed = sum(1 for a, b in zip(annotator_a, annotator_b, strict=True) if a == b) / n
 
     count_a = Counter(annotator_a)
     count_b = Counter(annotator_b)

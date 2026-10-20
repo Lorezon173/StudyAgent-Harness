@@ -13,10 +13,12 @@
 """
 
 import json
+
 from sqlalchemy import text
-from app.infrastructure.rag.coordinator import IndexProvider, Chunk
-from app.infrastructure.rag.embedding import EmbeddingService
+
 from app.core.config import settings
+from app.infrastructure.rag.coordinator import Chunk, IndexProvider
+from app.infrastructure.rag.embedding import EmbeddingService
 
 
 def _sql_or_metadata(sql_value, metadata: dict, key: str):
@@ -84,13 +86,15 @@ class PgVectorProvider(IndexProvider):
         # 批量 embed
         contents = [d.get("content", "") for d in docs]
         embeddings = self._embedding.embed_many(contents)
+        if len(embeddings) != len(docs):
+            raise ValueError("embedding count must match document count")
 
         # 写入向量表
         conn = self._get_conn()
         dialect = conn.dialect.name
 
         try:
-            for doc, emb in zip(docs, embeddings):
+            for doc, emb in zip(docs, embeddings, strict=True):
                 content = doc.get("content", "")
                 metadata = doc.get("metadata", {})
                 doc_id = doc.get("doc_id") or metadata.get("doc_id", "")

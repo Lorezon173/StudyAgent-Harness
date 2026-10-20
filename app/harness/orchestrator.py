@@ -2,10 +2,10 @@ from pathlib import Path
 
 import yaml
 
-from app.harness.enums import ActionKind, EventType, EventSource, TeachingMode
+from app.harness.enums import ActionKind, EventSource, EventType, TeachingMode
 from app.harness.events import Event
+from app.harness.teaching_policy import ObservationSet, TeachingPolicy
 from app.harness.workspace_state import WorkspaceState
-from app.harness.teaching_policy import TeachingPolicy, ObservationSet
 
 _RULES_DEFAULT_PATH = Path(__file__).resolve().parent.parent / \
     "orchestration" / "orchestrator_rules.yaml"

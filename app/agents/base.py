@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
 import inspect
+from abc import ABC, abstractmethod
+from typing import ClassVar
 
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 from app.harness.workspace_state import WorkspaceState
 
 
@@ -20,8 +21,8 @@ class AgentBase(ABC):
     """
 
     source: EventSource
-    subscriptions: list[EventType]
-    emittable_types: set[EventType]
+    subscriptions: ClassVar[list[EventType]]
+    emittable_types: ClassVar[set[EventType]]
 
     @abstractmethod
     def handle(self, event: Event, ws: WorkspaceState) -> list[Event]:

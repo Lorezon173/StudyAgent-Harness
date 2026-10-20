@@ -1,8 +1,8 @@
 import pytest
 
 from app.agents.critic import CriticAgent
+from app.harness.enums import EventSource, EventType, MasteryLevel
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource, MasteryLevel
 from app.harness.workspace_state import WorkspaceState
 
 

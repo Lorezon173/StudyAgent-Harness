@@ -1,6 +1,5 @@
-import pytest
-from app.infrastructure.rag.ocr import OCRProvider
 from app.infrastructure.rag.coordinator import Chunk
+from app.infrastructure.rag.ocr import OCRProvider
 
 
 def test_ocr_provider_name():

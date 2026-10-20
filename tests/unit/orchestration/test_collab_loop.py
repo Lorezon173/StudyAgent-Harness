@@ -1,13 +1,14 @@
 import os
 import tempfile
+from typing import ClassVar
 
-from app.orchestration.collab_loop import run_collab_loop, PriorityEventQueue
-from app.harness.eventbus import EventBus
-from app.infrastructure.storage.event_store import EventStore
-from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
-from app.harness.workspace_state import WorkspaceState
 from app.agents.base import AgentBase
+from app.harness.enums import EventSource, EventType
+from app.harness.eventbus import EventBus
+from app.harness.events import Event
+from app.harness.workspace_state import WorkspaceState
+from app.infrastructure.storage.event_store import EventStore
+from app.orchestration.collab_loop import PriorityEventQueue, run_collab_loop
 
 
 def _bus():
@@ -20,8 +21,8 @@ def _bus():
 
 class _AskOnce(AgentBase):
     source = EventSource.TUTOR
-    subscriptions = [EventType.USER_MESSAGE]
-    emittable_types = {EventType.TUTOR_ASKED}
+    subscriptions: ClassVar[list[EventType]] = [EventType.USER_MESSAGE]
+    emittable_types: ClassVar[set[EventType]] = {EventType.TUTOR_ASKED}
 
     def handle(self, event, ws):
         return [self.emit(EventType.TUTOR_ASKED, ws, payload={"q": "why"})]
@@ -29,8 +30,8 @@ class _AskOnce(AgentBase):
 
 class _LoopForever(AgentBase):
     source = EventSource.TUTOR
-    subscriptions = [EventType.USER_MESSAGE, EventType.TUTOR_ASKED]
-    emittable_types = {EventType.TUTOR_ASKED}
+    subscriptions: ClassVar[list[EventType]] = [EventType.USER_MESSAGE, EventType.TUTOR_ASKED]
+    emittable_types: ClassVar[set[EventType]] = {EventType.TUTOR_ASKED}
 
     def handle(self, event, ws):
         return [self.emit(EventType.TUTOR_ASKED, ws)]

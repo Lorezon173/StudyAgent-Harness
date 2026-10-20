@@ -1,16 +1,18 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.schemas import AuthRegisterRequest, AuthLoginRequest, AuthResponse
-from app.infrastructure.storage.user_store import UserStore
 from app.core.database import get_db
-from app.core.security import verify_password, create_access_token
+from app.core.security import create_access_token, verify_password
+from app.infrastructure.storage.user_store import UserStore
+from app.models.schemas import AuthLoginRequest, AuthRegisterRequest, AuthResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=AuthResponse)
-async def register(req: AuthRegisterRequest, db: AsyncSession = Depends(get_db)):
+async def register(req: AuthRegisterRequest, db: Annotated[AsyncSession, Depends(get_db)]):
     store = UserStore(db)
     existing = await store.find_by_username(req.username)
     if existing:
@@ -21,7 +23,7 @@ async def register(req: AuthRegisterRequest, db: AsyncSession = Depends(get_db))
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(req: AuthLoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(req: AuthLoginRequest, db: Annotated[AsyncSession, Depends(get_db)]):
     store = UserStore(db)
     user = await store.find_by_username(req.username)
     if not user or not verify_password(req.password, user["password_hash"]):

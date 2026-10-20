@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.tables import MasteryNodeTable, MasteryEdgeTable
+from app.models.tables import MasteryEdgeTable, MasteryNodeTable
 
 
 class SQLAlchemyMasteryStore:

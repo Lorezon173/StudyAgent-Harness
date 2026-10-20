@@ -1,5 +1,5 @@
 def test_mastery_tables_importable_and_named():
-    from app.models.tables import MasteryNodeTable, MasteryEdgeTable
+    from app.models.tables import MasteryEdgeTable, MasteryNodeTable
     assert MasteryNodeTable.__tablename__ == "mastery_nodes"
     assert MasteryEdgeTable.__tablename__ == "mastery_edges"
     # 复合主键 (user_id, topic_id)

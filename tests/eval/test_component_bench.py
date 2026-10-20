@@ -1,7 +1,6 @@
-import pytest
 
 from app.eval.component_bench import ComponentBench
-from app.eval.kernel import TestCase, EvalResult
+from app.eval.kernel import TestCase
 from app.harness.enums import EventSource
 
 

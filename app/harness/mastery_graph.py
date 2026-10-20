@@ -2,8 +2,6 @@ import time
 from dataclasses import dataclass, field
 from enum import StrEnum
 
-from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
-
 
 class EdgeType(StrEnum):
     """图谱边类型（§6）。"""

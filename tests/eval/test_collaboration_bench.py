@@ -1,17 +1,17 @@
 import pytest
 
 from app.eval.collaboration_bench import (
-    compute_collaboration_metrics,
     build_causal_tree,
-    compute_violation_rate,
-    compute_efficiency,
-    compute_decision_stability,
-    compute_conflict_resolution,
     compute_causal_chain_quality,
+    compute_collaboration_metrics,
+    compute_conflict_resolution,
+    compute_decision_stability,
+    compute_efficiency,
     compute_trajectory_deviation,
+    compute_violation_rate,
 )
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
-from app.harness.enums import EventType, EventSource
 
 
 class TestBuildCausalTree:
@@ -117,8 +117,8 @@ class TestCollaborationMetrics:
 
 class TestCollaborationEventStore:
     def test_from_event_store(self, tmp_path):
-        from app.infrastructure.storage.event_store import EventStore
         from app.eval.collaboration_bench import collaboration_report_from_store
+        from app.infrastructure.storage.event_store import EventStore
 
         store = EventStore(str(tmp_path / "test_events.db"))
         store.init()
@@ -133,8 +133,8 @@ class TestCollaborationEventStore:
         store.close()
 
     def test_from_store_with_violations(self, tmp_path):
-        from app.infrastructure.storage.event_store import EventStore
         from app.eval.collaboration_bench import collaboration_report_from_store
+        from app.infrastructure.storage.event_store import EventStore
 
         store = EventStore(str(tmp_path / "test_violations.db"))
         store.init()

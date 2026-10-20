@@ -2,7 +2,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 
-from app.harness.enums import EventType, EventSource
+from app.harness.enums import EventSource, EventType
 
 
 def new_event_id(ts_ms: float | None = None) -> str:

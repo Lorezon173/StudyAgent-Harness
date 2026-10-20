@@ -6,9 +6,8 @@ persist_turn 失败时标记 user_id 为 dirty，下次 load 强制从 DB 重建
 
 import threading
 import time
-from typing import Dict, Tuple
 
-_dirty_users: Dict[int, Tuple[float, float]] = {}  # {user_id: (mark_time, ttl)}
+_dirty_users: dict[int, tuple[float, float]] = {}  # {user_id: (mark_time, ttl)}
 _lock = threading.Lock()
 _DEFAULT_TTL = 3600  # 1小时TTL
 

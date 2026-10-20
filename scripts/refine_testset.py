@@ -162,7 +162,7 @@ def compute_kappa(labels_a: list[str], labels_b: list[str]) -> float:
 
     # 过滤掉 error 标签的样本对
     filtered_a, filtered_b = [], []
-    for a, b in zip(labels_a, labels_b):
+    for a, b in zip(labels_a, labels_b, strict=True):
         if a != "error" and b != "error":
             filtered_a.append(a)
             filtered_b.append(b)
@@ -182,7 +182,7 @@ def print_conflicts(df: pd.DataFrame, labels_a: list, labels_b: list) -> None:
         labels_b: 标注者 B 的标签列表。
     """
     conflicts = []
-    for i, (a, b) in enumerate(zip(labels_a, labels_b)):
+    for i, (a, b) in enumerate(zip(labels_a, labels_b, strict=False)):
         if a != b:
             row = df.iloc[i] if i < len(df) else {}
             conflicts.append({

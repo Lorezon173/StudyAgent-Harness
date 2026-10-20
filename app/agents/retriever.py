@@ -2,7 +2,7 @@
 
 事件契约：
   source      = retriever
-  subscriptions = [ActionRequested]（按 payload.target==retriever 过滤）
+  subscriptions: ClassVar[list[EventType]] = [ActionRequested]（按 payload.target==retriever 过滤）
   emittable   = {RetrievedEvidence, RetrievalFailed}
 
 只做机械层：向量检索 + 原始 similarity score + retrieval_status。
@@ -12,9 +12,10 @@
 import logging
 import time
 from collections import Counter
+from typing import ClassVar
 
 from app.agents.base import AgentBase
-from app.harness.enums import EventType, EventSource
+from app.harness.enums import EventSource, EventType
 from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.rag.coordinator import RAGCoordinator, VisibilityContext
@@ -45,8 +46,8 @@ class RetrieverAgent(AgentBase):
     """知识检索 Agent（机械层，不自评语义质量）。"""
 
     source = EventSource.RETRIEVER
-    subscriptions = [EventType.ACTION_REQUESTED]
-    emittable_types = {EventType.RETRIEVED_EVIDENCE, EventType.RETRIEVAL_FAILED}
+    subscriptions: ClassVar[list[EventType]] = [EventType.ACTION_REQUESTED]
+    emittable_types: ClassVar[set[EventType]] = {EventType.RETRIEVED_EVIDENCE, EventType.RETRIEVAL_FAILED}
 
     def __init__(self, coordinator: RAGCoordinator | None = None):
         self._coordinator = coordinator or RAGCoordinator()
@@ -220,7 +221,6 @@ class RetrieverAgent(AgentBase):
         latency_ms = (time.time() - t0) * 1000
 
         retrieved_contents = [c.content for c in result.chunks]
-        combined = " ".join(retrieved_contents)
 
         # --- recall@k：golden_chunks 中有多少被检索到 ---
         if golden_chunks:
@@ -277,13 +277,18 @@ class RetrieverAgent(AgentBase):
             }
 
         try:
+            from datasets import Dataset
             from ragas import evaluate as ragas_eval
             from ragas.metrics import (
-                faithfulness as m_faithfulness,
                 answer_relevancy as m_answer_relevancy,
+            )
+            from ragas.metrics import (
                 context_precision as m_context_precision,
             )
-            from datasets import Dataset
+            from ragas.metrics import (
+                faithfulness as m_faithfulness,
+            )
+
             from app.eval.judge import build_judge
 
             # 构造 judge（复用 §5.1.1 不同族校验）
@@ -357,5 +362,5 @@ class RetrieverAgent(AgentBase):
                 "latency_ms": round(latency_ms, 2),
                 "redundancy": round(redundancy, 4),
                 "degraded": True,
-                "degraded_reason": f"RAGAS 评估失败: {str(e)}",
+                "degraded_reason": f"RAGAS 评估失败: {e!s}",
             }

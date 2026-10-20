@@ -1,5 +1,5 @@
-from app.harness.events import Event
 from app.harness.enums import EventType
+from app.harness.events import Event
 
 # 语义事件白名单（15 个）→ content 提取方式
 _TUTOR = (EventType.TUTOR_ASKED, EventType.TUTOR_EXPLAINED,

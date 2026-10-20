@@ -1,6 +1,14 @@
-import time
-from app.harness.events import Event, new_event_id, EVENT_PRIORITY
-from app.harness.enums import EventType, EventSource
+import pytest
+
+from app.harness.enums import EventSource, EventType
+from app.harness.events import (
+    EVENT_OWNERSHIP,
+    EVENT_PRIORITY,
+    EmitViolationError,
+    Event,
+    check_ownership,
+    new_event_id,
+)
 
 
 def test_new_event_id_is_time_sortable():
@@ -47,8 +55,7 @@ def test_loop_exit_is_high_priority():
     assert EVENT_PRIORITY[EventType.LOOP_EXIT] < EVENT_PRIORITY[EventType.MASTERY_ASSESSED]
 
 
-import pytest
-from app.harness.events import EVENT_OWNERSHIP, EmitViolationError, check_ownership
+
 
 
 def test_ownership_covers_all_event_types():

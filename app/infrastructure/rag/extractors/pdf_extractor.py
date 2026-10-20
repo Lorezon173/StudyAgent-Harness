@@ -1,10 +1,12 @@
 """PDF 文本提取器（可选依赖 PyPDF2/pdfplumber）。"""
 
+from typing import ClassVar
+
 from app.infrastructure.rag.extractors.base import Extractor
 
 
 class PDFExtractor(Extractor):
-    extensions = [".pdf"]
+    extensions: ClassVar[list[str]] = [".pdf"]
 
     def extract(self, file_path: str) -> str:
         # 尝试 pdfplumber（更好的文本提取）

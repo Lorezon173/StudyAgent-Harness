@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.harness.enums import TeachingMode, ActionKind, MasteryLevel
+from app.harness.enums import ActionKind, MasteryLevel, TeachingMode
 
 
 @dataclass

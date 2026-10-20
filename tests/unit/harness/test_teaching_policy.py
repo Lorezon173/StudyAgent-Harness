@@ -1,5 +1,5 @@
-from app.harness.teaching_policy import TeachingPolicy, ObservationSet
-from app.harness.enums import TeachingMode, ActionKind, MasteryLevel
+from app.harness.enums import ActionKind, MasteryLevel, TeachingMode
+from app.harness.teaching_policy import ObservationSet, TeachingPolicy
 
 
 def _obs(**kw) -> ObservationSet:
@@ -14,7 +14,7 @@ def test_policy_starts_in_socratic():
 
 def test_socratic_mastered_topic_complete_exits():
     p = TeachingPolicy()
-    target, action = p.next(_obs(mastery=MasteryLevel.MASTERED, topic_complete=True))
+    _target, action = p.next(_obs(mastery=MasteryLevel.MASTERED, topic_complete=True))
     assert action == ActionKind.LOOP_EXIT
 
 
@@ -62,7 +62,7 @@ def test_socratic_prereq_historical_stays_socratic_with_probe():
 
 def test_feynman_mastered_returns_to_socratic():
     p = TeachingPolicy(initial=TeachingMode.FEYNMAN)
-    target, action = p.next(_obs(mastery=MasteryLevel.MASTERED))
+    target, _action = p.next(_obs(mastery=MasteryLevel.MASTERED))
     assert target == TeachingMode.SOCRATIC
 
 
@@ -75,7 +75,7 @@ def test_feynman_confusion_goes_analogy():
 
 def test_feynman_prereq_observed_goes_regress():
     p = TeachingPolicy(initial=TeachingMode.FEYNMAN)
-    target, action = p.next(_obs(prereq_weak=True, prereq_basis="observed"))
+    target, _action = p.next(_obs(prereq_weak=True, prereq_basis="observed"))
     assert target == TeachingMode.REGRESS
 
 
@@ -88,25 +88,25 @@ def test_feynman_weak_no_confusion_no_prereq_back_to_socratic():
 
 def test_analogy_understood_returns_to_socratic():
     p = TeachingPolicy(initial=TeachingMode.ANALOGY)
-    target, action = p.next(_obs(mastery=MasteryLevel.PARTIAL))
+    target, _action = p.next(_obs(mastery=MasteryLevel.PARTIAL))
     assert target == TeachingMode.SOCRATIC
 
 
 def test_analogy_still_weak_goes_regress():
     p = TeachingPolicy(initial=TeachingMode.ANALOGY)
-    target, action = p.next(_obs(mastery=MasteryLevel.WEAK))
+    target, _action = p.next(_obs(mastery=MasteryLevel.WEAK))
     assert target == TeachingMode.REGRESS
 
 
 def test_regress_prereq_mastered_back_to_socratic():
     p = TeachingPolicy(initial=TeachingMode.REGRESS)
-    target, action = p.next(_obs(mastery=MasteryLevel.MASTERED))
+    target, _action = p.next(_obs(mastery=MasteryLevel.MASTERED))
     assert target == TeachingMode.SOCRATIC
 
 
 def test_regress_prereq_still_weak_self_loop():
     p = TeachingPolicy(initial=TeachingMode.REGRESS)
-    target, action = p.next(_obs(prereq_weak=True, prereq_basis="observed"))
+    target, _action = p.next(_obs(prereq_weak=True, prereq_basis="observed"))
     assert target == TeachingMode.REGRESS
 
 
