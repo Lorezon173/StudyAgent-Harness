@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.core.config import settings
 from app.core.database import Base
+from app.core.database_url import build_sync_database_url
 from app.models.tables import *  # noqa: F403 - register all models before reading Base.metadata
 
 # this is the Alembic Config object, which provides
@@ -17,8 +18,9 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Override URL from settings (async → sync for migration engine)
-sync_url = settings.database_url.replace("+asyncpg", "").replace("+aiosqlite", "")
-config.set_main_option("sqlalchemy.url", sync_url)
+sync_url = build_sync_database_url(settings.database_url).render_as_string(hide_password=False)
+# ConfigParser treats percent signs as interpolation markers.
+config.set_main_option("sqlalchemy.url", sync_url.replace("%", "%%"))
 
 target_metadata = Base.metadata
 

@@ -22,7 +22,8 @@ COPY pyproject.toml uv.lock* ./
 RUN uv sync --extra rag --no-dev --no-install-project
 # 再拷源码并装项目本身
 COPY app/ ./app/
-COPY alembic.ini alembic/ ./
+COPY alembic.ini ./alembic.ini
+COPY alembic/ ./alembic/
 RUN uv sync --extra rag --no-dev
 
 # ===== Stage 3: runtime（精简运行镜像）=====
