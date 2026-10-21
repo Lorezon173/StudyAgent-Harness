@@ -4,6 +4,15 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_call:
+    outputs:
+      candidate_artifact:
+        value: ${{ jobs.docker.outputs.candidate_artifact }}
+      source_sha:
+        value: ${{ jobs.docker.outputs.source_sha }}
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -33,3 +42,59 @@ jobs:
 
       - name: Test (pytest，默认排除 integration)
         run: uv run pytest tests/ -v
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      candidate_artifact: ${{ steps.identity.outputs.artifact }}
+      source_sha: ${{ steps.identity.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record checkout identity
+        id: identity
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "artifact=docker-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+      - name: Build candidate once
+        run: docker build --label "org.opencontainers.image.revision=$(git rev-parse HEAD)" --tag candidate:ci .
+      - name: Technical acceptance
+        run: |
+          for phase in structure migration api-auth; do
+            python3 scripts/verify_docker_image.py --image candidate:ci --phase "$phase" --output "artifacts/docker/candidate/$phase"
+          done
+      - name: Record teaching not run
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('artifacts/docker/candidate')
+          result = json.loads((root / 'api-auth/manifest.json').read_text())
+          result.update(phase='api-teaching', status='not_run', exit_code=3,
+                        required_checks=['trusted_model_acceptance'],
+                        checks=[{'name': 'trusted_model_acceptance', 'status': 'not_run',
+                                 'reason': 'Technical CI has no model secrets'}], log_path='')
+          (root / 'api-teaching').mkdir()
+          (root / 'api-teaching/manifest.json').write_text(json.dumps(result, indent=2))
+          PY
+      - name: Archive verified candidate
+        env:
+          SOURCE_SHA: ${{ steps.identity.outputs.sha }}
+        run: |
+          python3 scripts/docker_candidate.py pack --directory artifacts/docker/candidate --source-sha "$SOURCE_SHA" --image candidate:ci --evidence-root artifacts/docker/candidate
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.identity.outputs.artifact }}
+          path: artifacts/docker/candidate/
+          retention-days: 2
+          if-no-files-found: error
+      - name: Upload sanitized technical evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-technical-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            artifacts/docker/candidate/*/manifest.json
+            artifacts/docker/candidate/*/*.log
+          retention-days: 2
+          if-no-files-found: warn

@@ -40,6 +40,11 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      # deploy 前设置强随机 JWT；空值在验收预检中拒绝，默认 db-only 不受影响。
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-}
+      RAG_BACKEND: ${RAG_BACKEND:-fake}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-doubao-embedding-vision}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-2048}
     ports:
       - "8000:8000"
     restart: unless-stopped

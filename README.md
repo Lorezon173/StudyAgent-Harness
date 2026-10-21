@@ -257,7 +257,7 @@ npm run build        # 生产：产物落 web/dist，由 FastAPI 同源伺服（
 cd ..
 
 # 6. 运行测试
-uv run pytest tests/ -v                # 默认排除 integration（597 passed / 1 skipped）
+uv run pytest tests/ -v                # 默认排除 integration；最新结果见 Docker 交付报告
 uv run pytest -m integration           # 集成测试，需 Docker PG + OpenAI key
 ```
 
@@ -345,21 +345,35 @@ tests/integration/          pgvector 真检索、端到端场景（默认 desele
 
 ## CI/CD 与 Docker 部署
 
-**CI**（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：push 到 main 或任意 PR 触发；先 `uv sync --locked --extra dev`，再 `python3 scripts/ruff_baseline.py --output artifacts/ruff/ci`，最后 `uv run pytest tests/ -v`（默认排除 integration）。Ruff 由收集器精确固定为 0.17.1；失败证据仍上传，失败时测试不会被记作通过。普通功能分支 push 本身不触发当前 CI。
+**CI**（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：push 到 main 或任意 PR 触发；先 `uv sync --locked --extra dev`，再 `python3 scripts/ruff_baseline.py --output artifacts/ruff/ci`，最后 `uv run pytest tests/ -v`（默认排除 integration）。Ruff 由收集器精确固定为 0.17.1；失败证据仍上传，失败时测试不会被记作通过。普通功能分支 push 本身不触发当前 CI。软件检查通过后，Docker job 构建候选镜像，执行结构、迁移和认证验收；无模型秘密的 PR 将教学记录为未执行，只允许保存候选归档。
 
-**镜像发布**（[`.github/workflows/release.yml`](.github/workflows/release.yml)）：push 到 main 或打 `v*` tag → 多阶段构建（[Dockerfile](Dockerfile)：node 构建前端 → uv 装后端 → 精简 runtime）→ 推 `ghcr.io/<owner>/studyagent-harness`（tag `latest` + 短 sha），用仓库自带 `GITHUB_TOKEN`，无需配 secret。
+**镜像发布门禁**（[`.github/workflows/release.yml`](.github/workflows/release.yml)）：main push 或 `v*` tag 先调用 CI，再在 `docker-acceptance` 测试环境中验收真实教学、保存、重启恢复和所有权。只有全部通过，才将同一镜像归档载入并推送 GHCR 的 `latest` 与 `sha-<短SHA>`；发布阶段不重新构建。推送使用 `GITHUB_TOKEN`，只有 publish job 有 packages 写权限。必须先配置受保护的 `docker-acceptance` 环境及其模型/embedding 测试秘密，并将仓库变量 `DOCKER_ACCEPTANCE_ENABLED` 设为 `true`；缺配置或审批/业务未通过均不发布。当前未在远端运行验收，也未推送镜像。
 
-**本地全栈部署入口**（[docker-compose.yml](docker-compose.yml)）：以下为现有命令；Dockerfile 迁移目录和同步驱动配置仍待修复，本轮未完成构建/启动验收。
+**本地全栈部署入口**（[docker-compose.yml](docker-compose.yml)）：已修复迁移目录交付和 Alembic 同步 URL，保留 SQLite 支持；当前本机 Docker Desktop 后端在 Inference manager 初始化时失败，尚未完成真实镜像构建/容器启动验收。
 
 ```bash
-cp .env.example .env                       # 填 OPENAI_API_KEY
+cp .env.example .env                       # 填独立随机 JWT_SECRET_KEY、测试模型与 embedding 配置
 docker compose --profile deploy up -d      # db（pgvector）+ app，app 启动自动 alembic 迁移
 curl http://localhost:8000/health          # 健康检查
 ```
 
 > 默认 `docker compose up -d`（不带 `--profile deploy`）仅起 db，保留现有「后端本地 uvicorn 开发」工作流，不破坏既有用法。
 
-**关键衔接**：[alembic/env.py](alembic/env.py) 用同步引擎迁移（async→sync），已补 `psycopg[binary]` 主依赖；前端 `web/dist` 由 [app/main.py](app/main.py) 检测后同源伺服，镜像零额外路由。静态伺服带加固（`serve_vue`）：`/api` 与 `/api/*` 显式 404（不落入 SPA 回退）、`resolve + relative_to` 边界校验堵路径遍历、带扩展名的缺失资源直接 404（不伪装成 HTML）、根路径及无扩展名前端路由回退 `index.html`。
+**关键衔接**：[alembic/env.py](alembic/env.py) 用显式 `postgresql+psycopg` 同步引擎迁移，结构化转换保留密码、查询参数并处理百分号；应用仍使用异步连接；前端 `web/dist` 由 [app/main.py](app/main.py) 检测后同源伺服，镜像零额外路由。静态伺服带加固（`serve_vue`）：`/api` 与 `/api/*` 显式 404（不落入 SPA 回退）、`resolve + relative_to` 边界校验堵路径遍历、带扩展名的缺失资源直接 404（不伪装成 HTML）、根路径及无扩展名前端路由回退 `index.html`。
+
+### 候选镜像分层验收
+
+在仓库根目录执行，镜像必须已真实构建；每次使用新的证据目录：
+
+```sh
+python scripts/verify_docker_image.py --image <候选镜像> --phase structure --output artifacts/docker/run-1/structure
+python scripts/verify_docker_image.py --image <候选镜像> --phase migration --output artifacts/docker/run-1/migration
+python scripts/verify_docker_image.py --image <候选镜像> --phase api-auth --output artifacts/docker/run-1/api-auth
+```
+
+`api-teaching` 还需调用进程显式设置 `DOCKER_VERIFY_MODEL_TESTS=1`、`RAG_BACKEND=pgvector`、`OPENAI_API_KEY`、`OPENAI_MODEL`、`EMBEDDING_MODEL`、`EMBEDDING_DIM`，兼容网关另设 `OPENAI_BASE_URL`。脚本不会自动读取宿主 `.env` 或使用不明生产凭据。认证和教学分别使用临时数据库、随机 JWT、唯一容器/网络；只清理本次资源。默认 Compose 仍仅启动 db，app 额外透传 JWT、RAG 和 embedding 配置；空/公开默认 JWT 被验收前置检查拒绝。
+
+manifest 明确记录 `passed/failed/blocked/not_run`，对应退出码 `0/1/2/3`；`all` 按同一源码 SHA、镜像 ID、候选归档聚合必要结果。认证通过不代表教学通过，非通过或缺项不能发布。[候选归档工具](scripts/docker_candidate.py)负责校验归档 SHA256、镜像 ID 与源码标签；正式门禁强制完整检查集合，不信任自报的伪检查清单。真实引擎、模型或远端 Actions 未验收的状态见 [Docker 实施结果](docs/delivery/2026-10-21-docker-implementation-result.md)。
 
 ## 已知限制（诚实清单）
 

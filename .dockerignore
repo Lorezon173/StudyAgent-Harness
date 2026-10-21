@@ -33,3 +33,7 @@ superpowers
 spike_*.py
 ragas_generated_candidates.csv
 *.png
+
+# 隔离验收和本地工作流证据
+artifacts/docker
+.superpowers

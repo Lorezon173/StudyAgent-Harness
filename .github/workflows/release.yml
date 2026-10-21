@@ -5,42 +5,125 @@ on:
     branches: [main]
     tags: ["v*"]
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-push:
+  validate:
+    uses: ./.github/workflows/ci.yml
+
+  business-gate:
+    needs: validate
+    runs-on: ubuntu-latest
+    # Enable only after configuring protection on the docker-acceptance environment.
+    if: >-
+      vars.DOCKER_ACCEPTANCE_ENABLED == 'true' &&
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    environment: docker-acceptance
+    outputs:
+      evidence_artifact: ${{ steps.identity.outputs.artifact }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate trusted source
+        env:
+          SOURCE_SHA: ${{ needs.validate.outputs.source_sha }}
+        run: test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.validate.outputs.candidate_artifact }}
+          path: artifacts/docker/candidate
+      - name: Verify archive and load original image
+        env:
+          SOURCE_SHA: ${{ needs.validate.outputs.source_sha }}
+        run: |
+          python3 scripts/docker_candidate.py load --directory artifacts/docker/candidate --source-sha "$SOURCE_SHA"
+          rm artifacts/docker/candidate/api-teaching/manifest.json
+          rmdir artifacts/docker/candidate/api-teaching
+      - name: Real teaching acceptance
+        env:
+          DOCKER_VERIFY_MODEL_TESTS: "1"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+          EMBEDDING_DIM: ${{ secrets.EMBEDDING_DIM }}
+          RAG_BACKEND: pgvector
+        run: |
+          IMAGE_ID=$(python3 -c "import json; print(json.load(open('artifacts/docker/candidate/candidate.json'))['image_id'])")
+          python3 scripts/verify_docker_image.py --image "$IMAGE_ID" --phase api-teaching --output artifacts/docker/candidate/api-teaching
+      - name: Aggregate business acceptance
+        env:
+          SOURCE_SHA: ${{ needs.validate.outputs.source_sha }}
+        run: |
+          IMAGE_ID=$(python3 -c "import json; print(json.load(open('artifacts/docker/candidate/candidate.json'))['image_id'])")
+          python3 scripts/verify_docker_image.py --image "$IMAGE_ID" --phase all --output artifacts/docker/candidate/all --evidence-root artifacts/docker/candidate --candidate-manifest artifacts/docker/candidate/candidate.json
+          python3 scripts/docker_candidate.py gate --directory artifacts/docker/candidate --source-sha "$SOURCE_SHA" --evidence-root artifacts/docker/candidate
+      - name: Evidence identity
+        id: identity
+        if: always()
+        run: echo "artifact=docker-business-evidence-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+      - name: Upload sanitized business evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.identity.outputs.artifact }}
+          path: |
+            artifacts/docker/candidate/api-teaching/manifest.json
+            artifacts/docker/candidate/api-teaching/*.log
+            artifacts/docker/candidate/all/manifest.json
+            artifacts/docker/candidate/all/*.log
+          retention-days: 2
+          if-no-files-found: warn
+
+  publish:
+    needs: [validate, business-gate]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to ghcr.io
-        # 用仓库自带 GITHUB_TOKEN，无需额外配置 secret
-        uses: docker/login-action@v3
+      - uses: actions/download-artifact@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Image metadata
-        # metadata-action 自动把仓库名小写化（ghcr 要求小写）
-        id: meta
-        uses: docker/metadata-action@v5
+          name: ${{ needs.validate.outputs.candidate_artifact }}
+          path: artifacts/docker/candidate
+      - uses: actions/download-artifact@v4
         with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=latest
-            type=sha,format=short
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
+          name: ${{ needs.business-gate.outputs.evidence_artifact }}
+          path: artifacts/docker/business
+      - name: Recheck every gate before registry login
+        env:
+          SOURCE_SHA: ${{ needs.validate.outputs.source_sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          rm artifacts/docker/candidate/api-teaching/manifest.json
+          rmdir artifacts/docker/candidate/api-teaching
+          cp -R artifacts/docker/business/api-teaching artifacts/docker/candidate/
+          cp -R artifacts/docker/business/all artifacts/docker/candidate/
+          python3 scripts/docker_candidate.py gate --directory artifacts/docker/candidate --source-sha "$SOURCE_SHA" --evidence-root artifacts/docker/candidate
+          python3 scripts/docker_candidate.py load --directory artifacts/docker/candidate --source-sha "$SOURCE_SHA"
+      - name: Login and publish accepted image
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_ACTOR: ${{ github.actor }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ needs.validate.outputs.source_sha }}
+        run: |
+          printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io -u "$REGISTRY_ACTOR" --password-stdin
+          trap 'docker logout ghcr.io' EXIT
+          IMAGE_ID=$(python3 -c "import json; print(json.load(open('artifacts/docker/candidate/candidate.json'))['image_id'])")
+          IMAGE="ghcr.io/${REPOSITORY,,}"
+          mkdir -p artifacts/docker/publication
+          for TAG in latest "sha-${SOURCE_SHA:0:7}"; do
+            docker tag "$IMAGE_ID" "$IMAGE:$TAG"
+            docker push "$IMAGE:$TAG"
+            docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{json .Manifest}}' > "artifacts/docker/publication/$TAG.json"
+          done
+          cp artifacts/docker/candidate/candidate.json artifacts/docker/publication/candidate.json
+      - uses: actions/upload-artifact@v4
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          name: docker-registry-digests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/docker/publication/
+          retention-days: 2
+          if-no-files-found: error

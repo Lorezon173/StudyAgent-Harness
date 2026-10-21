@@ -11,3 +11,6 @@ __pycache__/
 
 # Ruff 可复现扫描证据（本机/CI 生成）
 artifacts/ruff/
+
+# 隔离 Docker 验收证据，不入版本库
+artifacts/docker/
