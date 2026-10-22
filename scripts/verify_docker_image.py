@@ -12,7 +12,9 @@ import subprocess
 import sys
 import time
 from datetime import UTC, datetime
+from http.client import RemoteDisconnected
 from pathlib import Path
+from threading import Event
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -239,20 +241,40 @@ class Sandbox:
                         raise
             raise VerificationError('blocked', 'isolated PostgreSQL readiness deadline exceeded')
         except BaseException:
-            self.__exit__(None, None, None)
+            self.__exit__(*sys.exc_info())
             raise
 
-    def __exit__(self, *_):
+    def diagnostics(self):
+        state = ('status={{.State.Status}} exit_code={{.State.ExitCode}} '
+                 'oom_killed={{.State.OOMKilled}} restart_count={{.RestartCount}}')
+        for name in reversed(self.containers):
+            for args in (('inspect', '--format', state, name),
+                         ('logs', '--tail', '100', '--timestamps', name)):
+                try:
+                    self.r.note(f'{name}: {args[0]}')
+                    self.r.docker(*args, timeout=10)
+                except Exception as exc:
+                    # Diagnostics must never replace the failure or stop cleanup.
+                    try:
+                        self.r.note(f'container diagnostic unavailable: {type(exc).__name__}')
+                    except Exception:
+                        pass
+
+    def __exit__(self, exc_type, *_):
+        if exc_type is not None:
+            self.diagnostics()
         for name in reversed(self.containers):
             try:
-                self.r.docker('rm', '-f', name, timeout=30)
-            except VerificationError as exc:
-                self.r.checks.append(dict(name='cleanup_' + name, status=exc.status, reason='owned container cleanup failed'))
+                self.r.docker('rm', '-f', name, timeout=30, log=False)
+            except (VerificationError, OSError) as exc:
+                self.r.checks.append(dict(name='cleanup_' + name, status='failed',
+                                          reason=f'owned container cleanup failed: {type(exc).__name__}'))
         if self.network_created:
             try:
-                self.r.docker('network', 'rm', self.network, timeout=30)
-            except VerificationError as exc:
-                self.r.checks.append(dict(name='cleanup_network', status=exc.status, reason='owned network cleanup failed'))
+                self.r.docker('network', 'rm', self.network, timeout=30, log=False)
+            except (VerificationError, OSError) as exc:
+                self.r.checks.append(dict(name='cleanup_network', status='failed',
+                                          reason=f'owned network cleanup failed: {type(exc).__name__}'))
 
     def database(self, name):
         self.r.docker('exec', self.pg, 'createdb', '-U', 'verify', name)
@@ -398,13 +420,26 @@ def http(base, path, *, payload=None, token=None, expected=200):
 
 def wait_http(base):
     deadline = time.monotonic() + 120
-    while time.monotonic() < deadline:
+    poll = Event()
+    last_error = 'no response'
+    while (remaining := deadline - time.monotonic()) > 0:
         try:
-            http(base, '/health')
-            return
-        except (URLError, TimeoutError, VerificationError):
-            continue
-    raise VerificationError('blocked', 'isolated application readiness deadline exceeded')
+            with urlopen(Request(base + '/health'), timeout=min(5, remaining)) as response:
+                if response.status != 200:
+                    raise VerificationError('failed', 'health HTTP status mismatch')
+            if time.monotonic() <= deadline:
+                return
+            break
+        except HTTPError as exc:
+            exc.close()
+            last_error = type(exc).__name__
+        except (URLError, TimeoutError, VerificationError, RemoteDisconnected, ConnectionResetError) as exc:
+            last_error = type(exc).__name__
+        remaining = deadline - time.monotonic()
+        if remaining > 0:
+            poll.wait(min(0.5, remaining))
+    raise VerificationError('blocked', 'isolated application readiness deadline exceeded; '
+                            f'last error: {last_error}')
 
 
 def api(runner, image, teaching=False):

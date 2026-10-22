@@ -373,6 +373,8 @@ python scripts/verify_docker_image.py --image <候选镜像> --phase api-auth --
 
 `api-teaching` 还需调用进程显式设置 `DOCKER_VERIFY_MODEL_TESTS=1`、`RAG_BACKEND=pgvector`、`OPENAI_API_KEY`、`OPENAI_MODEL`、`EMBEDDING_MODEL`、`EMBEDDING_DIM`，兼容网关另设 `OPENAI_BASE_URL`。脚本不会自动读取宿主 `.env` 或使用不明生产凭据。认证和教学分别使用临时数据库、随机 JWT、唯一容器/网络；只清理本次资源。默认 Compose 仍仅启动 db，app 额外透传 JWT、RAG 和 embedding 配置；空/公开默认 JWT 被验收前置检查拒绝。
 
+启动就绪探测仅请求 `/health` 并检查 HTTP 状态、关闭响应，不读取正文；在 120 秒总期限内重试启动期断连、连接重置及原有瞬态网络错误。单次探测最多 5 秒，轮询间隔最多 0.5 秒，均受剩余期限约束；期限后的成功不会算作就绪。普通业务请求仍直接报告错误。验收异常时，在删除本次容器前采集应用与 PostgreSQL 最近 100 行带时间戳日志，以及状态、退出码、OOM 和重启次数；输出沿用脱敏处理，不读取完整容器配置或环境变量。诊断失败仍保留原错误并继续清理；清理不依赖日志可写，单项删除失败会记为失败检查并继续尝试其余资源。此变更的远端正式复验结果须以交付证据为准。
+
 manifest 明确记录 `passed/failed/blocked/not_run`，对应退出码 `0/1/2/3`；`all` 按同一源码 SHA、镜像 ID、候选归档聚合必要结果。认证通过不代表教学通过，非通过或缺项不能发布。[候选归档工具](scripts/docker_candidate.py)负责校验归档 SHA256、镜像 ID 与源码标签；正式门禁强制完整检查集合，不信任自报的伪检查清单。真实引擎、模型或远端 Actions 未验收的状态见 [Docker 实施结果](docs/delivery/2026-10-21-docker-implementation-result.md)。
 
 ## 已知限制（诚实清单）
