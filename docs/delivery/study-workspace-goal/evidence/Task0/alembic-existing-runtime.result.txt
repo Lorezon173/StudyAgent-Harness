@@ -1,0 +1,5 @@
+runtime=C:/Users/A1985/.codex/worktrees/mvp-cicd/StudyAgent-Harness/.venv/Scripts/python.exe
+command=python -m alembic heads
+started=2026-10-24T00:08:02.7049221+08:00
+finished=2026-10-24T00:08:05.5154118+08:00
+exit_code=0

@@ -1,0 +1,8 @@
+补充pytest启动：2026-10-24T00:08:02.704附近（以最终result为准）
+session：88805
+2026-10-24T00:10:36+08:00：日志0B，尚无result。
+2026-10-24T00:11:21+08:00：日志0B，尚无result，session仍运行。
+普通Get-Process未显示python进程，不能据此断言进程未启动。
+主会话原生审批只读检查确认Python PID49272 CPU7.78和PID50488 CPU0.02，均00:08:02启动。
+未重复发起pytest，未终止进程。轮询无sleep。
+observed=2026-10-24T00:13:26.4501908+08:00; elapsed_since_launch_seconds=324; log_length=5; result_file_exists=True; session=88805

@@ -1,0 +1,4 @@
+command=uv run alembic heads
+started=2026-10-24T00:02:19.4923317+08:00
+finished=2026-10-24T00:02:23.7578833+08:00
+exit_code=1

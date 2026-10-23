@@ -1,0 +1,11 @@
+pyproject.toml:18:    "pgvector>=0.3.0",
+app/core/config.py:21:    rag_backend: str = "fake"  # "fake" | "pgvector"，默认 fake 保持测试兼容
+app/orchestration/assembly.py:107:    注入 pgvector 检索链）；默认 RetrieverAgent() 保持单元路径 fake 可测。
+app/orchestration/assembly.py:138:    三条件（backend=pgvector / vector provider=PgVectorProvider /
+app/orchestration/assembly.py:155:    from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+app/orchestration/assembly.py:157:    if settings.rag_backend != "pgvector":
+app/orchestration/assembly.py:159:            f"online composition requires rag_backend='pgvector' "
+app/orchestration/assembly.py:160:            f"(got '{settings.rag_backend}')")
+app/orchestration/assembly.py:178:    from app.infrastructure.rag.pgvector_provider import PgVectorProvider
+app/orchestration/assembly.py:191:    在线必须 pgvector + PostgreSQL；单元/离线路径仍可用 fake/SQLite。
+app/orchestration/assembly.py:194:    coordinator = build_online_rag_coordinator()

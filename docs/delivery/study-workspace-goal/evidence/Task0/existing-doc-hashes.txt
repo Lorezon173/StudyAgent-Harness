@@ -1,0 +1,10 @@
+
+Algorithm : SHA256
+Hash      : 188032AFFB6DDEF7A7E83B82514DBD71D024867599956AFF0E29DD0E1F48C07E
+Path      : D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\README.md
+
+Algorithm : SHA256
+Hash      : 41462288EB1A53EBF320126A3A77047B9E2242FA497EC951AC8D29701248DE1B
+Path      : D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\docs\asset-inventory.md
+
+

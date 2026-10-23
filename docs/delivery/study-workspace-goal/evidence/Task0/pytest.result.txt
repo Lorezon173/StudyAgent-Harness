@@ -1,0 +1,4 @@
+command=uv run pytest tests/ -q
+started=2026-10-24T00:02:19.4973141+08:00
+finished=2026-10-24T00:02:22.1798000+08:00
+exit_code=1

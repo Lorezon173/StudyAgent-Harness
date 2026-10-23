@@ -1,0 +1,4 @@
+command=npm --prefix web test
+started=2026-10-24T00:05:30.8172440+08:00
+finished=2026-10-24T00:05:38.7197191+08:00
+exit_code=1

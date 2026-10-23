@@ -1,0 +1,4 @@
+command=npm --prefix web run build
+started=2026-10-24T00:05:30.8862269+08:00
+finished=2026-10-24T00:05:42.0773687+08:00
+exit_code=0

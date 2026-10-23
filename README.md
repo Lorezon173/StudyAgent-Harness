@@ -407,3 +407,7 @@ curl http://localhost:8000/health          # 健康检查
 - `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点无 user_id 绑定不加鉴权。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
+
+## Goal 实施已启动（2026-10-24）
+
+用户已明确批准 Goal 规程、两阶段计划并授权实施。当前分支 codex/frontend-ui-optimization，按 Task0–Task13、TaskK0–TaskK5 顺序推进；原生 Goal 为 active。本轮从基线开始，真实进展见 [持久账本](docs/delivery/study-workspace-goal/progress.md) 和 [状态索引](docs/delivery/study-workspace-goal/status.json)。保持既有工作区变更，不推送、合并或部署。

@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "protocol_version": "1.0",
+  "approval": {
+    "protocol": {
+      "status": "APPROVED",
+      "date": "2026-10-24",
+      "reference": "本聊天用户明确消息：同意，开始用 goal实现",
+      "scope": "规程v1.0、所引用两阶段计划及三层设计、总Goal启动；保留文档内边界"
+    },
+    "plans": {
+      "status": "APPROVED",
+      "date": "2026-10-24",
+      "reference": "本聊天用户明确消息：同意，开始用 goal实现",
+      "scope": "规程v1.0、所引用两阶段计划及三层设计、总Goal启动；保留文档内边界"
+    },
+    "start": {
+      "status": "APPROVED",
+      "date": "2026-10-24",
+      "reference": "本聊天用户明确消息：同意，开始用 goal实现",
+      "scope": "规程v1.0、所引用两阶段计划及三层设计、总Goal启动；保留文档内边界"
+    }
+  },
+  "native_goal_started": true,
+  "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
+  "native_goal_status": "active",
+  "branch": "codex/frontend-ui-optimization",
+  "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
+  "current_task": "Task0",
+  "proposed_manifest": [
+    {
+      "path": "docs/designs/frontend-paper-study.html",
+      "sha256": "9edc828d7a2d7bdb40c0b5fd6d254250c932e754f1dd2723425d8d73beabb91b"
+    },
+    {
+      "path": "superpowers/frontend-ui/2026-10-23-final-implementation-raw.md",
+      "sha256": "ac8dc587230464f5b2b46b288efb89ed3496e241e3e2cdd765363ef85c9f7957"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-study-workspace-core.md",
+      "sha256": "3231b8a16f5ad99b2a76a29a63b98be752b6462c7f593ec601fb5a89cc0b108d"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-knowledge-planning.md",
+      "sha256": "ee00fe01e581134a70df0335d39fc5979d059994132876252ec3997d3d46bf39"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-goal-execution-protocol.md",
+      "sha256": "c0b352a18efa2c8096d6a0b331488342b0dc1b4110da180b88f82ac52e78254d"
+    }
+  ],
+  "approved_manifest": [
+    {
+      "path": "docs/designs/frontend-paper-study.html",
+      "sha256": "9edc828d7a2d7bdb40c0b5fd6d254250c932e754f1dd2723425d8d73beabb91b"
+    },
+    {
+      "path": "superpowers/frontend-ui/2026-10-23-final-implementation-raw.md",
+      "sha256": "ac8dc587230464f5b2b46b288efb89ed3496e241e3e2cdd765363ef85c9f7957"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-study-workspace-core.md",
+      "sha256": "3231b8a16f5ad99b2a76a29a63b98be752b6462c7f593ec601fb5a89cc0b108d"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-knowledge-planning.md",
+      "sha256": "ee00fe01e581134a70df0335d39fc5979d059994132876252ec3997d3d46bf39"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-goal-execution-protocol.md",
+      "sha256": "c0b352a18efa2c8096d6a0b331488342b0dc1b4110da180b88f82ac52e78254d"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "Task0",
+      "status": "VERIFIED_UNCOMMITTED",
+      "commit": null,
+      "evidence": [
+        "docs/delivery/2026-10-24-workspace-baseline.md",
+        "docs/delivery/study-workspace-goal/evidence/Task0/"
+      ],
+      "review": "task0_review: spec PASS; quality PASS after two documentation findings closed; full regression NOT passed",
+      "blocked_reason": null
+    },
+    {
+      "id": "Task1",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task2",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task3",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task4",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task5",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task6",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task7",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task8",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task9",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task10",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task11",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task12",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "Task13",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK0",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK1",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK2",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK3",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK4",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "TaskK5",
+      "status": "PENDING",
+      "commit": null,
+      "evidence": [],
+      "review": null,
+      "blocked_reason": null
+    }
+  ],
+  "milestones": {
+    "M0": "PENDING",
+    "M1": "PENDING",
+    "M2": "PENDING",
+    "M3": "PENDING",
+    "M4": "PENDING",
+    "M5": "PENDING",
+    "M6": "PENDING"
+  },
+  "current_blocker": null,
+  "consecutive_blocked_goal_turns": 0,
+  "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core"
+}

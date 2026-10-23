@@ -1,0 +1,8 @@
+Source: controller actual exec tool result, copied after execution; not a fresh run.
+Command: existing-runtime python -m pytest tests/unit/orchestration/test_assembly.py --collect-only -q
+Interpreter: C:/Users/A1985/.codex/worktrees/mvp-cicd/StudyAgent-Harness/.venv/Scripts/python.exe
+CWD: D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness
+Exit: 0
+Result: 12 tests collected in 0.24s
+Execution wall time: 4.0961193 seconds
+This proves focused collection, not full regression passing.

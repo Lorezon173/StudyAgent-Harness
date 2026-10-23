@@ -1,0 +1,5 @@
+runtime=C:/Users/A1985/.codex/worktrees/mvp-cicd/StudyAgent-Harness/.venv/Scripts/python.exe
+command=python -m pytest tests/ -q
+started=2026-10-24T00:08:02.7059731+08:00
+finished=2026-10-24T00:13:14.5630927+08:00
+exit_code=-1

@@ -1,0 +1,12 @@
+  × Failed to download `watchfiles==1.2.0`
+  ├─▶ Failed to fetch:
+  │   `https://files.pythonhosted.org/packages/1c/e6/9d42569c0102645cc8cea5d8c7d8a1e9d4ada2cb7f05f75e554b8aa2202a/watchfiles-1.2.0-cp312-cp312-win_amd64.whl`
+  ├─▶ Request failed after 3 retries
+  ├─▶ error sending request for url
+  │   (https://files.pythonhosted.org/packages/1c/e6/9d42569c0102645cc8cea5d8c7d8a1e9d4ada2cb7f05f75e554b8aa2202a/watchfiles-1.2.0-cp312-cp312-win_amd64.whl)
+  ├─▶ client error (Connect)
+  ├─▶ dns error
+  ╰─▶ 不知道这样的主机。 (os error 11001)
+  help: `watchfiles` (v1.2.0) was included because `study-agent-harness`
+        (v0.1.0) depends on `uvicorn[standard]` (v0.48.0) which depends on
+        `watchfiles`
