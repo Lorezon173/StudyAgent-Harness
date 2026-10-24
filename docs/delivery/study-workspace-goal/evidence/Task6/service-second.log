@@ -1,0 +1,336 @@
+INDEPENDENT_PHYSICAL pid None driver 1964068635184 held [(None, 1964068054336)]
+INDEPENDENT_PHYSICAL pid None driver 1964068838704 held [(None, 1964068054336)]
+INDEPENDENT_PHYSICAL pid None driver 1964069075232 held [(None, 1964068054336)]
+Timeout (0:00:20)!
+Thread 0x0000feb4 (most recent call first):
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\selectors.py", line 314 in _select
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\selectors.py", line 323 in select
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\psycopg\waiting.py", line 112 in wait_conn
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\psycopg\connection.py", line 109 in connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 630 in connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\create.py", line 667 in connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896 in __connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 674 in __init__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 389 in _create_connection
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 176 in _do_get
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 712 in checkout
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1272 in _checkout
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 448 in connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3319 in raw_connection
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 144 in __init__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3295 in connect
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\integration\test_workspace_sessions_service.py", line 37 in database
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 908 in call_fixture_func
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 1202 in pytest_fixture_setup
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 1110 in execute
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 627 in _get_active_fixturedef
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 539 in getfixturevalue
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\fixtures.py", line 707 in _fillfixtures
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\python.py", line 1723 in setup
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 523 in setup
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 165 in pytest_runtest_setup
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 245 in <lambda>
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 353 in from_call
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 244 in call_and_report
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 131 in runtestprotocol
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\runner.py", line 118 in pytest_runtest_protocol
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\main.py", line 396 in pytest_runtestloop
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\main.py", line 372 in _main
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\main.py", line 318 in wrap_session
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\main.py", line 365 in pytest_cmdline_main
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\config\__init__.py", line 199 in main
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\config\__init__.py", line 223 in console_main
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\pytest\__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main
+.EINDEPENDENT_PHYSICAL pid None driver 1964090844528 held []
+.INDEPENDENT_PHYSICAL pid None driver 1964090846352 held []
+.INDEPENDENT_PHYSICAL pid 46 driver 1964090501760 held []
+.INDEPENDENT_PHYSICAL pid 52 driver 1964097721584 held []
+.SQLITE_REAL_BEGIN_SNAPSHOT 1964097451456 True
+INDEPENDENT_PHYSICAL pid None driver 1964089369584 held [(None, 1964097451456), (None, 1964097450976)]
+.PG_LOCK_OBSERVED workspace_task6_44b7c46f97434344b2bf1070440fe69e blocker 57 waiter 58 observer 59 {'pid': 58, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [57]}
+INDEPENDENT_PHYSICAL pid 60 driver 1964090503680 held [(57, 1964097726144), (58, 1964097723744)]
+.SQLITE_REAL_BEGIN_NODE_CHECK create True
+.SQLITE_REAL_BEGIN_NODE_CHECK set_node True
+.SQLITE_REAL_BEGIN_NODE_CHECK create True
+.SQLITE_REAL_BEGIN_NODE_CHECK set_node True
+.PG_LOCK_OBSERVED workspace_task6_27d6d90b93914e189747a735ddfa7c0b blocker 66 waiter 67 observer 68 {'pid': 67, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [66]}
+INDEPENDENT_PHYSICAL pid 69 driver 1963249968112 held [(66, 1964071341904), (67, 1964066635312)]
+.PG_LOCK_OBSERVED workspace_task6_b00c50b620ba465790357c447254e18d blocker 74 waiter 75 observer 76 {'pid': 75, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [74]}
+INDEPENDENT_PHYSICAL pid 77 driver 1964097726864 held [(74, 1964097726384), (75, 1964097720864)]
+.PG_LOCK_OBSERVED workspace_task6_fd9932a36aac40e79a11303cc88b3328 blocker 83 waiter 82 observer 84 {'pid': 82, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [83]}
+INDEPENDENT_PHYSICAL pid 85 driver 1964071339264 held [(82, 1964090502000), (83, 1963249969792)]
+.PG_LOCK_OBSERVED workspace_task6_36de274bd8d04b3faa06210a9738034d blocker 91 waiter 90 observer 92 {'pid': 90, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [91]}
+INDEPENDENT_PHYSICAL pid 93 driver 1963249968352 held [(90, 1964097729984), (91, 1964097721344)]
+.
+=================================== ERRORS ====================================
+_ ERROR at setup of test_create_and_versions_restore_on_distinct_connections_and_rollback[postgresql] _
+
+self = <sqlalchemy.engine.base.Connection object at 0x000001C91AD3ECC0>
+engine = Engine(postgresql+psycopg://goal_test:***@127.0.0.1:55440/goal_workspace)
+connection = None, _has_events = None, _allow_revalidate = True
+_allow_autobegin = True
+
+    def __init__(
+        self,
+        engine: Engine,
+        connection: Optional[PoolProxiedConnection] = None,
+        _has_events: Optional[bool] = None,
+        _allow_revalidate: bool = True,
+        _allow_autobegin: bool = True,
+    ):
+        """Construct a new Connection."""
+        self.engine = engine
+        self.dialect = dialect = engine.dialect
+    
+        if connection is None:
+            try:
+>               self._dbapi_connection = engine.raw_connection()
+                                         ^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3319: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:448: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:1272: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:712: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\impl.py:178: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\pool\impl.py:176: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:389: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:674: in __init__
+    self.__connect()
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:900: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:667: in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:630: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'psycopg.Connection'>
+conninfo = 'host=127.0.0.1 dbname=goal_workspace user=goal_test password=goal_test_local_only port=55440 hostaddr=127.0.0.1'
+autocommit = False, prepare_threshold = 5
+context = <psycopg.adapt.AdaptersMap object at 0x000001C94BCB6870>
+row_factory = None, cursor_factory = None
+kwargs = {'dbname': 'goal_workspace', 'host': '127.0.0.1', 'password': 'goal_test_local_only', 'port': 55440, ...}
+params = {'dbname': 'goal_workspace', 'host': '127.0.0.1', 'password': 'goal_test_local_only', 'port': 55440, ...}
+timeout = 130
+
+    @classmethod
+    def connect(
+        cls,
+        conninfo: str = "",
+        *,
+        autocommit: bool = False,
+        prepare_threshold: int | None = 5,
+        context: AdaptContext | None = None,
+        row_factory: RowFactory[Row] | None = None,
+        cursor_factory: type[Cursor[Row]] | None = None,
+        **kwargs: ConnParam,
+    ) -> Self:
+        """
+        Connect to a database server and return a new `Connection` instance.
+        """
+    
+        params = cls._get_connection_params(conninfo, **kwargs)
+        timeout = timeout_from_conninfo(params)
+        rv = None
+        attempts = conninfo_attempts(params)
+        conn_errors: list[tuple[e.Error, str]] = []
+        for attempt in attempts:
+            tdescr = (attempt.get("host"), attempt.get("port"), attempt.get("hostaddr"))
+            descr = "host: %r, port: %r, hostaddr: %r" % tdescr
+            logger.debug("connection attempt: %s", descr)
+            try:
+                conninfo = make_conninfo("", **attempt)
+                gen = cls._connect_gen(conninfo, timeout=timeout)
+                rv = waiting.wait_conn(gen, interval=_WAIT_INTERVAL)
+            except e.Error as ex:
+                logger.debug("connection failed: %s: %s", descr, str(ex))
+                conn_errors.append((ex, descr))
+            except e._NO_TRACEBACK as ex:
+                raise ex.with_traceback(None)
+            else:
+                logger.debug("connection succeeded: %s", descr)
+                break
+    
+        if not rv:
+            last_ex = conn_errors[-1][0]
+            if len(conn_errors) == 1:
+>               raise last_ex.with_traceback(None)
+E               psycopg.errors.ConnectionTimeout: connection timeout expired
+
+.venv\Lib\site-packages\psycopg\connection.py:122: ConnectionTimeout
+
+The above exception was the direct cause of the following exception:
+
+request = <SubRequest 'database' for <Function test_create_and_versions_restore_on_distinct_connections_and_rollback[postgresql]>>
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-148/test_create_and_versions_resto1')
+
+    @pytest.fixture(params=["sqlite", "postgresql"])
+    def database(request, tmp_path):
+        maintenance = name = None
+        if request.param == "sqlite":
+            url = f"sqlite+aiosqlite:///{tmp_path / 'task6.db'}"
+        else:
+            configured = os.environ.get("WORKSPACE_TEST_DATABASE_URL")
+            if not configured:
+                pytest.fail("Task6��ʵPG���ձ�������WORKSPACE_TEST_DATABASE_URL")
+            test_url = make_url(configured)
+            assert test_url.host in {"127.0.0.1", "localhost"} and test_url.port == 55440
+            name = "workspace_task6_" + uuid4().hex
+            maintenance = sa.create_engine(test_url.set(drivername="postgresql+psycopg"), isolation_level="AUTOCOMMIT")
+>           with maintenance.connect() as conn:
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests\integration\test_workspace_sessions_service.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3295: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:146: in __init__
+    Connection._handle_dbapi_exception_noconnection(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2450: in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:144: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3319: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:448: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:1272: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:712: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\impl.py:178: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\pool\impl.py:176: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:389: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:674: in __init__
+    self.__connect()
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:900: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\pool\base.py:896: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:667: in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:630: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'psycopg.Connection'>
+conninfo = 'host=127.0.0.1 dbname=goal_workspace user=goal_test password=goal_test_local_only port=55440 hostaddr=127.0.0.1'
+autocommit = False, prepare_threshold = 5
+context = <psycopg.adapt.AdaptersMap object at 0x000001C94BCB6870>
+row_factory = None, cursor_factory = None
+kwargs = {'dbname': 'goal_workspace', 'host': '127.0.0.1', 'password': 'goal_test_local_only', 'port': 55440, ...}
+params = {'dbname': 'goal_workspace', 'host': '127.0.0.1', 'password': 'goal_test_local_only', 'port': 55440, ...}
+timeout = 130
+
+    @classmethod
+    def connect(
+        cls,
+        conninfo: str = "",
+        *,
+        autocommit: bool = False,
+        prepare_threshold: int | None = 5,
+        context: AdaptContext | None = None,
+        row_factory: RowFactory[Row] | None = None,
+        cursor_factory: type[Cursor[Row]] | None = None,
+        **kwargs: ConnParam,
+    ) -> Self:
+        """
+        Connect to a database server and return a new `Connection` instance.
+        """
+    
+        params = cls._get_connection_params(conninfo, **kwargs)
+        timeout = timeout_from_conninfo(params)
+        rv = None
+        attempts = conninfo_attempts(params)
+        conn_errors: list[tuple[e.Error, str]] = []
+        for attempt in attempts:
+            tdescr = (attempt.get("host"), attempt.get("port"), attempt.get("hostaddr"))
+            descr = "host: %r, port: %r, hostaddr: %r" % tdescr
+            logger.debug("connection attempt: %s", descr)
+            try:
+                conninfo = make_conninfo("", **attempt)
+                gen = cls._connect_gen(conninfo, timeout=timeout)
+                rv = waiting.wait_conn(gen, interval=_WAIT_INTERVAL)
+            except e.Error as ex:
+                logger.debug("connection failed: %s: %s", descr, str(ex))
+                conn_errors.append((ex, descr))
+            except e._NO_TRACEBACK as ex:
+                raise ex.with_traceback(None)
+            else:
+                logger.debug("connection succeeded: %s", descr)
+                break
+    
+        if not rv:
+            last_ex = conn_errors[-1][0]
+            if len(conn_errors) == 1:
+>               raise last_ex.with_traceback(None)
+E               sqlalchemy.exc.OperationalError: (psycopg.errors.ConnectionTimeout) connection timeout expired
+E               (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\psycopg\connection.py:122: OperationalError
+=========================== short test summary info ===========================
+ERROR tests/integration/test_workspace_sessions_service.py::test_create_and_versions_restore_on_distinct_connections_and_rollback[postgresql]
+15 passed, 1 error in 147.16s (0:02:27)

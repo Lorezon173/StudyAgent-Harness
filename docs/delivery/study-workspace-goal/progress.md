@@ -106,3 +106,17 @@ Task5 round2冻结：游标原实现3个非规范合法载荷错误200，修后A
 Task5 round2范围复审PASS：两Important与游标Minor均ADDRESSED，无新阻断。API20/service8/旧stats1通过，真实锁/事务/独立连接与negative controls证据齐，README已补，待明确文件提交。旧Starlette与全量Retriever基线继续保留。
 
 Task5 DONE：2eb9370；两轮先plan review PASS再实施，范围复审关闭两Important与cursorMinor。API20通过、SQLite/真实PG服务8通过且guard controls有效、旧stats1通过。README/全部证据已提交；下一Task6 PENDING先计划审查。总Goal仍未完成，不伪称全量/产品验收。
+
+Task6恢复核查HEAD8d165cd、当前session路由与Task3 stores；上轮Task5完成属于progress。round1三层计划已写独立review中，产品未改；retry真实执行仍Task8，缺能力仅安全503不改变状态，计划明确待联动验收。
+
+Task 6: round1 v1.1 plan review PASS (task6_plan_review; SHA256 a7f81e384b4b622208682e8388f8a792106d1b3330c692a040394eb1455365ed); implementation starting. Retry真实执行仍为Task8验收依赖。
+
+Task6 round1实施冻结：api-final22pass/旧Starlettewarning；服务组合15pass1环境error、恢复单项1pass，全部16例有成功证据。独立审查task6_code_review进行中。Docker不可用已真实诊断后恢复指定测试容器，原中断/失败日志保留；不把恢复环境当产品通过。
+
+Task6 round1 Changes requested：1项P2旧无参messages排序回归。round2三层修复计划独立review中，产品仍冻结，不提前Task7。
+
+Task6 round2 plan PASS (task6_plan_review; SHA2569b51846b2bff9c3955c7b1c7b42f99cb38c103740ee23d702d6fbcc1f9a0708c), ADJ009修复原无参消息顺序；实施中。
+
+Task6 round2冻结：新非单调历史单项先红([2,3,1]vs[1,2,3])后绿，仅无参id排序一行修复；新旧API23pass/旧warning。独立范围复审中。原服务16通过证据未重复运行，锁与状态路径无改动。
+
+Task6 round2范围复审PASS：原P2 ADDRESSED，无新阻断；API23pass，原服务16项证据有效。README已补接口/分页/版本/Task8依赖，待选择性明确文件提交，原README142行与asset34行保护。

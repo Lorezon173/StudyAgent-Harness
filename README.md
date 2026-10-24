@@ -455,3 +455,15 @@ curl http://localhost:8000/health          # 健康检查
 SQLite读取显式确保真实事务；PostgreSQL读取持画像共享锁，写入用画像revision条件更新，失败整事务回滚。验证：新API20项通过，SQLite/真实PG服务8项通过，旧stats兼容1项通过；数据库实际锁等待/driver事务、独立物理连接指纹与关闭保护的负控制均有证据。两轮均先plan review通过后执行，代码初审问题已范围复审关闭，见[Task5记录](docs/delivery/study-workspace-goal/evidence/Task5/)。
 
 本轮只接通画像管理与读取；会话恢复、教学上下文和在线评估增量仍待Task6–8，正式React页面尚未接入。既有Starlette警告与全量Retriever评估基线失败仍保留，不能宣称全产品验收完成。
+
+## Task6：会话恢复与工作区接口（2026-10-25）
+
+新增 POST `/api/sessions`：必须选择本人主题画像，可选有效知识点；创建即保存空会话及教学初始状态，无需先发问题。GET `/api/sessions?group_by=profile` 按画像返回会话组，主题页使用 `cursor/group_limit`，组内页使用 `group_key/session_cursor/limit`；空主题可见，旧未归类会话保留在 `unassigned`。无参旧会话与消息列表仍返回数组，旧消息保持ID写入顺序；显式分页采用回合与角色顺序。
+
+GET `/api/sessions/{id}/snapshot` 返回教学状态、最近消息、画像摘要、草稿/阅读位置及真实未完成请求；消息显式 `cursor/limit` 时返回 `items/next_cursor`，页内正序，游标向更旧消息翻页。旧无版本状态保留 `legacy_state`，未知或损坏状态明确409，不静默清空。未完成原文独立于已提交消息。
+
+PATCH `view-state`、`active-node` 与 GET/PATCH `/api/workspace-state` 分别保存会话界面、知识点选择和账号工作区偏好。草稿及工作区使用独立 `expected_version`，切知识点使用 `expected_state_version`；冲突409，有运行请求时禁止切点。阅读锚点仅接受本会话消息，浮卡位置比例为有限0–1，默认固定展开侧栏。保存仅更新明确提供字段。
+
+GET `requests/{request_id}` 只读真实状态；POST 同路径 `/retry` 使用 `expected_attempt/expected_state_version`。目前真实教学服务待 Task8 接入，符合重试前提但能力缺失时明确503且不改数据库；现有转发测试只证明接口契约，不能代表教学重试已完成。Task7连续上下文、Task8幂等回合和正式React页面仍待实现。
+
+验证记录：新旧API23项通过；SQLite/真实PG服务16个用例均有成功记录，包含独立物理连接、真实事务、快照锁与归档双向竞争。组合曾因Docker未运行有1项连接超时，恢复独立测试运行时后仅补跑该项通过，原失败/中断日志保留。旧Starlette弃用警告及全量Retriever基线失败仍保留；本轮未升级用户旧SQLite、未替代最终PG重启/真实模型验收。证据见[Task6记录](docs/delivery/study-workspace-goal/evidence/Task6/)。

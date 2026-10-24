@@ -90,3 +90,7 @@
 ## ADJ-008：Task5初审证据与游标规范（A类）
 
 Ruling: 依round2已审计划补数据库实际等待/真实事务及独立物理连接证据；产品读保护不变，仅收紧_decode_cursor到既有生成器规范格式，拒绝非规范Base64/仅日期。符合原strict cursor契约，不改变正常客户端游标或排序。若判断错误，代价为调整非规范客户端输入兼容，owner过滤不受影响。两Important未修前Task5不标完成，无范围/顺序/验收降低。
+
+## ADJ-009：Task6无参消息读取顺序兼容（A类）
+
+独立审查P2：新Service无参分支重排合法历史消息，违反已批准的旧行为保留。Ruling: 无cursor/limit时恢复MessageStore现有id ASC，显式分页和snapshot继续turn_index/role_order/id；不改变API结构、用户需求、任务顺序或验收门槛。若判断错误，代价为重新界定旧客户端显示顺序，但原历史数据不会改写。依round2三层计划独立PASS后先非单调历史HTTP红灯，再最小修复、API回归与范围复审，未通过前Task6不完成。

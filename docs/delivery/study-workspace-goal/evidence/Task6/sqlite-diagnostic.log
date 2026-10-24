@@ -1,0 +1,15 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/integration/test_workspace_sessions_service.py::test_create_and_versions_restore_on_distinct_connections_and_rollback[sqlite] INDEPENDENT_PHYSICAL pid None driver 1552624189952 held [(None, 1552623627072)]
+INDEPENDENT_PHYSICAL pid None driver 1552624410624 held [(None, 1552623627072)]
+INDEPENDENT_PHYSICAL pid None driver 1552624641824 held [(None, 1552623627072)]
+PASSED
+
+====================== 1 passed, 15 deselected in 2.34s =======================

@@ -135,10 +135,12 @@
     },
     {
       "id": "Task6",
-      "status": "PENDING",
+      "status": "VERIFIED_UNCOMMITTED",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task6/"
+      ],
+      "review": "round1/2 plan PASS; P2 legacy message order ADDRESSED; scope review Approved",
       "blocked_reason": null
     },
     {
@@ -261,14 +263,12 @@
   "execution_mode": "native_goal_active",
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
-    "task": "Task5",
+    "task": "Task6",
     "round": "round2",
-    "plan": "docs/superpowers/plans/2026-10-24-task5-round2.md",
+    "plan": "docs/superpowers/plans/2026-10-25-task6-round2.md",
     "plan_review": "PASS",
-    "status": "DONE",
-    "plan_sha256": "9957c9fcaa6407f4d67feecfbbabfce46d515b9ef04467ab258115a27eb2bda5",
-    "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task5/round2-plan-review.md",
-    "commit": "2eb9370"
+    "status": "VERIFIED_UNCOMMITTED",
+    "plan_sha256": "9b51846b2bff9c3955c7b1c7b42f99cb38c103740ee23d702d6fbcc1f9a0708c"
   },
-  "next_step": "Task6先写本轮plan并独立review PASS后实施"
+  "next_step": "Task6审查通过，选择性提交README及明确文件后核SHA"
 }

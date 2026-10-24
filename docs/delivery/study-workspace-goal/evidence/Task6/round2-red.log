@@ -1,0 +1,89 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_legacy_message_order_preserves_insertion_while_pagination_uses_turn_order _
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002D8C1D2A520>
+
+    def test_legacy_message_order_preserves_insertion_while_pagination_uses_turn_order(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            ids = []
+            async with factory() as db:
+                for turn, role, content in [(1, "assistant", "先写的后回合"),
+                                            (0, "user", "后写的用户消息"),
+                                            (0, "assistant", "最后写的前回合回复")]:
+                    row = MessageTable(session_id=sid, turn_index=turn, role=role, content=content)
+                    db.add(row)
+                    await db.flush()
+                    ids.append(row.id)
+                await db.commit()
+            assert ids[0] < ids[1] < ids[2]
+            url = f"/api/sessions/{sid}/messages"
+            legacy = await client.get(url, headers=headers())
+            assert legacy.status_code == 200, legacy.text
+            assert [item["id"] for item in legacy.json()] == ids
+            assert [item["content"] for item in legacy.json()] == ["先写的后回合", "后写的用户消息", "最后写的前回合回复"]
+            response = await client.get(url, params={"limit": 2}, headers=headers())
+            assert response.status_code == 200, response.text
+            page = response.json()
+            assert [item["id"] for item in page["items"]] == [ids[2], ids[0]]
+            older = await client.get(url, params={"limit": 2, "cursor": page["next_cursor"]}, headers=headers())
+            assert older.status_code == 200, older.text
+            previous = older.json()
+            assert [item["id"] for item in previous["items"]] == [ids[1]]
+            assert previous["next_cursor"] is None
+            combined = previous["items"] + page["items"]
+            assert [item["id"] for item in combined] == [ids[1], ids[2], ids[0]]
+            assert len({item["id"] for item in combined}) == 3
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:276: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:58: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:49: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000002D8C1BF3620>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002D8C1C7B510>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        ids = []
+        async with factory() as db:
+            for turn, role, content in [(1, "assistant", "先写的后回合"),
+                                        (0, "user", "后写的用户消息"),
+                                        (0, "assistant", "最后写的前回合回复")]:
+                row = MessageTable(session_id=sid, turn_index=turn, role=role, content=content)
+                db.add(row)
+                await db.flush()
+                ids.append(row.id)
+            await db.commit()
+        assert ids[0] < ids[1] < ids[2]
+        url = f"/api/sessions/{sid}/messages"
+        legacy = await client.get(url, headers=headers())
+        assert legacy.status_code == 200, legacy.text
+>       assert [item["id"] for item in legacy.json()] == ids
+E       assert [2, 3, 1] == [1, 2, 3]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+tests\unit\api\test_workspace_sessions_api.py:262: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_legacy_message_order_preserves_insertion_while_pagination_uses_turn_order
+1 failed in 3.26s

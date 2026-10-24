@@ -1,0 +1,415 @@
+............FFFFFFF...                                                   [100%]
+================================== FAILURES ===================================
+________________________ test_list_sessions_no_user_id ________________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE1FD4540>
+
+    def test_list_sessions_no_user_id(auth_headers):
+        """GET /api/sessions 无 token → 401（无鉴权头被鉴权层拦截）。"""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+_______________________ test_list_sessions_with_user_id _______________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE32E72E0>
+
+    def test_list_sessions_with_user_id(auth_headers):
+        """GET /api/sessions?user_id=1 returns SessionSummary list."""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+_________________ test_list_sessions_with_user_id_no_results __________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE32E7EC0>
+
+    def test_list_sessions_with_user_id_no_results(auth_headers):
+        """GET /api/sessions?user_id=999 returns []."""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+_______________________ test_get_session_messages_empty _______________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE32ECB80>
+
+    def test_get_session_messages_empty(auth_headers):
+        """GET /api/sessions/{id}/messages returns [] when session exists but has no messages.
+    
+        Task 11 给该端点加了所有权校验：会话必须存在且 user_id 匹配 token。
+        故需 seed 一个空消息会话，而非测不存在的 session_id。
+        """
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+__________________________ test_get_session_messages __________________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE32ED940>
+
+    def test_get_session_messages(auth_headers):
+        """GET /api/sessions/{id}/messages returns MessageItem list."""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+_________________________ test_get_session_not_found __________________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE32EE520>
+
+    def test_get_session_not_found(auth_headers):
+        """GET /api/sessions/{id} returns 404."""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+___________________________ test_get_session_found ____________________________
+
+auth_headers = <function auth_headers.<locals>._make at 0x0000017FE1FD4D60>
+
+    def test_get_session_found(auth_headers):
+        """GET /api/sessions/{id} returns SessionResponse."""
+        engine, factory = _make_db_ctx()
+>       session = _init_and_open(engine, factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\api\test_sessions_api.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_sessions_api.py:36: in _init_and_open
+    return _run(_go())
+           ^^^^^^^^^^^
+tests\unit\api\test_sessions_api.py:16: in _run
+    return asyncio.get_event_loop().run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000017FACF2C740>
+
+    def get_event_loop(self):
+        """Get the event loop for the current context.
+    
+D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\_pytest\unraisableexception.py:33: RuntimeWarning: coroutine '_init_and_open.<locals>._go' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+        Returns an instance of EventLoop or raises an exception.
+        """
+        if (self._local._loop is None and
+                not self._local._set_called and
+                threading.current_thread() is threading.main_thread()):
+            stacklevel = 2
+            try:
+                f = sys._getframe(1)
+            except AttributeError:
+                pass
+            else:
+                # Move up the call stack so that the warning is attached
+                # to the line outside asyncio itself.
+                while f:
+                    module = f.f_globals.get('__name__')
+                    if not (module == 'asyncio' or module.startswith('asyncio.')):
+                        break
+                    f = f.f_back
+                    stacklevel += 1
+            import warnings
+            warnings.warn('There is no current event loop',
+                          DeprecationWarning, stacklevel=stacklevel)
+            self.set_event_loop(self.new_event_loop())
+    
+        if self._local._loop is None:
+>           raise RuntimeError('There is no current event loop in thread %r.'
+                               % threading.current_thread().name)
+E           RuntimeError: There is no current event loop in thread 'MainThread'.
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\events.py:702: RuntimeError
+============================== warnings summary ===============================
+tests\unit\api\test_chat_session_ownership.py:7
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_chat_session_ownership.py:7: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+tests/unit/api/test_chat_session_ownership.py::test_stream_rejects_other_users_session_before_sse
+  C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\queue.py:34: RuntimeWarning: coroutine '_init_and_open.<locals>._go' was never awaited
+    def __init__(self, maxsize=0):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_sessions_api.py::test_list_sessions_no_user_id - R...
+FAILED tests/unit/api/test_sessions_api.py::test_list_sessions_with_user_id
+FAILED tests/unit/api/test_sessions_api.py::test_list_sessions_with_user_id_no_results
+FAILED tests/unit/api/test_sessions_api.py::test_get_session_messages_empty
+FAILED tests/unit/api/test_sessions_api.py::test_get_session_messages - Runti...
+FAILED tests/unit/api/test_sessions_api.py::test_get_session_not_found - Runt...
+FAILED tests/unit/api/test_sessions_api.py::test_get_session_found - RuntimeE...
+7 failed, 15 passed, 2 warnings in 8.68s

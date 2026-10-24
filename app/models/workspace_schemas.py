@@ -169,3 +169,153 @@ class ProfileSummary(BaseModel):
 class NodeMutationResponse(BaseModel):
     node: ProfileNode
     profile_revision: int
+
+
+# 会话与界面偏好使用相互独立的版本空间。
+from typing import Any, Literal
+from pydantic import StrictFloat
+
+Ratio = Annotated[StrictFloat, Field(ge=0, le=1, allow_inf_nan=False)]
+PositiveId = Annotated[StrictInt, Field(gt=0)]
+
+
+class SessionCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    profile_id: ProfileId
+    title: ProfileName = "新会话"
+    active_node_id: ProfileId | None = None
+
+
+class WorkspaceSession(BaseModel):
+    session_id: str
+    user_id: int | None
+    title: str
+    profile_id: str | None
+    active_node_id: str | None
+    state_version: int
+    next_turn_index: int
+    active_request_id: str | None
+    created_at: datetime | None
+    updated_at: datetime | None
+
+
+class WorkspaceMessage(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    turn_index: int
+    role: str
+    content: str
+    created_at: datetime | None
+
+
+class MessagePage(BaseModel):
+    items: list[WorkspaceMessage]
+    next_cursor: str | None
+
+
+class ReadingAnchor(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    message_id: PositiveId
+    offset_ratio: Ratio
+
+
+class ViewState(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    draft: str = ""
+    reading_anchor: ReadingAnchor | None = None
+    version: int = 0
+    updated_at: datetime | None = None
+
+
+class ViewPatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version: Revision
+    draft: StrictText = Field(default=None)
+    reading_anchor: ReadingAnchor | None = None
+
+    @model_validator(mode="after")
+    def require_changes(self):
+        if not self.model_fields_set - {"expected_version"}:
+            raise ValueError("至少提供一个修改字段")
+        return self
+
+
+class WorkspaceState(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    last_session_id: str | None = None
+    sidebar_pinned: bool = True
+    sidebar_collapsed: bool = False
+    progress_y_ratio: float = .5
+    version: int = 0
+    updated_at: datetime | None = None
+
+
+class WorkspacePatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version: Revision
+    last_session_id: Annotated[str, StringConstraints(strict=True, max_length=64)] | None = None
+    sidebar_pinned: StrictBool = Field(default=None)
+    sidebar_collapsed: StrictBool = Field(default=None)
+    progress_y_ratio: Ratio = Field(default=None)
+
+    @model_validator(mode="after")
+    def require_changes(self):
+        if not self.model_fields_set - {"expected_version"}:
+            raise ValueError("至少提供一个修改字段")
+        return self
+
+
+class ActiveNodePatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_state_version: Revision
+    node_id: ProfileId | None
+
+
+class RetryRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_attempt: Annotated[StrictInt, Field(ge=1)]
+    expected_state_version: Revision
+
+
+class RequestSnapshot(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    user_id: int
+    session_id: str
+    request_id: str
+    profile_id: str
+    active_node_id: str | None
+    request_payload: dict
+    base_state_version: int
+    attempt: int
+    status: str
+    lease_until: datetime | None
+    lease_expired: bool
+    error_code: str | None
+    response_json: dict | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class SessionSnapshot(BaseModel):
+    session: WorkspaceSession
+    teaching_state: dict[str, Any] | None
+    teaching_state_source: Literal["stored", "legacy"]
+    legacy_state: dict[str, Any] | None = None
+    messages: MessagePage
+    profile: ProfileItem | None
+    profile_summary: ProfileSummary | None
+    view_state: ViewState
+    pending_requests: list[RequestSnapshot]
+
+
+class SessionGroup(BaseModel):
+    group_key: str
+    profile: ProfileItem | None
+    summary: ProfileSummary | None
+    sessions: list[WorkspaceSession]
+    next_session_cursor: str | None
+
+
+class GroupedSessions(BaseModel):
+    groups: list[SessionGroup]
+    next_group_cursor: str | None

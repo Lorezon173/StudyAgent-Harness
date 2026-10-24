@@ -1,0 +1,726 @@
+FFFFFFFFFFFF                                                             [100%]
+================================== FAILURES ===================================
+__________ test_empty_creation_snapshot_and_real_independent_restore __________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830EA55F80>
+
+    def test_empty_creation_snapshot_and_real_independent_restore(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            item = await create(client, pid, title=" �ջỰ ", active_node_id=nid)
+            sid = item["session_id"]
+            assert item["title"] == "�ջỰ" and item["user_id"] == 1
+            assert item["state_version"] == item["next_turn_index"] == 0
+            assert item["active_request_id"] is None
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                state = json.loads(row.state_json)
+                assert state == {"schema_version": 1, "active_node_id": nid, "teaching_mode": "Socratic",
+                    "mode_history": ["Socratic"], "stage": "init", "last_question": None, "summary": "",
+                    "summary_until_message_id": None, "committed_turn_count": 0}
+                assert (await db.scalars(select(MessageTable))).all() == []
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+            assert snap["teaching_state_source"] == "stored" and snap["teaching_state"] == state
+            assert snap["messages"] == {"items": [], "next_cursor": None}
+            assert snap["view_state"] == {"draft": "", "reading_anchor": None, "version": 0, "updated_at": None}
+            assert snap["profile"]["id"] == pid and snap["profile_summary"]["profile_revision"] == 0
+            assert (await create(client, pid))["active_node_id"] is None
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:89: in check
+    item = await create(client, pid, title=" �ջỰ ", active_node_id=nid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830E9EB3E0>
+pid = 'da3ad115-c3be-4b92-8a30-350d4adff8fb'
+fields = {'active_node_id': '139bcb25-9cd0-4f64-a05d-5274e9ab1002', 'title': ' �ջỰ '}
+response = <Response [405 Method Not Allowed]>, @py_assert1 = 405
+@py_assert4 = 200, @py_assert3 = False
+@py_format6 = '405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+@py_format8 = '{"detail":"Method Not Allowed"}\n>assert 405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+
+    async def create(client, pid, **fields):
+        response = await client.post("/api/sessions", json={"profile_id": pid, **fields}, headers=headers())
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:71: AssertionError
+___________________ test_owner_scope_and_create_validation ____________________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECAE480>
+
+    def test_owner_scope_and_create_validation(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            other, other_node = await profile(client, 2)
+            sid = (await create(client, pid))["session_id"]
+            assert (await client.post("/api/sessions", json={"profile_id": pid})).status_code == 401
+            for body in [{"profile_id": other}, {"profile_id": pid, "active_node_id": other_node}]:
+                assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 404
+            for body in [{"profile_id": pid, "user_id": 2}, {"profile_id": pid, "title": " "}, {"profile_id": pid, "id": "x"}]:
+                assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 422
+            async with factory() as db:
+                db.add(SessionTable(id="null", user_id=None, state_json="{}"))
+                await db.commit()
+            for suffix in ["", "/snapshot", "/messages", "/requests/request"]:
+                assert (await client.get(f"/api/sessions/{sid}{suffix}", headers=headers(2))).status_code == 403
+                assert (await client.get(f"/api/sessions/null{suffix}", headers=headers())).status_code == 403
+                assert (await client.get(f"/api/sessions/missing{suffix}", headers=headers())).status_code == 404
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:114: in check
+    sid = (await create(client, pid))["session_id"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830EC01250>
+pid = '9b809cd1-8755-4e4e-9d14-f33f0710b6fb', fields = {}
+response = <Response [405 Method Not Allowed]>, @py_assert1 = 405
+@py_assert4 = 200, @py_assert3 = False
+@py_format6 = '405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+@py_format8 = '{"detail":"Method Not Allowed"}\n>assert 405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+
+    async def create(client, pid, **fields):
+        response = await client.post("/api/sessions", json={"profile_id": pid, **fields}, headers=headers())
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:71: AssertionError
+________ test_view_workspace_versions_anchor_and_node_are_independent _________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECF80E0>
+
+    def test_view_workspace_versions_anchor_and_node_are_independent(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            view = f"/api/sessions/{sid}/view-state"
+            response = await client.patch(view, json={"expected_version": 0, "draft": "�ݸ�"}, headers=headers())
+            assert response.status_code == 200 and response.json()["version"] == 1
+            assert (await client.patch(view, json={"expected_version": 0, "draft": "��ʧ"}, headers=headers())).status_code == 409
+            assert (await client.patch(view, json={"expected_version": 1, "reading_anchor": {"message_id": 99, "offset_ratio": .5}}, headers=headers())).status_code == 422
+            response = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 0, "node_id": nid}, headers=headers())
+            assert response.status_code == 200 and response.json()["state_version"] == 1
+            same = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 1, "node_id": nid}, headers=headers())
+            assert same.json()["state_version"] == 1
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+            assert snap["view_state"]["draft"] == "�ݸ�" and snap["teaching_state"]["active_node_id"] == nid
+            default = (await client.get("/api/workspace-state", headers=headers())).json()
+            assert default == {"last_session_id": None, "sidebar_pinned": True, "sidebar_collapsed": False, "progress_y_ratio": .5, "version": 0, "updated_at": None}
+            saved = await client.patch("/api/workspace-state", json={"expected_version": 0, "last_session_id": sid}, headers=headers())
+            assert saved.status_code == 200 and saved.json()["version"] == 1
+            assert (await client.patch("/api/workspace-state", json={"expected_version": 0, "sidebar_pinned": False}, headers=headers())).status_code == 409
+            assert (await client.patch("/api/workspace-state", json={"expected_version": 0, "last_session_id": sid}, headers=headers(2))).status_code == 403
+            await pending(factory, sid, pid, active=True)
+            assert (await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 1, "node_id": None}, headers=headers())).json()["detail"]["code"] == "session_busy"
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:133: in check
+    sid = (await create(client, pid))["session_id"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECFFAD0>
+pid = '916691f4-c8e0-4ff2-bce8-7b6fc4005062', fields = {}
+response = <Response [405 Method Not Allowed]>, @py_assert1 = 405
+@py_assert4 = 200, @py_assert3 = False
+@py_format6 = '405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+@py_format8 = '{"detail":"Method Not Allowed"}\n>assert 405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+
+    async def create(client, pid, **fields):
+        response = await client.post("/api/sessions", json={"profile_id": pid, **fields}, headers=headers())
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:71: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body0] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECE0EA0>
+path = '/api/workspace-state', body = {'expected_version': 0}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECFF980>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FE41050>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body1] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830FD6A980>
+path = '/api/workspace-state'
+body = {'expected_version': True, 'sidebar_pinned': True}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECD3E60>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FE49E90>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body2] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830FD6B2E0>
+path = '/api/workspace-state'
+body = {'expected_version': 0, 'progress_y_ratio': True}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830EC2FBF0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FDF2A10>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body3] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830FD694E0>
+path = '/api/workspace-state'
+body = {'expected_version': 0, 'progress_y_ratio': 1.1}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECEDCA0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FE02B50>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body4] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECE1940>
+path = '/api/workspace-state'
+body = {'expected_version': 0, 'sidebar_pinned': 'true'}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECFC470>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FE94950>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______________ test_strict_write_dto[/api/workspace-state-body5] ______________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECFBEC0>
+path = '/api/workspace-state', body = {'expected_version': 0, 'version': 10}
+
+    @pytest.mark.parametrize("path,body", [
+        ("/api/workspace-state", {"expected_version": 0}),
+        ("/api/workspace-state", {"expected_version": True, "sidebar_pinned": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": True}),
+        ("/api/workspace-state", {"expected_version": 0, "progress_y_ratio": 1.1}),
+        ("/api/workspace-state", {"expected_version": 0, "sidebar_pinned": "true"}),
+        ("/api/workspace-state", {"expected_version": 0, "version": 10}),
+    ])
+    def test_strict_write_dto(workspace, path, body):
+        async def check(client, factory, active):
+            assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830FCD82F0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830FE87450>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+>       assert (await client.patch(path, json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:166: AssertionError
+______ test_group_and_session_cursors_empty_groups_unassigned_null_times ______
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830EC3C900>
+
+    def test_group_and_session_cursors_empty_groups_unassigned_null_times(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            empty, _ = await profile(client)
+            await profile(client, 2)
+            async with factory() as db:
+                for i in range(65):
+                    db.add(SessionTable(id=f"s{i:03}", user_id=1, profile_id=pid, state_json="{}", updated_at=datetime(2026, 1, 1)))
+                db.add(SessionTable(id="legacy", user_id=1, state_json="{}"))
+                await db.flush()
+                await db.execute(update(SessionTable).where(SessionTable.id == "s000").values(updated_at=None))
+                await db.commit()
+            collected = []
+            cursor = None
+            for expected in (30, 30, 5):
+                params = {"group_by": "profile", "group_key": pid, "limit": 30}
+                if cursor:
+                    params["session_cursor"] = cursor
+                response = await client.get("/api/sessions", params=params, headers=headers())
+                assert response.status_code == 200, response.text
+                group = response.json()["groups"][0]
+                assert len(group["sessions"]) == expected
+                collected += [s["session_id"] for s in group["sessions"]]
+                cursor = group["next_session_cursor"]
+            assert len(set(collected)) == 65 and collected[-1] == "s000" and cursor is None
+            page = (await client.get("/api/sessions?group_by=profile&group_limit=1", headers=headers())).json()
+            assert page["next_group_cursor"] is not None
+            assert any(g["group_key"] == "unassigned" and g["profile"] is None for g in page["groups"])
+            next_page = (await client.get("/api/sessions", params={"group_by": "profile", "cursor": page["next_group_cursor"]}, headers=headers())).json()
+            assert all(g["group_key"] != "unassigned" for g in next_page["groups"])
+            assert any(g["group_key"] == empty and g["sessions"] == [] for g in page["groups"] + next_page["groups"])
+            for params in [{"session_cursor": "bad"}, {"group_key": pid, "session_cursor": "bad"}, {"group_key": pid, "cursor": "bad"}]:
+                assert (await client.get("/api/sessions", params={"group_by": "profile", **params}, headers=headers())).status_code == 422
+            assert isinstance((await client.get("/api/sessions?user_id=2", headers=headers())).json(), list)
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830E95FC50>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001830E9841D0>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        empty, _ = await profile(client)
+        await profile(client, 2)
+        async with factory() as db:
+            for i in range(65):
+                db.add(SessionTable(id=f"s{i:03}", user_id=1, profile_id=pid, state_json="{}", updated_at=datetime(2026, 1, 1)))
+            db.add(SessionTable(id="legacy", user_id=1, state_json="{}"))
+            await db.flush()
+            await db.execute(update(SessionTable).where(SessionTable.id == "s000").values(updated_at=None))
+            await db.commit()
+        collected = []
+        cursor = None
+        for expected in (30, 30, 5):
+            params = {"group_by": "profile", "group_key": pid, "limit": 30}
+            if cursor:
+                params["session_cursor"] = cursor
+            response = await client.get("/api/sessions", params=params, headers=headers())
+            assert response.status_code == 200, response.text
+>           group = response.json()["groups"][0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: list indices must be integers or slices, not str
+
+tests\unit\api\test_workspace_sessions_api.py:190: TypeError
+_________ test_message_snapshot_pagination_pending_and_legacy_schema __________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830ECAE5C0>
+
+    def test_message_snapshot_pagination_pending_and_legacy_schema(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            async with factory() as db:
+                for i in range(3):
+                    for role in ("user", "assistant", "system"):
+                        db.add(MessageTable(session_id=sid, turn_index=i, role=role, content=f"{i}-{role}"))
+                db.add(SessionTable(id="legacy", user_id=1, state_json='{"foo":"bar"}'))
+                await db.commit()
+            await pending(factory, sid, pid, status="running")
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
+            assert snap["pending_requests"][0]["request_payload"]["message"] == "δ���ԭ��"
+            assert snap["pending_requests"][0]["lease_expired"] is True
+            page, items = snap["messages"], []
+            while True:
+                items = page["items"] + items
+                if not page["next_cursor"]:
+                    break
+                response = await client.get(f"/api/sessions/{sid}/messages", params={"cursor": page["next_cursor"], "limit": 4}, headers=headers())
+                assert response.status_code == 200, response.text
+                page = response.json()
+            assert len(items) == len({m["id"] for m in items}) == 9
+            assert [m["content"] for m in items] == [f"{i}-{r}" for i in range(3) for r in ("user", "assistant", "system")]
+            assert all("turn_index" in m for m in items)
+            assert isinstance((await client.get(f"/api/sessions/{sid}/messages", headers=headers())).json(), list)
+            old = (await client.get("/api/sessions/legacy/snapshot", headers=headers())).json()
+            assert old["teaching_state"] is None and old["legacy_state"] == {"foo": "bar"}
+            assert old["session"]["profile_id"] is None and old["profile"] is None
+            for raw, code in [('broken', 'invalid_teaching_state'), ('{"schema_version":2}', 'unsupported_teaching_schema')]:
+                async with factory() as db:
+                    await db.execute(update(SessionTable).where(SessionTable.id == "legacy").values(state_json=raw))
+                    await db.commit()
+                response = await client.get("/api/sessions/legacy/snapshot", headers=headers())
+                assert response.status_code == 409 and response.json()["detail"]["code"] == code
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:242: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:210: in check
+    sid = (await create(client, pid))["session_id"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001830ECD14F0>
+pid = '45668905-dc4d-4eb8-a438-1a0ac8f6af68', fields = {}
+response = <Response [405 Method Not Allowed]>, @py_assert1 = 405
+@py_assert4 = 200, @py_assert3 = False
+@py_format6 = '405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+@py_format8 = '{"detail":"Method Not Allowed"}\n>assert 405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+
+    async def create(client, pid, **fields):
+        response = await client.post("/api/sessions", json={"profile_id": pid, **fields}, headers=headers())
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:71: AssertionError
+__ test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction __
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001830FD8AA20>
+
+    def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            await pending(factory, sid, pid)
+            url = f"/api/sessions/{sid}/requests/request"
+            body = {"expected_attempt": 2, "expected_state_version": 0}
+            class Guard:
+                @property
+                def retry_turn(self):
+                    raise AssertionError("�������� owner У���������")
+            app.state.conversation_service = Guard()
+            assert (await client.post(url + "/retry", json=body, headers=headers(2))).status_code == 403
+            del app.state.conversation_service
+            before = (await client.get(url, headers=headers())).json()
+            response = await client.post(url + "/retry", json=body, headers=headers())
+            assert response.status_code == 503 and response.json()["detail"]["code"] == "conversation_service_unavailable"
+            assert (await client.get(url, headers=headers())).json() == before
+            async with factory() as db:
+                row = await db.get(ChatRequestTable, (1, sid, "request"))
+                assert row.attempt == 2 and row.status == "failed" and row.error_code == "original"
+                assert (await db.get(SessionTable, sid)).active_request_id is None
+            calls = []
+            async def retry_turn(**kwargs):
+                assert all(not db.in_transaction() for db in active)
+                calls.append(kwargs)
+                return {"reply": "����Լ spy", "session_id": sid, "persisted": False}
+            app.state.conversation_service = SimpleNamespace(retry_turn=retry_turn)
+            response = await client.post(url + "/retry", json=body, headers=headers())
+            assert response.status_code == 200 and response.json()["persisted"] is False
+            assert calls == [{"user_id": 1, "session_id": sid, "request_id": "request", **body}]
+            assert (await client.get(url, headers=headers())).json() == before
+            assert (await client.post(url + "/retry", json={**body, "expected_attempt": 1}, headers=headers())).status_code == 409
+            async with factory() as db:
+                await db.execute(update(SessionTable).where(SessionTable.id == sid).values(active_request_id="request"))
+                await db.commit()
+            assert (await client.post(url + "/retry", json=body, headers=headers())).json()["detail"]["code"] == "session_busy"
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:59: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:50: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:248: in check
+    sid = (await create(client, pid))["session_id"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001835DB9F440>
+pid = '3788f4e9-230f-4d55-a015-6c366e5b6648', fields = {}
+response = <Response [405 Method Not Allowed]>, @py_assert1 = 405
+@py_assert4 = 200, @py_assert3 = False
+@py_format6 = '405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+@py_format8 = '{"detail":"Method Not Allowed"}\n>assert 405\n{405 = <Response [405 Method Not Allowed]>.status_code\n} == 200'
+
+    async def create(client, pid, **fields):
+        response = await client.post("/api/sessions", json={"profile_id": pid, **fields}, headers=headers())
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:71: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_empty_creation_snapshot_and_real_independent_restore
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_owner_scope_and_create_validation
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_view_workspace_versions_anchor_and_node_are_independent
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body0]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body1]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body2]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body3]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body4]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_strict_write_dto[/api/workspace-state-body5]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_group_and_session_cursors_empty_groups_unassigned_null_times
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_message_snapshot_pagination_pending_and_legacy_schema
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction
+12 failed in 8.60s

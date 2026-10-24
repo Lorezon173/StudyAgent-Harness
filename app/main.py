@@ -14,6 +14,7 @@ from app.api.knowledge import router as knowledge_router
 from app.api.sessions import router as sessions_router
 from app.api.profile import router as profile_router
 from app.api.topic_profiles import router as topic_profiles_router
+from app.api.workspace import router as workspace_router
 
 
 @asynccontextmanager
@@ -33,6 +34,7 @@ app.include_router(knowledge_router, prefix="/api")
 app.include_router(sessions_router, prefix="/api")
 app.include_router(profile_router, prefix="/api")
 app.include_router(topic_profiles_router, prefix="/api")
+app.include_router(workspace_router, prefix="/api")
 
 
 @app.get("/health")

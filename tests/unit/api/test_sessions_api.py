@@ -1,5 +1,6 @@
 """Tests for refactored sessions API with db injection."""
 import asyncio
+from sqlalchemy import event
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
@@ -7,16 +8,25 @@ from app.main import app
 from app.core.database import Base, get_db
 from app.infrastructure.storage.session_store import SessionStore
 from app.infrastructure.storage.message_store import MessageStore
+from app.models.tables import UserTable
 
 
 def _run(coro):
     """Run async coroutine synchronously."""
-    return asyncio.get_event_loop().run_until_complete(coro)
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    return loop.run_until_complete(coro)
 
 
 def _make_db_ctx():
     """Create engine + session_factory for in-memory SQLite."""
     engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
+    @event.listens_for(engine.sync_engine, "connect")
+    def enable_foreign_keys(connection, _):
+        connection.execute("PRAGMA foreign_keys=ON")
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     return engine, factory
 
@@ -41,6 +51,8 @@ def _close_db(engine, session):
 
 
 async def _seed_session(session):
+    session.add(UserTable(id=1, username="one", password_hash="x"))
+    await session.flush()
     store = SessionStore(session)
     await store.save("sess-1", {"foo": "bar"}, user_id=1, title="Test Session")
     await session.commit()
@@ -48,8 +60,11 @@ async def _seed_session(session):
 
 async def _seed_messages(session):
     """Seed a session owned by user_id=1 + 2 messages for it (needed for ownership check)."""
+    session.add(UserTable(id=1, username="one", password_hash="x"))
+    await session.flush()
     sess_store = SessionStore(session)
     await sess_store.save("sess-msg", {"foo": "bar"}, user_id=1, title="Msg Session")
+    await session.flush()
     store = MessageStore(session)
     await store.add("sess-msg", "user", "hello", turn_index=0)
     await store.add("sess-msg", "assistant", "hi there", turn_index=1)

@@ -71,6 +71,8 @@ class SessionSummary(BaseModel):
 
 
 class MessageItem(BaseModel):
+    id: int | None = None
+    turn_index: int | None = None
     role: str
     content: str
     created_at: Any = None  # datetime | None
