@@ -1,0 +1,142 @@
+FFFFFFFFFFFF                                                             [100%]
+================================== FAILURES ===================================
+_______________ test_base_create_all_registers_workspace_tables _______________
+
+    def test_base_create_all_registers_workspace_tables():
+        # ȱʧע����ý����� Base ������/����·��©���±���
+>       assert {"topic_profiles", "profile_nodes", "profile_edges"} <= set(Base.metadata.tables)
+E       AssertionError: assert {'profile_edg...pic_profiles'} <= {'evals', 'kn...essions', ...}
+E         
+E         Extra items in the left set:
+E         'topic_profiles'
+E         'profile_nodes'
+E         'profile_edges'
+
+tests\unit\storage\test_topic_profile_store.py:16: AssertionError
+________ test_same_title_nodes_are_uuid_scoped_and_unassessed_is_null _________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9FAEAC0>
+
+    def test_same_title_nodes_are_uuid_scoped_and_unassessed_is_null(profile_db):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:44: ModuleNotFoundError
+______ test_every_compatibility_method_rejects_another_owner[save_nodes] ______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9FAF4C0>
+operation = 'save_nodes'
+
+    @pytest.mark.parametrize("operation", ["save_nodes", "load_nodes", "save_edges", "load_edges"])
+    def test_every_compatibility_method_rejects_another_owner(profile_db, operation):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:70: ModuleNotFoundError
+______ test_every_compatibility_method_rejects_another_owner[load_nodes] ______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9FAF1A0>
+operation = 'load_nodes'
+
+    @pytest.mark.parametrize("operation", ["save_nodes", "load_nodes", "save_edges", "load_edges"])
+    def test_every_compatibility_method_rejects_another_owner(profile_db, operation):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:70: ModuleNotFoundError
+______ test_every_compatibility_method_rejects_another_owner[save_edges] ______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9FAFEC0>
+operation = 'save_edges'
+
+    @pytest.mark.parametrize("operation", ["save_nodes", "load_nodes", "save_edges", "load_edges"])
+    def test_every_compatibility_method_rejects_another_owner(profile_db, operation):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:70: ModuleNotFoundError
+______ test_every_compatibility_method_rejects_another_owner[load_edges] ______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9FAFF60>
+operation = 'load_edges'
+
+    @pytest.mark.parametrize("operation", ["save_nodes", "load_nodes", "save_edges", "load_edges"])
+    def test_every_compatibility_method_rejects_another_owner(profile_db, operation):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:70: ModuleNotFoundError
+_________ test_database_rejects_edges_outside_profile[other_profile] __________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC8220>
+target = 'other_profile'
+
+    @pytest.mark.parametrize("target", ["other_profile", "other_user", "unknown_profile"])
+    def test_database_rejects_edges_outside_profile(profile_db, target):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:85: ModuleNotFoundError
+___________ test_database_rejects_edges_outside_profile[other_user] ___________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC82C0>
+target = 'other_user'
+
+    @pytest.mark.parametrize("target", ["other_profile", "other_user", "unknown_profile"])
+    def test_database_rejects_edges_outside_profile(profile_db, target):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:85: ModuleNotFoundError
+________ test_database_rejects_edges_outside_profile[unknown_profile] _________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC8860>
+target = 'unknown_profile'
+
+    @pytest.mark.parametrize("target", ["other_profile", "other_user", "unknown_profile"])
+    def test_database_rejects_edges_outside_profile(profile_db, target):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:85: ModuleNotFoundError
+_____________ test_profile_owner_must_exist_and_legacy_is_unique ______________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC8B80>
+
+    def test_profile_owner_must_exist_and_legacy_is_unique(profile_db):
+>       from app.models.workspace_tables import TopicProfileTable
+E       ModuleNotFoundError: No module named 'app.models.workspace_tables'
+
+tests\unit\storage\test_topic_profile_store.py:105: ModuleNotFoundError
+_______ test_compatibility_roundtrip_edges_and_caller_owns_transaction ________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC8680>
+
+    def test_compatibility_roundtrip_edges_and_caller_owns_transaction(profile_db):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:123: ModuleNotFoundError
+_____ test_stale_compatibility_save_cannot_overwrite_newer_node_revision ______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x00000276E9EC80E0>
+
+    def test_stale_compatibility_save_cannot_overwrite_newer_node_revision(profile_db):
+>       from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.topic_profile_store'
+
+tests\unit\storage\test_topic_profile_store.py:144: ModuleNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_topic_profile_store.py::test_base_create_all_registers_workspace_tables
+FAILED tests/unit/storage/test_topic_profile_store.py::test_same_title_nodes_are_uuid_scoped_and_unassessed_is_null
+FAILED tests/unit/storage/test_topic_profile_store.py::test_every_compatibility_method_rejects_another_owner[save_nodes]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_every_compatibility_method_rejects_another_owner[load_nodes]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_every_compatibility_method_rejects_another_owner[save_edges]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_every_compatibility_method_rejects_another_owner[load_edges]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_database_rejects_edges_outside_profile[other_profile]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_database_rejects_edges_outside_profile[other_user]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_database_rejects_edges_outside_profile[unknown_profile]
+FAILED tests/unit/storage/test_topic_profile_store.py::test_profile_owner_must_exist_and_legacy_is_unique
+FAILED tests/unit/storage/test_topic_profile_store.py::test_compatibility_roundtrip_edges_and_caller_owns_transaction
+FAILED tests/unit/storage/test_topic_profile_store.py::test_stale_compatibility_save_cannot_overwrite_newer_node_revision
+12 failed in 4.16s

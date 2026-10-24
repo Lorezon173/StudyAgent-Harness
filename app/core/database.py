@@ -13,6 +13,11 @@ class Base(DeclarativeBase):
     pass
 
 
+# Base 单独导入后的 create_all 与 Alembic 必须看到同一份完整模型注册。
+from app.models import tables as _tables  # noqa: E402,F401
+from app.models import workspace_tables as _workspace_tables  # noqa: E402,F401
+
+
 def _make_engine(url: str):
     """Create async engine with dialect-specific params."""
     if url.startswith("postgresql"):

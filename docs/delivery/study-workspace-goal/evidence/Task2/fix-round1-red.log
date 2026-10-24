@@ -1,0 +1,172 @@
+................FF............                                           [100%]
+================================== FAILURES ===================================
+_ test_graph_roundtrip_preserves_description_and_archived_until_explicit_update _
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000002707FB41120>
+
+    def test_graph_roundtrip_preserves_description_and_archived_until_explicit_update(profile_db):
+        from app.harness.mastery_graph import MasteryGraph
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            node_id = str(uuid4())
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "ͼ������", "")
+                profile_id = profile.id
+                await ProfileMasteryStore(db, profile_id).save_nodes(1, [{
+                    "topic_id": node_id, "topic_name": "��֪ʶ��", "description": "�˹�˵��",
+                    "archived": True, "mastery": 60, "practice_count": 2, "rationale": "��ʵ����",
+                }])
+                await db.commit()
+            async with factory() as db:
+                graph = MasteryGraph(1, ProfileMasteryStore(db, profile_id))
+                await graph.load()
+                await graph.save()
+                await db.commit()
+            async with factory() as db:
+                store = ProfileMasteryStore(db, profile_id)
+                nodes = await store.load_nodes(1)
+                assert nodes[node_id]["description"] == "�˹�˵��"
+                assert nodes[node_id]["archived"] is True
+                await store.save_nodes(1, [{"topic_id": node_id, "description": "", "archived": False}])
+                await db.commit()
+            async with factory() as db:
+                saved = (await ProfileMasteryStore(db, profile_id).load_nodes(1))[node_id]
+                assert saved["description"] == ""
+                assert saved["archived"] is False
+                assert saved["topic_name"] == "��֪ʶ��"
+                assert saved["mastery"] == 60
+                assert saved["practice_count"] == 2
+                assert saved["rationale"] == "��ʵ����"
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002707FBDD210>, autoflush=True, expire_on_commit=False)
+
+    async def check(factory):
+        node_id = str(uuid4())
+        async with factory() as db:
+            profile = await TopicProfileStore(db).create(1, "ͼ������", "")
+            profile_id = profile.id
+            await ProfileMasteryStore(db, profile_id).save_nodes(1, [{
+                "topic_id": node_id, "topic_name": "��֪ʶ��", "description": "�˹�˵��",
+                "archived": True, "mastery": 60, "practice_count": 2, "rationale": "��ʵ����",
+            }])
+            await db.commit()
+        async with factory() as db:
+            graph = MasteryGraph(1, ProfileMasteryStore(db, profile_id))
+            await graph.load()
+            await graph.save()
+            await db.commit()
+        async with factory() as db:
+            store = ProfileMasteryStore(db, profile_id)
+            nodes = await store.load_nodes(1)
+>           assert nodes[node_id]["description"] == "�˹�˵��"
+E           AssertionError: assert '' == '�˹�˵��'
+E             
+E             - �˹�˵��
+
+tests\unit\storage\test_topic_profile_store.py:298: AssertionError
+_______ test_graph_skips_unknown_prerequisite_and_keeps_null_after_save _______
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000002707FC5FB00>
+
+    def test_graph_skips_unknown_prerequisite_and_keeps_null_after_save(profile_db):
+        from app.harness.mastery_graph import MasteryGraph
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            unknown, weak, target = str(uuid4()), str(uuid4()), str(uuid4())
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "δ֪ǰ��", "")
+                profile_id = profile.id
+                store = ProfileMasteryStore(db, profile_id)
+                await store.save_nodes(1, [{"topic_id": unknown}, {"topic_id": weak, "mastery": 20}, {"topic_id": target}])
+                await store.save_edges(1, [{"from_topic": unknown, "to_topic": target},
+                                           {"from_topic": weak, "to_topic": target}])
+                await db.commit()
+            async with factory() as db:
+                graph = MasteryGraph(1, ProfileMasteryStore(db, profile_id))
+                await graph.load()
+                assert graph.get_node(unknown).mastery is None
+                weak_prereqs = graph.find_weak_prereqs(target)
+                assert [(item["prereq_topic_id"], item["mastery"]) for item in weak_prereqs] == [(weak, 20)]
+                await graph.save()
+                await db.commit()
+            async with factory() as db:
+                saved = await ProfileMasteryStore(db, profile_id).load_nodes(1)
+                assert saved[unknown]["mastery"] is None
+                assert saved[unknown]["practice_count"] == 0
+                assert saved[weak]["mastery"] == 20
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+tests\unit\storage\test_topic_profile_store.py:332: in check
+    weak_prereqs = graph.find_weak_prereqs(target)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.mastery_graph.MasteryGraph object at 0x000002707FB25940>
+topic_id = 'ad98679d-c379-4ce3-a6c4-100c42023be7', mastery_threshold = 50.0
+
+    def find_weak_prereqs(self, topic_id: str,
+                          mastery_threshold: float = 50.0) -> list[dict]:
+        """��� topic_id ��ǰ�ñ����ڵ㡣
+    
+        �����ű߸��ϸ�adjusted = mastery_threshold / (1 + (1-confidence)*0.5)
+          confidence=0.8 �� adjusted��45.45�����ɣ�
+          confidence=0.5 �� adjusted=40���еȣ�
+          confidence=0.3 �� adjusted��37.04���ϸ�
+        ǰ�ýڵ� mastery < adjusted �� ��Ϊǰ�ñ�����
+        """
+        results = []
+        for edge in self.edges:
+            if edge.to_topic != topic_id or edge.type != EdgeType.PREREQ:
+                continue
+            prereq_node = self.nodes.get(edge.from_topic)
+            if prereq_node is None:
+                continue
+            adjusted = mastery_threshold / (1.0 + (1.0 - edge.confidence) * 0.5)
+>           if prereq_node.mastery < adjusted:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: '<' not supported between instances of 'NoneType' and 'float'
+
+app\harness\mastery_graph.py:147: TypeError
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_topic_profile_store.py::test_graph_roundtrip_preserves_description_and_archived_until_explicit_update
+FAILED tests/unit/storage/test_topic_profile_store.py::test_graph_skips_unknown_prerequisite_and_keeps_null_after_save
+2 failed, 28 passed in 7.81s

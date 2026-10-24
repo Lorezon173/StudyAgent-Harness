@@ -97,8 +97,10 @@
       "id": "Task2",
       "status": "RUNNING",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task2/"
+      ],
+      "review": "task2_review: initial 2 Important; fix round1 both ADDRESSED; quality approved; local commit pending",
       "blocked_reason": null
     },
     {

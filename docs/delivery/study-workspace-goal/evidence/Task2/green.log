@@ -1,0 +1,117 @@
+...............F......                                                   [100%]
+================================== FAILURES ===================================
+_________ test_failed_flush_requires_new_store_after_caller_rollback __________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000001FF31BE0EA0>
+
+    def test_failed_flush_requires_new_store_after_caller_rollback(profile_db):
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "ʧ������", "")
+                await db.commit()
+                store = ProfileMasteryStore(db, profile.id)
+                with pytest.raises(IntegrityError):
+                    await store.save_edges(1, [{"from_topic": str(uuid4()), "to_topic": str(uuid4())}])
+                await db.rollback()
+                with pytest.raises(RuntimeError, match="store|Store"):
+                    await store.save_nodes(1, [{"topic_id": str(uuid4())}])
+                fresh = ProfileMasteryStore(db, profile.id)
+                assert await fresh.load_nodes(1) == {}
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+tests\unit\storage\test_topic_profile_store.py:269: in check
+    fresh = ProfileMasteryStore(db, profile.id)
+                                    ^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\attributes.py:569: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\attributes.py:1096: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\attributes.py:1126: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\state.py:828: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+.venv\Lib\site-packages\sqlalchemy\orm\loading.py:1674: in load_scalar_attributes
+    result = load_on_ident(
+.venv\Lib\site-packages\sqlalchemy\orm\loading.py:510: in load_on_ident
+    return load_on_pk_identity(
+.venv\Lib\site-packages\sqlalchemy\orm\loading.py:695: in load_on_pk_identity
+    session.execute(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2372: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2270: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2368: in _handle_dbapi_exception
+    raise exc_info[1].with_traceback(exc_info[2])
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:343: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:160: in execute
+    _cursor: AsyncIODBAPICursor = self.await_(self._connection.cursor())  # type: ignore[arg-type] # noqa: E501
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+awaitable = <aiosqlite.context.Result object at 0x000001FF3196C210>
+
+    def await_only(awaitable: Awaitable[_T]) -> _T:
+        """Awaits an async function in a sync method.
+    
+        The sync method must be inside a :func:`greenlet_spawn` context.
+        :func:`await_only` calls cannot be nested.
+    
+        :param awaitable: The coroutine to call.
+    
+        """
+        # this is called in the context greenlet while running fn
+        current = getcurrent()
+        if not getattr(current, "__sqlalchemy_greenlet_provider__", False):
+            _safe_cancel_awaitable(awaitable)
+    
+>           raise exc.MissingGreenlet(
+                "greenlet_spawn has not been called; can't call await_only() "
+                "here. Was IO attempted in an unexpected place?"
+            )
+E           sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:123: MissingGreenlet
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_topic_profile_store.py::test_failed_flush_requires_new_store_after_caller_rollback
+1 failed, 21 passed in 11.82s

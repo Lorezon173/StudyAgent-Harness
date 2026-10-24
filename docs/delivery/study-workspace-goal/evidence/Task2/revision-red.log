@@ -1,0 +1,194 @@
+.............FFF                                                         [100%]
+================================== FAILURES ===================================
+___ test_initializing_new_nodes_does_not_authorize_overwriting_unread_edges ___
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000001D11E78C720>
+
+    def test_initializing_new_nodes_does_not_authorize_overwriting_unread_edges(profile_db):
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            a, b = str(uuid4()), str(uuid4())
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "���б�", "")
+                store = ProfileMasteryStore(db, profile.id)
+                await store.save_nodes(1, [{"topic_id": a}, {"topic_id": b}])
+                await store.save_edges(1, [{"from_topic": a, "to_topic": b, "weight": 0.9}])
+                await db.commit()
+            async with factory() as db:
+                unobserved = ProfileMasteryStore(db, profile.id)
+                await unobserved.save_nodes(1, [{"topic_id": str(uuid4())}])
+                with pytest.raises(ValueError, match="revision|snapshot"):
+                    await unobserved.save_edges(1, [{"from_topic": a, "to_topic": b, "weight": 0.1}])
+                await db.rollback()
+                assert (await ProfileMasteryStore(db, profile.id).load_edges(1))[0]["weight"] == 0.9
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:229: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D11E7919D0>, autoflush=True, expire_on_commit=False)
+
+    async def check(factory):
+        a, b = str(uuid4()), str(uuid4())
+        async with factory() as db:
+            profile = await TopicProfileStore(db).create(1, "���б�", "")
+            store = ProfileMasteryStore(db, profile.id)
+            await store.save_nodes(1, [{"topic_id": a}, {"topic_id": b}])
+            await store.save_edges(1, [{"from_topic": a, "to_topic": b, "weight": 0.9}])
+            await db.commit()
+        async with factory() as db:
+            unobserved = ProfileMasteryStore(db, profile.id)
+            await unobserved.save_nodes(1, [{"topic_id": str(uuid4())}])
+>           with pytest.raises(ValueError, match="revision|snapshot"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\unit\storage\test_topic_profile_store.py:225: Failed
+__________ test_loading_edges_cannot_refresh_an_older_node_snapshot ___________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000001D11E80CC20>
+
+    def test_loading_edges_cannot_refresh_an_older_node_snapshot(profile_db):
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            node_id = str(uuid4())
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "һ�¿���", "")
+                await ProfileMasteryStore(db, profile.id).save_nodes(1, [{"topic_id": node_id}])
+                await db.commit()
+            async with factory() as db:
+                stale = ProfileMasteryStore(db, profile.id)
+                await stale.load_nodes(1)
+                await db.commit()
+                async with factory() as other:
+                    fresh = ProfileMasteryStore(other, profile.id)
+                    await fresh.save_nodes(1, [{"topic_id": str(uuid4())}])
+                    await other.commit()
+                with pytest.raises(ValueError, match="revision"):
+                    await stale.load_edges(1)
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:252: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D11E8B7910>, autoflush=True, expire_on_commit=False)
+
+    async def check(factory):
+        node_id = str(uuid4())
+        async with factory() as db:
+            profile = await TopicProfileStore(db).create(1, "һ�¿���", "")
+            await ProfileMasteryStore(db, profile.id).save_nodes(1, [{"topic_id": node_id}])
+            await db.commit()
+        async with factory() as db:
+            stale = ProfileMasteryStore(db, profile.id)
+            await stale.load_nodes(1)
+            await db.commit()
+            async with factory() as other:
+                fresh = ProfileMasteryStore(other, profile.id)
+                await fresh.save_nodes(1, [{"topic_id": str(uuid4())}])
+                await other.commit()
+>           with pytest.raises(ValueError, match="revision"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\unit\storage\test_topic_profile_store.py:250: Failed
+_________ test_failed_flush_requires_new_store_after_caller_rollback __________
+
+profile_db = <function profile_db.<locals>.<lambda> at 0x000001D11E80DA80>
+
+    def test_failed_flush_requires_new_store_after_caller_rollback(profile_db):
+        from app.infrastructure.storage.topic_profile_store import TopicProfileStore
+        from app.infrastructure.storage.profile_mastery_store import ProfileMasteryStore
+    
+        async def check(factory):
+            async with factory() as db:
+                profile = await TopicProfileStore(db).create(1, "ʧ������", "")
+                await db.commit()
+                store = ProfileMasteryStore(db, profile.id)
+                with pytest.raises(IntegrityError):
+                    await store.save_edges(1, [{"from_topic": str(uuid4()), "to_topic": str(uuid4())}])
+                await db.rollback()
+                with pytest.raises(RuntimeError, match="store|Store"):
+                    await store.save_nodes(1, [{"topic_id": str(uuid4())}])
+                fresh = ProfileMasteryStore(db, profile.id)
+                assert await fresh.load_nodes(1) == {}
+>       profile_db(check)
+
+tests\unit\storage\test_topic_profile_store.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_topic_profile_store.py:40: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_topic_profile_store.py:36: in run
+    await check(factory)
+tests\unit\storage\test_topic_profile_store.py:268: in check
+    await store.save_nodes(1, [{"topic_id": str(uuid4())}])
+app\infrastructure\storage\profile_mastery_store.py:55: in save_nodes
+    await self._advance_revision(profile)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.infrastructure.storage.profile_mastery_store.ProfileMasteryStore object at 0x000001D11E8AFFB0>
+profile = <app.models.workspace_tables.TopicProfileTable object at 0x000001D11E8AFAD0>
+
+    async def _advance_revision(self, profile: TopicProfileTable) -> None:
+        expected = self._profile_revision if self._profile_revision is not None else profile.revision
+        result = await self.db.execute(
+            update(TopicProfileTable).where(TopicProfileTable.id == self.profile_id,
+                                           TopicProfileTable.user_id == profile.user_id,
+                                           TopicProfileTable.revision == expected)
+            .values(revision=expected + 1, updated_at=func.now())
+            .execution_options(synchronize_session=False)
+        )
+        if result.rowcount != 1:
+>           raise ValueError("profile revision conflict; caller must rollback")
+E           ValueError: profile revision conflict; caller must rollback
+
+app\infrastructure\storage\profile_mastery_store.py:35: ValueError
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_topic_profile_store.py::test_initializing_new_nodes_does_not_authorize_overwriting_unread_edges
+FAILED tests/unit/storage/test_topic_profile_store.py::test_loading_edges_cannot_refresh_an_older_node_snapshot
+FAILED tests/unit/storage/test_topic_profile_store.py::test_failed_flush_requires_new_store_after_caller_rollback
+3 failed, 13 passed in 6.12s

@@ -24,7 +24,7 @@ class MasteryNode:
     """知识点节点（§6）。"""
     topic_id: str
     topic_name: str = ""
-    mastery: float = 0.0          # 0-100 掌握度（百分制）
+    mastery: float | None = 0.0   # 0-100 掌握度（百分制）；None表示未评估
     last_practiced_at: float = 0.0  # epoch seconds
     practice_count: int = 0
     confusion_with: list[str] = field(default_factory=list)
@@ -61,7 +61,7 @@ class MasteryGraph:
     # ---- 图谱操作 ----
 
     def add_node(self, topic_id: str, topic_name: str = "",
-                 mastery: float = 0.0) -> MasteryNode:
+                 mastery: float | None = 0.0) -> MasteryNode:
         node = MasteryNode(topic_id=topic_id, topic_name=topic_name, mastery=mastery)
         self.nodes[topic_id] = node
         return node
@@ -134,14 +134,14 @@ class MasteryGraph:
           confidence=0.8 → adjusted≈45.45（宽松）
           confidence=0.5 → adjusted=40（中等）
           confidence=0.3 → adjusted≈37.04（严格）
-        前置节点 mastery < adjusted → 判为前置薄弱。
+        已评估前置节点 mastery < adjusted → 判为前置薄弱；未评估节点跳过。
         """
         results = []
         for edge in self.edges:
             if edge.to_topic != topic_id or edge.type != EdgeType.PREREQ:
                 continue
             prereq_node = self.nodes.get(edge.from_topic)
-            if prereq_node is None:
+            if prereq_node is None or prereq_node.mastery is None:
                 continue
             adjusted = mastery_threshold / (1.0 + (1.0 - edge.confidence) * 0.5)
             if prereq_node.mastery < adjusted:

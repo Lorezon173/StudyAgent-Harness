@@ -1,0 +1,134 @@
+FF..FF                                                                   [100%]
+================================== FAILURES ===================================
+____ test_upgrade_keeps_legacy_owned_deterministic_and_idempotent[sqlite] _____
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000209E0945010>, <alembic.config.Config object at 0x00000209E0945040>)
+
+    def test_upgrade_keeps_legacy_owned_deterministic_and_idempotent(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+        command.upgrade(config, "head")
+        tables = sa.MetaData()
+        tables.reflect(connection)
+>       assert {"topic_profiles", "profile_nodes", "profile_edges"} <= set(tables.tables)
+E       AssertionError: assert {'profile_edg...pic_profiles'} <= {'alembic_ver...essages', ...}
+E         
+E         Extra items in the left set:
+E         'topic_profiles'
+E         'profile_edges'
+E         'profile_nodes'
+
+tests\integration\test_workspace_migrations.py:88: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+__ test_upgrade_keeps_legacy_owned_deterministic_and_idempotent[postgresql] ___
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000209E09E3EC0>, <alembic.config.Config object at 0x00000209E0A8BBF0>)
+
+    def test_upgrade_keeps_legacy_owned_deterministic_and_idempotent(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+        command.upgrade(config, "head")
+        tables = sa.MetaData()
+        tables.reflect(connection)
+>       assert {"topic_profiles", "profile_nodes", "profile_edges"} <= set(tables.tables)
+E       AssertionError: assert {'profile_edg...pic_profiles'} <= {'alembic_ver...essages', ...}
+E         
+E         Extra items in the left set:
+E         'topic_profiles'
+E         'profile_edges'
+E         'profile_nodes'
+
+tests\integration\test_workspace_migrations.py:88: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+___________ test_dangling_legacy_edge_refuses_partial_copy[sqlite] ____________
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000209E20FB920>, <alembic.config.Config object at 0x00000209E20820C0>)
+
+    def test_dangling_legacy_edge_refuses_partial_copy(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+        connection.execute(sa.text("UPDATE mastery_edges SET to_topic='missing' WHERE user_id=2"))
+        connection.commit()
+>       with pytest.raises(ValueError, match="endpoint|�˵�"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\integration\test_workspace_migrations.py:134: Failed
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+_________ test_dangling_legacy_edge_refuses_partial_copy[postgresql] __________
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000209E1FD3FB0>, <alembic.config.Config object at 0x00000209E20CCB00>)
+
+    def test_dangling_legacy_edge_refuses_partial_copy(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+        connection.execute(sa.text("UPDATE mastery_edges SET to_topic='missing' WHERE user_id=2"))
+        connection.commit()
+>       with pytest.raises(ValueError, match="endpoint|�˵�"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\integration\test_workspace_migrations.py:134: Failed
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+=========================== short test summary info ===========================
+FAILED tests/integration/test_workspace_migrations.py::test_upgrade_keeps_legacy_owned_deterministic_and_idempotent[sqlite]
+FAILED tests/integration/test_workspace_migrations.py::test_upgrade_keeps_legacy_owned_deterministic_and_idempotent[postgresql]
+FAILED tests/integration/test_workspace_migrations.py::test_dangling_legacy_edge_refuses_partial_copy[sqlite]
+FAILED tests/integration/test_workspace_migrations.py::test_dangling_legacy_edge_refuses_partial_copy[postgresql]
+4 failed, 2 passed in 5.20s

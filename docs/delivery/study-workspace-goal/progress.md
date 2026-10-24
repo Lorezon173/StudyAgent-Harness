@@ -64,3 +64,7 @@ Task1 minor (deferred): Settings(_env_file=None)仍受进程RAG_ENABLED影响，
 Task1 minor (deferred): Starlette/httpx既有弃用warning，后续依赖维护清理，不在本任务升级依赖。
 
 Task1 DONE：本地提交cd89c89，独立审查Approved；进入Task2，不推送/部署。
+
+Task2默认全套回归：1060通过、18按既有integration筛选排除、1失败、1弃用warning，62.02s。唯一失败test_evaluate_produces_valid_metrics对context_precision=None作数值比较。独立进程加载原始d0584d9 Retriever后同项同样失败（baseline-evaluation.log）；相关coordinator/store/judge/test自基准无差异，未改断言或产品评估契约。此为已实证基线缺陷，Task13最终回归前必须处理，不把全套标绿；Task2定点26通过不替代全量验收。
+
+Task2 fix round1：2 Important均已修复并独立复审ADDRESSED，无新增阻断项；修后Store+Graph30 passed，原SQLite/PG迁移26 passed。待明确文件提交，Task3尚未开始。

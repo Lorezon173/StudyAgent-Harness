@@ -1,0 +1,48 @@
+........................................................................ [  6%]
+........................................................................ [ 13%]
+.........................................F.............................. [ 20%]
+........................................................................ [ 27%]
+........................................................................ [ 33%]
+........................................................................ [ 40%]
+........................................................................ [ 47%]
+........................................................................ [ 54%]
+........................................................................ [ 61%]
+........................................................................ [ 67%]
+........................................................................ [ 74%]
+........................................................................ [ 81%]
+........................................................................ [ 88%]
+........................................................................ [ 95%]
+.....................................................                    [100%]
+================================== FAILURES ===================================
+____________________ test_evaluate_produces_valid_metrics _____________________
+
+    def test_evaluate_produces_valid_metrics():
+        """evaluate() ���ӦΪ�Ϸ���ֵ���� Plan E ���ã���"""
+        retriever = RetrieverAgent()
+        retriever._coordinator.index_documents([
+            {"content": "BERT ʹ��˫�� Transformer ������"},
+            {"content": "GPT ʹ�õ��� Transformer ������"},
+            {"content": "������������"},
+        ])
+        metrics = retriever.evaluate({
+            "query": "Transformer �ܹ�",
+            "golden_chunks": ["˫�� Transformer ������", "���� Transformer ������"],
+            "golden_answer": "BERT ˫��GPT ����",
+            "top_k": 3,
+        })
+        # ����ֵӦ�� [0, 1] ���䣨latency_ms ���⣩
+        assert 0.0 <= metrics["recall_at_k"] <= 1.0
+>       assert 0.0 <= metrics["context_precision"] <= 1.0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<=' not supported between instances of 'float' and 'NoneType'
+
+tests\integration\test_retriever_integration.py:195: TypeError
+============================== warnings summary ===============================
+tests\unit\api\test_api.py:5
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_api.py:5: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/integration/test_retriever_integration.py::test_evaluate_produces_valid_metrics
+1 failed, 1060 passed, 18 deselected, 1 warning in 62.02s (0:01:02)
