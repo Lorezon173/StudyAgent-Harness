@@ -52,3 +52,11 @@
 - Ruling: 允许app/api/_persist.py在两处session_store.save之后、MessageStore.add之前显式await db.flush()，补充顺序及失败回滚验证；这是满足项目父先flush硬约束的最小既有接口修正。若判断错误，代价为撤回两处flush并重新诊断。
 - 边界：不新增API、幂等架构或commit；Task8仍按原序完整验收事务、并发与幂等。未降低验收标准，按已批准规程范围内修正执行。
 - 状态：实施中，待原样回归及独立审阅，未标完成。
+
+## ADJ-005：Task2画像归属与兼容写入保护（A类）
+
+- Ruling: 按raw节点字段保留profile_id而不冗余user_id，画像(user_id,id)唯一、节点(profile_id,id)唯一及边同画像复合外键；Store每个方法验证调用用户与画像归属，Task3继续构成会话归属链。若判断错误，代价是补迁移扩展约束，不能以应用层检查替代数据库边界。
+- Ruling: 兼容Graph.load/save未传节点revision，由Store记录读取版本并条件更新；未读取的既有节点必须带显式revision，否则拒绝覆盖；边使用已读画像版本保护陈旧写入。若判断错误，代价为兼容调用需重新加载，不能静默覆盖新状态。
+- Ruling: 旧边缺少端点时迁移明确失败并回滚，不删除原数据或编造节点。若真实历史存在此类脏数据，需列出数量和修复方案再实施，代价是迁移被阻塞。
+- 环境：创建无持久卷、仅本机55440端口的studyagent-goal-test-pg独立测试容器，pg_isready通过；不接触现有3个容器。用于后续真实PG验收，非部署。
+- 顺序与验收不变；Task2进行中，未提前创建evidence/session扩展。

@@ -62,3 +62,5 @@ Task1检查点：登记ADJ-004，允许最小父会话flush修复；保留FK开�
 Task1实现与独立审查通过，待明确文件提交：229 passed、1既有真实judge integration deselected、1弃用warning，13.25s。默认关闭检索、显式开启可信可见性、ADJ-004父flush均已验证；不宣称真实模型或PG验收。
 Task1 minor (deferred): Settings(_env_file=None)仍受进程RAG_ENABLED影响，默认值测试后续隔离环境；实际本次环境下已通过。Task13检查时携带此项。
 Task1 minor (deferred): Starlette/httpx既有弃用warning，后续依赖维护清理，不在本任务升级依赖。
+
+Task1 DONE：本地提交cd89c89，独立审查Approved；进入Task2，不推送/部署。
