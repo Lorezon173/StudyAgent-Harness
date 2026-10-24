@@ -26,7 +26,7 @@
   "native_goal_status": "usageLimited",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task2",
+  "current_task": "Task3",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -95,17 +95,17 @@
     },
     {
       "id": "Task2",
-      "status": "RUNNING",
-      "commit": null,
+      "status": "DONE",
+      "commit": "9f19eb5",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task2/"
       ],
-      "review": "task2_review: initial 2 Important; fix round1 both ADDRESSED; quality approved; local commit pending",
+      "review": "task2_review fix round1: 2 Important ADDRESSED; quality approved",
       "blocked_reason": null
     },
     {
       "id": "Task3",
-      "status": "PENDING",
+      "status": "RUNNING",
       "commit": null,
       "evidence": [],
       "review": null,
