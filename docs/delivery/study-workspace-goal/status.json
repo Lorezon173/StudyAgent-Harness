@@ -26,7 +26,7 @@
   "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task6",
+  "current_task": "Task7",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -135,12 +135,12 @@
     },
     {
       "id": "Task6",
-      "status": "VERIFIED_UNCOMMITTED",
-      "commit": null,
+      "status": "DONE",
+      "commit": "8679a76",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task6/"
       ],
-      "review": "round1/2 plan PASS; P2 legacy message order ADDRESSED; scope review Approved",
+      "review": "round1/2 plan PASS; original P2 ADDRESSED; code scope review Approved",
       "blocked_reason": null
     },
     {
@@ -250,7 +250,7 @@
   ],
   "milestones": {
     "M0": "DONE",
-    "M1": "PENDING",
+    "M1": "DONE",
     "M2": "PENDING",
     "M3": "PENDING",
     "M4": "PENDING",
@@ -263,12 +263,11 @@
   "execution_mode": "native_goal_active",
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
-    "task": "Task6",
-    "round": "round2",
-    "plan": "docs/superpowers/plans/2026-10-25-task6-round2.md",
-    "plan_review": "PASS",
-    "status": "VERIFIED_UNCOMMITTED",
-    "plan_sha256": "9b51846b2bff9c3955c7b1c7b42f99cb38c103740ee23d702d6fbcc1f9a0708c"
+    "task": "Task7",
+    "round": "round1",
+    "plan": null,
+    "plan_review": "PENDING",
+    "status": "PLANNING"
   },
-  "next_step": "Task6审查通过，选择性提交README及明确文件后核SHA"
+  "next_step": "Task7依据当前代码撰写三层计划，独立review PASS后才能实施"
 }

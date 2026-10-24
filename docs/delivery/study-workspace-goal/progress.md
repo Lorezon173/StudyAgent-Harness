@@ -120,3 +120,5 @@ Task6 round2 plan PASS (task6_plan_review; SHA2569b51846b2bff9c3955c7b1c7b42f99c
 Task6 round2冻结：新非单调历史单项先红([2,3,1]vs[1,2,3])后绿，仅无参id排序一行修复；新旧API23pass/旧warning。独立范围复审中。原服务16通过证据未重复运行，锁与状态路径无改动。
 
 Task6 round2范围复审PASS：原P2 ADDRESSED，无新阻断；API23pass，原服务16项证据有效。README已补接口/分页/版本/Task8依赖，待选择性明确文件提交，原README142行与asset34行保护。
+
+Task6 DONE：8679a76；两轮plan review PASS，原P2旧消息顺序复审ADDRESSED。API23pass，SQLite/PG服务16例成功证据齐；README/证据已本地提交，原README142行/asset34行保留。M1=Task1–6完成；Task7三层规划开始。Task8真实retry仍PENDING，总Goal active。staged check产品/测试/文档通过；原始pytest日志尾空白原样留证，没有伪称全部diff无空白。
