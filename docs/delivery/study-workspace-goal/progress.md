@@ -78,3 +78,5 @@ Task3 round1 plan v1.1独立复审PASS（初审两阻断已修），SHA256 bb8a0
 Task3 round1实施冻结：default/provided3 passed，SQLite/PG迁移21 passed无skip，API/persist25 passed+既有warning；原Store65 passed未重复。独立代码审查中，未提交或标DONE。
 
 Task3 round1代码独立审查Approved，无Critical/Important；README已补真实数据层能力与未接入产品边界。准备明确文件提交，不提前执行Task4。
+
+Task3 DONE：ab0dd81；round1先plan独立复审PASS后实施，code review Approved。存储65通过、最终迁移21通过、API25通过；README及证据已提交。下一Task4尚PENDING，必须先新轮plan+独立review PASS。总Goal未完成，原生usageLimited状态未伪改。

@@ -26,7 +26,7 @@
   "native_goal_status": "usageLimited",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task3",
+  "current_task": "Task4",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -105,12 +105,12 @@
     },
     {
       "id": "Task3",
-      "status": "RUNNING",
-      "commit": null,
+      "status": "DONE",
+      "commit": "ab0dd81",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task3/"
       ],
-      "review": "task3_code_review: spec compliant; quality approved; local commit pending",
+      "review": "round1 plan v1.1 PASS; task3_code_review spec compliant, quality approved",
       "blocked_reason": null
     },
     {
@@ -268,6 +268,8 @@
     "plan_sha256": "bb8a0a7a1a881446e9b63be510f0b5ea45b3a749b097e92f0f3087c72944f593",
     "plan_review": "PASS",
     "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task3/round1-plan-review.md",
-    "status": "VERIFIED_PENDING_COMMIT"
-  }
+    "status": "DONE",
+    "commit": "ab0dd81"
+  },
+  "next_step": "Task4先写本轮plan并独立review plan PASS后才实施"
 }
