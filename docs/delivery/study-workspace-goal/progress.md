@@ -104,3 +104,5 @@ Task5初审Needs fixes：2 Important验收证据缺口（真实锁/事务、新�
 Task5 round2冻结：游标原实现3个非规范合法载荷错误200，修后API20通过。数据库服务8通过，PG真实Lock/blockingPID与SQLite driver事务、独立NullPool指纹齐全；关闭两保护的进程内负控制分别命中预期FAIL，工作树未回退。报告更新，范围复审中，Task5未DONE。
 
 Task5 round2范围复审PASS：两Important与游标Minor均ADDRESSED，无新阻断。API20/service8/旧stats1通过，真实锁/事务/独立连接与negative controls证据齐，README已补，待明确文件提交。旧Starlette与全量Retriever基线继续保留。
+
+Task5 DONE：2eb9370；两轮先plan review PASS再实施，范围复审关闭两Important与cursorMinor。API20通过、SQLite/真实PG服务8通过且guard controls有效、旧stats1通过。README/全部证据已提交；下一Task6 PENDING先计划审查。总Goal仍未完成，不伪称全量/产品验收。
