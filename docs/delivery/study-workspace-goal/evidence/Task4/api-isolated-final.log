@@ -1,0 +1,13 @@
+Isolated DATABASE_URL: sqlite+aiosqlite:///C:/Users/A1985/AppData/Local/Temp/task4-api-96029ca1e84f4e6da28c9744d2fd9e6e.db
+................................                                         [100%]
+============================== warnings summary ===============================
+tests\unit\api\test_api.py:5
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_api.py:5: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+tests/unit/api/test_private_knowledge_api.py::test_literal_search_owner_profile_filters_and_stable_id_pagination
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\aiosqlite\core.py:63: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    result = function()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+32 passed, 2 warnings in 9.71s

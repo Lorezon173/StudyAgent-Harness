@@ -1,0 +1,955 @@
+FFFFFFFFFFFFFFFFFFFFFFFF                                                 [100%]
+================================== FAILURES ===================================
+_______________ test_all_endpoints_require_real_authentication ________________
+
+library = (<httpx.AsyncClient object at 0x0000014A7B384170>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B41E250>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_all_endpoints_require_real_authentication(library):
+        client, _, _ = library
+        for method, path, body in [
+            ("GET", "", None), ("POST", "", {"name": "x"}),
+            ("GET", "/1", None), ("PATCH", "/1", {"name": "x"}), ("DELETE", "/1", None),
+        ]:
+>           assert (await client.request(method, "/api/knowledge" + path, json=body)).status_code == 401
+E           assert 200 == 401
+E            +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:66: AssertionError
+____ test_crud_persists_with_fresh_connections_and_patch_preserves_fields _____
+
+library = (<httpx.AsyncClient object at 0x0000014A7B489C10>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A4A71C950>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_crud_persists_with_fresh_connections_and_patch_preserves_fields(library):
+        client, headers, factory = library
+        item = await create(client, headers[1], name="  �㷨  ", description="˵��", content_text="����", profile_id="profile1")
+>       assert item["name"] == "�㷨"
+E       AssertionError: assert '  �㷨  ' == '�㷨'
+E         
+E         - �㷨
+E         +   �㷨
+
+tests\unit\api\test_private_knowledge_api.py:74: AssertionError
+_________ test_owner_scope_and_invalid_profile_never_partially_update _________
+
+library = (<httpx.AsyncClient object at 0x0000014A4A731460>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C6FFE90>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_owner_scope_and_invalid_profile_never_partially_update(library):
+        client, headers, factory = library
+        item = await create(client, headers[2], profile_id="profile2", description="����")
+        kid = item["id"]
+>       assert (await client.get("/api/knowledge", headers=headers[1])).json() == []
+E       AssertionError: assert [{'descriptio...'name': '��Ƭ'}] == []
+E         
+E         Left contains 2 more items, first extra item: {'description': '˵��', 'id': 1, 'name': '  �㷨  '}
+E         Use -v to get more diff
+
+tests\unit\api\test_private_knowledge_api.py:98: AssertionError
+______ test_readonly_body_fields_are_rejected_without_writes[user_id-2] _______
+
+library = (<httpx.AsyncClient object at 0x0000014A7B6D2270>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C713E90>, autoflush=True, expire_on_commit=False))
+field = 'user_id', value = 2
+
+    @pytest.mark.parametrize("field,value", [("user_id", 2), ("id", 99), ("source_type", "manual"), ("source_type", "uploaded"), ("source_type", "indexed")])
+    @pytest.mark.asyncio
+    async def test_readonly_body_fields_are_rejected_without_writes(library, field, value):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "α��", field: value})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:118: AssertionError
+________ test_readonly_body_fields_are_rejected_without_writes[id-99] _________
+
+library = (<httpx.AsyncClient object at 0x0000014A7B4887A0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C6FF3D0>, autoflush=True, expire_on_commit=False))
+field = 'id', value = 99
+
+    @pytest.mark.parametrize("field,value", [("user_id", 2), ("id", 99), ("source_type", "manual"), ("source_type", "uploaded"), ("source_type", "indexed")])
+    @pytest.mark.asyncio
+    async def test_readonly_body_fields_are_rejected_without_writes(library, field, value):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "α��", field: value})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:118: AssertionError
+__ test_readonly_body_fields_are_rejected_without_writes[source_type-manual] __
+
+library = (<httpx.AsyncClient object at 0x0000014A7B6ACF50>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C6FE390>, autoflush=True, expire_on_commit=False))
+field = 'source_type', value = 'manual'
+
+    @pytest.mark.parametrize("field,value", [("user_id", 2), ("id", 99), ("source_type", "manual"), ("source_type", "uploaded"), ("source_type", "indexed")])
+    @pytest.mark.asyncio
+    async def test_readonly_body_fields_are_rejected_without_writes(library, field, value):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "α��", field: value})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:118: AssertionError
+_ test_readonly_body_fields_are_rejected_without_writes[source_type-uploaded] _
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6C5940>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C71DD90>, autoflush=True, expire_on_commit=False))
+field = 'source_type', value = 'uploaded'
+
+    @pytest.mark.parametrize("field,value", [("user_id", 2), ("id", 99), ("source_type", "manual"), ("source_type", "uploaded"), ("source_type", "indexed")])
+    @pytest.mark.asyncio
+    async def test_readonly_body_fields_are_rejected_without_writes(library, field, value):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "α��", field: value})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:118: AssertionError
+_ test_readonly_body_fields_are_rejected_without_writes[source_type-indexed] __
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6C61E0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C71F110>, autoflush=True, expire_on_commit=False))
+field = 'source_type', value = 'indexed'
+
+    @pytest.mark.parametrize("field,value", [("user_id", 2), ("id", 99), ("source_type", "manual"), ("source_type", "uploaded"), ("source_type", "indexed")])
+    @pytest.mark.asyncio
+    async def test_readonly_body_fields_are_rejected_without_writes(library, field, value):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "α��", field: value})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:118: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body0] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6C4560>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C717C50>, autoflush=True, expire_on_commit=False))
+body = {'name': ' '}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body1] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7B6AD160>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C714890>, autoflush=True, expire_on_commit=False))
+body = {'name': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body2] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6C61B0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B626A10>, autoflush=True, expire_on_commit=False))
+body = {'name': None}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+        assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+>       assert (await client.patch(f"/api/knowledge/{item['id']}", headers=headers[1], json=body)).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:135: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body3] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7B6AEFC0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B626A90>, autoflush=True, expire_on_commit=False))
+body = {'name': 123}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+        assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+>       assert (await client.patch(f"/api/knowledge/{item['id']}", headers=headers[1], json=body)).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:135: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body4] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6DB7A0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B6A2A50>, autoflush=True, expire_on_commit=False))
+body = {'description': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body5] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6DB020>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B6C2E10>, autoflush=True, expire_on_commit=False))
+body = {'description': None}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+        assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+>       assert (await client.patch(f"/api/knowledge/{item['id']}", headers=headers[1], json=body)).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:135: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body6] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C764830>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B481810>, autoflush=True, expire_on_commit=False))
+body = {'description': 123}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+        assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+>       assert (await client.patch(f"/api/knowledge/{item['id']}", headers=headers[1], json=body)).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:135: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body7] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C765700>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C740E50>, autoflush=True, expire_on_commit=False))
+body = {'content_text': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body8] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C765580>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B412290>, autoflush=True, expire_on_commit=False))
+body = {'content_text': None}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+_____________ test_input_validation_rejects_invalid_fields[body9] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6C7410>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C6B6290>, autoflush=True, expire_on_commit=False))
+body = {'content_text': []}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+____________ test_input_validation_rejects_invalid_fields[body10] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6CBBC0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C6B5810>, autoflush=True, expire_on_commit=False))
+body = {'profile_id': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+____________ test_input_validation_rejects_invalid_fields[body11] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C793260>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7B4A0B50>, autoflush=True, expire_on_commit=False))
+body = {'profile_id': 123}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+____________ test_input_validation_rejects_invalid_fields[body12] _____________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C792090>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C722590>, autoflush=True, expire_on_commit=False))
+body = {'unknown': 'x'}
+
+    @pytest.mark.parametrize("body", [
+        {"name": " "}, {"name": "x" * 129}, {"name": None}, {"name": 123},
+        {"description": "x" * 2001}, {"description": None}, {"description": 123},
+        {"content_text": "x" * 100001}, {"content_text": None}, {"content_text": []},
+        {"profile_id": "x" * 37}, {"profile_id": 123}, {"unknown": "x"},
+    ])
+    @pytest.mark.asyncio
+    async def test_input_validation_rejects_invalid_fields(library, body):
+        client, headers, factory = library
+        item = await create(client, headers[1])
+>       assert (await client.post("/api/knowledge", headers=headers[1], json={"name": "x", **body})).status_code == 422
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_private_knowledge_api.py:134: AssertionError
+____________________ test_boundary_lengths_and_empty_patch ____________________
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6CAAB0>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C71A0D0>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_boundary_lengths_and_empty_patch(library):
+        client, headers, _ = library
+        item = await create(client, headers[1], name="x" * 128, description="d" * 2000, content_text="c" * 100000)
+>       assert len(item["content_text"]) == 100000
+                   ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'content_text'
+
+tests\unit\api\test_private_knowledge_api.py:144: KeyError
+_____ test_literal_search_owner_profile_filters_and_stable_id_pagination ______
+
+self = <sqlalchemy.engine.base.Connection object at 0x0000014A7C764590>
+dialect = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x0000014A7C6E7710>
+context = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteExecutionContext_aiosqlite object at 0x0000014A7C7C7E30>
+statement = <sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x0000014A7C7C6BD0>
+parameters = [(datetime.datetime(2026, 1, 1, 0, 0),)]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:343: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tx = <_queue.SimpleQueue object at 0x0000014A7B498540>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: no such table: library_items
+
+.venv\Lib\site-packages\aiosqlite\core.py:63: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+library = (<httpx.AsyncClient object at 0x0000014A7C6D9880>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7C718350>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_literal_search_owner_profile_filters_and_stable_id_pagination(library):
+        client, headers, factory = library
+        items = []
+        for fields in [{"name": "a%b"}, {"description": "a_b"}, {"content_text": "a\\b"}, {"name": "��ͨ", "profile_id": "profile1"}, {"name": "���"}]:
+            items.append(await create(client, headers[1], **fields))
+        await create(client, headers[2], name="a%b", description="a_b", content_text="a\\b", profile_id="profile2")
+        async with factory() as db:
+>           await db.execute(text("UPDATE library_items SET updated_at=:at"), {"at": datetime(2026, 1, 1)})
+
+tests\unit\api\test_private_knowledge_api.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:448: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2372: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2279: in _execute_internal
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:343: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tx = <_queue.SimpleQueue object at 0x0000014A7B498540>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: library_items
+E               [SQL: UPDATE library_items SET updated_at=?]
+E               [parameters: (datetime.datetime(2026, 1, 1, 0, 0),)]
+E               (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\aiosqlite\core.py:63: OperationalError
+____________ test_write_failure_rolls_back_entire_api_transaction _____________
+
+self = <sqlalchemy.engine.base.Connection object at 0x0000014A7C6C6B10>
+dialect = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteDialect_aiosqlite object at 0x0000014A7B489070>
+context = <sqlalchemy.dialects.sqlite.aiosqlite.SQLiteExecutionContext_aiosqlite object at 0x0000014A7C6C4AD0>
+statement = <sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x0000014A7C6C7440>
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:343: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tx = <_queue.SimpleQueue object at 0x0000014A7C77EB10>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlite3.OperationalError: no such table: main.library_items
+
+.venv\Lib\site-packages\aiosqlite\core.py:63: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+library = (<httpx.AsyncClient object at 0x0000014A4A730560>, {1: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014A7D943150>, autoflush=True, expire_on_commit=False))
+
+    @pytest.mark.asyncio
+    async def test_write_failure_rolls_back_entire_api_transaction(library):
+        client, headers, factory = library
+        item = await create(client, headers[1], description="ԭ˵��")
+        async with factory() as db:
+>           await db.execute(text("CREATE TRIGGER reject_library_update AFTER UPDATE ON library_items BEGIN SELECT RAISE(ABORT, 'injected write failure'); END"))
+
+tests\unit\api\test_private_knowledge_api.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:448: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2372: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2279: in _execute_internal
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:183: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:343: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:165: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+           ^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tx = <_queue.SimpleQueue object at 0x0000014A7C77EB10>
+
+    def _connection_worker_thread(tx: _TxQueue):
+        """
+        Execute function calls on a separate thread.
+    
+        :meta private:
+        """
+        while True:
+            # Continues running until all queue items are processed,
+            # even after connection is closed (so we can finalize all
+            # futures)
+    
+            future, function = tx.get()
+    
+            try:
+                LOG.debug("executing %s", function)
+>               result = function()
+                         ^^^^^^^^^^
+E               sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: main.library_items
+E               [SQL: CREATE TRIGGER reject_library_update AFTER UPDATE ON library_items BEGIN SELECT RAISE(ABORT, 'injected write failure'); END]
+E               (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\aiosqlite\core.py:63: OperationalError
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_private_knowledge_api.py::test_all_endpoints_require_real_authentication
+FAILED tests/unit/api/test_private_knowledge_api.py::test_crud_persists_with_fresh_connections_and_patch_preserves_fields
+FAILED tests/unit/api/test_private_knowledge_api.py::test_owner_scope_and_invalid_profile_never_partially_update
+FAILED tests/unit/api/test_private_knowledge_api.py::test_readonly_body_fields_are_rejected_without_writes[user_id-2]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_readonly_body_fields_are_rejected_without_writes[id-99]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_readonly_body_fields_are_rejected_without_writes[source_type-manual]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_readonly_body_fields_are_rejected_without_writes[source_type-uploaded]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_readonly_body_fields_are_rejected_without_writes[source_type-indexed]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body0]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body1]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body2]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body3]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body4]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body5]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body6]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body7]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body8]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body9]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body10]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body11]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_input_validation_rejects_invalid_fields[body12]
+FAILED tests/unit/api/test_private_knowledge_api.py::test_boundary_lengths_and_empty_patch
+FAILED tests/unit/api/test_private_knowledge_api.py::test_literal_search_owner_profile_filters_and_stable_id_pagination
+FAILED tests/unit/api/test_private_knowledge_api.py::test_write_failure_rolls_back_entire_api_transaction
+24 failed in 11.39s

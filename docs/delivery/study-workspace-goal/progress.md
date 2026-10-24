@@ -80,3 +80,13 @@ Task3 round1实施冻结：default/provided3 passed，SQLite/PG迁移21 passed�
 Task3 round1代码独立审查Approved，无Critical/Important；README已补真实数据层能力与未接入产品边界。准备明确文件提交，不提前执行Task4。
 
 Task3 DONE：ab0dd81；round1先plan独立复审PASS后实施，code review Approved。存储65通过、最终迁移21通过、API25通过；README及证据已提交。下一Task4尚PENDING，必须先新轮plan+独立review PASS。总Goal未完成，原生usageLimited状态未伪改。
+
+Goal恢复检查：上一正式Goal轮Task3完成属progress；紧邻Task4读取被用户中断，无结果，现重新只读核查当前HEAD7ff4c02与knowledge内存接口。原生get_goal实测active，清除旧usageLimited自动续跑等待。Task4 round1计划已写，独立plan review中，未改产品。
+
+Task4 round1 plan v1.1独立复审PASS，三阻断已修；SHA256 0bbcf6667be7ba5c11ed291fd207958061685012a1675b727be5a4e3627c960f，恢复实施。
+
+Task4 round1实现冻结：新API先24失败后隔离环境最终32通过（两warning），SQLite/真实PG新旧迁移23通过无skip。旧默认库schema导致29通过1失败原日志保留，未改用户默认库；独立代码审查中，未提交或DONE。
+
+Task4 code review Approved，无阻断。为严格证明新物理连接持久化，round2仅测试补强计划已写待独立review；产品保持冻结，尚未执行新测试修改。
+
+Task4 round2先plan review PASS后测试补强，独立物理连接CRUD与日期adapter两项minor复审ADDRESSED，26通过无warning；旧Starlette警告保留。产品无变动，初审Approved/最终范围复审PASS，README已补，待明确文件提交。

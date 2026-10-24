@@ -138,3 +138,21 @@ class UserWorkspaceStateTable(Base):
         CheckConstraint("progress_y_ratio >= 0 AND progress_y_ratio <= 1", name="ck_workspace_progress_ratio"),
         CheckConstraint("version >= 0", name="ck_workspace_version"),
     )
+
+
+class LibraryItemTable(Base):
+    __tablename__ = "library_items"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    profile_id = Column(String(36), nullable=True)
+    name = Column(String(128), nullable=False)
+    description = Column(Text, nullable=False, default="", server_default="")
+    content_text = Column(Text, nullable=False, default="", server_default="")
+    source_type = Column(String(16), nullable=False, default="manual", server_default="manual")
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    __table_args__ = (
+        ForeignKeyConstraint(["user_id", "profile_id"], ["topic_profiles.user_id", "topic_profiles.id"], name="fk_library_profile_owner"),
+        Index("ix_library_owner_id", "user_id", "id"),
+        Index("ix_library_owner_profile_id", "user_id", "profile_id", "id"),
+    )

@@ -2,6 +2,7 @@ from typing import Any, Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
+from app.models.workspace_schemas import LibraryCreate, LibraryItem
 
 
 class ChatRequest(BaseModel):
@@ -49,15 +50,12 @@ class EvalResponse(BaseModel):
     ragas_context_recall: float | None = None
 
 
-class KnowledgeCreateRequest(BaseModel):
-    name: str
-    description: str = ""
+class KnowledgeCreateRequest(LibraryCreate):
+    pass
 
 
-class KnowledgeResponse(BaseModel):
-    id: int
-    name: str
-    description: str
+class KnowledgeResponse(LibraryItem):
+    pass
 
 
 class SessionResponse(BaseModel):

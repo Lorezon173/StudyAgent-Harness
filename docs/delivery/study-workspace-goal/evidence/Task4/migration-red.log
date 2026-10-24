@@ -1,0 +1,80 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade[sqlite] _
+
+library_migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000255F59314C0>, <alembic.config.Config object at 0x00000255F59314F0>)
+
+    def test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade(library_migration_db):
+        connection, config = library_migration_db
+        connection.execute(sa.text("INSERT INTO users(id,username,password_hash) VALUES (1,'one','x'),(2,'two','x')"))
+        connection.execute(sa.text("INSERT INTO topic_profiles(id,user_id,name) VALUES ('profile1',1,'one'),('profile2',2,'two')"))
+        connection.execute(sa.text("INSERT INTO knowledge(id,scope,user_id,content,source,doc_ids) VALUES (51,'user',1,'��֪ʶԭ��','����Դ','[]')"))
+        connection.commit()
+        command.upgrade(config, "head")
+        connection.commit()
+        with connection.engine.connect() as fresh:
+>           assert fresh.scalar(sa.text("SELECT version_num FROM alembic_version")) == CURRENT
+E           AssertionError: assert '20261023_ses...rkspace_state' == '20261023_private_library'
+E             
+E             - 20261023_private_library
+E             + 20261023_session_workspace_state
+
+tests\integration\test_private_library_migrations.py:65: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+_ test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade[postgresql] _
+
+library_migration_db = (<sqlalchemy.engine.base.Connection object at 0x00000255C4E119D0>, <alembic.config.Config object at 0x00000255F5D77FE0>)
+
+    def test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade(library_migration_db):
+        connection, config = library_migration_db
+        connection.execute(sa.text("INSERT INTO users(id,username,password_hash) VALUES (1,'one','x'),(2,'two','x')"))
+        connection.execute(sa.text("INSERT INTO topic_profiles(id,user_id,name) VALUES ('profile1',1,'one'),('profile2',2,'two')"))
+        connection.execute(sa.text("INSERT INTO knowledge(id,scope,user_id,content,source,doc_ids) VALUES (51,'user',1,'��֪ʶԭ��','����Դ','[]')"))
+        connection.commit()
+        command.upgrade(config, "head")
+        connection.commit()
+        with connection.engine.connect() as fresh:
+>           assert fresh.scalar(sa.text("SELECT version_num FROM alembic_version")) == CURRENT
+E           AssertionError: assert '20261023_ses...rkspace_state' == '20261023_private_library'
+E             
+E             - 20261023_private_library
+E             + 20261023_session_workspace_state
+
+tests\integration\test_private_library_migrations.py:65: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+=========================== short test summary info ===========================
+FAILED tests/integration/test_private_library_migrations.py::test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade[sqlite]
+FAILED tests/integration/test_private_library_migrations.py::test_library_upgrade_preserves_legacy_and_enforces_owner_with_safe_downgrade[postgresql]
+2 failed in 3.40s

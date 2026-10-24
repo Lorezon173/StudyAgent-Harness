@@ -437,3 +437,11 @@ curl http://localhost:8000/health          # 健康检查
 迁移head为`20261023_session_workspace_state`：旧有主会话绑定本人legacy画像，NULL owner保持隔离；下一回合按最大turn_index+1回填。默认SQLite Alembic连接在事务前开启并核实外键；提供的连接若外键关闭且已有真实事务，会明确拒绝且不提交/回滚调用方事务。重建失败完整恢复数据/schema/版本，带新工作区数据降级须先导出并明确处理，不能直接丢弃。
 
 验证：存储兼容65项通过；共用入口最终SQLite与真实PostgreSQL迁移21项通过、无skip；HTTP/SSE/保存兼容25项通过，保留既有弃用警告。计划独立审查通过后才执行，代码独立审查也通过，证据见[Task3记录](docs/delivery/study-workspace-goal/evidence/Task3/)。本次完成数据层；真实恢复API、上下文和整轮幂等业务仍待Task6–8，正式React页面未接入。全套既有评估失败仍待最终验收关闭。
+
+## Task4：私有文本知识库（2026-10-24）
+
+`/api/knowledge` 改为登录后访问的持久化私有文本卡片，保留列表数组及 `id/name/description` 字段，增加 `profile_id/content_text/source_type` 和时间。支持 POST 创建、GET 列表与详情、PATCH 编辑、DELETE 删除；只能操作本人资料，关联画像也须属于本人。旧 `knowledge` 表和向量资产不复制、不认领、不删除，新文本卡不会自动进入教学检索。
+
+列表支持 `q` 字面子串搜索、`profile_id` 过滤、`limit`（默认50，范围1–100）及 `before_id` 游标，按ID倒序；下一页使用上一页最后一项ID。名称去首尾空白后非空且<=128，说明<=2000，正文<=100000字符；请求中的只读身份/ID/来源字段、空补丁及非法值返回422。PATCH只更新明确提供字段，`profile_id:null` 可解除关联。资料不存在或不属本人统一404。
+
+新增迁移 `20261023_private_library` 与owner/profile复合外键；带新资料时拒绝直接降级丢数据。Store只flush，由API统一提交，失败完整回滚。验证：隔离环境API组合32项通过；SQLite/真实PostgreSQL新旧迁移23项通过；独立物理连接CRUD补强26项通过且该组无警告。原API组合的既有Starlette弃用提示仍保留。工作区旧SQLite未在本轮升级，临时库通过不代替产品运行与PG重启验收。计划审查与代码审查证据见[Task4记录](docs/delivery/study-workspace-goal/evidence/Task4/)。

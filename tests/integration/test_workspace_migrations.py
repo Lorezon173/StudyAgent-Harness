@@ -334,7 +334,7 @@ def test_default_sqlite_alembic_connection_enables_foreign_keys_and_is_atomic(tm
             fresh.exec_driver_sql("PRAGMA foreign_keys=ON")
             assert fresh.scalar(sa.text("PRAGMA foreign_keys")) == 1
             assert fresh.scalar(sa.text("SELECT content FROM messages")) == "CLI保留原文"
-            assert fresh.scalar(sa.text("SELECT version_num FROM alembic_version")) == (CURRENT if fail_rebuild else WORKSPACE)
+            assert fresh.scalar(sa.text("SELECT version_num FROM alembic_version")) == (CURRENT if fail_rebuild else "20261023_private_library")
             columns = {c["name"] for c in sa.inspect(fresh).get_columns("sessions")}
             assert ("profile_id" in columns) is not fail_rebuild
             assert ("chat_requests" in sa.inspect(fresh).get_table_names()) is not fail_rebuild

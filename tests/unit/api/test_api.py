@@ -57,18 +57,33 @@ def test_auth_register_and_login(db_client):
     assert resp3.status_code == 409
 
 
-def test_knowledge_crud():
-    from starlette.testclient import TestClient
-    client = TestClient(app)
-    resp = client.post("/api/knowledge", json={"name": "算法知识库", "description": "test"})
+@pytest.fixture()
+def knowledge_db_client(db_client):
+    """旧知识 CRUD 仍用隔离库，且唯一物理 SQLite 连接启用外键。"""
+    from sqlalchemy import text
+
+    async def enable_foreign_keys():
+        async for db in app.dependency_overrides[get_db]():
+            await db.execute(text("PRAGMA foreign_keys=ON"))
+            assert (await db.execute(text("PRAGMA foreign_keys"))).scalar_one() == 1
+
+    asyncio.run(enable_foreign_keys())
+    yield db_client
+
+
+def test_knowledge_crud(knowledge_db_client):
+    client = knowledge_db_client
+    registered = client.post("/api/auth/register", json={"username": "library-user", "password": "test123"})
+    headers = {"Authorization": f"Bearer {registered.json()['token']}"}
+    resp = client.post("/api/knowledge", headers=headers, json={"name": "算法知识库", "description": "test"})
     assert resp.status_code == 200
     kid = resp.json()["id"]
 
-    resp2 = client.get("/api/knowledge")
+    resp2 = client.get("/api/knowledge", headers=headers)
     assert resp2.status_code == 200
     assert len(resp2.json()) >= 1
 
-    resp3 = client.delete(f"/api/knowledge/{kid}")
+    resp3 = client.delete(f"/api/knowledge/{kid}", headers=headers)
     assert resp3.status_code == 200
 
 
