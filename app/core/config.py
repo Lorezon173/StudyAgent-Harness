@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     celery_result_backend: str = "redis://localhost:6379/1"
 
     # RAG & Embedding 配置（阶段 A：真向量检索）
+    rag_enabled: bool = False  # 在线教学默认不检索；显式开启时严格校验 pgvector
     rag_backend: str = "fake"  # "fake" | "pgvector"，默认 fake 保持测试兼容
     embedding_model: str = "doubao-embedding-vision"  # 火山引擎方舟 embedding 模型
     embedding_dim: int = 2048  # doubao-embedding-vision 默认维度

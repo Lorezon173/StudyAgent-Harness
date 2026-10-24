@@ -23,6 +23,30 @@ _app.dependency_overrides[get_current_user] = lambda: {"user_id": 1}
 client = TestClient(_app)
 
 
+@pytest.fixture(autouse=True)
+def isolated_database(db_fixture, monkeypatch):
+    from sqlalchemy import event
+    from app.models.tables import UserTable, SessionTable
+
+    async def setup():
+        engine, factory = await db_fixture.setup_db()
+        @event.listens_for(engine.sync_engine, "connect")
+        def foreign_keys(connection, _):
+            connection.execute("PRAGMA foreign_keys=ON")
+        await engine.dispose()
+        async with factory() as db:
+            db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+            await db.flush()
+            db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+            await db.commit()
+        return engine, factory
+
+    engine, factory = db_fixture.run(setup())
+    monkeypatch.setattr("app.api.chat.async_session", factory)
+    yield factory
+    db_fixture.run(engine.dispose())
+
+
 @pytest.fixture
 def online_rag_composition(monkeypatch):
     """模拟在线 composition 三条件（DEC-007），使单测可走在线入口。
@@ -30,6 +54,7 @@ def online_rag_composition(monkeypatch):
     database_url 仅被 PgVectorProvider 的懒连接 URL 解析消费；
     业务 async engine 在模块导入时已用 sqlite 建好，不受此 patch 影响。
     """
+    monkeypatch.setitem(settings.__dict__, "rag_enabled", True)
     monkeypatch.setattr(settings, "rag_backend", "pgvector")
     monkeypatch.setattr(settings, "database_url",
                         "postgresql+asyncpg://test:test@localhost:5432/test")
@@ -56,6 +81,7 @@ def test_chat_new_stack_e2e(mock_llm_invoke_json, online_rag_composition):
 
 def test_chat_fail_fast_when_backend_not_pgvector(mock_llm_invoke_json, monkeypatch):
     """在线 composition 校验失败 → 分类 503（DEC-007 fail-fast，不回退 fake）。"""
+    monkeypatch.setitem(settings.__dict__, "rag_enabled", True)
     monkeypatch.setattr(settings, "rag_backend", "fake")
     resp = client.post("/api/chat",
                        json={"message": "帮我理解 RAG", "session_id": "e2e-fail"})
@@ -63,6 +89,18 @@ def test_chat_fail_fast_when_backend_not_pgvector(mock_llm_invoke_json, monkeypa
     detail = resp.json()["detail"]
     assert detail["error_code"] == "backend_unavailable"
     assert detail["message"] == "检索服务当前不可用"
+
+
+def test_chat_disabled_rag_still_teaches(mock_llm_invoke_json, monkeypatch):
+    monkeypatch.setitem(settings.__dict__, "rag_enabled", False)
+    def forbidden(*args, **kwargs):
+        pytest.fail("禁用 RAG 时创建在线检索链")
+    monkeypatch.setattr("app.orchestration.assembly.build_online_rag_coordinator", forbidden)
+    mock_llm_invoke_json({"tutor_ask": {"content": "普通教学问题"}, "critic_assess": {}})
+    response = client.post("/api/chat", json={"message": "递归", "session_id": "http-rag-off"})
+    assert response.status_code == 200
+    assert response.json()["reply"] == "普通教学问题"
+    assert response.json()["persisted"] is True
 
 
 def test_chat_request_generates_session_id_by_default():

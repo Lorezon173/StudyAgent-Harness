@@ -1,0 +1,6 @@
+Controller actual tool results, recorded after execution (not replayed).
+Probe: TestClient(FastAPI()).get(/missing), no project routers, DB or network service. Child process timeout=15s.
+Ordinary sandbox: timeout after15s; captured before TestClient request.
+Native require_escalated, identical probe: status404, child exit0; tool wall time2.6298985s.
+Native stderr: StarletteDeprecationWarning about httpx (not a failure, dependencies unchanged).
+Conclusion limited to this session: TestClient hangs in ordinary execution path; use native approval path for API tests. Does not prove every earlier full-suite timeout had no other cause.

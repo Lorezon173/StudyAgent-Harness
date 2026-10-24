@@ -1,0 +1,138 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 15 items / 7 deselected / 8 selected
+
+tests/unit/orchestration/test_rag_switch.py::test_online_visibility_uses_authenticated_user_and_only_vector FAILED [ 12%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] PASSED [ 25%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] FAILED [ 37%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] FAILED [ 50%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] FAILED [ 62%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[ocr] FAILED [ 75%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[code] FAILED [ 87%]
+tests/unit/orchestration/test_rag_switch.py::test_online_visibility_filters_real_vector_rows_across_topics FAILED [100%]
+
+================================== FAILURES ===================================
+_______ test_online_visibility_uses_authenticated_user_and_only_vector ________
+tests\unit\orchestration\test_rag_switch.py:122: in test_online_visibility_uses_authenticated_user_and_only_vector
+    assert out[0].type == EventType.RETRIEVED_EVIDENCE
+E   AssertionError: assert <EventType.RETRIEVAL_FAILED: 'RetrievalFailed'> == <EventType.RETRIEVED_EVIDENCE: 'RetrievedEvidence'>
+E     
+E     - RetrievedEvidence
+E     + RetrievalFailed
+------------------------------ Captured log call ------------------------------
+ERROR    app.infrastructure.rag.coordinator:coordinator.py:195 RAG provider 'vector' search failed
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\infrastructure\rag\coordinator.py", line 187, in search
+    chunks = provider.search(query, top_k=top_k)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\orchestration\test_rag_switch.py", line 115, in search
+    assert visibility is not None
+AssertionError: assert None is not None
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] __
+tests\unit\orchestration\test_rag_switch.py:134: in test_online_rejects_visibility_override_or_workspace_mismatch
+    out = agent.handle(_request(ws, **payload), ws)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+baseline_retriever_from_HEAD.py:217: in handle
+    ???
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] __
+tests\unit\orchestration\test_rag_switch.py:134: in test_online_rejects_visibility_override_or_workspace_mismatch
+    out = agent.handle(_request(ws, **payload), ws)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+baseline_retriever_from_HEAD.py:217: in handle
+    ???
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] __
+tests\unit\orchestration\test_rag_switch.py:134: in test_online_rejects_visibility_override_or_workspace_mismatch
+    out = agent.handle(_request(ws, **payload), ws)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+baseline_retriever_from_HEAD.py:217: in handle
+    ???
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+___________ test_online_never_falls_back_to_unfiltered_sources[ocr] ___________
+tests\unit\orchestration\test_rag_switch.py:153: in test_online_never_falls_back_to_unfiltered_sources
+    assert agent.handle(_request(ws), ws)[0].payload["retrieval_status"] == "empty"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+baseline_retriever_from_HEAD.py:217: in handle
+    ???
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+app\infrastructure\rag\coordinator.py:187: in search
+    chunks = provider.search(query, top_k=top_k)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+__________ test_online_never_falls_back_to_unfiltered_sources[code] ___________
+tests\unit\orchestration\test_rag_switch.py:153: in test_online_never_falls_back_to_unfiltered_sources
+    assert agent.handle(_request(ws), ws)[0].payload["retrieval_status"] == "empty"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+baseline_retriever_from_HEAD.py:217: in handle
+    ???
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+app\infrastructure\rag\coordinator.py:187: in search
+    chunks = provider.search(query, top_k=top_k)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+________ test_online_visibility_filters_real_vector_rows_across_topics ________
+tests\unit\orchestration\test_rag_switch.py:186: in test_online_visibility_filters_real_vector_rows_across_topics
+    assert {chunk["content"] for chunk in out[0].payload["chunks"]} == {
+E   AssertionError: assert {'公共知识', '本人主题乙知识', '本人主题甲知识', '无主私有知识', '他人知识'} == {'公共知识', '本人主题乙知识', '本人主题甲知识'}
+E     
+E     Extra items in the left set:
+E     '他人知识'
+E     '无主私有知识'
+E     
+E     Full diff:
+E       {
+E     +     '他人知识',
+E           '公共知识',
+E     +     '无主私有知识',
+E           '本人主题乙知识',
+E           '本人主题甲知识',
+E       }
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_visibility_uses_authenticated_user_and_only_vector - AssertionError: assert <EventType.RETRIEVAL_FAILED: 'RetrievalFailed'> == <EventType.RETRIEVED_EVIDENCE: 'RetrievedEvidence'>
+  
+  - RetrievedEvidence
+  + RetrievalFailed
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[ocr] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[code] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_visibility_filters_real_vector_rows_across_topics - AssertionError: assert {'公共知识', '本人主题乙知识', '本人主题甲知识', '无主私有知识', '他人知识'} == {'公共知识', '本人主题乙知识', '本人主题甲知识'}
+  
+  Extra items in the left set:
+  '他人知识'
+  '无主私有知识'
+  
+  Full diff:
+    {
+  +     '他人知识',
+        '公共知识',
+  +     '无主私有知识',
+        '本人主题乙知识',
+        '本人主题甲知识',
+    }
+================== 7 failed, 1 passed, 7 deselected in 3.10s ==================

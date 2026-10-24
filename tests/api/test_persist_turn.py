@@ -1,6 +1,78 @@
 import app.models.tables  # noqa: F401 — 确保 create_all 前表模型已注册到 Base.metadata
 
 
+async def _foreign_key_database(db_fixture):
+    from sqlalchemy import event
+    from app.models.tables import UserTable
+
+    engine, factory = await db_fixture.setup_db()
+    @event.listens_for(engine.sync_engine, "connect")
+    def enable_foreign_keys(connection, _):
+        connection.execute("PRAGMA foreign_keys=ON")
+    await engine.dispose()
+    async with factory() as db:
+        db.add(UserTable(id=1, username="persist-fk-test", password_hash="unused"))
+        await db.commit()
+    return engine, factory
+
+
+def test_new_session_and_integrity_retry_flush_parent_before_messages(db_fixture):
+    async def run():
+        from sqlalchemy import event, text
+        from sqlalchemy.exc import IntegrityError
+        from app.api._persist import persist_turn
+
+        engine, factory = await _foreign_key_database(db_fixture)
+        commits = []
+        attempts = []
+        try:
+            @event.listens_for(engine.sync_engine, "before_cursor_execute")
+            def check_parent(connection, cursor, statement, parameters, context, executemany):
+                if statement.startswith("INSERT INTO messages"):
+                    assert connection.scalar(text("SELECT COUNT(*) FROM sessions WHERE id='fk-new'")) == 1
+                    attempts.append(statement)
+                    if len(attempts) == 1:
+                        raise IntegrityError(statement, parameters, Exception("controlled first conflict"))
+            @event.listens_for(engine.sync_engine, "commit")
+            def committed(connection):
+                commits.append(True)
+            async with factory() as db:
+                result = await persist_turn(db, "fk-new", 1, "问题", "回答")
+            async with factory() as db:
+                assert await db.scalar(text("SELECT COUNT(*) FROM messages WHERE session_id='fk-new'")) == 2
+            assert result == 0
+            assert len(attempts) == 3
+            assert len(commits) == 1
+        finally:
+            await engine.dispose()
+    db_fixture.run(run())
+
+
+def test_failure_after_flushed_messages_rolls_back_parent_and_children(db_fixture):
+    async def run():
+        from sqlalchemy import text
+        from app.api._persist import persist_turn
+
+        engine, factory = await _foreign_key_database(db_fixture)
+        graph_reached = []
+        try:
+            async with factory() as db:
+                class FailingGraph:
+                    async def save(self):
+                        await db.flush()
+                        assert await db.scalar(text("SELECT COUNT(*) FROM messages")) == 2
+                        graph_reached.append(True)
+                        raise RuntimeError("controlled graph failure")
+                assert await persist_turn(db, "fk-rollback", 1, "问题", "回答", FailingGraph()) is None
+            assert graph_reached == [True]
+            async with factory() as db:
+                assert await db.scalar(text("SELECT COUNT(*) FROM sessions")) == 0
+                assert await db.scalar(text("SELECT COUNT(*) FROM messages")) == 0
+        finally:
+            await engine.dispose()
+    db_fixture.run(run())
+
+
 def test_persist_turn_writes_session_messages_and_returns_turn_index(db_fixture):
     async def _test():
         engine, session_factory = await db_fixture.setup_db()

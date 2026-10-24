@@ -1,0 +1,126 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 10 items / 8 deselected / 2 selected
+
+tests/api/test_persist_turn.py::test_new_session_and_integrity_retry_flush_parent_before_messages FAILED [ 50%]
+tests/api/test_persist_turn.py::test_failure_after_flushed_messages_rolls_back_parent_and_children FAILED [100%]
+
+================================== FAILURES ===================================
+______ test_new_session_and_integrity_retry_flush_parent_before_messages ______
+tests\api\test_persist_turn.py:48: in test_new_session_and_integrity_retry_flush_parent_before_messages
+    db_fixture.run(run())
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_persist_turn.py:42: in run
+    assert await db.scalar(text("SELECT COUNT(*) FROM messages WHERE session_id='fk-new'")) == 2
+E   assert 0 == 2
+---------------------------- Captured stdout call -----------------------------
+[ERROR] {"event": "persist_failure", "context": {"session_id": "fk-new", "reason": "programming_error", "error": "assert 0 == 1\n +  where 0 = scalar(<sqlalchemy.sql.elements.TextClause object at 0x0000024660331220>)\n +    where scalar = <sqlalchemy.engine.base.Connection object at 0x00000246602F2F90>.scalar\n +    and   <sqlalchemy.sql.elements.TextClause object at 0x0000024660331220> = <function text at 0x00000246304EA700>(\"SELECT COUNT(*) FROM sessions WHERE id='fk-new'\")"}}
+------------------------------ Captured log call ------------------------------
+ERROR    app.api._persist:_persist.py:131 Programming error during persist for session fk-new
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\api\_persist.py", line 53, in persist_turn
+    await MessageStore(db).add(session_id, "user", user_message, turn_index)
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\infrastructure\storage\message_store.py", line 31, in add
+    await self.db.flush()
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 786, in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4352, in flush
+    self._flush(objects)
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4487, in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4448, in _flush
+    flush_context.execute()
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1234, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+           ^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1891, in _exec_single_context
+    str_statement, effective_parameters = fn(
+                                          ^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Lib\site-packages\sqlalchemy\engine\events.py", line 183, in wrap_before_cursor_execute
+    orig_fn(
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_persist_turn.py", line 32, in check_parent
+    assert connection.scalar(text("SELECT COUNT(*) FROM sessions WHERE id='fk-new'")) == 1
+AssertionError: assert 0 == 1
+ +  where 0 = scalar(<sqlalchemy.sql.elements.TextClause object at 0x0000024660331220>)
+ +    where scalar = <sqlalchemy.engine.base.Connection object at 0x00000246602F2F90>.scalar
+ +    and   <sqlalchemy.sql.elements.TextClause object at 0x0000024660331220> = <function text at 0x00000246304EA700>("SELECT COUNT(*) FROM sessions WHERE id='fk-new'")
+_____ test_failure_after_flushed_messages_rolls_back_parent_and_children ______
+tests\api\test_persist_turn.py:73: in test_failure_after_flushed_messages_rolls_back_parent_and_children
+    db_fixture.run(run())
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_persist_turn.py:67: in run
+    assert graph_reached == [True]
+E   assert [] == [True]
+E     
+E     Right contains one more item: True
+E     
+E     Full diff:
+E     + []
+E     - [
+E     -     True,
+E     - ]
+---------------------------- Captured stdout call -----------------------------
+[ERROR] {"event": "persist_failure", "context": {"session_id": "fk-rollback", "reason": "integrity_conflict_retry_exhausted", "error": "(sqlite3.IntegrityError) FOREIGN KEY constraint failed\n[SQL: INSERT INTO messages (session_id, role, content, turn_index) VALUES (?, ?, ?, ?) RETURNING id, created_at]\n[parameters: ('fk-rollback', 'user', '问题', 0)]\n(Background on this error at: https://sqlalche.me/e/20/gkpj)"}}
+=========================== short test summary info ===========================
+FAILED tests/api/test_persist_turn.py::test_new_session_and_integrity_retry_flush_parent_before_messages - assert 0 == 2
+FAILED tests/api/test_persist_turn.py::test_failure_after_flushed_messages_rolls_back_parent_and_children - assert [] == [True]
+  
+  Right contains one more item: True
+  
+  Full diff:
+  + []
+  - [
+  -     True,
+  - ]
+======================= 2 failed, 8 deselected in 4.11s =======================

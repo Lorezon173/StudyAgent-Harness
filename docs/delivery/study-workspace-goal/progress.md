@@ -33,3 +33,32 @@
 - task0_review：规格通过、质量有条件通过；以上两项记录问题已补，等待定点复核。不改变任何产品代码。
 
 - Task0独立定点复核：spec PASS、quality PASS，两个记录问题关闭；状态VERIFIED_UNCOMMITTED，待本地明确文件提交。全量pytest未通过，基线实录完成不代表产品完成。
+
+### Task0 DONE / Task1 RUNNING
+
+- Task0提交0657718，独立spec/quality审阅通过；44个明确文档/证据/终稿文件，无产品代码，README仅新启动段，原140行及asset-inventory34行仍未暂存。
+- 现存终稿/raw尾部空行告警保留以维持批准哈希，非产品失败。
+- 按固定顺序进入Task1默认无检索教学及显式开启的可信可见性。
+
+### 2026-10-24 00:31：额度限制检查点
+
+- 原生get_goal状态usageLimited；未调用update_goal伪装paused/blocked/complete，也未创建替代目标。
+- Task1实施代理在写产品代码前因usage limit失败；git diff app/web/src无变更。项目Task1记BLOCKED（仅项目状态），从Task1恢复，不重做Task0。
+- 补记前轮工具已返回的依赖结果：uv sync --extra dev --frozen退出0，Prepared35packages/13m47s、Installed35packages，锁文件未改；先前“uv仍运行”的历史检查点由此替代。
+- Task0提交0657718仍为有效基线实录；前端3项失败和后端完整回归超时尚未解决。
+- 下一步：额度可用并恢复原Goal后，重新派发同一Task1；保持既有批准范围、顺序和账本，不绕过运行限制。
+
+### 2026-10-24：用户要求继续，账户普通额度恢复
+
+- 用户原文“继续”。实际usage接口ordinaryUsageAllowed=true，主窗口2%、周窗口0%、无rateLimitReachedType；不是在受限额度下换模型绕行。
+- get_goal仍为usageLimited；没有尝试create替代Goal或用update_goal伪造active。自动续跑恢复由用户/系统控制。
+- 本轮根据用户直接授权按原账本续Task1，同一task1_no_rag代理和原模型；Task0不重做。项目状态Task1 RUNNING，原生Goal状态仍如实保留。
+
+- Task1红灯：14项unit失败/3.02秒，覆盖缺失开关、关闭路径错误检索、低层参数与在线可信上下文。
+- 新环境诊断ADJ-003：TestClient最小空应用普通沙箱挂起、原生路径成功；API测试改原生路径。数据库隔离继续保留，不能把无结果武断归因为数据库或产品代码。
+
+Task1检查点：登记ADJ-004，允许最小父会话flush修复；保留FK开启的新会话E2E原断言，待回归及独立审查。
+
+Task1实现与独立审查通过，待明确文件提交：229 passed、1既有真实judge integration deselected、1弃用warning，13.25s。默认关闭检索、显式开启可信可见性、ADJ-004父flush均已验证；不宣称真实模型或PG验收。
+Task1 minor (deferred): Settings(_env_file=None)仍受进程RAG_ENABLED影响，默认值测试后续隔离环境；实际本次环境下已通过。Task13检查时携带此项。
+Task1 minor (deferred): Starlette/httpx既有弃用warning，后续依赖维护清理，不在本任务升级依赖。

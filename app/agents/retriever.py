@@ -178,8 +178,11 @@ class RetrieverAgent(AgentBase):
     subscriptions = [EventType.ACTION_REQUESTED]
     emittable_types = {EventType.RETRIEVED_EVIDENCE, EventType.RETRIEVAL_FAILED}
 
-    def __init__(self, coordinator: RAGCoordinator | None = None):
+    def __init__(self, coordinator: RAGCoordinator | None = None,
+                 trusted_visibility: VisibilityContext | None = None):
+        """在线由服务端注入可信可见性；离线保留可选事件可见性契约。"""
         self._coordinator = coordinator or RAGCoordinator()
+        self._trusted_visibility = trusted_visibility
 
     # --- AgentBase 契约 ---
 
@@ -202,6 +205,20 @@ class RetrieverAgent(AgentBase):
         retrieval_id = payload.get("retrieval_id")
         visibility_payload = payload.get("visibility")
 
+        if self._trusted_visibility is not None:
+            trusted_uid = self._trusted_visibility.user_id
+            if (isinstance(trusted_uid, bool) or not isinstance(trusted_uid, int)
+                    or isinstance(ws.user_id, bool) or not isinstance(ws.user_id, int)
+                    or ws.user_id != trusted_uid
+                    or "visibility" in payload
+                    or ("user_id" in payload and
+                        (isinstance(payload["user_id"], bool)
+                         or not isinstance(payload["user_id"], int)
+                         or payload["user_id"] != trusted_uid))):
+                return [self._emit_failure(
+                    ws, parent_id=event.id, retrieval_status="invalid-request",
+                    error_code="invalid_request", query=query, retrieval_id=retrieval_id)]
+
         if self._is_invalid_request(query, top_k, visibility_payload,
                                     retrieval_id, payload.get("user_id"), ws):
             return [self._emit_failure(
@@ -209,7 +226,7 @@ class RetrieverAgent(AgentBase):
                 error_code="invalid_request", query=query,
                 retrieval_id=retrieval_id)]
 
-        visibility = None
+        visibility = self._trusted_visibility
         if visibility_payload is not None:
             visibility = VisibilityContext(user_id=visibility_payload["user_id"])
 

@@ -71,6 +71,7 @@ def test_valid_composition_returns_pgvector_coordinator(monkeypatch):
 def test_run_online_agent_session_fail_fast_before_loop(monkeypatch):
     """composition 失败在协作环之前抛出（不进入种子/检索）。"""
     _patch_online(monkeypatch, backend="fake")
+    monkeypatch.setitem(settings.__dict__, "rag_enabled", True)
     from app.orchestration.assembly import run_online_agent_session
     with pytest.raises(OnlineRAGCompositionError):
         run_online_agent_session("s", 1, "hi")

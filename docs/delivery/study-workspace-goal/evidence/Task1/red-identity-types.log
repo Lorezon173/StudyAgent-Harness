@@ -1,0 +1,43 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 17 items / 11 deselected / 6 selected
+
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] PASSED [ 16%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] PASSED [ 33%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] PASSED [ 50%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] PASSED [ 66%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload4-7] FAILED [ 83%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload5-7.0] FAILED [100%]
+
+================================== FAILURES ===================================
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload4-7] __
+tests\unit\orchestration\test_rag_switch.py:135: in test_online_rejects_visibility_override_or_workspace_mismatch
+    out = agent.handle(_request(ws, **payload), ws)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\retriever.py:230: in handle
+    return self._do_retrieve_and_emit(
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+_ test_online_rejects_visibility_override_or_workspace_mismatch[payload5-7.0] _
+tests\unit\orchestration\test_rag_switch.py:135: in test_online_rejects_visibility_override_or_workspace_mismatch
+    out = agent.handle(_request(ws, **payload), ws)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\retriever.py:230: in handle
+    return self._do_retrieve_and_emit(
+app\agents\retriever.py:294: in _do_retrieve_and_emit
+    result = self._coordinator.search(query, sources=sources, top_k=top_k,
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("关闭 RAG 时调用了检索依赖")
+E   Failed: 关闭 RAG 时调用了检索依赖
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload4-7] - Failed: 关闭 RAG 时调用了检索依赖
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload5-7.0] - Failed: 关闭 RAG 时调用了检索依赖
+================= 2 failed, 4 passed, 11 deselected in 2.61s ==================

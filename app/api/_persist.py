@@ -49,6 +49,7 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
             title = user_message.strip()[:24] if user_message.strip() else "新会话"
 
         await session_store.save(session_id, state={}, user_id=user_id, title=title)
+        await db.flush()
         try:
             await MessageStore(db).add(session_id, "user", user_message, turn_index)
             await MessageStore(db).add(session_id, "assistant", reply, turn_index)
@@ -66,6 +67,7 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
             if len(existing) == 0:
                 title = user_message.strip()[:24] if user_message.strip() else "新会话"
             await session_store.save(session_id, state={}, user_id=user_id, title=title)
+            await db.flush()
             try:
                 await MessageStore(db).add(session_id, "user", user_message, turn_index)
                 await MessageStore(db).add(session_id, "assistant", reply, turn_index)

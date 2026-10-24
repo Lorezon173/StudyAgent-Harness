@@ -38,3 +38,17 @@
 - 备用环境完整pytest在00:08:02启动，超过五分钟日志仍0B；两次原生进程检查显示python49272/50488仍存在，CPU未继续增长。主会话核对名称及同一StartTime后定点终止这两进程，不停止其他Python。
 - 此结果是超时/人工终止，无通过数，根因未证；不改变Task13完整回归门槛。测试工具本身与编排模块的单独collect-only已成功收集12项。
 - Task0责任是建立真实基线并归因已知问题，不要求修复整个旧基线；前端三项失败归Task9客户端测试，后端无结果后续定点诊断，最终验收前必须解决。
+
+## ADJ-003：TestClient验证改用原生审批路径（A类）
+
+- 证据：Task1/testclient-execution-path-probe.log，空FastAPI的404请求无项目路由/数据库，普通沙箱15秒超时，同脚本原生路径2.63秒返回404。
+- 修正：API行为测试走require_escalated，保留独立SQLite/FK/用户种子；不修改产品代码或依赖来压掉该环境现象。
+- 原Task0完整pytest超时仍是未通过记录；本诊断说明一个可重现的执行路径问题，不推断所有旧超时唯一根因。
+- 无需求/接口/顺序/验收降低，测试本身不skip。范围内测试环境修正，无新增全局权限或配置。
+
+## ADJ-004：新会话父记录显式flush（A类）
+
+- 事实：Task1原生聚焦回归208通过、1失败；开启SQLite外键后，原新会话E2E在消息插入时报FOREIGN KEY constraint failed，turn_count为空。保留原断言，不预存该会话掩盖缺陷。
+- Ruling: 允许app/api/_persist.py在两处session_store.save之后、MessageStore.add之前显式await db.flush()，补充顺序及失败回滚验证；这是满足项目父先flush硬约束的最小既有接口修正。若判断错误，代价为撤回两处flush并重新诊断。
+- 边界：不新增API、幂等架构或commit；Task8仍按原序完整验收事务、并发与幂等。未降低验收标准，按已批准规程范围内修正执行。
+- 状态：实施中，待原样回归及独立审阅，未标完成。

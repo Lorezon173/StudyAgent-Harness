@@ -97,14 +97,15 @@ def _read_cost(session_id: str) -> float | None:
         return None
 
 
-def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None = None):
-    """装配 EventBus + 5 Agent + Orchestrator。返回 (bus, orchestrator, store)。
+def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None = None,
+                    rag_enabled: bool = True):
+    """装配 EventBus、教学 Agent 与 Orchestrator，检索按开关注册。
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
     由调用方在用完后 close。
 
     retriever 可显式注入（DEC-007 在线 composition 经 run_online_agent_session
-    注入 pgvector 检索链）；默认 RetrieverAgent() 保持单元路径 fake 可测。
+    注入 pgvector 检索链）；低层默认开启保持离线兼容，关闭时忽略注入。
 
     注：Curator.handle 只读写内存图（MasteryGraph），不触 MasteryGraphStore 的
     异步方法，故 mg_store 构造即可、无需 await init/close。若 Curator 行为变更，
@@ -121,14 +122,15 @@ def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None =
     agents = [
         TutorAgent(),
         CriticAgent(),
-        retriever if retriever is not None else RetrieverAgent(),
         ConductorAgent(),
         Curator(graph=graph, store=graph._store),
     ]
+    if rag_enabled:
+        agents.append(retriever if retriever is not None else RetrieverAgent())
     for agent in agents:
         bus.subscribe(agent, agent.subscriptions)
 
-    orchestrator = Orchestrator(policy=TeachingPolicy())
+    orchestrator = Orchestrator(policy=TeachingPolicy(), rag_enabled=rag_enabled)
     return bus, orchestrator, store
 
 
@@ -185,30 +187,38 @@ def build_online_rag_coordinator():
 def run_online_agent_session(session_id: str, user_id: int, user_message: str,
                              current_topic: str | None = None,
                              graph=None, on_event=None) -> NewStackResult:
-    """在线 API 会话入口：先完成 DEC-007 composition 校验（fail-fast）。
+    """在线 API 会话入口：默认无检索，显式开启时严格校验 composition。
 
     与单元直连 run_new_agent_session 的区别仅在检索链 composition：
-    在线必须 pgvector + PostgreSQL；单元/离线路径仍可用 fake/SQLite。
+    开启时必须 pgvector + PostgreSQL；单元/离线路径仍可用 fake/SQLite。
     校验失败在种子创建 / 协作环之前抛出，不进入检索。
     """
-    coordinator = build_online_rag_coordinator()
+    from app.core.config import settings
+    from app.infrastructure.rag.coordinator import VisibilityContext
+
+    retriever = None
+    if settings.rag_enabled:
+        coordinator = build_online_rag_coordinator()
+        retriever = RetrieverAgent(coordinator=coordinator,
+                                   trusted_visibility=VisibilityContext(user_id=user_id))
     return run_new_agent_session(
         session_id, user_id, user_message, current_topic, graph, on_event,
-        retriever=RetrieverAgent(coordinator=coordinator))
+        retriever=retriever, rag_enabled=settings.rag_enabled)
 
 
 def run_new_agent_session(session_id: str, user_id: int, user_message: str,
                           current_topic: str | None = None,
                           graph=None, on_event=None,
-                          retriever: RetrieverAgent | None = None) -> NewStackResult:
+                          retriever: RetrieverAgent | None = None,
+                          rag_enabled: bool = True) -> NewStackResult:
     """新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。
 
     同步函数；API 层用 asyncio.to_thread 调用。retriever 参数供
-    run_online_agent_session 注入在线检索链；默认 None 时保持原行为。
+    run_online_agent_session 注入在线检索链；低层默认开启以保持离线兼容。
     """
     topic = current_topic or user_message
     bus, orchestrator, store = build_new_stack(user_id, graph=graph,
-                                               retriever=retriever)
+                                               retriever=retriever, rag_enabled=rag_enabled)
     try:
         ws = WorkspaceState(session_id=session_id, user_id=user_id,
                             current_topic=topic)

@@ -411,3 +411,11 @@ curl http://localhost:8000/health          # 健康检查
 ## Goal 实施已启动（2026-10-24）
 
 用户已明确批准 Goal 规程、两阶段计划并授权实施。当前分支 codex/frontend-ui-optimization，按 Task0–Task13、TaskK0–TaskK5 顺序推进；原生 Goal 为 active。本轮从基线开始，真实进展见 [持久账本](docs/delivery/study-workspace-goal/progress.md) 和 [状态索引](docs/delivery/study-workspace-goal/status.json)。保持既有工作区变更，不推送、合并或部署。
+
+## Task1：在线教学默认关闭检索（2026-10-24）
+
+在线 HTTP/SSE 教学默认 `RAG_ENABLED=false`，不创建或调用检索依赖；规则和调度建议中的检索动作改为普通教学。需要向量检索时显式设置 `RAG_ENABLED=true`，并配置 `RAG_BACKEND=pgvector` 与 PostgreSQL，配置不符会明确失败。低层离线编排接口保持原默认行为。
+
+开启的在线检索由服务端认证身份限定公共资料与本人各主题私有向量，拒绝事件覆盖身份，不回退到未过滤的 OCR/code。现有文本知识卡尚未接入教学检索。同步修复新会话父记录先 flush、再写消息的顺序；单轮仍一次提交，失败整体回滚。
+
+本轮聚焦回归 229 通过、1 项 integration 标记未选入、1 条 Starlette/httpx 弃用警告；使用受控模型与真实 SQLite SQL/外键/事务，尚不代表真实模型、PostgreSQL或完整产品验收。证据见 [Task1记录](docs/delivery/study-workspace-goal/evidence/Task1/green-final.log)。多会话数据、正式 UI 与后续知识规划仍按原任务顺序实施。

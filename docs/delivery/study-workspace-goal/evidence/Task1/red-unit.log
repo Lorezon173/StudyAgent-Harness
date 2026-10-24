@@ -1,0 +1,144 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 14 items
+
+tests/unit/orchestration/test_rag_switch.py::test_default_online_teaching_never_constructs_retrieval FAILED [  7%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_stack_cannot_subscribe_injected_retriever FAILED [ 14%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_rule_retrieval_routes_to_tutor FAILED [ 21%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_search-retriever] FAILED [ 28%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_expand_query-] FAILED [ 35%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[tutor_explain-retriever] FAILED [ 42%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_search_ends_without_fuse FAILED [ 50%]
+tests/unit/orchestration/test_rag_switch.py::test_online_visibility_uses_authenticated_user_and_only_vector FAILED [ 57%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] FAILED [ 64%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] FAILED [ 71%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] FAILED [ 78%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] FAILED [ 85%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[ocr] FAILED [ 92%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[code] FAILED [100%]
+
+================================== FAILURES ===================================
+___________ test_default_online_teaching_never_constructs_retrieval ___________
+tests\unit\orchestration\test_rag_switch.py:25: in test_default_online_teaching_never_constructs_retrieval
+    result = assembly.run_online_agent_session("off-default", 7, "ʲô�ǵݹ�")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:194: in run_online_agent_session
+    coordinator = build_online_rag_coordinator()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:13: in _forbid
+    pytest.fail("�ر� RAG ʱ�����˼�������")
+E   Failed: �ر� RAG ʱ�����˼�������
+___________ test_disabled_stack_cannot_subscribe_injected_retriever ___________
+tests\unit\orchestration\test_rag_switch.py:36: in test_disabled_stack_cannot_subscribe_injected_retriever
+    bus, _, store = assembly.build_new_stack(1, retriever=injected, rag_enabled=False)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: build_new_stack() got an unexpected keyword argument 'rag_enabled'
+________________ test_disabled_rule_retrieval_routes_to_tutor _________________
+tests\unit\orchestration\test_rag_switch.py:44: in test_disabled_rule_retrieval_routes_to_tutor
+    orch = Orchestrator(rag_enabled=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+_ test_disabled_conductor_retrieval_routes_to_tutor[retriever_search-retriever] _
+tests\unit\orchestration\test_rag_switch.py:59: in test_disabled_conductor_retrieval_routes_to_tutor
+    orch = Orchestrator(rag_enabled=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+_ test_disabled_conductor_retrieval_routes_to_tutor[retriever_expand_query-] __
+tests\unit\orchestration\test_rag_switch.py:59: in test_disabled_conductor_retrieval_routes_to_tutor
+    orch = Orchestrator(rag_enabled=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+_ test_disabled_conductor_retrieval_routes_to_tutor[tutor_explain-retriever] __
+tests\unit\orchestration\test_rag_switch.py:59: in test_disabled_conductor_retrieval_routes_to_tutor
+    orch = Orchestrator(rag_enabled=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+______________ test_disabled_conductor_search_ends_without_fuse _______________
+tests\unit\orchestration\test_rag_switch.py:75: in test_disabled_conductor_search_ends_without_fuse
+    result = assembly.run_online_agent_session("off-loop", 1, "�ݹ�")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:194: in run_online_agent_session
+    coordinator = build_online_rag_coordinator()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:181: in build_online_rag_coordinator
+    validate_online_rag_composition(coordinator)
+app\orchestration\assembly.py:158: in validate_online_rag_composition
+    raise OnlineRAGCompositionError(
+E   app.orchestration.assembly.OnlineRAGCompositionError: online composition requires rag_backend='pgvector' (got 'fake')
+_______ test_online_visibility_uses_authenticated_user_and_only_vector ________
+tests\unit\orchestration\test_rag_switch.py:110: in test_online_visibility_uses_authenticated_user_and_only_vector
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] __
+tests\unit\orchestration\test_rag_switch.py:131: in test_online_rejects_visibility_override_or_workspace_mismatch
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] __
+tests\unit\orchestration\test_rag_switch.py:131: in test_online_rejects_visibility_override_or_workspace_mismatch
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] __
+tests\unit\orchestration\test_rag_switch.py:131: in test_online_rejects_visibility_override_or_workspace_mismatch
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+__ test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] __
+tests\unit\orchestration\test_rag_switch.py:131: in test_online_rejects_visibility_override_or_workspace_mismatch
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+___________ test_online_never_falls_back_to_unfiltered_sources[ocr] ___________
+tests\unit\orchestration\test_rag_switch.py:141: in test_online_never_falls_back_to_unfiltered_sources
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+__________ test_online_never_falls_back_to_unfiltered_sources[code] ___________
+tests\unit\orchestration\test_rag_switch.py:141: in test_online_never_falls_back_to_unfiltered_sources
+    agent, coordinator = _online_retriever(monkeypatch)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\orchestration\test_rag_switch.py:98: in _online_retriever
+    assert captured["rag_enabled"] is True
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'rag_enabled'
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_rag_switch.py::test_default_online_teaching_never_constructs_retrieval - Failed: �ر� RAG ʱ�����˼�������
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_stack_cannot_subscribe_injected_retriever - TypeError: build_new_stack() got an unexpected keyword argument 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_rule_retrieval_routes_to_tutor - TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_search-retriever] - TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_expand_query-] - TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[tutor_explain-retriever] - TypeError: Orchestrator.__init__() got an unexpected keyword argument 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_search_ends_without_fuse - app.orchestration.assembly.OnlineRAGCompositionError: online composition requires rag_backend='pgvector' (got 'fake')
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_visibility_uses_authenticated_user_and_only_vector - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[ocr] - KeyError: 'rag_enabled'
+FAILED tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[code] - KeyError: 'rag_enabled'
+============================= 14 failed in 3.02s ==============================

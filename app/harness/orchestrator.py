@@ -70,9 +70,10 @@ class Orchestrator:
     """
 
     def __init__(self, rules_path: str | None = None,
-                 policy: TeachingPolicy | None = None):
+                 policy: TeachingPolicy | None = None, rag_enabled: bool = True):
         self._engine = RuleEngine(load_rules(rules_path))
         self._policy = policy or TeachingPolicy()
+        self._rag_enabled = rag_enabled
         self._pending_obs: list[Event] = []
         self._tick_pending: bool = False
         self._weak_count: int = 0
@@ -111,7 +112,7 @@ class Orchestrator:
                 and ws.current_mode != TeachingMode.REGRESS):
             obs["topic_complete"] = True
 
-        action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(self._engine.match(obs))
 
         # P0 fix: 规则匹配后更新 weak 计数
         mastery = obs.get("mastery")
@@ -153,6 +154,13 @@ class Orchestrator:
                                         "target": self._target_of(action)},
                                parent_id=tick.id))
         return emits
+
+    def _limit_retrieval(self, action, target=""):
+        """规则与 Conductor 共用派发边界，禁用检索时继续普通教学。"""
+        if not self._rag_enabled and (str(action).startswith("retriever")
+                                      or target == str(EventSource.RETRIEVER)):
+            return ActionKind.TUTOR_ASK, str(EventSource.TUTOR)
+        return action, target
 
     @staticmethod
     def _target_of(action: ActionKind) -> str:
@@ -204,7 +212,8 @@ class Orchestrator:
 
     def _translate_conductor_decision(self, event: Event,
                                        ws: WorkspaceState) -> list[Event]:
-        action = event.payload.get("action", "")
+        action, target = self._limit_retrieval(event.payload.get("action", ""),
+                                                event.payload.get("target", ""))
         if action == str(ActionKind.LOOP_EXIT):
             return [Event(type=EventType.LOOP_EXIT,
                           source=EventSource.ORCHESTRATOR,
@@ -216,7 +225,7 @@ class Orchestrator:
                       session_id=ws.session_id,
                       payload={
                           "action": action,
-                          "target": event.payload.get("target", ""),
+                          "target": target,
                           "via_conductor": True,
                           "reason": event.payload.get("reason", ""),
                       },

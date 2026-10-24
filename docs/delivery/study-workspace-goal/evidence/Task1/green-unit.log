@@ -1,0 +1,34 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.11, pytest-9.0.3, pluggy-1.6.0 -- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness
+configfile: pyproject.toml
+plugins: anyio-4.13.0, langsmith-0.8.8, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 14 items
+
+tests/unit/orchestration/test_rag_switch.py::test_default_online_teaching_never_constructs_retrieval PASSED [  7%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_stack_cannot_subscribe_injected_retriever PASSED [ 14%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_rule_retrieval_routes_to_tutor PASSED [ 21%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_search-retriever] PASSED [ 28%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[retriever_expand_query-] PASSED [ 35%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_retrieval_routes_to_tutor[tutor_explain-retriever] PASSED [ 42%]
+tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_search_ends_without_fuse FAILED [ 50%]
+tests/unit/orchestration/test_rag_switch.py::test_online_visibility_uses_authenticated_user_and_only_vector PASSED [ 57%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload0-7] PASSED [ 64%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload1-7] PASSED [ 71%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload2-7] PASSED [ 78%]
+tests/unit/orchestration/test_rag_switch.py::test_online_rejects_visibility_override_or_workspace_mismatch[payload3-8] PASSED [ 85%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[ocr] PASSED [ 92%]
+tests/unit/orchestration/test_rag_switch.py::test_online_never_falls_back_to_unfiltered_sources[code] PASSED [100%]
+
+================================== FAILURES ===================================
+______________ test_disabled_conductor_search_ends_without_fuse _______________
+tests\unit\orchestration\test_rag_switch.py:79: in test_disabled_conductor_search_ends_without_fuse
+    assert not any(e.payload.get("target") == "retriever" for e in result.events)
+E   assert not True
+E    +  where True = any(<generator object test_disabled_conductor_search_ends_without_fuse.<locals>.<genexpr> at 0x0000020D597CFB90>)
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_rag_switch.py::test_disabled_conductor_search_ends_without_fuse - assert not True
+ +  where True = any(<generator object test_disabled_conductor_search_ends_without_fuse.<locals>.<genexpr> at 0x0000020D597CFB90>)
+======================== 1 failed, 13 passed in 2.58s =========================

@@ -23,10 +23,10 @@
   },
   "native_goal_started": true,
   "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
-  "native_goal_status": "active",
+  "native_goal_status": "usageLimited",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task0",
+  "current_task": "Task1",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -74,8 +74,8 @@
   "tasks": [
     {
       "id": "Task0",
-      "status": "VERIFIED_UNCOMMITTED",
-      "commit": null,
+      "status": "DONE",
+      "commit": "0657718",
       "evidence": [
         "docs/delivery/2026-10-24-workspace-baseline.md",
         "docs/delivery/study-workspace-goal/evidence/Task0/"
@@ -85,10 +85,12 @@
     },
     {
       "id": "Task1",
-      "status": "PENDING",
+      "status": "VERIFIED",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task1/"
+      ],
+      "review": "task1_review: spec compliant, quality approved; two minors deferred; local commit pending",
       "blocked_reason": null
     },
     {
@@ -237,7 +239,7 @@
     }
   ],
   "milestones": {
-    "M0": "PENDING",
+    "M0": "DONE",
     "M1": "PENDING",
     "M2": "PENDING",
     "M3": "PENDING",
@@ -245,7 +247,13 @@
     "M5": "PENDING",
     "M6": "PENDING"
   },
-  "current_blocker": null,
+  "current_blocker": {
+    "kind": "native_goal_resume_pending",
+    "scope": "automatic continuation only",
+    "evidence": "Account ordinaryUsageAllowed=true, primary usedPercent=2, secondary=0; get_goal retains usageLimited",
+    "unlock": "User/system resumes original native Goal; ordinary user-requested Task1 work can proceed with current available quota"
+  },
   "consecutive_blocked_goal_turns": 0,
-  "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core"
+  "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core",
+  "execution_mode": "user_requested_continuation_ordinary_usage_allowed"
 }
