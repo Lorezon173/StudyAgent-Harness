@@ -92,3 +92,15 @@ Task4 code review Approved，无阻断。为严格证明新物理连接持久化
 Task4 round2先plan review PASS后测试补强，独立物理连接CRUD与日期adapter两项minor复审ADDRESSED，26通过无warning；旧Starlette警告保留。产品无变动，初审Approved/最终范围复审PASS，README已补，待明确文件提交。
 
 Task4 DONE：81eb0b0，32项API组合/23项迁移/26项独立物理连接补强通过，计划两轮均先review PASS，代码审查及范围复审通过；README和证据已提交。下一Task5先计划审查，未越序编码。
+
+Task5 round1三层计划已写，独立plan review中；尚未改产品。摘要区分null/0与覆盖率，归档保留证据，规划SQLite/PG真实同版本读取验证。
+
+Task5恢复：前轮属progress（Task4已提交、Task5 API17通过，当前实读service8通过/6.33s）。原实现agent权威状态interrupted，恢复同一代理同一已审round1；不重复派发/重跑已绿测试，先核后台句柄与剩余报告/兼容验收。Goal仍active。
+
+Task5 round1冻结：API17通过、SQLite/PG服务8通过、旧stats1通过。并发事件发生在driver执行前，不能单独证明锁等待，且未直接断言SQLite真实BEGIN；事实已报告，代码独立审查中，不标DONE。旧stats包装准备错误日志保留，修正测试包装后隔离FK1通过，产品未为此修改。
+
+Task5初审Needs fixes：2 Important验收证据缺口（真实锁/事务、新物理连接），另游标非规范Minor。round2三层补强计划已写独立review中；服务事务/锁产品实现继续冻结，仅计划允许未来最小游标校验修正。
+
+Task5 round2冻结：游标原实现3个非规范合法载荷错误200，修后API20通过。数据库服务8通过，PG真实Lock/blockingPID与SQLite driver事务、独立NullPool指纹齐全；关闭两保护的进程内负控制分别命中预期FAIL，工作树未回退。报告更新，范围复审中，Task5未DONE。
+
+Task5 round2范围复审PASS：两Important与游标Minor均ADDRESSED，无新阻断。API20/service8/旧stats1通过，真实锁/事务/独立连接与negative controls证据齐，README已补，待明确文件提交。旧Starlette与全量Retriever基线继续保留。

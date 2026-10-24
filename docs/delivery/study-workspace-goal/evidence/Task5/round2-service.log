@@ -1,0 +1,18 @@
+SQLITE_REAL_TRANSACTION True driver 1909100690800
+independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_reads_one_real_snapshot_w0\snapshot.db pid None driver 1909103173680 held_pids [None, None] held_drivers [1909100690800, 1909102822944] revisions [1]
+.SQLITE_REAL_TRANSACTION True driver 1909101057888
+independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_reads_one_real_snapshot_w1\snapshot.db pid None driver 1909103573808 held_pids [None, None] held_drivers [1909101057888, 1909103349056] revisions [1]
+.PG_LOCK_OBSERVED workspace_task5_082e6e87ecec40c5b909569966607595 reader_pid 2687 writer_pid 2688 observer_pid 2689 record {'pid': 2688, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [2687]}
+independent workspace_task5_082e6e87ecec40c5b909569966607595 pid 2690 driver 1909107080272 held_pids [2687, 2688] held_drivers [1909107069712, 1909107078352] revisions [1]
+.PG_LOCK_OBSERVED workspace_task5_214a1dbf20f44cdfac38f313765116fc reader_pid 2692 writer_pid 2693 observer_pid 2694 record {'pid': 2693, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [2692]}
+independent workspace_task5_214a1dbf20f44cdfac38f313765116fc pid 2695 driver 1909107972272 held_pids [2692, 2693] held_drivers [1909107966032, 1909107077392] revisions [1]
+.independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_service_never_commits_cal0\snapshot.db pid None driver 1909108979616 held_pids [None] held_drivers [1909107702000] revisions [0]
+independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_service_never_commits_cal0\snapshot.db pid None driver 1909109121072 held_pids [None] held_drivers [1909107702000] revisions [1]
+independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_service_never_commits_cal0\snapshot.db pid None driver 1909109121552 held_pids [None] held_drivers [1909107702000] revisions [1]
+.independent workspace_task5_6197abc116984390b33193662e978659 pid 2698 driver 1909107973712 held_pids [2697] held_drivers [1909107969152] revisions [0]
+independent workspace_task5_6197abc116984390b33193662e978659 pid 2699 driver 1909107969632 held_pids [2697] held_drivers [1909107969152] revisions [1]
+independent workspace_task5_6197abc116984390b33193662e978659 pid 2700 driver 1909107973232 held_pids [2697] held_drivers [1909107969152] revisions [1]
+.independent C:\Users\A1985\AppData\Local\Temp\pytest-of-Steven_local\pytest-141\test_failed_initial_node_flush0\snapshot.db pid None driver 1909108365296 held_pids [None] held_drivers [1909108610528] revisions []
+.independent workspace_task5_75e8864662de4fbea514b5c1d238b00f pid 2703 driver 1909107978992 held_pids [2702] held_drivers [1909107972752] revisions []
+.
+8 passed in 9.55s

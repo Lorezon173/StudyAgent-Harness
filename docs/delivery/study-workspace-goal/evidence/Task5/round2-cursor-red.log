@@ -1,0 +1,193 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+______ test_cursor_rejects_noncanonical_but_decodable_inputs[date_only] _______
+
+profiles = <function profiles.<locals>.<lambda> at 0x0000015C336A8D60>
+form = 'date_only'
+
+    @pytest.mark.parametrize("form", ["date_only", "padding", "standard_base64"])
+    def test_cursor_rejects_noncanonical_but_decodable_inputs(profiles, form):
+        # ��Щ�غɶ��ܱ���decoder���������ܰѱ�������Ч�����뵱�淶У�顣
+        value = {"created_at": "2026-01-01T00:00:00", "id": "00000000-0000-0000-0000-000000000001"}
+        if form == "date_only":
+            value["created_at"] = "2026-01-01"
+        payload = json.dumps(value).encode()
+        if form == "standard_base64":
+            payload = b"\xef\xbb\xbf" + payload
+            cursor = base64.b64encode(payload).decode().rstrip("=")
+            assert "/" in cursor or "+" in cursor
+        elif form == "padding":
+            while len(payload) % 3 == 0:
+                payload += b" "
+            cursor = base64.urlsafe_b64encode(payload).decode()
+            assert cursor.endswith("=")
+        else:
+            cursor = base64.urlsafe_b64encode(payload).decode().rstrip("=")
+        decoded = base64.b64decode(cursor + "=" * (-len(cursor) % 4), altchars=b"-_", validate=True)
+        assert json.loads(decoded) == value
+        assert datetime.fromisoformat(value["created_at"]) == datetime(2026, 1, 1)
+        assert str(UUID(value["id"])) == value["id"]
+    
+        async def check(client, factory):
+            response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:52: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:45: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000015C336C6BA0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000015C02808090>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+        response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"items":[],"next_cursor":null}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:215: AssertionError
+_______ test_cursor_rejects_noncanonical_but_decodable_inputs[padding] ________
+
+profiles = <function profiles.<locals>.<lambda> at 0x0000015C3489CB80>
+form = 'padding'
+
+    @pytest.mark.parametrize("form", ["date_only", "padding", "standard_base64"])
+    def test_cursor_rejects_noncanonical_but_decodable_inputs(profiles, form):
+        # ��Щ�غɶ��ܱ���decoder���������ܰѱ�������Ч�����뵱�淶У�顣
+        value = {"created_at": "2026-01-01T00:00:00", "id": "00000000-0000-0000-0000-000000000001"}
+        if form == "date_only":
+            value["created_at"] = "2026-01-01"
+        payload = json.dumps(value).encode()
+        if form == "standard_base64":
+            payload = b"\xef\xbb\xbf" + payload
+            cursor = base64.b64encode(payload).decode().rstrip("=")
+            assert "/" in cursor or "+" in cursor
+        elif form == "padding":
+            while len(payload) % 3 == 0:
+                payload += b" "
+            cursor = base64.urlsafe_b64encode(payload).decode()
+            assert cursor.endswith("=")
+        else:
+            cursor = base64.urlsafe_b64encode(payload).decode().rstrip("=")
+        decoded = base64.b64decode(cursor + "=" * (-len(cursor) % 4), altchars=b"-_", validate=True)
+        assert json.loads(decoded) == value
+        assert datetime.fromisoformat(value["created_at"]) == datetime(2026, 1, 1)
+        assert str(UUID(value["id"])) == value["id"]
+    
+        async def check(client, factory):
+            response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:52: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:45: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000015C3373DDC0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000015C3494E810>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+        response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"items":[],"next_cursor":null}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:215: AssertionError
+___ test_cursor_rejects_noncanonical_but_decodable_inputs[standard_base64] ____
+
+profiles = <function profiles.<locals>.<lambda> at 0x0000015C3489EAC0>
+form = 'standard_base64'
+
+    @pytest.mark.parametrize("form", ["date_only", "padding", "standard_base64"])
+    def test_cursor_rejects_noncanonical_but_decodable_inputs(profiles, form):
+        # ��Щ�غɶ��ܱ���decoder���������ܰѱ�������Ч�����뵱�淶У�顣
+        value = {"created_at": "2026-01-01T00:00:00", "id": "00000000-0000-0000-0000-000000000001"}
+        if form == "date_only":
+            value["created_at"] = "2026-01-01"
+        payload = json.dumps(value).encode()
+        if form == "standard_base64":
+            payload = b"\xef\xbb\xbf" + payload
+            cursor = base64.b64encode(payload).decode().rstrip("=")
+            assert "/" in cursor or "+" in cursor
+        elif form == "padding":
+            while len(payload) % 3 == 0:
+                payload += b" "
+            cursor = base64.urlsafe_b64encode(payload).decode()
+            assert cursor.endswith("=")
+        else:
+            cursor = base64.urlsafe_b64encode(payload).decode().rstrip("=")
+        decoded = base64.b64decode(cursor + "=" * (-len(cursor) % 4), altchars=b"-_", validate=True)
+        assert json.loads(decoded) == value
+        assert datetime.fromisoformat(value["created_at"]) == datetime(2026, 1, 1)
+        assert str(UUID(value["id"])) == value["id"]
+    
+        async def check(client, factory):
+            response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:52: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:45: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000015C3483E000>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000015C34933FD0>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+        response = await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"items":[],"next_cursor":null}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:215: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_topic_profiles_api.py::test_cursor_rejects_noncanonical_but_decodable_inputs[date_only]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_cursor_rejects_noncanonical_but_decodable_inputs[padding]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_cursor_rejects_noncanonical_but_decodable_inputs[standard_base64]
+3 failed, 17 deselected in 4.38s

@@ -125,10 +125,12 @@
     },
     {
       "id": "Task5",
-      "status": "PENDING",
+      "status": "RUNNING",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task5/"
+      ],
+      "review": "round1/2 plans PASS; 2 Important and cursor Minor ADDRESSED; scope review approved; commit pending",
       "blocked_reason": null
     },
     {
@@ -259,14 +261,13 @@
   "execution_mode": "native_goal_active",
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
-    "task": "Task4",
+    "task": "Task5",
     "round": "round2",
-    "plan": "docs/superpowers/plans/2026-10-24-task4-round2.md",
+    "plan": "docs/superpowers/plans/2026-10-24-task5-round2.md",
     "plan_review": "PASS",
-    "status": "DONE",
-    "plan_sha256": "6cb75eec4a79fa78299a21b2b2e12417c43280d6a3acca2abff04d284b7d83ae",
-    "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task4/round2-plan-review.md",
-    "commit": "81eb0b0"
+    "status": "VERIFIED_PENDING_COMMIT",
+    "plan_sha256": "9957c9fcaa6407f4d67feecfbbabfce46d515b9ef04467ab258115a27eb2bda5",
+    "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task5/round2-plan-review.md"
   },
   "next_step": "Task5本轮plan与独立plan review PASS后实施"
 }

@@ -1,0 +1,815 @@
+FFFFFFFFFFFFFFFFF                                                        [100%]
+================================== FAILURES ===================================
+_________ test_create_uuid_null_nodes_and_versioned_explicit_changes __________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC72AE840>
+
+    def test_create_uuid_null_nodes_and_versioned_explicit_changes(profiles):
+        async def check(client, factory):
+            first = await create(client)
+            second = await create(client)
+            pid, nid = first["profile"]["id"], first["nodes"][0]["id"]
+            assert UUID(pid) and UUID(nid)
+            assert pid != second["profile"]["id"]
+            assert first["profile_revision"] == first["nodes"][0]["revision"] == 0
+            assert first["nodes"][0]["mastery"] is None
+            assert first["nodes"][0]["title"] == "ͨ��" and first["edges"] == []
+            url = f"/api/topic-profiles/{pid}"
+            changed = await client.patch(url, json={"expected_revision": 0, "name": " ���� "}, headers=headers())
+            assert changed.status_code == 200, changed.text
+            assert changed.json()["profile"]["id"] == pid
+            assert changed.json()["profile"]["scope_description"] == "��Χ"
+            node = await client.patch(f"{url}/nodes/{nid}", json={"expected_revision": 1, "title": "�ڵ�", "description": ""}, headers=headers())
+            assert node.status_code == 200, node.text
+            assert node.json()["node"]["id"] == nid and node.json()["node"]["revision"] == 1
+            assert node.json()["profile_revision"] == 2
+            stale = await client.patch(f"{url}/nodes/{nid}", json={"expected_revision": 1, "title": "����"}, headers=headers())
+            assert stale.status_code == 409
+            added = await client.post(f"{url}/nodes", json={"expected_revision": 2, "title": "����"}, headers=headers())
+            assert added.status_code == 200, added.text
+            assert added.json()["node"]["mastery"] is None
+            detail = (await client.get(url, headers=headers())).json()
+            assert detail["profile_revision"] == 3 and len(detail["nodes"]) == 2
+            assert next(n for n in detail["nodes"] if n["id"] == nid)["title"] == "�ڵ�"
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:65: in check
+    first = await create(client)
+            ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC7242F30>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+__________________ test_authentication_owner_and_node_scope ___________________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85AC040>
+
+    def test_authentication_owner_and_node_scope(profiles):
+        async def check(client, factory):
+            assert (await client.get("/api/topic-profiles")).status_code == 401
+            own = await create(client)
+            other = await create(client, owner=2)
+            pid = own["profile"]["id"]
+            for suffix in ["", "/summary"]:
+                assert (await client.get(f"/api/topic-profiles/{pid}{suffix}", headers=headers(2))).status_code == 404
+            assert (await client.patch(f"/api/topic-profiles/{pid}", json={"expected_revision": 999, "name": "x"}, headers=headers(2))).status_code == 404
+            assert (await client.post(f"/api/topic-profiles/{pid}/nodes", json={"expected_revision": 0, "title": "x"}, headers=headers(2))).status_code == 404
+            response = await client.patch(f"/api/topic-profiles/{pid}/nodes/{other['nodes'][0]['id']}", json={"expected_revision": 0, "title": "x"}, headers=headers())
+            assert response.status_code == 404
+            assert (await client.get(f"/api/topic-profiles/{pid}", headers=headers())).json()["profile_revision"] == 0
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC7477E30>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC84E6C50>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.get("/api/topic-profiles")).status_code == 401
+E       assert 404 == 401
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:95: AssertionError
+___________ test_create_rejects_invalid_and_readonly_fields[body0] ____________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85ADB20>
+body = {'name': ' '}
+
+    @pytest.mark.parametrize("body", [{"name": " "}, {"name": 3}, {"name": None}, {"name": "x", "user_id": 2}, {"name": "x", "revision": 5}])
+    def test_create_rejects_invalid_and_readonly_fields(profiles, body):
+        async def check(client, factory):
+            assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8519BB0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC8703210>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:112: AssertionError
+___________ test_create_rejects_invalid_and_readonly_fields[body1] ____________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85AC7C0>
+body = {'name': 3}
+
+    @pytest.mark.parametrize("body", [{"name": " "}, {"name": 3}, {"name": None}, {"name": "x", "user_id": 2}, {"name": "x", "revision": 5}])
+    def test_create_rejects_invalid_and_readonly_fields(profiles, body):
+        async def check(client, factory):
+            assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC85A0890>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC85219D0>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:112: AssertionError
+___________ test_create_rejects_invalid_and_readonly_fields[body2] ____________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85AF1A0>
+body = {'name': None}
+
+    @pytest.mark.parametrize("body", [{"name": " "}, {"name": 3}, {"name": None}, {"name": "x", "user_id": 2}, {"name": "x", "revision": 5}])
+    def test_create_rejects_invalid_and_readonly_fields(profiles, body):
+        async def check(client, factory):
+            assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8518DA0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC850D490>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:112: AssertionError
+___________ test_create_rejects_invalid_and_readonly_fields[body3] ____________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85AE020>
+body = {'name': 'x', 'user_id': 2}
+
+    @pytest.mark.parametrize("body", [{"name": " "}, {"name": 3}, {"name": None}, {"name": "x", "user_id": 2}, {"name": "x", "revision": 5}])
+    def test_create_rejects_invalid_and_readonly_fields(profiles, body):
+        async def check(client, factory):
+            assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC85A0EC0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC87F3750>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:112: AssertionError
+___________ test_create_rejects_invalid_and_readonly_fields[body4] ____________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC854C7C0>
+body = {'name': 'x', 'revision': 5}
+
+    @pytest.mark.parametrize("body", [{"name": " "}, {"name": 3}, {"name": None}, {"name": "x", "user_id": 2}, {"name": "x", "revision": 5}])
+    def test_create_rejects_invalid_and_readonly_fields(profiles, body):
+        async def check(client, factory):
+            assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC851BA10>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001FAC88A1990>, autoflush=True, expire_on_commit=False)
+
+    async def check(client, factory):
+>       assert (await client.post("/api/topic-profiles", json=body, headers=headers())).status_code == 422
+E       assert 405 == 422
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:112: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body0] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC854D580>
+body = {'expected_revision': 0}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8527C50>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body1] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC854F380>
+body = {'expected_revision': True, 'title': 'x'}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC7477E90>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body2] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC854F060>
+body = {'expected_revision': -1, 'title': 'x'}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8527380>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body3] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85ADE40>
+body = {'expected_revision': '0', 'title': 'x'}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8511B50>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body4] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC8561080>
+body = {'expected_revision': 0, 'title': None}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8513E30>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body5] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85ACE00>
+body = {'expected_revision': 0, 'mastery': 80}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8510DA0>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body6] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC854C7C0>
+body = {'archived': 'true', 'expected_revision': 0}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC8527DA0>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_________ test_node_patch_rejects_invalid_or_assessment_writes[body7] _________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85A4720>
+body = {'expected_revision': 0, 'practice_count': 2}
+
+    @pytest.mark.parametrize("body", [{"expected_revision": 0}, {"expected_revision": True, "title": "x"}, {"expected_revision": -1, "title": "x"}, {"expected_revision": "0", "title": "x"}, {"expected_revision": 0, "title": None}, {"expected_revision": 0, "mastery": 80}, {"expected_revision": 0, "archived": "true"}, {"expected_revision": 0, "practice_count": 2}])
+    def test_node_patch_rejects_invalid_or_assessment_writes(profiles, body):
+        async def check(client, factory):
+            item = await create(client)
+            response = await client.patch(f"/api/topic-profiles/{item['profile']['id']}/nodes/{item['nodes'][0]['id']}", json=body, headers=headers())
+            assert response.status_code == 422, response.text
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:119: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC850A9C0>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+__________ test_summary_null_mean_coverage_archive_and_real_evidence __________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FAC85A6520>
+
+    def test_summary_null_mean_coverage_archive_and_real_evidence(profiles):
+        async def check(client, factory):
+            item = await create(client)
+            pid, nid = item["profile"]["id"], item["nodes"][0]["id"]
+            url = f"/api/topic-profiles/{pid}"
+            unknown = (await client.get(url + "/summary", headers=headers())).json()
+            assert unknown["mastery_score"] is None and unknown["assessment_coverage"] == 0
+            async with factory() as db:
+                node = await db.get(ProfileNodeTable, nid)
+                node.mastery = 80
+                db.add(ProfileNodeTable(profile_id=pid, title="δ����"))
+                db.add(SessionTable(id="s", user_id=1, profile_id=pid, state_json="{}", title="��ʵ�Ự"))
+                await db.flush()
+                db.add(ChatRequestTable(user_id=1, session_id="s", request_id="r", profile_id=pid, payload_hash="x", request_payload={}, base_state_version=0, status="completed"))
+                msg = MessageTable(session_id="s", role="user", content="��ʵԭ��", turn_index=0)
+                db.add(msg)
+                await db.flush()
+                db.add(ProfileEvidenceTable(user_id=1, profile_id=pid, node_id=nid, session_id="s", request_id="r", message_id=msg.id, score=80, rationale="֤��"))
+                await db.commit()
+            summary = (await client.get(url + "/summary", headers=headers())).json()
+            assert (summary["mastery_score"], summary["assessed_count"], summary["total_count"], summary["assessment_coverage"]) == (80, 1, 2, .5)
+            assert summary["metric_kind"] == "assessed_mean" and summary["edges"] == []
+            evidence = summary["recent_evidence"][0]
+            assert (evidence["session_id"], evidence["request_id"], evidence["message_id"], evidence["score"]) == ("s", "r", msg.id, 80)
+            assert (await client.get(url + "/summary", headers=headers(2))).status_code == 404
+            response = await client.patch(f"{url}/nodes/{nid}", json={"expected_revision": 0, "archived": True}, headers=headers())
+            assert response.status_code == 200, response.text
+            archived = (await client.get(url + "/summary", headers=headers())).json()
+            assert archived["mastery_score"] is None and archived["total_count"] == 1
+            assert archived["recent_evidence"][0]["id"] == evidence["id"]
+            remaining = archived["nodes"][0]["id"]
+            await client.patch(f"{url}/nodes/{remaining}", json={"expected_revision": 1, "archived": True}, headers=headers())
+            empty = (await client.get(url + "/summary", headers=headers())).json()
+            assert (empty["mastery_score"], empty["assessment_coverage"], empty["total_count"], empty["assessed_count"]) == (None, None, 0, 0)
+            restored = await client.patch(f"{url}/nodes/{nid}", json={"expected_revision": 2, "archived": False}, headers=headers())
+            assert restored.json()["node"]["mastery"] == 80
+            assert restored.json()["profile_revision"] == (await client.get(url, headers=headers())).json()["profile_revision"]
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:127: in check
+    item = await create(client)
+           ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FAC855D0A0>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+_____________________ test_stable_cursor_and_owner_filter _____________________
+
+profiles = <function profiles.<locals>.<lambda> at 0x000001FA965B0040>
+
+    def test_stable_cursor_and_owner_filter(profiles):
+        async def check(client, factory):
+            ids = [(await create(client))["profile"]["id"] for _ in range(3)]
+            other = await create(client, owner=2)
+            async with factory() as db:
+                rows = (await db.scalars(select(TopicProfileTable))).all()
+                for row in rows:
+                    row.created_at = datetime(2026, 1, 1)
+                await db.commit()
+            first = (await client.get("/api/topic-profiles?limit=2", headers=headers())).json()
+            assert [p["id"] for p in first["items"]] == sorted(ids, reverse=True)[:2]
+            second = (await client.get("/api/topic-profiles", params={"limit": 2, "cursor": first["next_cursor"]}, headers=headers())).json()
+            assert [p["id"] for p in second["items"]] == sorted(ids, reverse=True)[2:]
+            assert second["next_cursor"] is None
+            foreign = (await client.get("/api/topic-profiles", params={"cursor": first["next_cursor"]}, headers=headers(2))).json()
+            assert all(p["id"] == other["profile"]["id"] for p in foreign["items"])
+            for cursor in ["!", "e30", "WyIyMDI2LTAxLTAxIiwgImJhZCJd"]:
+                assert (await client.get("/api/topic-profiles", params={"cursor": cursor}, headers=headers())).status_code == 422
+            for limit in [0, 101]:
+                assert (await client.get("/api/topic-profiles", params={"limit": limit}, headers=headers())).status_code == 422
+>       profiles(check)
+
+tests\unit\api\test_topic_profiles_api.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_topic_profiles_api.py:50: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_topic_profiles_api.py:43: in run
+    await check(client, factory)
+tests\unit\api\test_topic_profiles_api.py:167: in check
+    ids = [(await create(client))["profile"]["id"] for _ in range(3)]
+            ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001FA9659CAA0>, name = 'ͨ��'
+owner = 1
+
+    async def create(client, name="ͨ��", owner=1):
+        response = await client.post("/api/topic-profiles", json={"name": name, "scope_description": "��Χ"}, headers=headers(owner))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"Method Not Allowed"}
+E       assert 405 == 200
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+tests\unit\api\test_topic_profiles_api.py:59: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_uuid_null_nodes_and_versioned_explicit_changes
+FAILED tests/unit/api/test_topic_profiles_api.py::test_authentication_owner_and_node_scope
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_rejects_invalid_and_readonly_fields[body0]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_rejects_invalid_and_readonly_fields[body1]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_rejects_invalid_and_readonly_fields[body2]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_rejects_invalid_and_readonly_fields[body3]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_create_rejects_invalid_and_readonly_fields[body4]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body0]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body1]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body2]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body3]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body4]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body5]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body6]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_node_patch_rejects_invalid_or_assessment_writes[body7]
+FAILED tests/unit/api/test_topic_profiles_api.py::test_summary_null_mean_coverage_archive_and_real_evidence
+FAILED tests/unit/api/test_topic_profiles_api.py::test_stable_cursor_and_owner_filter
+17 failed in 8.40s

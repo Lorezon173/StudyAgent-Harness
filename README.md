@@ -445,3 +445,13 @@ curl http://localhost:8000/health          # 健康检查
 列表支持 `q` 字面子串搜索、`profile_id` 过滤、`limit`（默认50，范围1–100）及 `before_id` 游标，按ID倒序；下一页使用上一页最后一项ID。名称去首尾空白后非空且<=128，说明<=2000，正文<=100000字符；请求中的只读身份/ID/来源字段、空补丁及非法值返回422。PATCH只更新明确提供字段，`profile_id:null` 可解除关联。资料不存在或不属本人统一404。
 
 新增迁移 `20261023_private_library` 与owner/profile复合外键；带新资料时拒绝直接降级丢数据。Store只flush，由API统一提交，失败完整回滚。验证：隔离环境API组合32项通过；SQLite/真实PostgreSQL新旧迁移23项通过；独立物理连接CRUD补强26项通过且该组无警告。原API组合的既有Starlette弃用提示仍保留。工作区旧SQLite未在本轮升级，临时库通过不代替产品运行与PG重启验收。计划审查与代码审查证据见[Task4记录](docs/delivery/study-workspace-goal/evidence/Task4/)。
+
+## Task5：主题画像、知识点与真实进度摘要（2026-10-24）
+
+新增登录用户所属 `/api/topic-profiles` 列表/创建、画像详情/修改、知识点创建/修改及 `/summary`。列表支持limit与不透明cursor；创建画像同时原子创建同名UUID初始节点，掌握度为null。手动接口只能改标题、说明和归档状态，不能伪造分数；节点改名不变ID，归档保留历史证据。写操作携expected_revision，冲突409，跨账号/画像访问404。
+
+详情与摘要共享真实画像版本。摘要只对未归档且已评估节点等权平均（metric_kind=assessed_mean）；mastery_score与assessment_coverage分开，80/null得到80分及1/2覆盖率，全未评估分数null，全归档时分数/覆盖率null。节点、关系和最近10条证据均查数据库，不画假边、不造来源；旧证据含真实本人会话、请求和消息引用。旧 `/api/profile/` stats语义保持。
+
+SQLite读取显式确保真实事务；PostgreSQL读取持画像共享锁，写入用画像revision条件更新，失败整事务回滚。验证：新API20项通过，SQLite/真实PG服务8项通过，旧stats兼容1项通过；数据库实际锁等待/driver事务、独立物理连接指纹与关闭保护的负控制均有证据。两轮均先plan review通过后执行，代码初审问题已范围复审关闭，见[Task5记录](docs/delivery/study-workspace-goal/evidence/Task5/)。
+
+本轮只接通画像管理与读取；会话恢复、教学上下文和在线评估增量仍待Task6–8，正式React页面尚未接入。既有Starlette警告与全量Retriever评估基线失败仍保留，不能宣称全产品验收完成。

@@ -1,0 +1,351 @@
+NEGATIVE CONTROL: PostgreSQL read lock disabled only inside this process
+F
+================================== FAILURES ===================================
+_ test_reads_one_real_snapshot_while_writer_attempts_profile_cas[postgresql-get_summary] _
+
+database = <function database.<locals>.<lambda> at 0x00000215269FAF20>
+method = 'get_summary'
+
+    @pytest.mark.parametrize("method", ["get_detail", "get_summary"])
+    def test_reads_one_real_snapshot_while_writer_attempts_profile_cas(database, method):
+        async def check(factory, engine):
+            pid, nid, eid = await seed(factory)
+            profile_read = asyncio.Event()
+            writer_pid_ready = asyncio.Event()
+            writer_attempted = asyncio.Event()
+            observer_confirmed = asyncio.Event()
+            reader_released = asyncio.Event()
+            writer_committed = asyncio.Event()
+            postgres = engine.dialect.name == "postgresql"
+    
+            @event.listens_for(engine.sync_engine, "before_cursor_execute")
+            def signal_attempt(connection, cursor, statement, parameters, context, executemany):
+                if statement.lstrip().upper().startswith("UPDATE TOPIC_PROFILES"):
+                    writer_attempted.set()
+    
+            tasks = []
+            try:
+                async with engine.connect() as reader_connection, engine.connect() as writer_connection:
+                    reader_fp = await connection_fingerprint(reader_connection)
+                    writer_fp = await connection_fingerprint(writer_connection)
+                    assert reader_fp["driver"] is not writer_fp["driver"]
+                    if postgres:
+                        assert reader_fp["pid"] != writer_fp["pid"]
+                    await reader_connection.rollback()
+                    await writer_connection.rollback()
+                    writer_pid_ready.set()
+    
+                    async def writer():
+                        await asyncio.wait_for(profile_read.wait(), 10)
+                        async with factory(bind=writer_connection) as db:
+                            result = await db.execute(update(TopicProfileTable).where(
+                                TopicProfileTable.id == pid, TopicProfileTable.revision == 0).values(revision=1))
+                            assert result.rowcount == 1
+                            await db.execute(update(ProfileNodeTable).where(ProfileNodeTable.id == nid).values(mastery=90, revision=1))
+                            await db.execute(update(ProfileEdgeTable).where(ProfileEdgeTable.profile_id == pid).values(weight=.9))
+                            await db.execute(update(ProfileEvidenceTable).where(ProfileEvidenceTable.id == eid).values(score=90))
+                            await db.commit()
+                            writer_committed.set()
+    
+                    writer_task = asyncio.create_task(writer())
+                    tasks.append(writer_task)
+    
+                    async def observer():
+                        await asyncio.wait_for(profile_read.wait(), 10)
+                        await asyncio.wait_for(writer_pid_ready.wait(), 10)
+                        record = await observe_pg_lock(engine.url, reader_fp["pid"], writer_fp["pid"], writer_task)
+                        observer_confirmed.set()
+                        return record
+    
+                    observer_task = asyncio.create_task(observer()) if postgres else None
+                    if observer_task:
+                        tasks.append(observer_task)
+    
+                    class PausedReader(ProfileService):
+                        async def _get_owned(self, user_id, profile_id, lock="read"):
+                            result = await super()._get_owned(user_id, profile_id, lock)
+                            if not postgres:
+                                real_transaction = await reader_connection.run_sync(
+                                    lambda conn: conn.connection.driver_connection.in_transaction)
+                                print("SQLITE_REAL_TRANSACTION", real_transaction, "driver", id(reader_fp["driver"]))
+                                assert real_transaction, "SQLite real transaction missing"
+                            profile_read.set()
+                            if postgres:
+                                await asyncio.wait_for(observer_task, 10)
+                                assert observer_confirmed.is_set()
+                            else:
+                                await asyncio.wait_for(writer_attempted.wait(), 10)
+                            return result
+    
+                    try:
+                        async with factory(bind=reader_connection) as reader:
+                            try:
+                                assert await reader.get(UserTable, 1) is not None
+                                if not postgres:
+                                    assert not reader_fp["driver"].in_transaction, "JWT�߼�autobegin��Ӧα����ʵBEGIN"
+                                before = await getattr(PausedReader(reader), method)(1, pid)
+                                assert not writer_committed.is_set()
+                                assert before.profile_revision == 0
+                                assert next(node for node in before.nodes if node.id == nid).mastery == 40
+                                assert before.edges[0].weight == .2
+                                if method == "get_summary":
+                                    assert before.recent_evidence[0].score == 40
+                                    assert before.mastery_score == 40
+                            finally:
+                                await reader.rollback()
+                                reader_released.set()
+                        await asyncio.wait_for(writer_task, 10)
+                        assert reader_released.is_set() and writer_committed.is_set()
+                        after = await independent_read(engine.url, pid, [reader_fp, writer_fp])
+                        assert after["profiles"][0]["revision"] == 1
+                        assert next(node for node in after["nodes"] if node["id"] == nid)["mastery"] == 90
+                        assert after["edges"][0]["weight"] == .9
+                        assert after["evidence"][0]["score"] == 90
+                    finally:
+                        # �۲�ʧ��/������ͬ�����ͷ�reader����ȡ��������writer������������������
+                        await reader_connection.rollback()
+                        reader_released.set()
+                        for task in tasks:
+                            if not task.done():
+                                task.cancel()
+                        await asyncio.gather(*tasks, return_exceptions=True)
+            finally:
+                event.remove(engine.sync_engine, "before_cursor_execute", signal_attempt)
+>       database(check)
+
+tests\integration\test_topic_profiles_service.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\integration\test_topic_profiles_service.py:60: in <lambda>
+    yield lambda check: asyncio.run(run(check))
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:56: in run
+    await asyncio.wait_for(check(factory, engine), timeout=25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:236: in check
+    before = await getattr(PausedReader(reader), method)(1, pid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\profile_service.py:150: in get_summary
+    detail = await self.get_detail(user_id, profile_id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\profile_service.py:137: in get_detail
+    profile = await self._get_owned(user_id, profile_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:224: in _get_owned
+    await asyncio.wait_for(observer_task, 10)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:206: in observer
+    record = await observe_pg_lock(engine.url, reader_fp["pid"], writer_fp["pid"], writer_task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+url = postgresql+asyncpg://goal_test:***@127.0.0.1:55440/workspace_task5_a02a8104fc8e427d8d9e9ac99b9d9144
+reader_pid = 2707, writer_pid = 2708
+writer_task = <Task finished name='Task-7' coro=<test_reads_one_real_snapshot_while_writer_attempts_profile_cas.<locals>.check.<loca...\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\integration\test_topic_profiles_service.py:188> result=None>
+
+    async def observe_pg_lock(url, reader_pid, writer_pid, writer_task):
+        """����������backend�н��ѯ���ݿ���ʵ����sleep����ڵ����ٶȵ��ƶϡ�"""
+        engine = create_async_engine(url, poolclass=NullPool)
+        try:
+            async with engine.connect() as connection:
+                observer_pid = await connection.scalar(sa.text("SELECT pg_backend_pid()"))
+                assert observer_pid not in {reader_pid, writer_pid}
+                deadline = asyncio.get_running_loop().time() + 6
+                latest = None
+                while asyncio.get_running_loop().time() < deadline:
+                    await connection.execute(sa.text("SELECT pg_stat_clear_snapshot()"))
+                    latest = (await connection.execute(sa.text(
+                        "SELECT pid,wait_event_type,wait_event,pg_blocking_pids(pid) AS blockers "
+                        "FROM pg_stat_activity WHERE pid=:pid AND datname=current_database()"
+                    ), {"pid": writer_pid})).mappings().one_or_none()
+                    if latest and latest["wait_event_type"] == "Lock" and reader_pid in latest["blockers"]:
+                        record = dict(latest)
+                        print("PG_LOCK_OBSERVED", connection.engine.url.database, "reader_pid", reader_pid,
+                              "writer_pid", writer_pid, "observer_pid", observer_pid, "record", record)
+                        return record
+                    if writer_task.done():
+                        break
+>               raise AssertionError(f"PG writer did not enter reader lock wait: {dict(latest) if latest else None}")
+E               AssertionError: PG writer did not enter reader lock wait: {'pid': 2708, 'wait_event_type': 'Client', 'wait_event': 'ClientRead', 'blockers': []}
+
+tests\integration\test_topic_profiles_service.py:154: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_topic_profiles_service.py::test_reads_one_real_snapshot_while_writer_attempts_profile_cas[postgresql-get_summary]
+1 failed, 7 deselected in 2.23s
+NEGATIVE_CONTROL_VALID PG: expected database lock-wait assertion failed
+NEGATIVE CONTROL: SQLite BEGIN disabled only inside this process
+SQLITE_REAL_TRANSACTION False driver 3123642627760
+F
+================================== FAILURES ===================================
+_ test_reads_one_real_snapshot_while_writer_attempts_profile_cas[sqlite-get_summary] _
+
+database = <function database.<locals>.<lambda> at 0x000002D7479E8F40>
+method = 'get_summary'
+
+    @pytest.mark.parametrize("method", ["get_detail", "get_summary"])
+    def test_reads_one_real_snapshot_while_writer_attempts_profile_cas(database, method):
+        async def check(factory, engine):
+            pid, nid, eid = await seed(factory)
+            profile_read = asyncio.Event()
+            writer_pid_ready = asyncio.Event()
+            writer_attempted = asyncio.Event()
+            observer_confirmed = asyncio.Event()
+            reader_released = asyncio.Event()
+            writer_committed = asyncio.Event()
+            postgres = engine.dialect.name == "postgresql"
+    
+            @event.listens_for(engine.sync_engine, "before_cursor_execute")
+            def signal_attempt(connection, cursor, statement, parameters, context, executemany):
+                if statement.lstrip().upper().startswith("UPDATE TOPIC_PROFILES"):
+                    writer_attempted.set()
+    
+            tasks = []
+            try:
+                async with engine.connect() as reader_connection, engine.connect() as writer_connection:
+                    reader_fp = await connection_fingerprint(reader_connection)
+                    writer_fp = await connection_fingerprint(writer_connection)
+                    assert reader_fp["driver"] is not writer_fp["driver"]
+                    if postgres:
+                        assert reader_fp["pid"] != writer_fp["pid"]
+                    await reader_connection.rollback()
+                    await writer_connection.rollback()
+                    writer_pid_ready.set()
+    
+                    async def writer():
+                        await asyncio.wait_for(profile_read.wait(), 10)
+                        async with factory(bind=writer_connection) as db:
+                            result = await db.execute(update(TopicProfileTable).where(
+                                TopicProfileTable.id == pid, TopicProfileTable.revision == 0).values(revision=1))
+                            assert result.rowcount == 1
+                            await db.execute(update(ProfileNodeTable).where(ProfileNodeTable.id == nid).values(mastery=90, revision=1))
+                            await db.execute(update(ProfileEdgeTable).where(ProfileEdgeTable.profile_id == pid).values(weight=.9))
+                            await db.execute(update(ProfileEvidenceTable).where(ProfileEvidenceTable.id == eid).values(score=90))
+                            await db.commit()
+                            writer_committed.set()
+    
+                    writer_task = asyncio.create_task(writer())
+                    tasks.append(writer_task)
+    
+                    async def observer():
+                        await asyncio.wait_for(profile_read.wait(), 10)
+                        await asyncio.wait_for(writer_pid_ready.wait(), 10)
+                        record = await observe_pg_lock(engine.url, reader_fp["pid"], writer_fp["pid"], writer_task)
+                        observer_confirmed.set()
+                        return record
+    
+                    observer_task = asyncio.create_task(observer()) if postgres else None
+                    if observer_task:
+                        tasks.append(observer_task)
+    
+                    class PausedReader(ProfileService):
+                        async def _get_owned(self, user_id, profile_id, lock="read"):
+                            result = await super()._get_owned(user_id, profile_id, lock)
+                            if not postgres:
+                                real_transaction = await reader_connection.run_sync(
+                                    lambda conn: conn.connection.driver_connection.in_transaction)
+                                print("SQLITE_REAL_TRANSACTION", real_transaction, "driver", id(reader_fp["driver"]))
+                                assert real_transaction, "SQLite real transaction missing"
+                            profile_read.set()
+                            if postgres:
+                                await asyncio.wait_for(observer_task, 10)
+                                assert observer_confirmed.is_set()
+                            else:
+                                await asyncio.wait_for(writer_attempted.wait(), 10)
+                            return result
+    
+                    try:
+                        async with factory(bind=reader_connection) as reader:
+                            try:
+                                assert await reader.get(UserTable, 1) is not None
+                                if not postgres:
+                                    assert not reader_fp["driver"].in_transaction, "JWT�߼�autobegin��Ӧα����ʵBEGIN"
+                                before = await getattr(PausedReader(reader), method)(1, pid)
+                                assert not writer_committed.is_set()
+                                assert before.profile_revision == 0
+                                assert next(node for node in before.nodes if node.id == nid).mastery == 40
+                                assert before.edges[0].weight == .2
+                                if method == "get_summary":
+                                    assert before.recent_evidence[0].score == 40
+                                    assert before.mastery_score == 40
+                            finally:
+                                await reader.rollback()
+                                reader_released.set()
+                        await asyncio.wait_for(writer_task, 10)
+                        assert reader_released.is_set() and writer_committed.is_set()
+                        after = await independent_read(engine.url, pid, [reader_fp, writer_fp])
+                        assert after["profiles"][0]["revision"] == 1
+                        assert next(node for node in after["nodes"] if node["id"] == nid)["mastery"] == 90
+                        assert after["edges"][0]["weight"] == .9
+                        assert after["evidence"][0]["score"] == 90
+                    finally:
+                        # �۲�ʧ��/������ͬ�����ͷ�reader����ȡ��������writer������������������
+                        await reader_connection.rollback()
+                        reader_released.set()
+                        for task in tasks:
+                            if not task.done():
+                                task.cancel()
+                        await asyncio.gather(*tasks, return_exceptions=True)
+            finally:
+                event.remove(engine.sync_engine, "before_cursor_execute", signal_attempt)
+>       database(check)
+
+tests\integration\test_topic_profiles_service.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\integration\test_topic_profiles_service.py:60: in <lambda>
+    yield lambda check: asyncio.run(run(check))
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:56: in run
+    await asyncio.wait_for(check(factory, engine), timeout=25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\integration\test_topic_profiles_service.py:236: in check
+    before = await getattr(PausedReader(reader), method)(1, pid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\profile_service.py:150: in get_summary
+    detail = await self.get_detail(user_id, profile_id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\profile_service.py:137: in get_detail
+    profile = await self._get_owned(user_id, profile_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <tests.integration.test_topic_profiles_service.test_reads_one_real_snapshot_while_writer_attempts_profile_cas.<locals>.check.<locals>.PausedReader object at 0x000002D747BEBFE0>
+user_id = 1, profile_id = 'd54c8889-da91-4667-9b36-aed2b1dea389', lock = 'read'
+
+    async def _get_owned(self, user_id, profile_id, lock="read"):
+        result = await super()._get_owned(user_id, profile_id, lock)
+        if not postgres:
+            real_transaction = await reader_connection.run_sync(
+                lambda conn: conn.connection.driver_connection.in_transaction)
+            print("SQLITE_REAL_TRANSACTION", real_transaction, "driver", id(reader_fp["driver"]))
+>           assert real_transaction, "SQLite real transaction missing"
+E           AssertionError: SQLite real transaction missing
+E           assert False
+
+tests\integration\test_topic_profiles_service.py:221: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_topic_profiles_service.py::test_reads_one_real_snapshot_while_writer_attempts_profile_cas[sqlite-get_summary]
+1 failed, 7 deselected in 0.99s
+NEGATIVE_CONTROL_VALID SQLite: expected real database transaction assertion failed

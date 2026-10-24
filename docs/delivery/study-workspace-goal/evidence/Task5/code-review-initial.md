@@ -1,0 +1,3 @@
+# Task5初审
+
+审阅者task5_code_review；Needs fixes，无Critical。两Important：并发事件在SQL执行前触发，不能证明PG实际锁等待/SQLite真事务；新Session不能严格证明独立物理连接。建议真实数据库等待观测、driver事务断言与独立engine/NullPool指纹。Minor：游标接受非规范base64与仅日期，Starlette既有warning。产品功能契约主体符合，README/提交主会话收尾。未重跑测试，下一轮先计划审查。

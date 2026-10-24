@@ -1,0 +1,10 @@
+Isolated DATABASE_URL: sqlite+aiosqlite:///C:/Users/A1985/AppData/Local/Temp/task5-legacy-profile-79e6c142ac7e4019a3115c5bc8761ce6.db
+Default SQLite foreign_keys: 1
+.                                                                        [100%]
+============================== warnings summary ===============================
+tests\unit\api\test_api.py:5
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_api.py:5: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 1.01s
