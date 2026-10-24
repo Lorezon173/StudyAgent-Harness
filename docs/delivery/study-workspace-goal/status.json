@@ -26,7 +26,7 @@
   "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task4",
+  "current_task": "Task5",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -115,12 +115,12 @@
     },
     {
       "id": "Task4",
-      "status": "RUNNING",
-      "commit": null,
+      "status": "DONE",
+      "commit": "81eb0b0",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task4/"
       ],
-      "review": "initial code review approved; round2 two test/evidence minors ADDRESSED; scope re-review PASS; commit pending",
+      "review": "plan rounds1/2 PASS; initial code review approved; evidence/test minors addressed by scope re-review",
       "blocked_reason": null
     },
     {
@@ -263,9 +263,10 @@
     "round": "round2",
     "plan": "docs/superpowers/plans/2026-10-24-task4-round2.md",
     "plan_review": "PASS",
-    "status": "VERIFIED_PENDING_COMMIT",
+    "status": "DONE",
     "plan_sha256": "6cb75eec4a79fa78299a21b2b2e12417c43280d6a3acca2abff04d284b7d83ae",
-    "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task4/round2-plan-review.md"
+    "review_evidence": "docs/delivery/study-workspace-goal/evidence/Task4/round2-plan-review.md",
+    "commit": "81eb0b0"
   },
-  "next_step": "Task4先写本轮plan并独立review plan PASS后才实施"
+  "next_step": "Task5本轮plan与独立plan review PASS后实施"
 }

@@ -90,3 +90,5 @@ Task4 round1实现冻结：新API先24失败后隔离环境最终32通过（两w
 Task4 code review Approved，无阻断。为严格证明新物理连接持久化，round2仅测试补强计划已写待独立review；产品保持冻结，尚未执行新测试修改。
 
 Task4 round2先plan review PASS后测试补强，独立物理连接CRUD与日期adapter两项minor复审ADDRESSED，26通过无warning；旧Starlette警告保留。产品无变动，初审Approved/最终范围复审PASS，README已补，待明确文件提交。
+
+Task4 DONE：81eb0b0，32项API组合/23项迁移/26项独立物理连接补强通过，计划两轮均先review PASS，代码审查及范围复审通过；README和证据已提交。下一Task5先计划审查，未越序编码。
