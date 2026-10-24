@@ -35,9 +35,11 @@ class TestMessageStoreMemory:
             assert len(msgs) == 3
 
             # Check shape: each dict has exactly these keys
-            expected_keys = {"role", "content", "turn_index", "created_at"}
+            expected_keys = {"id", "role", "content", "turn_index", "created_at"}
             for msg in msgs:
                 assert set(msg.keys()) == expected_keys
+            assert [msg["id"] for msg in msgs] == [1, 2, 3]
+            assert [msg["id"] for msg in await store.list_by_session("s1")] == [1, 2, 3]
 
             # Check order (by insertion = id order)
             assert msgs[0]["role"] == "user"
@@ -129,9 +131,11 @@ class TestMessageStoreDB:
                     msgs = await store.list_by_session("s1")
                     assert len(msgs) == 3
 
-                    expected_keys = {"role", "content", "turn_index", "created_at"}
+                    expected_keys = {"id", "role", "content", "turn_index", "created_at"}
                     for msg in msgs:
                         assert set(msg.keys()) == expected_keys
+                    assert [msg["id"] for msg in msgs] == [1, 2, 3]
+                    assert [msg["id"] for msg in await store.list_by_session("s1")] == [1, 2, 3]
 
                     assert msgs[0]["role"] == "user"
                     assert msgs[0]["content"] == "first"

@@ -70,3 +70,11 @@ Task2默认全套回归：1060通过、18按既有integration筛选排除、1失
 Task2 fix round1：2 Important均已修复并独立复审ADDRESSED，无新增阻断项；修后Store+Graph30 passed，原SQLite/PG迁移26 passed。待明确文件提交，Task3尚未开始。
 
 Task2 DONE：9f19eb5，专项26 passed含真实PG5项，修后Store/Graph30 passed，独立复审通过。Task3开始；全量基准失败仍留待最终关闭。
+
+用户追加执行规则：每轮先写plan、独立review plan，PASS后执行；包含代码修复轮。Task3已暂停新增变更，round1计划docs/superpowers/plans/2026-10-24-task3-round1.md审查中，未因计划存在而擅自恢复。
+
+Task3 round1 plan v1.1独立复审PASS（初审两阻断已修），SHA256 bb8a0a7a1a881446e9b63be510f0b5ea45b3a749b097e92f0f3087c72944f593；恢复本轮实施，不跳Task4。
+
+Task3 round1实施冻结：default/provided3 passed，SQLite/PG迁移21 passed无skip，API/persist25 passed+既有warning；原Store65 passed未重复。独立代码审查中，未提交或标DONE。
+
+Task3 round1代码独立审查Approved，无Critical/Important；README已补真实数据层能力与未接入产品边界。准备明确文件提交，不提前执行Task4。

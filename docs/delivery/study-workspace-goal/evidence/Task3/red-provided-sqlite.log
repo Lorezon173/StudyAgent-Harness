@@ -1,0 +1,118 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_provided_sqlite_foreign_keys_off_rejects_real_transaction_without_ending_it _
+
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-126/test_provided_sqlite_foreign_k0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D3FE642750>
+
+    def test_provided_sqlite_foreign_keys_off_rejects_real_transaction_without_ending_it(tmp_path, monkeypatch):
+        from app.core.config import settings
+    
+        url = f"sqlite:///{tmp_path / 'provided-alembic.db'}"
+        monkeypatch.setattr(settings, "database_url", url)
+        config = Config(str(Path(__file__).resolve().parents[2] / "alembic.ini"))
+        command.upgrade(config, CURRENT)
+        engine = sa.create_engine(url)
+        try:
+            with engine.connect() as provided:
+                assert provided.scalar(sa.text("PRAGMA foreign_keys")) == 0
+                provided.exec_driver_sql("BEGIN")
+                provided.execute(sa.text("INSERT INTO users(id,username,password_hash) VALUES (99,'uncommitted-caller','x')"))
+                driver = provided.connection.driver_connection
+                assert driver.in_transaction is True
+                config.attributes["connection"] = provided
+                with pytest.raises(RuntimeError, match="cannot enable SQLite foreign_keys inside an existing transaction"):
+>                   command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:372: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:626: in run_migrations
+    step.migration_fn(**kw)
+alembic\versions\20261023_session_workspace_state.py:57: in upgrade
+    _begin_sqlite_rebuild(connection)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+connection = <sqlalchemy.engine.base.Connection object at 0x000001D3FE7045F0>
+
+    def _begin_sqlite_rebuild(connection):
+        if connection.dialect.name != "sqlite":
+            return
+        # sqlite3 legacy transaction mode does not BEGIN for DDL. Never commit an
+        # existing caller transaction: establish a real transaction only if absent.
+        if not connection.connection.driver_connection.in_transaction:
+            connection.exec_driver_sql("BEGIN")
+        if connection.scalar(sa.text("PRAGMA foreign_keys")) != 1:
+>           raise RuntimeError("workspace migration requires SQLite foreign_keys=ON")
+E           RuntimeError: workspace migration requires SQLite foreign_keys=ON
+
+alembic\versions\20261023_session_workspace_state.py:26: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-126/test_provided_sqlite_foreign_k0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D3FE642750>
+
+    def test_provided_sqlite_foreign_keys_off_rejects_real_transaction_without_ending_it(tmp_path, monkeypatch):
+        from app.core.config import settings
+    
+        url = f"sqlite:///{tmp_path / 'provided-alembic.db'}"
+        monkeypatch.setattr(settings, "database_url", url)
+        config = Config(str(Path(__file__).resolve().parents[2] / "alembic.ini"))
+        command.upgrade(config, CURRENT)
+        engine = sa.create_engine(url)
+        try:
+            with engine.connect() as provided:
+                assert provided.scalar(sa.text("PRAGMA foreign_keys")) == 0
+                provided.exec_driver_sql("BEGIN")
+                provided.execute(sa.text("INSERT INTO users(id,username,password_hash) VALUES (99,'uncommitted-caller','x')"))
+                driver = provided.connection.driver_connection
+                assert driver.in_transaction is True
+                config.attributes["connection"] = provided
+>               with pytest.raises(RuntimeError, match="cannot enable SQLite foreign_keys inside an existing transaction"):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: Regex pattern did not match.
+E                 Expected regex: 'cannot enable SQLite foreign_keys inside an existing transaction'
+E                 Actual message: 'workspace migration requires SQLite foreign_keys=ON'
+
+tests\integration\test_workspace_migrations.py:371: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+=========================== short test summary info ===========================
+FAILED tests/integration/test_workspace_migrations.py::test_provided_sqlite_foreign_keys_off_rejects_real_transaction_without_ending_it
+1 failed, 20 deselected in 2.54s

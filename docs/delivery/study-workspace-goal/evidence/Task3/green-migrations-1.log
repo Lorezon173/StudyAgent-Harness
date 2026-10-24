@@ -1,0 +1,854 @@
+...........F.F.F                                                         [100%]
+================================== FAILURES ===================================
+_ test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[postgresql] _
+
+self = <sqlalchemy.engine.base.Connection object at 0x000002268A649D00>
+dialect = <sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x000002268A3A8EF0>
+context = <sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x000002268A8E6AE0>
+statement = <sqlalchemy.dialects.postgresql.base.PGDDLCompiler object at 0x000002268A42A2A0>
+parameters = [immutabledict({})]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_f8cfae7ca6a24b3d9cddf0e77f7f9af8) at 0x226fe993050>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.DependentObjectsStillExist: cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DependentObjectsStillExist
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002268A649D00>, <alembic.config.Config object at 0x00000226FEAF23F0>)
+
+    def test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn(migration_db):
+        from uuid import NAMESPACE_URL, uuid5
+    
+        connection, config = migration_db
+        seed_legacy(connection)
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('old1',1,'{}'),('old3',3,'{}'),('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('old1','user','������',2),('old1','assistant','�쳣�߻غ�',8),('unknown','user','�޹���',4)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:626: in run_migrations
+    step.migration_fn(**kw)
+alembic\versions\20261023_session_workspace_state.py:105: in upgrade
+    op.drop_index("_workspace_session_profile", table_name="sessions")
+<string>:8: in drop_index
+    ???
+<string>:3: in drop_index
+    ???
+.venv\Lib\site-packages\alembic\operations\ops.py:1141: in drop_index
+    return operations.invoke(op)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\base.py:452: in invoke
+    return fn(self, operation)
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\toimpl.py:126: in drop_index
+    operations.impl.drop_index(
+.venv\Lib\site-packages\alembic\ddl\impl.py:483: in drop_index
+    self._exec(schema.DropIndex(index, **kw))
+.venv\Lib\site-packages\alembic\ddl\impl.py:256: in _exec
+    return conn.execute(construct, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:188: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1532: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_f8cfae7ca6a24b3d9cddf0e77f7f9af8) at 0x226fe993050>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           sqlalchemy.exc.InternalError: (psycopg.errors.DependentObjectsStillExist) cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+E           [SQL: 
+E           DROP INDEX _workspace_session_profile]
+E           (Background on this error at: https://sqlalche.me/e/20/2j85)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: InternalError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+_ test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[postgresql] _
+
+self = <sqlalchemy.engine.base.Connection object at 0x000002268ABB48C0>
+dialect = <sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x000002268ABB5C40>
+context = <sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x000002268A812240>
+statement = <sqlalchemy.dialects.postgresql.base.PGDDLCompiler object at 0x00000226FEC06D50>
+parameters = [immutabledict({})]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_6919a8ba3adb4a83965f10732c40d1ce) at 0x226fe993f50>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.DependentObjectsStillExist: cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DependentObjectsStillExist
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002268ABB48C0>, <alembic.config.Config object at 0x000002268B217C50>)
+
+    def test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:626: in run_migrations
+    step.migration_fn(**kw)
+alembic\versions\20261023_session_workspace_state.py:105: in upgrade
+    op.drop_index("_workspace_session_profile", table_name="sessions")
+<string>:8: in drop_index
+    ???
+<string>:3: in drop_index
+    ???
+.venv\Lib\site-packages\alembic\operations\ops.py:1141: in drop_index
+    return operations.invoke(op)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\base.py:452: in invoke
+    return fn(self, operation)
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\toimpl.py:126: in drop_index
+    operations.impl.drop_index(
+.venv\Lib\site-packages\alembic\ddl\impl.py:483: in drop_index
+    self._exec(schema.DropIndex(index, **kw))
+.venv\Lib\site-packages\alembic\ddl\impl.py:256: in _exec
+    return conn.execute(construct, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:188: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1532: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_6919a8ba3adb4a83965f10732c40d1ce) at 0x226fe993f50>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           sqlalchemy.exc.InternalError: (psycopg.errors.DependentObjectsStillExist) cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+E           [SQL: 
+E           DROP INDEX _workspace_session_profile]
+E           (Background on this error at: https://sqlalche.me/e/20/2j85)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: InternalError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+__ test_empty_workspace_upgrade_downgrade_preserves_old_session[postgresql] ___
+
+self = <sqlalchemy.engine.base.Connection object at 0x000002268A70ADB0>
+dialect = <sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x000002268A698650>
+context = <sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x000002268B500260>
+statement = <sqlalchemy.dialects.postgresql.base.PGDDLCompiler object at 0x000002268AD13B30>
+parameters = [immutabledict({})]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_62852f0e72214247ba493e2da52b3e9b) at 0x2268b20e210>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.DependentObjectsStillExist: cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DependentObjectsStillExist
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002268A70ADB0>, <alembic.config.Config object at 0x000002268A4286B0>)
+
+    def test_empty_workspace_upgrade_downgrade_preserves_old_session(migration_db):
+        connection, config = migration_db
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('unknown','user','����',0)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:626: in run_migrations
+    step.migration_fn(**kw)
+alembic\versions\20261023_session_workspace_state.py:105: in upgrade
+    op.drop_index("_workspace_session_profile", table_name="sessions")
+<string>:8: in drop_index
+    ???
+<string>:3: in drop_index
+    ???
+.venv\Lib\site-packages\alembic\operations\ops.py:1141: in drop_index
+    return operations.invoke(op)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\base.py:452: in invoke
+    return fn(self, operation)
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\operations\toimpl.py:126: in drop_index
+    operations.impl.drop_index(
+.venv\Lib\site-packages\alembic\ddl\impl.py:483: in drop_index
+    self._exec(schema.DropIndex(index, **kw))
+.venv\Lib\site-packages\alembic\ddl\impl.py:256: in _exec
+    return conn.execute(construct, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1421: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:188: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1532: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1848: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=55440 user=goal_test database=workspace_task2_62852f0e72214247ba493e2da52b3e9b) at 0x2268b20e210>
+query = '\nDROP INDEX _workspace_session_profile', params = immutabledict({})
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           sqlalchemy.exc.InternalError: (psycopg.errors.DependentObjectsStillExist) cannot drop index _workspace_session_profile because other objects depend on it
+E           DETAIL:  constraint fk_request_session_scope on table chat_requests depends on index _workspace_session_profile
+E           HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+E           [SQL: 
+E           DROP INDEX _workspace_session_profile]
+E           (Background on this error at: https://sqlalche.me/e/20/2j85)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: InternalError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 20260729_chunk_id -> 20261023_topic_profiles, �û��������⻭����ȷ������ʷͼ��Ǩ�ơ�
+INFO  [alembic.runtime.migration] Running upgrade 20261023_topic_profiles -> 20261023_session_workspace_state, �Ự������֤�����������汾������ȫ����ʷ��Ϣ��
+=========================== short test summary info ===========================
+FAILED tests/integration/test_workspace_migrations.py::test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[postgresql]
+FAILED tests/integration/test_workspace_migrations.py::test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[postgresql]
+FAILED tests/integration/test_workspace_migrations.py::test_empty_workspace_upgrade_downgrade_preserves_old_session[postgresql]
+3 failed, 13 passed in 16.54s

@@ -1,0 +1,1206 @@
+..........FFFFFF                                                         [100%]
+================================== FAILURES ===================================
+_ test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[sqlite] _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A859FB60>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A859D7C0>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6A87DEBA0>, <alembic.config.Config object at 0x000002B6A81BAE40>)
+
+    def test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn(migration_db):
+        from uuid import NAMESPACE_URL, uuid5
+    
+        connection, config = migration_db
+        seed_legacy(connection)
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('old1',1,'{}'),('old3',3,'{}'),('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('old1','user','������',2),('old1','assistant','�쳣�߻غ�',8),('unknown','user','�޹���',4)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A859FB60>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+_ test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[postgresql] _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A834B800>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A8348AD0>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6FEF4A060>, <alembic.config.Config object at 0x000002B6FEB7F080>)
+
+    def test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn(migration_db):
+        from uuid import NAMESPACE_URL, uuid5
+    
+        connection, config = migration_db
+        seed_legacy(connection)
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('old1',1,'{}'),('old3',3,'{}'),('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('old1','user','������',2),('old1','assistant','�쳣�߻غ�',8),('unknown','user','�޹���',4)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A834B800>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+_ test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[sqlite] _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6FEF6CE90>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A8790320>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6A8123290>, <alembic.config.Config object at 0x000002B6FEBA6570>)
+
+    def test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6FEF6CE90>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+_ test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[postgresql] _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8986180>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A8986480>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6A893B530>, <alembic.config.Config object at 0x000002B6FEBA7EF0>)
+
+    def test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade(migration_db):
+        connection, config = migration_db
+        seed_legacy(connection)
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8986180>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+____ test_empty_workspace_upgrade_downgrade_preserves_old_session[sqlite] _____
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8C6EE40>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A81E2E70>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6A89C8E60>, <alembic.config.Config object at 0x000002B6A89C8F80>)
+
+    def test_empty_workspace_upgrade_downgrade_preserves_old_session(migration_db):
+        connection, config = migration_db
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('unknown','user','����',0)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8C6EE40>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+__ test_empty_workspace_upgrade_downgrade_preserves_old_session[postgresql] ___
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8204770>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+>           yield
+
+.venv\Lib\site-packages\alembic\script\base.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\script\base.py:421: in _upgrade_revs
+    for script in reversed(list(revs))
+                           ^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:814: in iterate_revisions
+    revisions, heads = fn(
+.venv\Lib\site-packages\alembic\script\revision.py:1447: in _collect_upgrade_revisions
+    for rev in self._parse_upgrade_target(
+.venv\Lib\site-packages\alembic\script\revision.py:1234: in _parse_upgrade_target
+    return self.get_revisions(target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\revision.py:565: in get_revisions
+    return tuple(
+.venv\Lib\site-packages\alembic\script\revision.py:566: in <genexpr>
+    self._revision_for_ident(rev_id, branch_label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.revision.RevisionMap object at 0x000002B6A84F8770>
+resolved_id = '20261023_session_workspace_state', check_branch = None
+
+    def _revision_for_ident(
+        self,
+        resolved_id: Union[str, Tuple[()], None],
+        check_branch: Optional[str] = None,
+    ) -> Optional[Revision]:
+        branch_rev: Optional[Revision]
+        if check_branch:
+            branch_rev = self._resolve_branch(check_branch)
+        else:
+            branch_rev = None
+    
+        revision: Union[Optional[Revision], Literal[False]]
+        try:
+            revision = self._revision_map[resolved_id]
+        except KeyError:
+            # break out to avoid misleading py3k stack traces
+            revision = False
+        revs: Sequence[str]
+        if revision is False:
+            assert resolved_id
+            # do a partial lookup
+            revs = [
+                x
+                for x in self._revision_map
+                if x and len(x) > 3 and x.startswith(resolved_id)
+            ]
+    
+            if branch_rev:
+                revs = self.filter_for_lineage(revs, check_branch)
+            if not revs:
+>               raise ResolutionError(
+                    "No such revision or branch '%s'%s"
+                    % (
+                        resolved_id,
+                        (
+                            "; please ensure at least four characters are "
+                            "present for partial revision identifier matches"
+                            if len(resolved_id) < 4
+                            else ""
+                        ),
+                    ),
+                    resolved_id,
+E                   alembic.script.revision.ResolutionError: No such revision or branch '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\revision.py:637: ResolutionError
+
+The above exception was the direct cause of the following exception:
+
+migration_db = (<sqlalchemy.engine.base.Connection object at 0x000002B6FEBBDAC0>, <alembic.config.Config object at 0x000002B6A84FBD70>)
+
+    def test_empty_workspace_upgrade_downgrade_preserves_old_session(migration_db):
+        connection, config = migration_db
+        connection.execute(sa.text("INSERT INTO sessions(id,user_id,state_json) VALUES ('unknown',NULL,'{}')"))
+        connection.execute(sa.text("INSERT INTO messages(session_id,role,content,turn_index) VALUES ('unknown','user','����',0)"))
+        connection.commit()
+>       command.upgrade(config, WORKSPACE)
+
+tests\integration\test_workspace_migrations.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\alembic\command.py:483: in upgrade
+    script.run_env()
+.venv\Lib\site-packages\alembic\script\base.py:545: in run_env
+    util.load_python_file(self.dir, "env.py")
+.venv\Lib\site-packages\alembic\util\pyfiles.py:116: in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\util\pyfiles.py:136: in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap_external>:999: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+alembic\env.py:68: in <module>
+    run_migrations_online()
+alembic\env.py:47: in run_migrations_online
+    context.run_migrations()
+<string>:8: in run_migrations
+    ???
+.venv\Lib\site-packages\alembic\runtime\environment.py:969: in run_migrations
+    self.get_context().run_migrations(**kw)
+.venv\Lib\site-packages\alembic\runtime\migration.py:614: in run_migrations
+    for step in self._migrations_fn(heads, self):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\command.py:472: in upgrade
+    return script._upgrade_revs(revision, rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\alembic\script\base.py:409: in _upgrade_revs
+    with self._catch_revision_errors(
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <alembic.script.base.ScriptDirectory object at 0x000002B6A8204770>
+ancestor = 'Destination %(end)s is not a valid upgrade target from current head(s)'
+multiple_heads = None, start = None, end = '20261023_session_workspace_state'
+resolution = "Can't locate revision identified by '20261023_session_workspace_state'"
+
+    @contextmanager
+    def _catch_revision_errors(
+        self,
+        ancestor: Optional[str] = None,
+        multiple_heads: Optional[str] = None,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        resolution: Optional[str] = None,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except revision.RangeNotAncestorError as rna:
+            if start is None:
+                start = cast(Any, rna.lower)
+            if end is None:
+                end = cast(Any, rna.upper)
+            if not ancestor:
+                ancestor = (
+                    "Requested range %(start)s:%(end)s does not refer to "
+                    "ancestor/descendant revisions along the same branch"
+                )
+            ancestor = ancestor % {"start": start, "end": end}
+            raise util.CommandError(ancestor) from rna
+        except revision.MultipleHeads as mh:
+            if not multiple_heads:
+                multiple_heads = (
+                    "Multiple head revisions are present for given "
+                    "argument '%(head_arg)s'; please "
+                    "specify a specific target revision, "
+                    "'<branchname>@%(head_arg)s' to "
+                    "narrow to a specific head, or 'heads' for all heads"
+                )
+            multiple_heads = multiple_heads % {
+                "head_arg": end or mh.argument,
+                "heads": util.format_as_comma(mh.heads),
+            }
+            raise util.CommandError(multiple_heads) from mh
+        except revision.ResolutionError as re:
+            if resolution is None:
+                resolution = "Can't locate revision identified by '%s'" % (
+                    re.argument
+                )
+>           raise util.CommandError(resolution) from re
+E           alembic.util.exc.CommandError: Can't locate revision identified by '20261023_session_workspace_state'
+
+.venv\Lib\site-packages\alembic\script\base.py:245: CommandError
+---------------------------- Captured stdout setup ----------------------------
+[migration] WARNING: user_id=1 does not exist, skipping backfill
+---------------------------- Captured stderr setup ----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d48d7137f57f, init schema with messages and session title
+INFO  [alembic.runtime.migration] Running upgrade d48d7137f57f -> 20260622_vector_chunks, add vector_chunks table for semantic search
+INFO  [alembic.runtime.migration] Running upgrade 20260622_vector_chunks -> 20260623_ragas_recall, add ragas_context_recall column to evals
+INFO  [alembic.runtime.migration] Running upgrade 20260623_ragas_recall -> 0208fcea3709, add_message_unique_constraint
+INFO  [alembic.runtime.migration] Running upgrade 0208fcea3709 -> d50dd837b8e6, backfill_session_user_id
+INFO  [alembic.runtime.migration] Running upgrade d50dd837b8e6 -> m3_unify_user_id_type, M3: unify user_id type across mastery tables
+INFO  [alembic.runtime.migration] Running upgrade m3_unify_user_id_type -> 20260729_chunk_id, add nullable chunk_id to vector_chunks
+---------------------------- Captured stderr call -----------------------------
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+=========================== short test summary info ===========================
+FAILED tests/integration/test_workspace_migrations.py::test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[sqlite]
+FAILED tests/integration/test_workspace_migrations.py::test_session_upgrade_keeps_messages_and_uses_owner_legacy_and_max_turn[postgresql]
+FAILED tests/integration/test_workspace_migrations.py::test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[sqlite]
+FAILED tests/integration/test_workspace_migrations.py::test_workspace_migration_enforces_full_evidence_owner_chain_and_safe_downgrade[postgresql]
+FAILED tests/integration/test_workspace_migrations.py::test_empty_workspace_upgrade_downgrade_preserves_old_session[sqlite]
+FAILED tests/integration/test_workspace_migrations.py::test_empty_workspace_upgrade_downgrade_preserves_old_session[postgresql]
+6 failed, 10 passed in 13.96s

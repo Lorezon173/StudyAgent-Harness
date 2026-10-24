@@ -1,0 +1,160 @@
+.F...F..........................................................         [100%]
+================================== FAILURES ===================================
+_ TestMessageStoreMemory.test_list_by_session_returns_correct_order_and_shape _
+
+self = <tests.unit.storage.test_message_store.TestMessageStoreMemory object at 0x00000125B0361F10>
+
+    def test_list_by_session_returns_correct_order_and_shape(self):
+        async def _test():
+            store = MessageStore()
+            await store.add("s1", "user", "first", 0)
+            await store.add("s1", "assistant", "second", 1)
+            await store.add("s1", "user", "third", 2)
+    
+            msgs = await store.list_by_session("s1")
+            assert len(msgs) == 3
+    
+            # Check shape: each dict has exactly these keys
+            expected_keys = {"role", "content", "turn_index", "created_at"}
+            for msg in msgs:
+                assert set(msg.keys()) == expected_keys
+    
+            # Check order (by insertion = id order)
+            assert msgs[0]["role"] == "user"
+            assert msgs[0]["content"] == "first"
+            assert msgs[0]["turn_index"] == 0
+            assert isinstance(msgs[0]["created_at"], datetime)
+    
+            assert msgs[1]["role"] == "assistant"
+            assert msgs[1]["content"] == "second"
+            assert msgs[1]["turn_index"] == 1
+    
+            assert msgs[2]["role"] == "user"
+            assert msgs[2]["content"] == "third"
+            assert msgs[2]["turn_index"] == 2
+    
+>       asyncio.run(_test())
+
+tests\unit\storage\test_message_store.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def _test():
+        store = MessageStore()
+        await store.add("s1", "user", "first", 0)
+        await store.add("s1", "assistant", "second", 1)
+        await store.add("s1", "user", "third", 2)
+    
+        msgs = await store.list_by_session("s1")
+        assert len(msgs) == 3
+    
+        # Check shape: each dict has exactly these keys
+        expected_keys = {"role", "content", "turn_index", "created_at"}
+        for msg in msgs:
+>           assert set(msg.keys()) == expected_keys
+E           AssertionError: assert {'content', '... 'turn_index'} == {'content', '... 'turn_index'}
+E             
+E             Extra items in the left set:
+E             'id'
+E             Use -v to get more diff
+
+tests\unit\storage\test_message_store.py:40: AssertionError
+___ TestMessageStoreDB.test_list_by_session_returns_correct_order_and_shape ___
+
+self = <tests.unit.storage.test_message_store.TestMessageStoreDB object at 0x00000125B03629F0>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpvh_8qjp1.db')
+
+    def test_list_by_session_returns_correct_order_and_shape(self, db_fixture):
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    from app.models.tables import SessionTable
+                    session.add(SessionTable(id="s1", state_json="{}"))
+                    await session.commit()
+    
+                    store = MessageStore(db=session)
+                    await store.add("s1", "user", "first", 0)
+                    await store.add("s1", "assistant", "second", 1)
+                    await store.add("s1", "user", "third", 2)
+                    await session.commit()
+    
+                    msgs = await store.list_by_session("s1")
+                    assert len(msgs) == 3
+    
+                    expected_keys = {"role", "content", "turn_index", "created_at"}
+                    for msg in msgs:
+                        assert set(msg.keys()) == expected_keys
+    
+                    assert msgs[0]["role"] == "user"
+                    assert msgs[0]["content"] == "first"
+                    assert msgs[0]["turn_index"] == 0
+    
+                    assert msgs[1]["role"] == "assistant"
+                    assert msgs[1]["content"] == "second"
+                    assert msgs[1]["turn_index"] == 1
+    
+                    assert msgs[2]["role"] == "user"
+                    assert msgs[2]["content"] == "third"
+                    assert msgs[2]["turn_index"] == 2
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\storage\test_message_store.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def _test():
+        engine, session_factory = await db_fixture.setup_db()
+        try:
+            async with session_factory() as session:
+                from app.models.tables import SessionTable
+                session.add(SessionTable(id="s1", state_json="{}"))
+                await session.commit()
+    
+                store = MessageStore(db=session)
+                await store.add("s1", "user", "first", 0)
+                await store.add("s1", "assistant", "second", 1)
+                await store.add("s1", "user", "third", 2)
+                await session.commit()
+    
+                msgs = await store.list_by_session("s1")
+                assert len(msgs) == 3
+    
+                expected_keys = {"role", "content", "turn_index", "created_at"}
+                for msg in msgs:
+>                   assert set(msg.keys()) == expected_keys
+E                   AssertionError: assert {'content', '... 'turn_index'} == {'content', '... 'turn_index'}
+E                     
+E                     Extra items in the left set:
+E                     'id'
+E                     Use -v to get more diff
+
+tests\unit\storage\test_message_store.py:134: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_message_store.py::TestMessageStoreMemory::test_list_by_session_returns_correct_order_and_shape
+FAILED tests/unit/storage/test_message_store.py::TestMessageStoreDB::test_list_by_session_returns_correct_order_and_shape
+2 failed, 62 passed in 19.79s

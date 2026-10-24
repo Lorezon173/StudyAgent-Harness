@@ -1,0 +1,256 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+================================== FAILURES ===================================
+__ test_claim_saves_original_before_messages_and_duplicate_never_reacquires ___
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35B8CCC0>
+
+    def test_claim_saves_original_before_messages_and_duplicate_never_reacquires(workspace_db):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore, WorkspaceConflict
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:49: ModuleNotFoundError
+________________ test_claim_owner_scope_busy_and_stale_context ________________
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF53A0>
+
+    def test_claim_owner_scope_busy_and_stale_context(workspace_db):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore, WorkspaceConflict
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:72: ModuleNotFoundError
+___________ test_attempt_fence_expiration_renew_and_explicit_retry ____________
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF5800>
+
+    def test_attempt_fence_expiration_renew_and_explicit_retry(workspace_db):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore, WorkspaceConflict
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:89: ModuleNotFoundError
+________ test_failed_requests_need_explicit_retry_at_original_version _________
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF5940>
+
+    def test_failed_requests_need_explicit_retry_at_original_version(workspace_db):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore, WorkspaceConflict
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:116: ModuleNotFoundError
+______ test_view_and_workspace_versions_do_not_overwrite_teaching_state _______
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF5260>
+
+    def test_view_and_workspace_versions_do_not_overwrite_teaching_state(workspace_db):
+>       from app.infrastructure.storage.chat_request_store import WorkspaceConflict
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:133: ModuleNotFoundError
+____ test_session_schema1_roundtrip_messages_have_stable_ids_and_rollback _____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF5EE0>
+
+    def test_session_schema1_roundtrip_messages_have_stable_ids_and_rollback(workspace_db):
+        from app.infrastructure.storage.message_store import MessageStore
+        from app.infrastructure.storage.session_store import SessionStore
+    
+        async def check(factory):
+            async with factory() as db:
+                state = {"schema_version": 1, "active_node_id": "n1", "committed_turn_count": 1}
+                await SessionStore(db).save("s1", state)
+                first = await MessageStore(db).add("s1", "user", "����", 7)
+                second = await MessageStore(db).add("s1", "assistant", "�ظ�", 7)
+                await db.commit()
+            async with factory() as db:
+                saved = await SessionStore(db).get("s1")
+                assert saved["profile_id"] == "p1" and saved["state_version"] == 0
+                assert saved["state_json"] and saved["active_node_id"] == "n1"
+                assert [m["id"] for m in await MessageStore(db).list_by_session("s1")] == [first, second]
+                with pytest.raises(ValueError, match="schema"):
+                    await SessionStore(db).save("s1", {"schema_version": 2})
+                with pytest.raises(ValueError):
+                    await SessionStore(db).save("s1", {"schema_version": 1, "bad": object()})
+                await MessageStore(db).add("s1", "user", "�ع�", 8)
+                await db.rollback()
+            async with factory() as db:
+                assert len(await MessageStore(db).list_by_session("s1")) == 2
+>       workspace_db(check)
+
+tests\unit\storage\test_workspace_state_stores.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\storage\test_workspace_state_stores.py:41: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\storage\test_workspace_state_stores.py:35: in run
+    db.add_all([SessionTable(id=f"s{i}", user_id=i, profile_id=f"p{i}", active_node_id=f"n{i}", state_json='{}') for i in (1, 2)])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:4: in __init__
+    ???
+.venv\Lib\site-packages\sqlalchemy\orm\state.py:596: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:122: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\state.py:594: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.models.tables.SessionTable object at 0x0000027E35905760>
+kwargs = {'active_node_id': 'n1', 'id': 's1', 'profile_id': 'p1', 'state_json': '{}', ...}
+cls_ = <class 'app.models.tables.SessionTable'>, k = 'profile_id'
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'profile_id' is an invalid keyword argument for SessionTable
+
+.venv\Lib\site-packages\sqlalchemy\orm\decl_base.py:2179: TypeError
+_____ test_database_constraints_reject_cross_scope_links[session_profile] _____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35CA79C0>
+case = 'session_profile'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+______ test_database_constraints_reject_cross_scope_links[session_node] _______
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF5620>
+case = 'session_node'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+______ test_database_constraints_reject_cross_scope_links[request_owner] ______
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF62A0>
+case = 'request_owner'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+______ test_database_constraints_reject_cross_scope_links[evidence_node] ______
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF68E0>
+case = 'evidence_node'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+____ test_database_constraints_reject_cross_scope_links[evidence_message] _____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF67A0>
+case = 'evidence_message'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+___ test_database_constraints_reject_cross_scope_links[evidence_duplicate] ____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35BF6DE0>
+case = 'evidence_duplicate'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+_______ test_database_constraints_reject_cross_scope_links[view_owner] ________
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35CA7A60>
+case = 'view_owner'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+_____ test_database_constraints_reject_cross_scope_links[workspace_owner] _____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35CA7B00>
+case = 'workspace_owner'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+_____ test_database_constraints_reject_cross_scope_links[workspace_ratio] _____
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35CA7880>
+case = 'workspace_ratio'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+_____ test_database_constraints_reject_cross_scope_links[active_request] ______
+
+workspace_db = <function workspace_db.<locals>.<lambda> at 0x0000027E35CA7D80>
+case = 'active_request'
+
+    @pytest.mark.parametrize("case", ["session_profile", "session_node", "request_owner", "evidence_node", "evidence_message", "evidence_duplicate", "view_owner", "workspace_owner", "workspace_ratio", "active_request"])
+    def test_database_constraints_reject_cross_scope_links(workspace_db, case):
+>       from app.infrastructure.storage.chat_request_store import ChatRequestStore
+E       ModuleNotFoundError: No module named 'app.infrastructure.storage.chat_request_store'
+
+tests\unit\storage\test_workspace_state_stores.py:194: ModuleNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_claim_saves_original_before_messages_and_duplicate_never_reacquires
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_claim_owner_scope_busy_and_stale_context
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_attempt_fence_expiration_renew_and_explicit_retry
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_failed_requests_need_explicit_retry_at_original_version
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_view_and_workspace_versions_do_not_overwrite_teaching_state
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_session_schema1_roundtrip_messages_have_stable_ids_and_rollback
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[session_profile]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[session_node]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[request_owner]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[evidence_node]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[evidence_message]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[evidence_duplicate]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[view_owner]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[workspace_owner]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[workspace_ratio]
+FAILED tests/unit/storage/test_workspace_state_stores.py::test_database_constraints_reject_cross_scope_links[active_request]
+16 failed in 2.36s

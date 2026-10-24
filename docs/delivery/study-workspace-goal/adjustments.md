@@ -73,3 +73,16 @@
 - Ruling: 已有节点仅更新输入明确提供的description/archived，新节点保留数据库默认；允许最小扩展mastery_graph.py类型与薄弱查询，未评估null跳过数值薄弱判断，不转换0、不伪造分数，已评估低分行为不变。满足已批准“未评估不是0”和兼容四方法契约。若判断错误，代价为后续调整未知节点推荐策略，但真实null与归档数据仍保留。
 - 任务顺序/接口路径/验收不变；在线上下文与未知节点教学流程仍Task7，Task8增量提交不提前。
 - fix round1/5：先加入真实Graph往返与null前置行为失败测试，再最小修复，覆盖Task2 Store与Graph，范围复审后才允许提交。
+
+## ADJ-007：Task3 SQLite带子消息重建父表（A类）
+
+- 实现者验证SQLite sessions重建时messages引用导致删除父表失败，单纯defer_foreign_keys在commit仍保留删除计数；原Store16项已绿，迁移尚未验收。
+- Ruling: 允许迁移事务内延迟外键，foreign_keys始终ON，重建完成必须全库foreign_key_check为空才解除延迟；非空立即失败并整事务回滚，不手动提交调用方事务。PG使用正常ALTER约束。若判断错误，代价为重设计SQLite重建路径；不可牺牲现有消息或约束。
+- 验证必须实际commit后新连接读历史消息和约束，并注入重建中故障确认旧session/message及迁移版本全恢复。不以同连接临时结果代替迁移成功。
+- 不变更业务契约、顺序或验收，不关闭外键。Task3进行中。
+
+### ADJ-007补充：默认Alembic SQLite连接
+
+- 默认Alembic连接原未启用SQLite外键，新迁移因此会明确拒绝；不能仅测试专用provided连接通过就称迁移可用。
+- Ruling: 允许env.py在默认SQLite连接BEGIN前启用foreign_keys并核实实际值为1；provided连接不擅自提交，若在事务内不能启用则明确拒绝，不谎称约束开启。只启用、不关闭。若判断错误，代价为调整迁移连接入口，不修改历史数据。
+- 补默认CLI路径红灯与最小修复后验收，不重复已通过的全部迁移测试。属于范围内迁移可靠性修正，未改变业务范围。
