@@ -1,0 +1,1443 @@
+....FFFF.FFFFFFF........................................................ [ 60%]
+..FFFF.............FFF.......................FFF                         [100%]
+================================== FAILURES ===================================
+_ test_context_mastery_routes_actual_policy_action_once[Analogy-weak-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.ANALOGY: 'Analogy'>, level = 'weak'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+>       output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC6D7830>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231027aaaef3896ee9', ts=1792861231027.584)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABB10>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-weak-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'weak'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+>       output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC6D5B20>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='179286123142187ba66f6ccf4', ts=1792861231421.3123)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.REGRESS: 'Regress'>, t...t=<object object at 0x0000018EF72ABB80>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-partial-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'partial'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+>       output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC6D7C50>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231453c10dc2271dea', ts=1792861231453.2002)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.REGRESS: 'Regress'>, t...t=<object object at 0x0000018EF72ABB10>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-mastered-tutor_ask-Socratic] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'mastered', want = 'tutor_ask'
+target = <TeachingMode.SOCRATIC: 'Socratic'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+>       output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC7071D0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231485714d624a9ea8', ts=1792861231485.854)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.REGRESS: 'Regress'>, t...t=<object object at 0x0000018EF72AB030>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_keeps_global_observation_rule_priority[GraphPrereqWeakDetected-payload0-regress_to_prereq] _
+
+kind = <EventType.GRAPH_PREREQ_WEAK_DETECTED: 'GraphPrereqWeakDetected'>
+payload = {'basis': 'observed'}, want = 'regress_to_prereq'
+
+    @pytest.mark.parametrize("kind,payload,want", [
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "observed"}, "regress_to_prereq"),
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "historical"}, "tutor_probe_prereq"),
+        (EventType.CONTRADICTION_DETECTED, {}, "tutor_correct"),
+        (EventType.CONFUSION_DETECTED, {}, "tutor_offer_analogy")])
+    def test_context_keeps_global_observation_rule_priority(kind, payload, want):
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"}), (kind, payload)])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC705310>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='17928612315213cbd9233d624', ts=1792861231521.8386)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABBF0>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_keeps_global_observation_rule_priority[GraphPrereqWeakDetected-payload1-tutor_probe_prereq] _
+
+kind = <EventType.GRAPH_PREREQ_WEAK_DETECTED: 'GraphPrereqWeakDetected'>
+payload = {'basis': 'historical'}, want = 'tutor_probe_prereq'
+
+    @pytest.mark.parametrize("kind,payload,want", [
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "observed"}, "regress_to_prereq"),
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "historical"}, "tutor_probe_prereq"),
+        (EventType.CONTRADICTION_DETECTED, {}, "tutor_correct"),
+        (EventType.CONFUSION_DETECTED, {}, "tutor_offer_analogy")])
+    def test_context_keeps_global_observation_rule_priority(kind, payload, want):
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"}), (kind, payload)])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC707D10>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231552bf95e2e1c689', ts=1792861231552.7612)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABC40>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_keeps_global_observation_rule_priority[ContradictionDetected-payload2-tutor_correct] _
+
+kind = <EventType.CONTRADICTION_DETECTED: 'ContradictionDetected'>, payload = {}
+want = 'tutor_correct'
+
+    @pytest.mark.parametrize("kind,payload,want", [
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "observed"}, "regress_to_prereq"),
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "historical"}, "tutor_probe_prereq"),
+        (EventType.CONTRADICTION_DETECTED, {}, "tutor_correct"),
+        (EventType.CONFUSION_DETECTED, {}, "tutor_offer_analogy")])
+    def test_context_keeps_global_observation_rule_priority(kind, payload, want):
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"}), (kind, payload)])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC706A20>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='17928612315860bb52490a799', ts=1792861231586.496)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABC50>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_context_keeps_global_observation_rule_priority[ConfusionDetected-payload3-tutor_offer_analogy] _
+
+kind = <EventType.CONFUSION_DETECTED: 'ConfusionDetected'>, payload = {}
+want = 'tutor_offer_analogy'
+
+    @pytest.mark.parametrize("kind,payload,want", [
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "observed"}, "regress_to_prereq"),
+        (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "historical"}, "tutor_probe_prereq"),
+        (EventType.CONTRADICTION_DETECTED, {}, "tutor_correct"),
+        (EventType.CONFUSION_DETECTED, {}, "tutor_offer_analogy")])
+    def test_context_keeps_global_observation_rule_priority(kind, payload, want):
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"}), (kind, payload)])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC762570>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='179286123161929d80dfbeee7', ts=1792861231619.7795)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABC80>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+___ test_context_keeps_retriever_rule_and_gate[True-retriever_expand_query] ___
+
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-158/test_context_keeps_retriever_r0')
+enabled = True, want = 'retriever_expand_query'
+
+    @pytest.mark.parametrize("enabled,want", [(True, "retriever_expand_query"), (False, "tutor_ask")])
+    def test_context_keeps_retriever_rule_and_gate(tmp_path, enabled, want):
+        rules = tmp_path / "retrieval.yaml"
+        rules.write_text("rules:\n  - when: {}\n    action: retriever_expand_query\n    priority: 1\n", encoding="utf-8")
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"})],
+                                         rules_path=rules, rag_enabled=enabled)
+
+tests\unit\harness\test_orchestrator.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC6D4EF0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='17928612316621ffebd476eb8', ts=1792861231662.788)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABBE0>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_________ test_context_keeps_retriever_rule_and_gate[False-tutor_ask] _________
+
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-158/test_context_keeps_retriever_r1')
+enabled = False, want = 'tutor_ask'
+
+    @pytest.mark.parametrize("enabled,want", [(True, "retriever_expand_query"), (False, "tutor_ask")])
+    def test_context_keeps_retriever_rule_and_gate(tmp_path, enabled, want):
+        rules = tmp_path / "retrieval.yaml"
+        rules.write_text("rules:\n  - when: {}\n    action: retriever_expand_query\n    priority: 1\n", encoding="utf-8")
+>       output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"})],
+                                         rules_path=rules, rag_enabled=enabled)
+
+tests\unit\harness\test_orchestrator.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC706720>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231697e0ead4411401', ts=1792861231697.082)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.ANALOGY: 'Analogy'>, t...t=<object object at 0x0000018EF72ABB30>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+____________ test_context_without_mastery_keeps_conductor_fallback ____________
+
+    def test_context_without_mastery_keeps_conductor_fallback():
+>       output, _, policy = _context_tick(TeachingMode.REGRESS, [])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\harness\test_orchestrator.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\harness\test_orchestrator.py:26: in _context_tick
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC704E00>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, session_id='restored', payload={}, parent_id=None, metadata={}, id='1792861231729106968a3d6e0', ts=1792861231729.0408)
+ws = WorkspaceState(session_id='restored', user_id=1, current_topic=None, current_mode=<TeachingMode.REGRESS: 'Regress'>, t...t=<object object at 0x0000018EF72ABBC0>, stage='init', last_question=None, committed_turn_count=0, active_node_id=None)
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+_ test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment0] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFC9445C0>
+first_mode = 'Socratic'
+assessment = {'mastery_level': 'weak', 'mastery_score': 20}
+
+    @pytest.mark.parametrize("first_mode,assessment", [("Socratic", {"mastery_level": "weak", "mastery_score": 20}),
+        ("Socratic", {"confusion": {"concept_a": "A", "concept_b": "B"}})])
+    def test_explain_or_analogy_invalidates_previous_question_two_turns(controlled, first_mode, assessment):
+        m = api()
+        history = messages()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), history, "���д�", profile())
+        controlled.responses["critic_assess"] = assessment
+>       first = run_context(ctx)
+                ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:382: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFC933740>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861232550a524bdcaebfb', ts=1792861232550.2168)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment1] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAABB30>
+first_mode = 'Socratic'
+assessment = {'confusion': {'concept_a': 'A', 'concept_b': 'B'}}
+
+    @pytest.mark.parametrize("first_mode,assessment", [("Socratic", {"mastery_level": "weak", "mastery_score": 20}),
+        ("Socratic", {"confusion": {"concept_a": "A", "concept_b": "B"}})])
+    def test_explain_or_analogy_invalidates_previous_question_two_turns(controlled, first_mode, assessment):
+        m = api()
+        history = messages()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), history, "���д�", profile())
+        controlled.responses["critic_assess"] = assessment
+>       first = run_context(ctx)
+                ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:382: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAABA70>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861232683025bad2bb93b', ts=1792861232683.4634)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_uuid_node_reused_and_unknown_never_scored[0] ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFC931EB0>
+score = 0
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:400: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAAA0F0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861232779b0b24b9b118d', ts=1792861232779.6396)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_____________ test_uuid_node_reused_and_unknown_never_scored[100] _____________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAAA180>
+score = 100
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:400: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAA89B0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='17928612328668bfb6d043ba2', ts=1792861232866.0793)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Analogy] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAAE270>
+mode = 'Analogy'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:441: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAAFCE0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='17928612330724d9f3f57ec8e', ts=1792861233072.3025)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.ANALOGY: 'Analogy'>,...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Regress] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAAF020>
+mode = 'Regress'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:441: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAAC710>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='17928612331500735a3f073a8', ts=1792861233150.5437)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.REGRESS: 'Regress'>,...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_observed_prereq_regress_action_really_routes ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAAE840>
+
+    def test_observed_prereq_regress_action_really_routes(controlled):
+        from app.harness.mastery_graph import MasteryGraph
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ", mastery=None)
+        prereq = str(UUID(int=2))
+        graph.add_node(prereq, "����ǰ��", mastery=10)
+        graph.add_edge(prereq, NODE)
+        ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")),
+                                           messages(), "�ش�", profile(2))
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+>       result = run_context(ctx, graph)
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:459: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAAF440>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861233224aa8812ab52b9', ts=1792861233224.1282)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns[ask] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCAAA750>
+answer_kind = 'ask'
+
+    @pytest.mark.parametrize("answer_kind", ["ask", "recap"])
+    def test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns(controlled, answer_kind):
+        from app.harness.mastery_graph import MasteryGraph
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "���Žڵ�", mastery=None)
+        initial_mode = "Feynman" if answer_kind == "recap" else "Socratic"
+        initial = changed(teaching_mode=initial_mode, mode_history=[initial_mode])
+        ctx = api().build_teaching_context(snapshot(initial), [], "����", profile())
+        first = run_context(ctx, graph)
+        saved = json.loads(json.dumps(first.teaching_state))
+        history = [dict(id=1, turn_index=0, role="user", content="����"), dict(id=2, turn_index=0, role="assistant", content=first.reply)]
+        next_ctx = api().build_teaching_context(snapshot(saved), history, "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 65}
+>       second = run_context(next_ctx, graph)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:544: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAAFA10>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861233370e0f82808a327', ts=1792861233370.2915)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...esponse', last_question='�ܿ����⣺���������ʲô��', committed_turn_count=1, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns[recap] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFCB24980>
+answer_kind = 'recap'
+
+    @pytest.mark.parametrize("answer_kind", ["ask", "recap"])
+    def test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns(controlled, answer_kind):
+        from app.harness.mastery_graph import MasteryGraph
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "���Žڵ�", mastery=None)
+        initial_mode = "Feynman" if answer_kind == "recap" else "Socratic"
+        initial = changed(teaching_mode=initial_mode, mode_history=[initial_mode])
+        ctx = api().build_teaching_context(snapshot(initial), [], "����", profile())
+        first = run_context(ctx, graph)
+        saved = json.loads(json.dumps(first.teaching_state))
+        history = [dict(id=1, turn_index=0, role="user", content="����"), dict(id=2, turn_index=0, role="assistant", content=first.reply)]
+        next_ctx = api().build_teaching_context(snapshot(saved), history, "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 65}
+>       second = run_context(next_ctx, graph)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:544: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCB25DF0>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...d={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861233452582585e28d0d', ts=1792861233452.9392)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.FEYNMAN: 'Feynman'>,...iting_response', last_question='�ܿظ�������', committed_turn_count=1, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+__________ test_final_prompt_uses_current_mode_after_real_transition __________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000018EFC945E20>
+
+    def test_final_prompt_uses_current_mode_after_real_transition(controlled):
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:553: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:71: in run_collab_loop
+    for new_ev in orchestrator.on_event(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\orchestrator.py:94: in on_event
+    return self._on_tick(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.orchestrator.Orchestrator object at 0x0000018EFCAA8710>
+tick = Event(type=<EventType.ORCHESTRATOR_TICK: 'OrchestratorTick'>, source=<EventSource.ORCHESTRATOR: 'orchestrator'>, sessi...ad={'reason': 'micro_turn_barrier'}, parent_id=None, metadata={}, id='1792861233529ad8329568cc5', ts=1792861233529.255)
+ws = WorkspaceState(session_id='session-a', user_id=1, current_topic='�ڵ�0', current_mode=<TeachingMode.SOCRATIC: 'Socratic'...awaiting_response', last_question='����1', committed_turn_count=0, active_node_id='00000000-0000-0000-0000-000000000001')
+
+    def _on_tick(self, tick: Event, ws: WorkspaceState) -> list[Event]:
+        obs = self._collect_observations(self._pending_obs, ws)
+        self._pending_obs = []
+        self._tick_pending = False
+    
+        # P0 fix: ע��� micro-turn �� repeat_count������ weak ������
+        obs["repeat_count"] = self._weak_count
+    
+        # P0 fix: topic_complete �� �� Regress ǰ��Сѭ���� mastered ����Ϊ�������
+        # Regress �� mastered ����ǰ�õ㣬�������Ȿ������4.2 Regress+mastered��Socratic��
+        if (obs.get("mastery") == "mastered"
+                and ws.current_mode != TeachingMode.REGRESS):
+            obs["topic_complete"] = True
+    
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
+    
+        # P0 fix: ����ƥ������ weak ����
+        mastery = obs.get("mastery")
+        if mastery == "weak":
+            self._weak_count += 1
+        elif mastery is not None:
+            self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+>           and mastery in {str(level) for level in MasteryLevel}
+                                                    ^^^^^^^^^^^^
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+E       NameError: name 'MasteryLevel' is not defined
+
+app\harness\orchestrator.py:127: NameError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Analogy-weak-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-weak-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-partial-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-mastered-tutor_ask-Socratic]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_global_observation_rule_priority[GraphPrereqWeakDetected-payload0-regress_to_prereq]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_global_observation_rule_priority[GraphPrereqWeakDetected-payload1-tutor_probe_prereq]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_global_observation_rule_priority[ContradictionDetected-payload2-tutor_correct]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_global_observation_rule_priority[ConfusionDetected-payload3-tutor_offer_analogy]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_retriever_rule_and_gate[True-retriever_expand_query]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_keeps_retriever_rule_and_gate[False-tutor_ask]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_without_mastery_keeps_conductor_fallback
+FAILED tests/unit/orchestration/test_conversation_context.py::test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[100]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Analogy]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Regress]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_observed_prereq_regress_action_really_routes
+FAILED tests/unit/orchestration/test_conversation_context.py::test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns[ask]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_real_question_and_recap_restore_pending_and_stable_node_across_two_turns[recap]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_prompt_uses_current_mode_after_real_transition
+21 failed, 99 passed in 2.74s

@@ -1,0 +1,256 @@
+FFFF.FFFF                                                                [100%]
+================================== FAILURES ===================================
+____ test_latest_real_user_assistant_protected_in_actual_all_agent_prompts ____
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000022C8F453B30>
+
+    def test_latest_real_user_assistant_protected_in_actual_all_agent_prompts(controlled):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        original_user = "��ʵ�û�ԭ��" + "��" * 3494
+        original_assistant = "��ʵ��������" + "��" * 3494
+        history = [dict(id=i + 1, turn_index=0, role=role, content=content) for i, (role, content) in enumerate([
+            ("user", original_user), ("assistant", original_assistant), ("system", "ϵͳ����" + "ϵ" * 3496),
+            ("tool", "��������" + "��" * 3496)])]
+        ctx = api().build_teaching_context(snapshot(changed(summary="ժҪ" * 2500)), history, "��ǰԭ��", profile())
+        ws = workspace(ctx)
+        for action in ["tutor_ask", "tutor_probe_prereq", "regress_to_prereq", "tutor_explain", "tutor_re_explain",
+                       "tutor_correct", "tutor_request_recap", "tutor_offer_analogy"]:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": "��ǰԭ��"}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": []}), ws)
+        assert len(controlled.calls) == 10
+        user_item = "��Ϣ����=1;��ɫ=user\n" + original_user + "\n"
+        assistant_item = "��Ϣ����=2;��ɫ=assistant\n" + original_assistant + "\n"
+        profile_text = "������\n��ǰ�ڵ�=" + NODE + ";����=�ڵ�0\n�ڵ�UUID=" + NODE + ";����=�ڵ�0;˵��=����;���ն�=None\n"
+        for system, human in controlled.calls:
+            prompt = human.content
+>           assert user_item in prompt and assistant_item in prompt
+E           AssertionError: assert ('��Ϣ����=1;��ɫ=user\n��ʵ�û�ԭ������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������...����������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������\n' in '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=ժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժҪժ...n��ǰ�ڵ�=00000000-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n')
+
+tests\unit\orchestration\test_conversation_context.py:740: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_ test_latest_real_pair_outside_default_last12_is_kept_without_false_summary __
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000022CC15180E0>
+
+    def test_latest_real_pair_outside_default_last12_is_kept_without_false_summary(controlled):
+        history = messages() + other_messages(3, 19)
+        seen = []
+        ctx = api().build_teaching_context(snapshot(state()), history, "��ǰ", profile(),
+            summarizer=lambda old, omitted, sid: seen.extend(item.id for item in omitted) or "α����ժҪ")
+        assert len(ctx.history) == 12
+>       assert [item.id for item in ctx.history] == [1, 2] + list(range(9, 19))
+E       assert [7, 8, 9, 10, 11, 12, ...] == [1, 2, 9, 10, 11, 12, ...]
+E         
+E         At index 0 diff: 7 != 1
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:761: AssertionError
+____ test_missing_real_role_never_gets_a_surrogate_or_complete_pair[user] _____
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000022CC1453800>
+role = 'user'
+
+    @pytest.mark.parametrize("role", ["user", "assistant", None])
+    def test_missing_real_role_never_gets_a_surrogate_or_complete_pair(controlled, role):
+        history = other_messages(2, 18)
+        if role:
+            history.insert(0, dict(id=1, turn_index=0, role=role, content="Ψһ��ʵ��ɫ"))
+        ctx = api().build_teaching_context(snapshot(), history, "��ǰ", profile())
+        assert len(ctx.history) == 12 and ctx.state.committed_turn_count == 0
+        assert not ctx.has_pending_question
+        kept_roles = [item.role for item in ctx.history]
+>       assert kept_roles.count("user") == (1 if role == "user" else 0)
+E       AssertionError: assert 0 == 1
+E        +  where 0 = <built-in method count of list object at 0x0000022CC15E6A80>('user')
+E        +    where <built-in method count of list object at 0x0000022CC15E6A80> = ['tool', 'system', 'tool', 'system', 'tool', 'system', ...].count
+
+tests\unit\orchestration\test_conversation_context.py:778: AssertionError
+__ test_missing_real_role_never_gets_a_surrogate_or_complete_pair[assistant] __
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000022CC1519610>
+role = 'assistant'
+
+    @pytest.mark.parametrize("role", ["user", "assistant", None])
+    def test_missing_real_role_never_gets_a_surrogate_or_complete_pair(controlled, role):
+        history = other_messages(2, 18)
+        if role:
+            history.insert(0, dict(id=1, turn_index=0, role=role, content="Ψһ��ʵ��ɫ"))
+        ctx = api().build_teaching_context(snapshot(), history, "��ǰ", profile())
+        assert len(ctx.history) == 12 and ctx.state.committed_turn_count == 0
+        assert not ctx.has_pending_question
+        kept_roles = [item.role for item in ctx.history]
+        assert kept_roles.count("user") == (1 if role == "user" else 0)
+>       assert kept_roles.count("assistant") == (1 if role == "assistant" else 0)
+E       AssertionError: assert 0 == 1
+E        +  where 0 = <built-in method count of list object at 0x0000022CC1547780>('assistant')
+E        +    where <built-in method count of list object at 0x0000022CC1547780> = ['tool', 'system', 'tool', 'system', 'tool', 'system', ...].count
+
+tests\unit\orchestration\test_conversation_context.py:779: AssertionError
+___ test_summary_consumes_only_prefix_before_first_retained_after_boundary ____
+
+    def test_summary_consumes_only_prefix_before_first_retained_after_boundary():
+        history = other_messages(1, 26)
+        history[2].update(role="user", content="�����û�")
+        history[6].update(role="assistant", content="��������")
+        seen = []
+        def summarize(old, omitted, sid):
+            seen.append([item.id for item in omitted])
+            return "��ʵ����ǰ׺ժҪ"
+        ctx = api().build_teaching_context(snapshot(state()), history, "��ǰ", profile(), summarizer=summarize)
+>       assert [item.id for item in ctx.history] == [3, 7] + list(range(16, 26))
+E       assert [14, 15, 16, 17, 18, 19, ...] == [3, 7, 16, 17, 18, 19, ...]
+E         
+E         At index 0 diff: 14 != 3
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:794: AssertionError
+_ test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance[True] _
+
+known_boundary = True
+
+    @pytest.mark.parametrize("known_boundary", [True, False])
+    def test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance(known_boundary):
+        history = messages() + other_messages(3, 26)
+        seen = []
+        boundary = 5 if known_boundary else 100
+        ctx = api().build_teaching_context(snapshot(changed(summary="��ժҪ", summary_until_message_id=boundary)), history,
+            "��ǰ", profile(), summarizer=lambda old, omitted, sid: seen.append([item.id for item in omitted]) or "��������ժҪ")
+>       assert [item.id for item in ctx.history] == [1, 2] + list(range(16, 26))
+E       assert [14, 15, 16, 17, 18, 19, ...] == [1, 2, 16, 17, 18, 19, ...]
+E         
+E         At index 0 diff: 14 != 1
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:807: AssertionError
+_ test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance[False] _
+
+known_boundary = False
+
+    @pytest.mark.parametrize("known_boundary", [True, False])
+    def test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance(known_boundary):
+        history = messages() + other_messages(3, 26)
+        seen = []
+        boundary = 5 if known_boundary else 100
+        ctx = api().build_teaching_context(snapshot(changed(summary="��ժҪ", summary_until_message_id=boundary)), history,
+            "��ǰ", profile(), summarizer=lambda old, omitted, sid: seen.append([item.id for item in omitted]) or "��������ժҪ")
+>       assert [item.id for item in ctx.history] == [1, 2] + list(range(16, 26))
+E       assert [14, 15, 16, 17, 18, 19, ...] == [1, 2, 16, 17, 18, 19, ...]
+E         
+E         At index 0 diff: 14 != 1
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:807: AssertionError
+_______ test_task6_long_multirole_history_protects_latest_real_exchange _______
+
+workspace = <function workspace.<locals>.<lambda> at 0x0000022CC1591B20>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022CC1569A30>
+
+    def test_task6_long_multirole_history_protects_latest_real_exchange(workspace, monkeypatch):
+        from tests.unit.orchestration.test_conversation_context import ControlledClient
+        from app.harness.teaching_context import build_teaching_context
+        from app.infrastructure.llm import LLMService
+        from app.orchestration.assembly import run_online_agent_session
+        from app.orchestration.session_service import SessionService
+        controlled = ControlledClient()
+        monkeypatch.setattr(LLMService, "llm", property(lambda self: controlled))
+        monkeypatch.setattr("app.core.config.settings.rag_enabled", False)
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            texts = {"user": "��ʵ�û�ԭ��" + "��" * 3494, "assistant": "��ʵ��������" + "��" * 3494,
+                     "system": "ϵ" * 3500, "tool": "��" * 3500}
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                state = json.loads(row.state_json)
+                state["summary"] = "��" * 5000
+                row.state_json = json.dumps(state, ensure_ascii=False)
+                await db.flush()
+                db.add_all([MessageTable(id=i + 1, session_id=sid, turn_index=0, role=role, content=texts[role])
+                            for i, role in enumerate(("user", "assistant", "system", "tool"))])
+                await db.commit()
+            async with factory() as db:
+                snap = await SessionService(db).load_snapshot(1, sid)
+                ctx = build_teaching_context(snap, snap.messages.items, "��ǰ", snap.profile_summary)
+                await db.rollback()
+            result = run_online_agent_session(sid, 1, "��ǰ", context=ctx)
+            assert result.assessment_deltas == []
+            for system, human in controlled.calls:
+                assert "��Ϣ����=1;��ɫ=user\n" + texts["user"] + "\n" in human.content
+                assert "��Ϣ����=2;��ɫ=assistant\n" + texts["assistant"] + "\n" in human.content
+                assert texts["user"] not in system.content and texts["assistant"] not in system.content
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000022CC15697F0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000022CC034E6D0>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        texts = {"user": "��ʵ�û�ԭ��" + "��" * 3494, "assistant": "��ʵ��������" + "��" * 3494,
+                 "system": "ϵ" * 3500, "tool": "��" * 3500}
+        async with factory() as db:
+            row = await db.get(SessionTable, sid)
+            state = json.loads(row.state_json)
+            state["summary"] = "��" * 5000
+            row.state_json = json.dumps(state, ensure_ascii=False)
+            await db.flush()
+            db.add_all([MessageTable(id=i + 1, session_id=sid, turn_index=0, role=role, content=texts[role])
+                        for i, role in enumerate(("user", "assistant", "system", "tool"))])
+            await db.commit()
+        async with factory() as db:
+            snap = await SessionService(db).load_snapshot(1, sid)
+            ctx = build_teaching_context(snap, snap.messages.items, "��ǰ", snap.profile_summary)
+            await db.rollback()
+        result = run_online_agent_session(sid, 1, "��ǰ", context=ctx)
+        assert result.assessment_deltas == []
+        for system, human in controlled.calls:
+>           assert "��Ϣ����=1;��ɫ=user\n" + texts["user"] + "\n" in human.content
+E           AssertionError: assert (('��Ϣ����=1;��ɫ=user\n' + '��ʵ�û�ԭ��������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������...��������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������') + '\n') in '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=�ɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾ�...��������������������������������������\n����ǰ���롿\n��ǰ\n������\n��ǰ�ڵ�=None;����=\n�ڵ�UUID=e0a4002b-7500-4b8d-acca-c90dc5adc9ff;����=����;˵��=;���ն�=None\n'
+E            +  where '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=�ɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾ�...��������������������������������������\n����ǰ���롿\n��ǰ\n������\n��ǰ�ڵ�=None;����=\n�ڵ�UUID=e0a4002b-7500-4b8d-acca-c90dc5adc9ff;����=����;˵��=;���ն�=None\n' = HumanMessage(content='����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=�ɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾ�...one;����=\n�ڵ�UUID=e0a4002b-7500-4b8d-acca-c90dc5adc9ff;����=����;˵��=;���ն�=None\n', additional_kwargs={}, response_metadata={}).content
+
+tests\unit\api\test_workspace_sessions_api.py:162: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_latest_real_user_assistant_protected_in_actual_all_agent_prompts
+FAILED tests/unit/orchestration/test_conversation_context.py::test_latest_real_pair_outside_default_last12_is_kept_without_false_summary
+FAILED tests/unit/orchestration/test_conversation_context.py::test_missing_real_role_never_gets_a_surrogate_or_complete_pair[user]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_missing_real_role_never_gets_a_surrogate_or_complete_pair[assistant]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_summary_consumes_only_prefix_before_first_retained_after_boundary
+FAILED tests/unit/orchestration/test_conversation_context.py::test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance[True]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_pair_before_summary_boundary_remains_protected_without_wrong_boundary_advance[False]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_task6_long_multirole_history_protects_latest_real_exchange
+8 failed, 1 passed, 121 deselected in 4.20s

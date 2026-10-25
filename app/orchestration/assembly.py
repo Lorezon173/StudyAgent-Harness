@@ -4,7 +4,7 @@
 装配成一次同步 run_collab_loop，并从事件流提取面向 API 的回复与对齐指标。
 只装配、不改任何冻结接口（§3.5.4：协作环对外是一次同步调用）。
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from app.harness.events import Event
 from app.harness.enums import EventType, EventSource, ActionKind, TeachingMode
@@ -19,6 +19,8 @@ from app.harness.orchestrator import Orchestrator
 from app.harness.teaching_policy import TeachingPolicy
 from app.harness.workspace_state import WorkspaceState
 from app.harness.mastery_graph import MasteryGraph
+from app.harness.teaching_context import (TeachingContextError, serialize_teaching_state,
+                                          AssessmentDelta, valid_score)
 from app.infrastructure.storage.event_store import EventStore
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
 from app.orchestration.collab_loop import run_collab_loop
@@ -51,9 +53,9 @@ def extract_mastery_score(events: list[Event]) -> int | None:
 
 
 
-def extract_mode_path(events: list[Event]) -> list[str]:
+def extract_mode_path(events: list[Event], initial_mode=TeachingMode.SOCRATIC) -> list[str]:
     """教学模式路径：初始 Socratic + 每个 PolicyTransition 的 to。"""
-    path = [str(TeachingMode.SOCRATIC)]
+    path = [str(initial_mode)]
     for ev in events:
         if ev.type == EventType.POLICY_TRANSITION:
             path.append(ev.payload.get("to", ""))
@@ -84,6 +86,8 @@ class NewStackResult:
     cost_est_usd: float | None
     events: list[Event] = field(default_factory=list)
     """完整事件链（仅供调试/灰度对齐分析；API 层不要透传给客户端）。"""
+    teaching_state: dict | None = None
+    assessment_deltas: list[AssessmentDelta] = field(default_factory=list)
 
 
 def _read_cost(session_id: str) -> float | None:
@@ -98,7 +102,7 @@ def _read_cost(session_id: str) -> float | None:
 
 
 def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None = None,
-                    rag_enabled: bool = True):
+                    rag_enabled: bool = True, policy: TeachingPolicy | None = None):
     """装配 EventBus、教学 Agent 与 Orchestrator，检索按开关注册。
 
     每会话独立实例；TeachingPolicy 新建以隔离模式历史。store 为内存 EventStore，
@@ -130,7 +134,7 @@ def build_new_stack(user_id: int, graph=None, retriever: RetrieverAgent | None =
     for agent in agents:
         bus.subscribe(agent, agent.subscriptions)
 
-    orchestrator = Orchestrator(policy=TeachingPolicy(), rag_enabled=rag_enabled)
+    orchestrator = Orchestrator(policy=policy or TeachingPolicy(), rag_enabled=rag_enabled)
     return bus, orchestrator, store
 
 
@@ -186,7 +190,7 @@ def build_online_rag_coordinator():
 
 def run_online_agent_session(session_id: str, user_id: int, user_message: str,
                              current_topic: str | None = None,
-                             graph=None, on_event=None) -> NewStackResult:
+                             graph=None, on_event=None, context=None) -> NewStackResult:
     """在线 API 会话入口：默认无检索，显式开启时严格校验 composition。
 
     与单元直连 run_new_agent_session 的区别仅在检索链 composition：
@@ -203,46 +207,95 @@ def run_online_agent_session(session_id: str, user_id: int, user_message: str,
                                    trusted_visibility=VisibilityContext(user_id=user_id))
     return run_new_agent_session(
         session_id, user_id, user_message, current_topic, graph, on_event,
-        retriever=retriever, rag_enabled=settings.rag_enabled)
+        retriever=retriever, rag_enabled=settings.rag_enabled, context=context)
 
 
 def run_new_agent_session(session_id: str, user_id: int, user_message: str,
                           current_topic: str | None = None,
                           graph=None, on_event=None,
                           retriever: RetrieverAgent | None = None,
-                          rag_enabled: bool = True) -> NewStackResult:
+                          rag_enabled: bool = True, context=None) -> NewStackResult:
     """新栈一次同步会话：装配 → 跑协作环 → 从事件流提取结果。
 
     同步函数；API 层用 asyncio.to_thread 调用。retriever 参数供
     run_online_agent_session 注入在线检索链；低层默认开启以保持离线兼容。
     """
     topic = current_topic or user_message
+    policy = TeachingPolicy()
+    initial_mode = TeachingMode.SOCRATIC
+    if context is not None:
+        if context.session_id != session_id or context.user_id != user_id:
+            raise TeachingContextError("context_session_mismatch")
+        if context.current_message != user_message:
+            raise TeachingContextError("context_message_mismatch")
+        if context.active_node_id and (graph is None or graph.get_node(context.active_node_id) is None):
+            raise TeachingContextError("graph_context_mismatch")
+        policy = TeachingPolicy.restore(context.state.teaching_mode, context.state.mode_history)
+        initial_mode = policy.current_mode
+        topic = context.node_title
+        # 前置名称来自当前图的可信PREREQ边，模型payload无选点权限。
+        from app.harness.mastery_graph import EdgeType
+        prereqs = sorted(edge.from_topic for edge in (graph.edges if graph else [])
+                         if edge.to_topic == context.active_node_id and edge.type == EdgeType.PREREQ
+                         and edge.from_topic in context.valid_node_ids and graph.get_node(edge.from_topic) is not None)
+        context = replace(context, prereq_title=graph.get_node(prereqs[0]).topic_name[:512] if prereqs else None)
     bus, orchestrator, store = build_new_stack(user_id, graph=graph,
-                                               retriever=retriever, rag_enabled=rag_enabled)
+                                               retriever=retriever, rag_enabled=rag_enabled, policy=policy)
     try:
         ws = WorkspaceState(session_id=session_id, user_id=user_id,
-                            current_topic=topic)
+                            current_topic=topic, current_mode=initial_mode,
+                            teaching_context=context,
+                            stage=context.state.stage if context else "init",
+                            last_question=context.state.last_question if context else None,
+                            committed_turn_count=context.state.committed_turn_count if context else 0,
+                            active_node_id=context.active_node_id if context else None,
+                            profile_snapshot={"nodes": context.profile_nodes} if context else {})
+        action = {TeachingMode.SOCRATIC: ActionKind.TUTOR_ASK,
+                  TeachingMode.FEYNMAN: ActionKind.TUTOR_REQUEST_RECAP,
+                  TeachingMode.ANALOGY: ActionKind.TUTOR_OFFER_ANALOGY,
+                  TeachingMode.REGRESS: ActionKind.REGRESS_TO_PREREQ}[initial_mode]
         seeds = [
             Event(type=EventType.USER_MESSAGE, source=EventSource.USER,
                   session_id=session_id,
                   payload={"text": user_message, "user_id": user_id}),
-            Event(type=EventType.TOPIC_ENTERED, source=EventSource.ORCHESTRATOR,
-                  session_id=session_id, payload={"topic_id": topic}),
             Event(type=EventType.ACTION_REQUESTED, source=EventSource.ORCHESTRATOR,
                   session_id=session_id,
-                  payload={"action": str(ActionKind.TUTOR_ASK),
+                  payload={"action": str(action),
                            "target": str(EventSource.TUTOR)}),
         ]
+        if context is None or context.active_node_id:
+            seeds.insert(1, Event(type=EventType.TOPIC_ENTERED, source=EventSource.ORCHESTRATOR,
+                                session_id=session_id, payload={"topic_id": context.active_node_id if context else topic}))
         run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
                         on_event=on_event)
         events = _events_in_runtime_order(bus.replay(session_id), ws.event_ids)
+        candidate = None
+        deltas = {}
+        if context is not None:
+            last = next((event for event in reversed(events) if event.type in _TUTOR_REPLY_TYPES), None)
+            ws.last_question = None
+            ws.stage = "no_output"
+            if last and last.payload.get("content"):
+                ws.stage = "presented"
+                if last.type in (EventType.TUTOR_ASKED, EventType.TUTOR_REQUESTED_RECAP):
+                    ws.stage, ws.last_question = "awaiting_response", last.payload["content"]
+            candidate = serialize_teaching_state(ws, policy, context)
+            for event in events:
+                payload = event.payload
+                if (event.type == EventType.MASTERY_ASSESSED and context.has_pending_question
+                        and context.active_node_id and payload.get("topic_id") == context.active_node_id
+                        and valid_score(payload.get("score"))):
+                    deltas[context.active_node_id] = AssessmentDelta(context.active_node_id, payload["score"],
+                        payload.get("rationale", ""), event.id, question_message_id=context.question_message_id)
         return NewStackResult(
             reply=extract_reply(events) or _EMPTY_REPLY_FALLBACK,
-            mastery_score=extract_mastery_score(events),
+            mastery_score=(list(deltas.values())[-1].score if deltas else None) if context else extract_mastery_score(events),
             turn_count=ws.turn_count,
-            mode_path=extract_mode_path(events),
+            mode_path=extract_mode_path(events, initial_mode),
             cost_est_usd=_read_cost(session_id),
             events=events,
+            teaching_state=candidate,
+            assessment_deltas=list(deltas.values()),
         )
     finally:
         store.close()

@@ -1,0 +1,194 @@
+F.F.FFFF................................................................ [ 60%]
+...................FFF..........................                         [100%]
+================================== FAILURES ===================================
+________ test_prereq_basis_merges_without_downgrading_observed[bases0] ________
+
+bases = ('observed', 'historical')
+
+    @pytest.mark.parametrize("bases", [("observed", "historical"), ("historical", "observed"),
+                                      ("observed", "invalid"), ("historical",)])
+    def test_prereq_basis_merges_without_downgrading_observed(bases):
+        events = [Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED, source=EventSource.CURATOR,
+                        session_id="s", payload={"basis": basis}) for basis in bases]
+        merged = Orchestrator._collect_observations(events, WorkspaceState("s", 1))
+>       assert merged["prereq_basis"] == ("observed" if "observed" in bases else "historical")
+E       AssertionError: assert 'historical' == 'observed'
+E         
+E         - observed
+E         + historical
+
+tests\unit\harness\test_orchestrator.py:37: AssertionError
+________ test_prereq_basis_merges_without_downgrading_observed[bases2] ________
+
+bases = ('observed', 'invalid')
+
+    @pytest.mark.parametrize("bases", [("observed", "historical"), ("historical", "observed"),
+                                      ("observed", "invalid"), ("historical",)])
+    def test_prereq_basis_merges_without_downgrading_observed(bases):
+        events = [Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED, source=EventSource.CURATOR,
+                        session_id="s", payload={"basis": basis}) for basis in bases]
+        merged = Orchestrator._collect_observations(events, WorkspaceState("s", 1))
+>       assert merged["prereq_basis"] == ("observed" if "observed" in bases else "historical")
+E       AssertionError: assert 'invalid' == 'observed'
+E         
+E         - observed
+E         + invalid
+
+tests\unit\harness\test_orchestrator.py:37: AssertionError
+_ test_context_mastery_routes_actual_policy_action_once[Analogy-weak-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.ANALOGY: 'Analogy'>, level = 'weak'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+        output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+        action = next((ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED), None)
+>       assert action == want
+E       AssertionError: assert 'tutor_re_explain' == 'regress_to_prereq'
+E         
+E         - regress_to_prereq
+E         + tutor_re_explain
+
+tests\unit\harness\test_orchestrator.py:49: AssertionError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-weak-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'weak'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+        output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+        action = next((ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED), None)
+>       assert action == want
+E       AssertionError: assert 'tutor_re_explain' == 'regress_to_prereq'
+E         
+E         - regress_to_prereq
+E         + tutor_re_explain
+
+tests\unit\harness\test_orchestrator.py:49: AssertionError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-partial-regress_to_prereq-Regress] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'partial'
+want = 'regress_to_prereq', target = <TeachingMode.REGRESS: 'Regress'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+        output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+        action = next((ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED), None)
+>       assert action == want
+E       AssertionError: assert 'tutor_request_recap' == 'regress_to_prereq'
+E         
+E         - regress_to_prereq
+E         + tutor_request_recap
+
+tests\unit\harness\test_orchestrator.py:49: AssertionError
+_ test_context_mastery_routes_actual_policy_action_once[Regress-mastered-tutor_ask-Socratic] _
+
+mode = <TeachingMode.REGRESS: 'Regress'>, level = 'mastered', want = 'tutor_ask'
+target = <TeachingMode.SOCRATIC: 'Socratic'>
+
+    @pytest.mark.parametrize("mode,level,want,target", [
+        (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+        (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+    def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+        output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+        action = next((ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED), None)
+>       assert action == want
+E       AssertionError: assert None == 'tutor_ask'
+
+tests\unit\harness\test_orchestrator.py:49: AssertionError
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Analogy] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002CE27DD2510>
+mode = 'Analogy'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+        result = run_context(ctx)
+        # ��ʼ������Regress���ǻ��˶�����������۲����Ϻ���ɷ������������Ӵ��档
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+        routed = [ev.payload["action"] for ev in result.events if ev.type == "ActionRequested" and ev.parent_id in ticks]
+>       assert "regress_to_prereq" in routed
+E       AssertionError: assert 'regress_to_prereq' in ['tutor_re_explain']
+
+tests\unit\orchestration\test_conversation_context.py:445: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Regress] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002CE27F71D90>
+mode = 'Regress'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+        result = run_context(ctx)
+        # ��ʼ������Regress���ǻ��˶�����������۲����Ϻ���ɷ������������Ӵ��档
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+        routed = [ev.payload["action"] for ev in result.events if ev.type == "ActionRequested" and ev.parent_id in ticks]
+>       assert "regress_to_prereq" in routed
+E       AssertionError: assert 'regress_to_prereq' in ['tutor_re_explain']
+
+tests\unit\orchestration\test_conversation_context.py:445: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_observed_prereq_regress_action_really_routes ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002CE27F70110>
+
+    def test_observed_prereq_regress_action_really_routes(controlled):
+        from app.harness.mastery_graph import MasteryGraph
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ", mastery=None)
+        prereq = str(UUID(int=2))
+        graph.add_node(prereq, "����ǰ��", mastery=10)
+        graph.add_edge(prereq, NODE)
+        ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")),
+                                           messages(), "�ش�", profile(2))
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+>       assert any(ev.type == "ActionRequested" and ev.parent_id in ticks and ev.payload["action"] == "regress_to_prereq" for ev in result.events)
+E       assert False
+E        +  where False = any(<generator object test_observed_prereq_regress_action_really_routes.<locals>.<genexpr> at 0x000002CE28060930>)
+
+tests\unit\orchestration\test_conversation_context.py:461: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/harness/test_orchestrator.py::test_prereq_basis_merges_without_downgrading_observed[bases0]
+FAILED tests/unit/harness/test_orchestrator.py::test_prereq_basis_merges_without_downgrading_observed[bases2]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Analogy-weak-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-weak-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-partial-regress_to_prereq-Regress]
+FAILED tests/unit/harness/test_orchestrator.py::test_context_mastery_routes_actual_policy_action_once[Regress-mastered-tutor_ask-Socratic]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Analogy]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Regress]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_observed_prereq_regress_action_really_routes
+9 failed, 111 passed in 1.85s

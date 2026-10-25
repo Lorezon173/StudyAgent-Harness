@@ -1,0 +1,39 @@
+{
+  "changed": [
+    {
+      "path": "app/harness/teaching_context.py",
+      "sha256": "bac277a9073c316818cf6b47bf207cfee7edd67dc758a7ed3ca9d95c7da3618b",
+      "before_sha256": "a8eb66c30bb2aa7f800c63a4e2daceb8847fa2f35bca75415ece8006939eeaa6"
+    },
+    {
+      "path": "tests/unit/orchestration/test_conversation_context.py",
+      "sha256": "f4de702c49476116188df4e7648caf08bbd9f8d3e8dbd35e15d4a326fc44e4ce",
+      "before_sha256": "34d7009b2c9e49e699edfe2d9522f486780bb78a89ece474a47c9e28514396d6"
+    },
+    {
+      "path": "tests/unit/api/test_workspace_sessions_api.py",
+      "sha256": "c6793deca28fcf895c39bd0d3ee8782283628d24c872a044a98d1d4d0502b6e7",
+      "before_sha256": "66f3b2c8c9a92d623ce09962554534bea596df624b24912c36cf4eefe17a0a3b"
+    }
+  ],
+  "unchanged_count": 17,
+  "unchanged_paths": [
+    "app/harness/workspace_state.py",
+    "app/harness/teaching_policy.py",
+    "app/harness/orchestrator.py",
+    "app/orchestration/assembly.py",
+    "app/agents/tutor.py",
+    "app/agents/critic.py",
+    "app/agents/conductor.py",
+    "app/agents/curator.py",
+    "app/specs/agents/tutor.md",
+    "app/specs/agents/tutor.prompt.md",
+    "app/specs/agents/critic.md",
+    "app/specs/agents/critic.prompt.md",
+    "app/specs/agents/conductor.md",
+    "app/specs/agents/conductor.prompt.md",
+    "app/specs/agents/curator.md",
+    "app/specs/agents/curator.prompt.md",
+    "tests/unit/harness/test_orchestrator.py"
+  ]
+}

@@ -1,0 +1,22 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________ test_final_prompt_uses_current_mode_after_real_transition __________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000019426E5B950>
+
+    def test_final_prompt_uses_current_mode_after_real_transition(controlled):
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        result = run_context(ctx)
+        assert result.teaching_state["teaching_mode"] == "Feynman"
+>       assert "ģʽ=Feynman" in prompts(controlled, "tutor_request_recap")[-1]
+E       AssertionError: assert 'ģʽ=Feynman' in '����ʷ�����ġ�\nģʽ=Socratic;�׶�=awaiting_response\nģʽ��ʷ=Socratic\n��Ӧ����������Ч\n��һ��������=2\n��Ϣ����=1;��ɫ=user\nԭ��0\n��Ϣ����=2;��ɫ=assistan...n��ǰ�ڵ�=00000000-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n'
+
+tests\unit\orchestration\test_conversation_context.py:555: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_prompt_uses_current_mode_after_real_transition
+1 failed, 79 deselected in 0.84s

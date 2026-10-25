@@ -1,0 +1,82 @@
+[
+  {
+    "sha256": "157e8a23049b98f5d18359ebe7f1ec6f1c8d113c5375459d99710621cb4a289e",
+    "path": "app/harness/teaching_context.py"
+  },
+  {
+    "sha256": "581c058ee8752ae5b9fdead121c1b09dcfc80d0e81e6b08295963a2bf132c91c",
+    "path": "app/harness/workspace_state.py"
+  },
+  {
+    "sha256": "4860990be60797b4b058cf7a4b3d76b62855ec9da62bce3eec90973d8b05b791",
+    "path": "app/harness/teaching_policy.py"
+  },
+  {
+    "sha256": "eb9d6434bdcd43ba465cb7e9cc96756743bffdcdf6efe97449ba8650d3c7368d",
+    "path": "app/harness/orchestrator.py"
+  },
+  {
+    "sha256": "48f895e301d061c7a63f6d404dc08466936fef849a49f579d97e63e5a9020dd9",
+    "path": "app/orchestration/assembly.py"
+  },
+  {
+    "sha256": "d523f6aff61afeefa3fb177abbc739b0ed7a0acac50bf4e6af915775f07346ff",
+    "path": "app/agents/tutor.py"
+  },
+  {
+    "sha256": "ab5e8927712e1781d1dc10f5734a9cf67158790b8679803a18975b2351257da9",
+    "path": "app/agents/critic.py"
+  },
+  {
+    "sha256": "fc5711df05ea3e841fb2d0133b5aee3810f8a66c0f5542b6eca41a3ca44976f2",
+    "path": "app/agents/conductor.py"
+  },
+  {
+    "sha256": "f6d981a8350b76712a24a44eeedb69a7c2d4c6e8d05fbfffc464f0308e4d8dd4",
+    "path": "app/agents/curator.py"
+  },
+  {
+    "sha256": "2a59b0ba5a7d588eeee8df192098ca59ef58a4a1317bb7df3b7e642fd671b0a4",
+    "path": "app/specs/agents/tutor.md"
+  },
+  {
+    "sha256": "e89c49f5e7fa1b0536e919a554c42774f1c4be03cf2f273f5b8a03db35a7e5a4",
+    "path": "app/specs/agents/tutor.prompt.md"
+  },
+  {
+    "sha256": "27eacd1b1a0f73ae3b20fa0df588b608a7e410e24930c3267506c856a661d5ae",
+    "path": "app/specs/agents/critic.md"
+  },
+  {
+    "sha256": "ca1d9091e0bcac297bf3036242e2d362a7817cb0b3bd9b856cb69d7d42a3c9d3",
+    "path": "app/specs/agents/critic.prompt.md"
+  },
+  {
+    "sha256": "a248953c1026da70aadec56e89b6d61272c8730816669c971791d33d63ce961e",
+    "path": "app/specs/agents/conductor.md"
+  },
+  {
+    "sha256": "bca28736d9909688ddfefa8aa172640853b22ae780b0f14e975dc0208a2ebaba",
+    "path": "app/specs/agents/conductor.prompt.md"
+  },
+  {
+    "sha256": "a31a8742d26ae19d9b59a921249106ae79b79c178acedf83f83798139d747b88",
+    "path": "app/specs/agents/curator.md"
+  },
+  {
+    "sha256": "cd08ff5ea189f40f4a351ade2f9efc9c3ea8456f27342c716f62930b3722beb5",
+    "path": "app/specs/agents/curator.prompt.md"
+  },
+  {
+    "sha256": "4e7f87bd1074f197c9262fd670410c294118d1526d54e328103dc783b1ebe2e2",
+    "path": "tests/unit/orchestration/test_conversation_context.py"
+  },
+  {
+    "sha256": "51d90e16974f7c5d95005c3088fe222ab74c656ac3aa247a93456ec54bb234ee",
+    "path": "tests/unit/harness/test_orchestrator.py"
+  },
+  {
+    "sha256": "678ef039605c5c7dcbd0a4001000ca702bc49c2862d93a68bcbe5be890dbc59a",
+    "path": "tests/unit/api/test_workspace_sessions_api.py"
+  }
+]

@@ -20,3 +20,8 @@ class WorkspaceState:
     evidence_pool: list[dict] = field(default_factory=list)  # Retriever 最近输出
     critic_state: dict = field(default_factory=dict)         # Critic 最近一次评估
     profile_snapshot: dict = field(default_factory=dict)     # 进入会话时画像快照
+    teaching_context: object | None = None
+    stage: str = "init"
+    last_question: str | None = None
+    committed_turn_count: int = 0
+    active_node_id: str | None = None

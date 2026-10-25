@@ -4,6 +4,7 @@ from app.harness.enums import EventType, EventSource, MasteryLevel
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
+from app.harness.teaching_context import render_teaching_context, valid_score
 
 
 class CriticAgent(AgentBase):
@@ -41,19 +42,26 @@ class CriticAgent(AgentBase):
 
     def _assess_user_message(self, event: Event, ws: WorkspaceState) -> list[Event]:
         text = event.payload.get("text", "")
+        context = ws.teaching_context
+        prompt = (render_teaching_context(context, "critic", current_mode=ws.current_mode) if context is not None
+                  else f"主题：{ws.current_topic or ''}\n用户回答：{text}")
         result = self._llm.invoke_json(
             self._spec.compose("critic", "critic_assess"),
-            f"主题：{ws.current_topic or ''}\n用户回答：{text}",
+            prompt,
             session_id=ws.session_id, node="critic", intent="critic_assess",
         )
         events: list[Event] = []
-        if "mastery_level" in result:
+        can_score = context is None or (context.has_pending_question and ws.active_node_id is not None
+            and ws.active_node_id == context.active_node_id and valid_score(result.get("mastery_score"))
+            and result.get("mastery_level") in {str(level) for level in MasteryLevel})
+        if "mastery_level" in result and can_score:
             events.append(self.emit(
                 EventType.MASTERY_ASSESSED, ws,
                 payload={
                     "level": result["mastery_level"],
                     "score": result.get("mastery_score"),
                     "rationale": result.get("rationale", ""),
+                    **({"topic_id": ws.active_node_id} if context is not None else {}),
                 },
                 parent_id=event.id))
         if isinstance(result.get("confusion"), dict):
@@ -81,9 +89,11 @@ class CriticAgent(AgentBase):
 
     def _assess_rag_quality(self, event: Event, ws: WorkspaceState) -> list[Event]:
         chunks = event.payload.get("chunks", [])
+        prompt = (render_teaching_context(ws.teaching_context, "critic", historical_note=f"本轮证据条数：{len(chunks)}", current_mode=ws.current_mode)
+                  if ws.teaching_context is not None else f"主题：{ws.current_topic or ''}\n证据条数：{len(chunks)}")
         result = self._llm.invoke_json(
             self._spec.compose("critic", "critic_rag_quality"),
-            f"主题：{ws.current_topic or ''}\n证据条数：{len(chunks)}",
+            prompt,
             session_id=ws.session_id, node="critic", intent="critic_rag_quality",
         )
         if "score" not in result:

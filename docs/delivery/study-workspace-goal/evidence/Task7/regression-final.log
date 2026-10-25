@@ -1,0 +1,12 @@
+........................................................................ [ 20%]
+........................................................................ [ 40%]
+........................................................................ [ 61%]
+........................................................................ [ 81%]
+................................................................         [100%]
+============================== warnings summary ===============================
+tests\unit\api\test_chat_new_stack_e2e.py:12
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_chat_new_stack_e2e.py:12: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+352 passed, 1 deselected, 1 warning in 16.56s

@@ -1,0 +1,144 @@
+FFFFFFF                                                                  [100%]
+================================== FAILURES ===================================
+_______ test_summary_capacity_includes_worst_case_notes_and_framing[0] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020C59876870>
+extra = 0
+
+    @pytest.mark.parametrize("extra", [0, 1])
+    def test_summary_capacity_includes_worst_case_notes_and_framing(controlled, extra):
+        history = messages(16)
+        for item in history:
+            item["content"] = ("��" if item["role"] == "assistant" else "��") * 3000
+        # �ֹ������������Ƶ�������������ʵ�ֵĲü�/������������Ԥ�ڡ�
+        protected = ("����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n"
+                     "��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\n" + "ע" * 512 + "\n���ֹ۲�˵��=" + "��" * 512 + "\n")
+        latest = "��Ϣ����=15;��ɫ=user\n" + "��" * 3000 + "\n��Ϣ����=16;��ɫ=assistant\n" + "��" * 3000 + "\n"
+        capacity = 12000 - len(protected) - len(latest) - len("ժҪ=\n")
+        candidate = "ժ" * (capacity + extra)
+        ctx = api().build_teaching_context(snapshot(changed(summary="��ժҪ", summary_until_message_id=2)),
+            history, "��ǰ", profile(), summarizer=lambda *args: candidate)
+        if extra == 0:
+            assert ctx.summary == candidate and ctx.summary_until_message_id == 4
+            rendered = api().render_teaching_context(ctx, "conductor", historical_note="ע" * 512,
+                observations=[{"rationale": "��" * 1000}])
+>           assert candidate in rendered
+E           AssertionError: assert 'ժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ...ժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ' in '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעעע...-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n�����ֹ۲졿\n[{}]\n'
+
+tests\unit\orchestration\test_conversation_context.py:703: AssertionError
+_______ test_summary_capacity_includes_worst_case_notes_and_framing[1] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020C5A907500>
+extra = 1
+
+    @pytest.mark.parametrize("extra", [0, 1])
+    def test_summary_capacity_includes_worst_case_notes_and_framing(controlled, extra):
+        history = messages(16)
+        for item in history:
+            item["content"] = ("��" if item["role"] == "assistant" else "��") * 3000
+        # �ֹ������������Ƶ�������������ʵ�ֵĲü�/������������Ԥ�ڡ�
+        protected = ("����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n"
+                     "��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\n" + "ע" * 512 + "\n���ֹ۲�˵��=" + "��" * 512 + "\n")
+        latest = "��Ϣ����=15;��ɫ=user\n" + "��" * 3000 + "\n��Ϣ����=16;��ɫ=assistant\n" + "��" * 3000 + "\n"
+        capacity = 12000 - len(protected) - len(latest) - len("ժҪ=\n")
+        candidate = "ժ" * (capacity + extra)
+        ctx = api().build_teaching_context(snapshot(changed(summary="��ժҪ", summary_until_message_id=2)),
+            history, "��ǰ", profile(), summarizer=lambda *args: candidate)
+        if extra == 0:
+            assert ctx.summary == candidate and ctx.summary_until_message_id == 4
+            rendered = api().render_teaching_context(ctx, "conductor", historical_note="ע" * 512,
+                observations=[{"rationale": "��" * 1000}])
+            assert candidate in rendered
+            profile_suffix = ("����ǰ���롿\n��ǰ\n������\n��ǰ�ڵ�=" + NODE + ";����=�ڵ�0\n�ڵ�UUID=" + NODE +
+                              ";����=�ڵ�0;˵��=����;���ն�=None\n�����ֹ۲졿\n[{}]\n")
+            assert rendered.endswith(profile_suffix)
+            assert len(rendered) - len(profile_suffix) == 12000
+        else:
+>           assert ctx.summary == "��ժҪ" and ctx.summary_until_message_id == 2
+E           AssertionError: assert ('ժժժժժժժժժժժժ...ժժժժժժժժժժժժժ' == '��ժҪ'
+E             
+E             - ��ժҪ
+E             + ժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ...
+E             
+E             ...Full output truncated (1 line hidden), use '-vv' to show)
+
+tests\unit\orchestration\test_conversation_context.py:709: AssertionError
+______________ test_clip_never_exceeds_zero_or_tiny_remainder[0] ______________
+
+limit = 0
+
+    @pytest.mark.parametrize("limit", [0, 1, 2, 3, 4])
+    def test_clip_never_exceeds_zero_or_tiny_remainder(limit):
+>       assert len(api()._clip("�����ı���Ҫ�ض�", limit)) <= limit
+E       AssertionError: assert 5 <= 0
+E        +  where 5 = len('��[�ض�]')
+E        +    where '��[�ض�]' = <function _clip at 0x0000020C5ADE1940>('�����ı���Ҫ�ض�', 0)
+E        +      where <function _clip at 0x0000020C5ADE1940> = <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'>._clip
+E        +        where <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'> = api()
+
+tests\unit\orchestration\test_conversation_context.py:715: AssertionError
+______________ test_clip_never_exceeds_zero_or_tiny_remainder[1] ______________
+
+limit = 1
+
+    @pytest.mark.parametrize("limit", [0, 1, 2, 3, 4])
+    def test_clip_never_exceeds_zero_or_tiny_remainder(limit):
+>       assert len(api()._clip("�����ı���Ҫ�ض�", limit)) <= limit
+E       AssertionError: assert 5 <= 1
+E        +  where 5 = len('��[�ض�]')
+E        +    where '��[�ض�]' = <function _clip at 0x0000020C5ADE1940>('�����ı���Ҫ�ض�', 1)
+E        +      where <function _clip at 0x0000020C5ADE1940> = <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'>._clip
+E        +        where <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'> = api()
+
+tests\unit\orchestration\test_conversation_context.py:715: AssertionError
+______________ test_clip_never_exceeds_zero_or_tiny_remainder[2] ______________
+
+limit = 2
+
+    @pytest.mark.parametrize("limit", [0, 1, 2, 3, 4])
+    def test_clip_never_exceeds_zero_or_tiny_remainder(limit):
+>       assert len(api()._clip("�����ı���Ҫ�ض�", limit)) <= limit
+E       AssertionError: assert 5 <= 2
+E        +  where 5 = len('��[�ض�]')
+E        +    where '��[�ض�]' = <function _clip at 0x0000020C5ADE1940>('�����ı���Ҫ�ض�', 2)
+E        +      where <function _clip at 0x0000020C5ADE1940> = <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'>._clip
+E        +        where <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'> = api()
+
+tests\unit\orchestration\test_conversation_context.py:715: AssertionError
+______________ test_clip_never_exceeds_zero_or_tiny_remainder[3] ______________
+
+limit = 3
+
+    @pytest.mark.parametrize("limit", [0, 1, 2, 3, 4])
+    def test_clip_never_exceeds_zero_or_tiny_remainder(limit):
+>       assert len(api()._clip("�����ı���Ҫ�ض�", limit)) <= limit
+E       AssertionError: assert 5 <= 3
+E        +  where 5 = len('��[�ض�]')
+E        +    where '��[�ض�]' = <function _clip at 0x0000020C5ADE1940>('�����ı���Ҫ�ض�', 3)
+E        +      where <function _clip at 0x0000020C5ADE1940> = <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'>._clip
+E        +        where <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'> = api()
+
+tests\unit\orchestration\test_conversation_context.py:715: AssertionError
+______________ test_clip_never_exceeds_zero_or_tiny_remainder[4] ______________
+
+limit = 4
+
+    @pytest.mark.parametrize("limit", [0, 1, 2, 3, 4])
+    def test_clip_never_exceeds_zero_or_tiny_remainder(limit):
+>       assert len(api()._clip("�����ı���Ҫ�ض�", limit)) <= limit
+E       AssertionError: assert 5 <= 4
+E        +  where 5 = len('��[�ض�]')
+E        +    where '��[�ض�]' = <function _clip at 0x0000020C5ADE1940>('�����ı���Ҫ�ض�', 4)
+E        +      where <function _clip at 0x0000020C5ADE1940> = <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'>._clip
+E        +        where <module 'app.harness.teaching_context' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\harness\\teaching_context.py'> = api()
+
+tests\unit\orchestration\test_conversation_context.py:715: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_summary_capacity_includes_worst_case_notes_and_framing[0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_summary_capacity_includes_worst_case_notes_and_framing[1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_clip_never_exceeds_zero_or_tiny_remainder[0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_clip_never_exceeds_zero_or_tiny_remainder[1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_clip_never_exceeds_zero_or_tiny_remainder[2]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_clip_never_exceeds_zero_or_tiny_remainder[3]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_clip_never_exceeds_zero_or_tiny_remainder[4]
+7 failed, 99 deselected in 0.79s

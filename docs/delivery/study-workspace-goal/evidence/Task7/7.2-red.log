@@ -1,0 +1,63 @@
+.................FFF................................                     [100%]
+================================== FAILURES ===================================
+_________________ test_restore_policy_and_reset_internal_turn _________________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000019210FD3410>
+
+    def test_restore_policy_and_reset_internal_turn(controlled):
+        from app.harness.teaching_policy import TeachingPolicy
+        from app.harness.enums import TeachingMode
+        restore = getattr(TeachingPolicy, "restore", lambda mode, history: TeachingPolicy(mode))
+        history = [TeachingMode.SOCRATIC, TeachingMode.FEYNMAN]
+        policy = restore(TeachingMode.FEYNMAN, history)
+>       assert policy.history == history
+E       AssertionError: assert [<TeachingMod...N: 'Feynman'>] == [<TeachingMod...N: 'Feynman'>]
+E         
+E         At index 0 diff: <TeachingMode.FEYNMAN: 'Feynman'> != <TeachingMode.SOCRATIC: 'Socratic'>
+E         Right contains one more item: <TeachingMode.FEYNMAN: 'Feynman'>
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:189: AssertionError
+__________________ test_result_candidate_count_and_mode_path __________________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000019211049910>
+
+    def test_result_candidate_count_and_mode_path(controlled):
+        ctx = api().build_teaching_context(snapshot(changed(extra={"nested": [False, 2]})), [], "��ǰ", profile())
+        result = run_context(ctx)
+        candidate = getattr(result, "teaching_state", None)
+>       assert candidate == changed(stage="awaiting_response", last_question="�ܿ����⣺���������ʲô��",
+                                    committed_turn_count=1, extra={"nested": [False, 2]})
+E       AssertionError: assert None == {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 1, 'extra': {'nested': [False, 2]}, 'last_question': '�ܿ����⣺���������ʲô��', ...}
+E        +  where {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 1, 'extra': {'nested': [False, 2]}, 'last_question': '�ܿ����⣺���������ʲô��', ...} = changed(stage='awaiting_response', last_question='�ܿ����⣺���������ʲô��', committed_turn_count=1, extra={'nested': [False, 2]})
+
+tests\unit\orchestration\test_conversation_context.py:209: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_online_forwards_context_without_changing_rag ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001921104B3E0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001921104B6E0>
+
+    def test_online_forwards_context_without_changing_rag(controlled, monkeypatch):
+        from app.orchestration import assembly
+        ctx = api().build_teaching_context(snapshot(state()), [], "ԭ��", profile())
+        captured = {}
+        def low(*args, **kwargs):
+            captured.update(kwargs)
+            return "sentinel"
+        monkeypatch.setattr(assembly, "run_new_agent_session", low)
+        kwargs = {"context": ctx} if "context" in inspect.signature(assembly.run_online_agent_session).parameters else {}
+        assert assembly.run_online_agent_session(ctx.session_id, 1, "ԭ��", **kwargs) == "sentinel"
+>       assert captured.get("context") is ctx
+E       AssertionError: assert None is TeachingContext(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0000-0000-000...mastery': None}], valid_node_ids={'00000000-0000-0000-0000-000000000001'}, question_message_id=None, prereq_title=None)
+E        +  where None = <built-in method get of dict object at 0x0000019211285300>('context')
+E        +    where <built-in method get of dict object at 0x0000019211285300> = {'rag_enabled': False, 'retriever': None}.get
+
+tests\unit\orchestration\test_conversation_context.py:224: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_restore_policy_and_reset_internal_turn
+FAILED tests/unit/orchestration/test_conversation_context.py::test_result_candidate_count_and_mode_path
+FAILED tests/unit/orchestration/test_conversation_context.py::test_online_forwards_context_without_changing_rag
+3 failed, 49 passed in 1.74s

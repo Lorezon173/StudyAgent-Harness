@@ -30,6 +30,19 @@ class TeachingPolicy:
         self.current_mode: TeachingMode = initial
         self.history: list[TeachingMode] = [initial]
 
+    @classmethod
+    def restore(cls, current_mode, history):
+        """从已校验业务历史恢复独立状态机，不复用上轮运行对象。"""
+        mode = TeachingMode(current_mode)
+        if not isinstance(history, list) or not history:
+            raise ValueError("invalid_policy_history")
+        restored = [TeachingMode(item) for item in history]
+        if restored[-1] != mode:
+            raise ValueError("invalid_policy_history")
+        policy = cls(mode)
+        policy.history = restored
+        return policy
+
     def next(self, obs: ObservationSet) -> tuple[TeachingMode, ActionKind]:
         target, action = self._decide(obs)
         if target != self.current_mode:

@@ -145,10 +145,12 @@
     },
     {
       "id": "Task7",
-      "status": "PENDING",
+      "status": "VERIFIED_UNCOMMITTED",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task7/"
+      ],
+      "review": "round1–4 plan PASS; original5 and newP1 ADDRESSED; scope review Approved",
       "blocked_reason": null
     },
     {
@@ -157,7 +159,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "Task9",
@@ -165,7 +169,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "Task10",
@@ -173,7 +179,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "Task11",
@@ -181,7 +189,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "Task12",
@@ -189,7 +199,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "Task13",
@@ -197,7 +209,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK0",
@@ -205,7 +219,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK1",
@@ -213,7 +229,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK2",
@@ -221,7 +239,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK3",
@@ -229,7 +249,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK4",
@@ -237,7 +259,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     },
     {
       "id": "TaskK5",
@@ -245,7 +269,9 @@
       "commit": null,
       "evidence": [],
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": null,
+      "in_current_goal": false,
+      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
     }
   ],
   "milestones": {
@@ -264,10 +290,21 @@
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
     "task": "Task7",
-    "round": "round1",
-    "plan": null,
-    "plan_review": "PENDING",
-    "status": "PLANNING"
+    "round": "round4",
+    "plan": "docs/superpowers/plans/2026-10-25-task7-round4.md",
+    "plan_review": "PASS",
+    "status": "VERIFIED_UNCOMMITTED",
+    "implementer": "task7_context_impl",
+    "code_fix_round": 2,
+    "plan_sha256": "e043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e"
   },
-  "next_step": "Task7依据当前代码撰写三层计划，独立review PASS后才能实施"
+  "next_step": "Task7审计/README已补，选择性本地提交并核SHA后结束SC-001 Goal",
+  "scope_change": {
+    "id": "SC-001",
+    "status": "APPROVED",
+    "reference": "用户明确：当前任务目标修改为，完成task7即可",
+    "document": "docs/delivery/study-workspace-goal/scope-change-001-task7-only.md",
+    "stop_after": "Task7",
+    "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续"
+  }
 }

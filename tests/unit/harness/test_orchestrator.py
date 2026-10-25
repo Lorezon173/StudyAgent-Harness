@@ -10,6 +10,81 @@ from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
 
 
+def _context_tick(mode, observations, *, context=True, rules_path=None, rag_enabled=True):
+    from app.harness.teaching_policy import TeachingPolicy
+    class CountingPolicy(TeachingPolicy):
+        calls = 0
+        def next(self, obs):
+            self.calls += 1
+            return super().next(obs)
+    policy = CountingPolicy(mode)
+    ws = WorkspaceState("restored", 1, current_mode=mode, teaching_context=object() if context else None)
+    orch = Orchestrator(policy=policy, rules_path=rules_path, rag_enabled=rag_enabled)
+    for kind, payload in observations:
+        source = EventSource.CURATOR if kind == EventType.GRAPH_PREREQ_WEAK_DETECTED else EventSource.CRITIC
+        orch.on_event(Event(type=kind, source=source, session_id=ws.session_id, payload=payload), ws)
+    output = orch.on_event(Event(type=EventType.ORCHESTRATOR_TICK, source=EventSource.ORCHESTRATOR,
+                                 session_id=ws.session_id), ws)
+    return output, ws, policy
+
+
+@pytest.mark.parametrize("bases", [("observed", "historical"), ("historical", "observed"),
+                                  ("observed", "invalid"), ("historical",)])
+def test_prereq_basis_merges_without_downgrading_observed(bases):
+    events = [Event(type=EventType.GRAPH_PREREQ_WEAK_DETECTED, source=EventSource.CURATOR,
+                    session_id="s", payload={"basis": basis}) for basis in bases]
+    merged = Orchestrator._collect_observations(events, WorkspaceState("s", 1))
+    assert merged["prereq_basis"] == ("observed" if "observed" in bases else "historical")
+    assert merged["_raw"] is events
+
+
+@pytest.mark.parametrize("mode,level,want,target", [
+    (TeachingMode.ANALOGY, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+    (TeachingMode.REGRESS, "weak", "regress_to_prereq", TeachingMode.REGRESS),
+    (TeachingMode.REGRESS, "partial", "regress_to_prereq", TeachingMode.REGRESS),
+    (TeachingMode.REGRESS, "mastered", "tutor_ask", TeachingMode.SOCRATIC)])
+def test_context_mastery_routes_actual_policy_action_once(mode, level, want, target):
+    output, ws, policy = _context_tick(mode, [(EventType.MASTERY_ASSESSED, {"level": level})])
+    action = next((ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED), None)
+    assert action == want
+    assert ws.current_mode == target
+    assert policy.calls == 1
+
+
+def test_no_context_preserves_rule_action():
+    output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"})], context=False)
+    assert next(ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED) == "tutor_re_explain"
+    assert policy.calls == 1
+
+
+@pytest.mark.parametrize("kind,payload,want", [
+    (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "observed"}, "regress_to_prereq"),
+    (EventType.GRAPH_PREREQ_WEAK_DETECTED, {"basis": "historical"}, "tutor_probe_prereq"),
+    (EventType.CONTRADICTION_DETECTED, {}, "tutor_correct"),
+    (EventType.CONFUSION_DETECTED, {}, "tutor_offer_analogy")])
+def test_context_keeps_global_observation_rule_priority(kind, payload, want):
+    output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"}), (kind, payload)])
+    assert next(ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED) == want
+    assert policy.calls == 1
+
+
+@pytest.mark.parametrize("enabled,want", [(True, "retriever_expand_query"), (False, "tutor_ask")])
+def test_context_keeps_retriever_rule_and_gate(tmp_path, enabled, want):
+    rules = tmp_path / "retrieval.yaml"
+    rules.write_text("rules:\n  - when: {}\n    action: retriever_expand_query\n    priority: 1\n", encoding="utf-8")
+    output, _, policy = _context_tick(TeachingMode.ANALOGY, [(EventType.MASTERY_ASSESSED, {"level": "weak"})],
+                                     rules_path=rules, rag_enabled=enabled)
+    assert next(ev.payload["action"] for ev in output if ev.type == EventType.ACTION_REQUESTED) == want
+    assert policy.calls == 1
+
+
+def test_context_without_mastery_keeps_conductor_fallback():
+    output, _, policy = _context_tick(TeachingMode.REGRESS, [])
+    assert [ev.type for ev in output] == [EventType.CONDUCTOR_REQUESTED]
+    assert output[0].payload["observations"] == []
+    assert policy.calls == 0
+
+
 def test_load_rules_from_default_path():
     rules = load_rules()
     actions = {r["action"] for r in rules}

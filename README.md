@@ -467,3 +467,17 @@ PATCH `view-state`、`active-node` 与 GET/PATCH `/api/workspace-state` 分别�
 GET `requests/{request_id}` 只读真实状态；POST 同路径 `/retry` 使用 `expected_attempt/expected_state_version`。目前真实教学服务待 Task8 接入，符合重试前提但能力缺失时明确503且不改数据库；现有转发测试只证明接口契约，不能代表教学重试已完成。Task7连续上下文、Task8幂等回合和正式React页面仍待实现。
 
 验证记录：新旧API23项通过；SQLite/真实PG服务16个用例均有成功记录，包含独立物理连接、真实事务、快照锁与归档双向竞争。组合曾因Docker未运行有1项连接超时，恢复独立测试运行时后仅补跑该项通过，原失败/中断日志保留。旧Starlette弃用警告及全量Retriever基线失败仍保留；本轮未升级用户旧SQLite、未替代最终PG重启/真实模型验收。证据见[Task6记录](docs/delivery/study-workspace-goal/evidence/Task6/)。
+
+## Task7：可恢复教学上下文与稳定知识点评估（2026-10-25）
+
+新栈入口末尾新增可选 `context`，保留旧位置参数和离线默认行为。`build_teaching_context` 从本人单会话已提交历史、画像与schema1快照恢复教学模式/历史、阶段和待答问题；每请求重新装配协作环，内部turn计数与候选已提交往返次数分离。`NewStackResult` 新增候选 `teaching_state` 和 `assessment_deltas`，本阶段不自行保存数据库。
+
+Tutor、Critic、Conductor共享实际提示词上下文，合法历史的其他角色只作为普通数据，不提升为模型系统指令。当前输入最多4000字符，历史最多12条，优先保护最新实际用户/助手消息，并在总渲染12000字符内补充最近历史，包含摘要、引用、上一问题与模式等信息；画像展示最多20节点、说明每项200字。超长历史明确标缩减，当前输入超限明确拒绝。摘要成功且完整放入预算才推进已覆盖连续前缀的截止；失败保留原摘要与截止，不编造内容。
+
+知识点按可信UUID定位，不以每次提问生成新节点；无有效待答或知识点时保持未评估。讲解或类比后清待答问题，避免下一轮误用旧题评分。已选有效知识点与加载图谱不一致时明确 `graph_context_mismatch`，不静默清空选择。Curator仍只作结构与评估处理，不调用模型；候选增量按节点去重，最终数据库证据ID待后续提交服务填入。模式恢复后的Regress动作和实测前置优先级已有真实协作环覆盖。
+
+schema1已知字段严格校验，合法JSON扩展保留往返但不渲染/执行；旧快照仅读取类型合法字段，异常旧字段使用明确兼容默认，未知schema不静默重置。
+
+验证：受影响组合388项通过，1项真实RAGAS judge集成测试按既有配置排除，保留1项既有Starlette/httpx弃用警告；受控客户端验证实际提示词与状态往返，未调用真实模型。 独立审查与必要修复证据见[Task7记录](docs/delivery/study-workspace-goal/evidence/Task7/)。初始7.1失败仅证明模块缺失，未冒充全部业务TDD；执行中断与独立重跑记录也原样保留。
+
+用户已将本轮目标调整为“完成Task7即可”（[SC-001](docs/delivery/study-workspace-goal/scope-change-001-task7-only.md)）。Task8及后续不在当前Goal范围：HTTP/SSE生产上下文接线、真实摘要注入、请求幂等/租约与原子回合保存、正式React终稿及最终真实模型/PG重启/浏览器验收仍未实施或未完成，不表示完整产品已交付。

@@ -4,6 +4,7 @@ from app.harness.enums import EventType, EventSource
 from app.harness.workspace_state import WorkspaceState
 from app.harness.mastery_graph import MasteryGraph, EdgeType
 from app.infrastructure.storage.mastery_graph_store import MasteryGraphStore
+from app.harness.teaching_context import valid_score
 
 
 class Curator(CuratorBase):
@@ -52,6 +53,14 @@ class Curator(CuratorBase):
         level = payload.get("level", "partial")
         rationale = payload.get("rationale", "")
 
+        context = ws.teaching_context
+        if context is not None:
+            topic_id = payload.get("topic_id")
+            if (not context.has_pending_question or not topic_id or topic_id != context.active_node_id
+                    or topic_id != ws.active_node_id or topic_id not in context.valid_node_ids
+                    or self.graph.get_node(topic_id) is None or not valid_score(payload.get("score"))):
+                return []
+
         if self.graph.get_node(topic_id) is None:
             self.graph.add_node(topic_id, topic_id, mastery=0.0)
         old_mastery = self.graph.get_node(topic_id).mastery
@@ -76,9 +85,11 @@ class Curator(CuratorBase):
             parent_id=event.id,
         ))
 
-        current_topic = ws.current_topic or topic_id
+        current_topic = topic_id if context is not None else ws.current_topic or topic_id
         if self.graph.has_any_prereqs(current_topic):
             for wp in self.graph.find_weak_prereqs(current_topic):
+                if context is not None and wp["prereq_topic_id"] not in context.valid_node_ids:
+                    continue
                 results.append(self.emit(
                     EventType.GRAPH_PREREQ_WEAK_DETECTED, ws,
                     payload={
@@ -104,6 +115,12 @@ class Curator(CuratorBase):
         """
         results: list[Event] = []
         topic_id = event.payload.get("topic_id") or ws.current_topic
+        context = ws.teaching_context
+        if context is not None:
+            topic_id = event.payload.get("topic_id")
+            if (not topic_id or topic_id != context.active_node_id or topic_id != ws.active_node_id
+                    or topic_id not in context.valid_node_ids or self.graph.get_node(topic_id) is None):
+                return []
         if not topic_id:
             return results
         if self.graph.get_node(topic_id) is None:
@@ -119,6 +136,8 @@ class Curator(CuratorBase):
             return results
 
         for wp in self.graph.find_weak_prereqs(topic_id):
+            if context is not None and wp["prereq_topic_id"] not in context.valid_node_ids:
+                continue
             results.append(self.emit(
                 EventType.GRAPH_PREREQ_WEAK_DETECTED, ws,
                 payload={

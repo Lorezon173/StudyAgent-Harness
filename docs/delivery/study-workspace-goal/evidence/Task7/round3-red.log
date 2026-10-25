@@ -1,0 +1,444 @@
+FFFF.F...FF..FF..F.F                                                     [100%]
+================================== FAILURES ===================================
+_______ test_other_history_roles_are_data_and_keep_complete_legacy_pair _______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C348272A50>
+
+    def test_other_history_roles_are_data_and_keep_complete_legacy_pair(controlled):
+        snap = snapshot()
+        history = [dict(id=1, turn_index=0, role="system", content="SYSTEM_HISTORY_ONLY"),
+                   dict(id=5, turn_index=0, role="user", content="�û�ԭ��"),
+                   dict(id=4, turn_index=0, role="assistant", content="��һ����"),
+                   dict(id=3, turn_index=0, role="tool", content="TOOL_HISTORY_ONLY"),
+                   dict(id=2, turn_index=0, role="custom", content="������ɫԭ��")]
+>       ctx = api().build_teaching_context(snap, history, "��ǰԭ��", profile())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:565: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\harness\teaching_context.py:186: in build_teaching_context
+    state = parse_teaching_state(snapshot, messages)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\teaching_context.py:125: in parse_teaching_state
+    ordered = _messages(snapshot, messages)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = namespace(session=namespace(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0000-0000-000000000001'), teaching_state=None, legacy_state={})
+messages = [{'content': 'SYSTEM_HISTORY_ONLY', 'id': 1, 'role': 'system', 'turn_index': 0}, {'content': '�û�ԭ��', 'id': 5, 'role': ...RY_ONLY', 'id': 3, 'role': 'tool', 'turn_index': 0}, {'content': '������ɫԭ��', 'id': 2, 'role': 'custom', 'turn_index': 0}]
+
+    def _messages(snapshot, messages):
+        seen = {}
+        for message in messages:
+            owner = _get(message, "session_id", _get(snapshot.session, "session_id"))
+            if owner != _get(snapshot.session, "session_id"):
+                raise TeachingContextError("context_session_mismatch")
+            item = HistoryMessage(*(_get(message, key) for key in ("id", "turn_index", "role", "content")))
+            if (type(item.id) is not int or item.id <= 0 or type(item.turn_index) is not int
+                    or item.turn_index < 0 or item.role not in ("user", "assistant") or not isinstance(item.content, str)):
+>               raise TeachingContextError("invalid_history")
+E               app.harness.teaching_context.TeachingContextError: invalid_history
+
+app\harness\teaching_context.py:114: TeachingContextError
+_ test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[none] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C3482FBE60>
+graph_kind = 'none'
+
+    @pytest.mark.parametrize("graph_kind", ["none", "empty", "other_node"])
+    def test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate(controlled, graph_kind):
+        from copy import deepcopy
+        from app.harness.mastery_graph import MasteryGraph
+        from app.orchestration.assembly import run_online_agent_session, run_new_agent_session
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        original = deepcopy(ctx)
+        graph = None if graph_kind == "none" else MasteryGraph(1, None)
+        if graph_kind == "other_node":
+            graph.add_node(str(UUID(int=2)), "�����ڵ�", mastery=None)
+        before_nodes = set(graph.nodes) if graph else None
+        for run in (run_online_agent_session, run_new_agent_session):
+>           with pytest.raises(m.TeachingContextError, match="graph_context_mismatch"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'app.harness.teaching_context.TeachingContextError'>
+
+tests\unit\orchestration\test_conversation_context.py:589: Failed
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[empty] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C3483D36E0>
+graph_kind = 'empty'
+
+    @pytest.mark.parametrize("graph_kind", ["none", "empty", "other_node"])
+    def test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate(controlled, graph_kind):
+        from copy import deepcopy
+        from app.harness.mastery_graph import MasteryGraph
+        from app.orchestration.assembly import run_online_agent_session, run_new_agent_session
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        original = deepcopy(ctx)
+        graph = None if graph_kind == "none" else MasteryGraph(1, None)
+        if graph_kind == "other_node":
+            graph.add_node(str(UUID(int=2)), "�����ڵ�", mastery=None)
+        before_nodes = set(graph.nodes) if graph else None
+        for run in (run_online_agent_session, run_new_agent_session):
+>           with pytest.raises(m.TeachingContextError, match="graph_context_mismatch"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'app.harness.teaching_context.TeachingContextError'>
+
+tests\unit\orchestration\test_conversation_context.py:589: Failed
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[other_node] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C34839DBE0>
+graph_kind = 'other_node'
+
+    @pytest.mark.parametrize("graph_kind", ["none", "empty", "other_node"])
+    def test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate(controlled, graph_kind):
+        from copy import deepcopy
+        from app.harness.mastery_graph import MasteryGraph
+        from app.orchestration.assembly import run_online_agent_session, run_new_agent_session
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        original = deepcopy(ctx)
+        graph = None if graph_kind == "none" else MasteryGraph(1, None)
+        if graph_kind == "other_node":
+            graph.add_node(str(UUID(int=2)), "�����ڵ�", mastery=None)
+        before_nodes = set(graph.nodes) if graph else None
+        for run in (run_online_agent_session, run_new_agent_session):
+>           with pytest.raises(m.TeachingContextError, match="graph_context_mismatch"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'app.harness.teaching_context.TeachingContextError'>
+
+tests\unit\orchestration\test_conversation_context.py:589: Failed
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_literal_delimiters_remain_verbatim_in_actual_all_agent_prompts[\u3010\u5f53\u524d\u8f93\u5165\u3011\n] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C3495A19A0>
+marker = '����ǰ���롿\n'
+
+    @pytest.mark.parametrize("marker", ["����ǰ���롿\n", "\n������\n", "�����ֹ۲졿\n", "����ǰ���롿\n������\n�����ֹ۲졿\n"])
+    def test_literal_delimiters_remain_verbatim_in_actual_all_agent_prompts(controlled, marker):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        history = messages()
+        history[0]["content"] = "��ʷ����" + marker + "��" * 3900
+        history[1]["content"] = "��ʷ����" + marker + "ʷ" * 3900
+        current = marker + "��" * (4000 - len(marker))
+>       ctx = api().build_teaching_context(snapshot(state()), history, current, profile())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:613: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\harness\teaching_context.py:224: in build_teaching_context
+    render_teaching_context(ctx, "tutor")
+app\harness\teaching_context.py:285: in render_teaching_context
+    assert_final_prompt(result)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+text = '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\n��Ϣ����=1;��ɫ=user\n��ʷ���ݡ���ǰ���롿\n�ɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾɾ�...n��ǰ�ڵ�=00000000-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n'
+
+    def assert_final_prompt(text):
+        historical, rest = text.split("����ǰ���롿\n", 1)
+        current, _ = rest.split("\n������\n", 1)
+>       assert len(historical) <= 12000 and len(current) <= 4000
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError
+
+app\harness\teaching_context.py:292: AssertionError
+_ test_legacy_invalid_types_default_without_mutating_original[legacy0-Socratic-want_history0] _
+
+legacy = {'current_mode': []}, want_mode = 'Socratic'
+want_history = ['Socratic']
+
+    @pytest.mark.parametrize("legacy,want_mode,want_history", [
+        ({"current_mode": []}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": {}}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": True}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": 7}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": "Analogy", "mode_history": [["Analogy"]]}, "Analogy", ["Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": [{"bad": 1}]}, "Feynman", ["Feynman"]),
+        ({"current_mode": "Analogy", "history": ["Socratic", "Analogy"]}, "Analogy", ["Socratic", "Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": "Feynman"}, "Feynman", ["Feynman"]),
+    ])
+    def test_legacy_invalid_types_default_without_mutating_original(legacy, want_mode, want_history):
+        from copy import deepcopy
+        snap = snapshot()
+        snap.legacy_state = legacy
+        before = deepcopy(legacy)
+>       parsed = api().parse_teaching_state(snap, messages())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:650: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = namespace(session=namespace(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0000-0000-000000000001'), teaching_state=None, legacy_state={'current_mode': []})
+messages = [{'content': 'ԭ��0', 'id': 1, 'role': 'user', 'turn_index': 0}, {'content': '����1', 'id': 2, 'role': 'assistant', 'turn_index': 0}]
+
+    def parse_teaching_state(snapshot, messages):
+        data = _get(snapshot, "teaching_state")
+        if data is None or "schema_version" not in data:
+            legacy = deepcopy(_get(snapshot, "legacy_state") or data or {})
+            ordered = _messages(snapshot, messages)
+            modes = {str(mode) for mode in TeachingMode}
+            mode = legacy.get("teaching_mode", legacy.get("current_mode", "Socratic"))
+>           mode = mode if mode in modes else "Socratic"
+                           ^^^^^^^^^^^^^
+E           TypeError: unhashable type: 'list'
+
+app\harness\teaching_context.py:128: TypeError
+_ test_legacy_invalid_types_default_without_mutating_original[legacy1-Socratic-want_history1] _
+
+legacy = {'teaching_mode': {}}, want_mode = 'Socratic'
+want_history = ['Socratic']
+
+    @pytest.mark.parametrize("legacy,want_mode,want_history", [
+        ({"current_mode": []}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": {}}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": True}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": 7}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": "Analogy", "mode_history": [["Analogy"]]}, "Analogy", ["Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": [{"bad": 1}]}, "Feynman", ["Feynman"]),
+        ({"current_mode": "Analogy", "history": ["Socratic", "Analogy"]}, "Analogy", ["Socratic", "Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": "Feynman"}, "Feynman", ["Feynman"]),
+    ])
+    def test_legacy_invalid_types_default_without_mutating_original(legacy, want_mode, want_history):
+        from copy import deepcopy
+        snap = snapshot()
+        snap.legacy_state = legacy
+        before = deepcopy(legacy)
+>       parsed = api().parse_teaching_state(snap, messages())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:650: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = namespace(session=namespace(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0000-0000-000000000001'), teaching_state=None, legacy_state={'teaching_mode': {}})
+messages = [{'content': 'ԭ��0', 'id': 1, 'role': 'user', 'turn_index': 0}, {'content': '����1', 'id': 2, 'role': 'assistant', 'turn_index': 0}]
+
+    def parse_teaching_state(snapshot, messages):
+        data = _get(snapshot, "teaching_state")
+        if data is None or "schema_version" not in data:
+            legacy = deepcopy(_get(snapshot, "legacy_state") or data or {})
+            ordered = _messages(snapshot, messages)
+            modes = {str(mode) for mode in TeachingMode}
+            mode = legacy.get("teaching_mode", legacy.get("current_mode", "Socratic"))
+>           mode = mode if mode in modes else "Socratic"
+                           ^^^^^^^^^^^^^
+E           TypeError: unhashable type: 'dict'
+
+app\harness\teaching_context.py:128: TypeError
+_ test_legacy_invalid_types_default_without_mutating_original[legacy4-Analogy-want_history4] _
+
+legacy = {'mode_history': [['Analogy']], 'teaching_mode': 'Analogy'}
+want_mode = 'Analogy', want_history = ['Analogy']
+
+    @pytest.mark.parametrize("legacy,want_mode,want_history", [
+        ({"current_mode": []}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": {}}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": True}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": 7}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": "Analogy", "mode_history": [["Analogy"]]}, "Analogy", ["Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": [{"bad": 1}]}, "Feynman", ["Feynman"]),
+        ({"current_mode": "Analogy", "history": ["Socratic", "Analogy"]}, "Analogy", ["Socratic", "Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": "Feynman"}, "Feynman", ["Feynman"]),
+    ])
+    def test_legacy_invalid_types_default_without_mutating_original(legacy, want_mode, want_history):
+        from copy import deepcopy
+        snap = snapshot()
+        snap.legacy_state = legacy
+        before = deepcopy(legacy)
+>       parsed = api().parse_teaching_state(snap, messages())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:650: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\harness\teaching_context.py:130: in parse_teaching_state
+    if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000001C3495A2710>
+
+>   if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                                                           ^^^^^^^^^^^^^^
+E   TypeError: unhashable type: 'list'
+
+app\harness\teaching_context.py:130: TypeError
+_ test_legacy_invalid_types_default_without_mutating_original[legacy5-Feynman-want_history5] _
+
+legacy = {'mode_history': [{'bad': 1}], 'teaching_mode': 'Feynman'}
+want_mode = 'Feynman', want_history = ['Feynman']
+
+    @pytest.mark.parametrize("legacy,want_mode,want_history", [
+        ({"current_mode": []}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": {}}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": True}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": 7}, "Socratic", ["Socratic"]),
+        ({"teaching_mode": "Analogy", "mode_history": [["Analogy"]]}, "Analogy", ["Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": [{"bad": 1}]}, "Feynman", ["Feynman"]),
+        ({"current_mode": "Analogy", "history": ["Socratic", "Analogy"]}, "Analogy", ["Socratic", "Analogy"]),
+        ({"teaching_mode": "Feynman", "mode_history": "Feynman"}, "Feynman", ["Feynman"]),
+    ])
+    def test_legacy_invalid_types_default_without_mutating_original(legacy, want_mode, want_history):
+        from copy import deepcopy
+        snap = snapshot()
+        snap.legacy_state = legacy
+        before = deepcopy(legacy)
+>       parsed = api().parse_teaching_state(snap, messages())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:650: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\harness\teaching_context.py:130: in parse_teaching_state
+    if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <list_iterator object at 0x000001C3495EB880>
+
+>   if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                                                           ^^^^^^^^^^^^^^
+E   TypeError: unhashable type: 'dict'
+
+app\harness\teaching_context.py:130: TypeError
+__ test_summary_accepted_only_if_complete_in_actual_all_agent_prompts[3500] ___
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001C3495E8AD0>
+summary_size = 3500
+
+    @pytest.mark.parametrize("summary_size", [3500, 15000])
+    def test_summary_accepted_only_if_complete_in_actual_all_agent_prompts(controlled, summary_size):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        history = messages(16)
+        for item in history:
+            item["content"] = ("��" if item["role"] == "assistant" else "��") * 3000
+        candidate = "��ժҪ��ʼ" + "ժ" * (summary_size - 10) + "��ժҪ����"
+        ctx = api().build_teaching_context(snapshot(changed(summary="��ժҪ", summary_until_message_id=2)),
+            history, "��ǰ", profile(), summarizer=lambda *args: candidate)
+        assert (ctx.summary_until_message_id == 4 and ctx.summary == candidate) or (
+            ctx.summary_until_message_id == 2 and ctx.summary == "��ժҪ" and "summary_failed" in ctx.reduction_reasons)
+        ws = workspace(ctx)
+        TutorAgent().handle(event("ActionRequested", {"action": "tutor_ask", "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": "��ǰ"}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed",
+            "rationale": "��" * 1000}]}), ws)
+        for _, human in controlled.calls:
+            if ctx.summary_until_message_id == 4:
+>               assert candidate in human.content
+E               AssertionError: assert '��ժҪ��ʼժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ...ժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ��ժҪ����' in '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=��ժҪ��ʼժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ...n��ǰ�ڵ�=00000000-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n'
+E                +  where '����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=��ժҪ��ʼժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժժ...n��ǰ�ڵ�=00000000-0000-0000-0000-000000000001;����=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n' = HumanMessage(content='����ʷ�����ġ�\nģʽ=Socratic;�׶�=init\nģʽ��ʷ=Socratic\n��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��\nժҪ=��ժҪ��ʼժժժժժժժժժժժժժժժժժժժժժ...=�ڵ�0\n�ڵ�UUID=00000000-0000-0000-0000-000000000001;����=�ڵ�0;˵��=����;���ն�=None\n', additional_kwargs={}, response_metadata={}).content
+
+tests\unit\orchestration\test_conversation_context.py:676: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+____________ test_task6_other_role_history_restores_as_plain_data _____________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001C3495F05E0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C3483D16A0>
+
+    def test_task6_other_role_history_restores_as_plain_data(workspace, monkeypatch):
+        from tests.unit.orchestration.test_conversation_context import ControlledClient
+        from app.harness.teaching_context import build_teaching_context
+        from app.infrastructure.llm import LLMService
+        from app.orchestration.assembly import run_online_agent_session
+        from app.orchestration.session_service import SessionService
+        controlled = ControlledClient()
+        monkeypatch.setattr(LLMService, "llm", property(lambda self: controlled))
+        monkeypatch.setattr("app.core.config.settings.rag_enabled", False)
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                row.state_json = "{}"
+                await db.flush()
+                db.add_all([MessageTable(id=1, session_id=sid, turn_index=0, role="system", content="HISTORY_SYSTEM_DATA_ONLY"),
+                    MessageTable(id=2, session_id=sid, turn_index=0, role="user", content="�û�ԭ��"),
+                    MessageTable(id=3, session_id=sid, turn_index=0, role="assistant", content="����ԭ��"),
+                    MessageTable(id=4, session_id=sid, turn_index=0, role="tool", content="HISTORY_TOOL_DATA_ONLY"),
+                    MessageTable(id=5, session_id=sid, turn_index=0, role="custom", content="������ɫԭ��")])
+                await db.commit()
+            response = await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())
+            assert response.status_code == 200
+            assert [item["id"] for item in response.json()["messages"]["items"]] == [2, 3, 1, 4, 5]
+            async with factory() as db:
+                snap = await SessionService(db).load_snapshot(1, sid)
+                ctx = build_teaching_context(snap, snap.messages.items, "��ǰ", snap.profile_summary)
+                await db.rollback()
+            assert [item.id for item in ctx.history] == [2, 3, 1, 4, 5]
+            assert ctx.state.committed_turn_count == 1
+            result = run_online_agent_session(sid, 1, "��ǰ", context=ctx)
+            assert result.assessment_deltas == [] and result.teaching_state["committed_turn_count"] == 2
+            for system, human in controlled.calls:
+                assert "HISTORY_SYSTEM_DATA_ONLY" not in system.content and "HISTORY_TOOL_DATA_ONLY" not in system.content
+                assert "HISTORY_SYSTEM_DATA_ONLY" in human.content and "HISTORY_TOOL_DATA_ONLY" in human.content
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:170: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:161: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:120: in check
+    ctx = build_teaching_context(snap, snap.messages.items, "��ǰ", snap.profile_summary)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\teaching_context.py:186: in build_teaching_context
+    state = parse_teaching_state(snapshot, messages)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\harness\teaching_context.py:125: in parse_teaching_state
+    ordered = _messages(snapshot, messages)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = SessionSnapshot(session=WorkspaceSession(session_id='efe413d8-43dc-4ef4-891c-367589899e19', user_id=1, title='�»Ự', pr...nt_coverage=0.0), view_state=ViewState(draft='', reading_anchor=None, version=0, updated_at=None), pending_requests=[])
+messages = [WorkspaceMessage(id=2, turn_index=0, role='user', content='�û�ԭ��', created_at=datetime.datetime(2026, 10, 25, 1, 13, 2...aceMessage(id=5, turn_index=0, role='custom', content='������ɫԭ��', created_at=datetime.datetime(2026, 10, 25, 1, 13, 20))]
+
+    def _messages(snapshot, messages):
+        seen = {}
+        for message in messages:
+            owner = _get(message, "session_id", _get(snapshot.session, "session_id"))
+            if owner != _get(snapshot.session, "session_id"):
+                raise TeachingContextError("context_session_mismatch")
+            item = HistoryMessage(*(_get(message, key) for key in ("id", "turn_index", "role", "content")))
+            if (type(item.id) is not int or item.id <= 0 or type(item.turn_index) is not int
+                    or item.turn_index < 0 or item.role not in ("user", "assistant") or not isinstance(item.content, str)):
+>               raise TeachingContextError("invalid_history")
+E               app.harness.teaching_context.TeachingContextError: invalid_history
+
+app\harness\teaching_context.py:114: TeachingContextError
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_other_history_roles_are_data_and_keep_complete_legacy_pair
+FAILED tests/unit/orchestration/test_conversation_context.py::test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[none]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[empty]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_valid_selected_node_with_missing_graph_fails_without_model_or_candidate[other_node]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_literal_delimiters_remain_verbatim_in_actual_all_agent_prompts[\u3010\u5f53\u524d\u8f93\u5165\u3011\n]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_legacy_invalid_types_default_without_mutating_original[legacy0-Socratic-want_history0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_legacy_invalid_types_default_without_mutating_original[legacy1-Socratic-want_history1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_legacy_invalid_types_default_without_mutating_original[legacy4-Analogy-want_history4]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_legacy_invalid_types_default_without_mutating_original[legacy5-Feynman-want_history5]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_summary_accepted_only_if_complete_in_actual_all_agent_prompts[3500]
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_task6_other_role_history_restores_as_plain_data
+11 failed, 9 passed, 94 deselected in 4.55s

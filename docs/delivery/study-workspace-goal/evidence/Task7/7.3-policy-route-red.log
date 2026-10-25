@@ -1,0 +1,76 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Analogy] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002494A052CC0>
+mode = 'Analogy'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+        result = run_context(ctx)
+        # ��ʼ������Regress���ǻ��˶�����������۲����Ϻ���ɷ������������Ӵ��档
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+        routed = [ev.payload["action"] for ev in result.events if ev.type == "ActionRequested" and ev.parent_id in ticks]
+>       assert "regress_to_prereq" in routed
+E       AssertionError: assert 'regress_to_prereq' in ['tutor_re_explain']
+
+tests\unit\orchestration\test_conversation_context.py:445: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_policy_regress_action_is_really_routed_after_weak_observation[Regress] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002494B1AE750>
+mode = 'Regress'
+
+    @pytest.mark.parametrize("mode", ["Analogy", "Regress"])
+    def test_policy_regress_action_is_really_routed_after_weak_observation(controlled, mode):
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode=mode, mode_history=["Socratic", mode],
+            stage="awaiting_response", last_question="����1")), messages(), "�ش���", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "weak", "mastery_score": 20}
+        result = run_context(ctx)
+        # ��ʼ������Regress���ǻ��˶�����������۲����Ϻ���ɷ������������Ӵ��档
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+        routed = [ev.payload["action"] for ev in result.events if ev.type == "ActionRequested" and ev.parent_id in ticks]
+>       assert "regress_to_prereq" in routed
+E       AssertionError: assert 'regress_to_prereq' in ['tutor_re_explain']
+
+tests\unit\orchestration\test_conversation_context.py:445: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_observed_prereq_regress_action_really_routes ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000002494B159B80>
+
+    def test_observed_prereq_regress_action_really_routes(controlled):
+        from app.harness.mastery_graph import MasteryGraph
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ", mastery=None)
+        prereq = str(UUID(int=2))
+        graph.add_node(prereq, "����ǰ��", mastery=10)
+        graph.add_edge(prereq, NODE)
+        ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")),
+                                           messages(), "�ش�", profile(2))
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        ticks = {ev.id for ev in result.events if ev.type == "OrchestratorTick"}
+>       assert any(ev.type == "ActionRequested" and ev.parent_id in ticks and ev.payload["action"] == "regress_to_prereq" for ev in result.events)
+E       assert False
+E        +  where False = any(<generator object test_observed_prereq_regress_action_really_routes.<locals>.<genexpr> at 0x000002494B4CEF60>)
+
+tests\unit\orchestration\test_conversation_context.py:461: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Analogy]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_policy_regress_action_is_really_routed_after_weak_observation[Regress]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_observed_prereq_regress_action_really_routes
+3 failed, 51 deselected in 0.81s

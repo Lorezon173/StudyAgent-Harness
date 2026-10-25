@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from app.harness.enums import ActionKind, EventType, EventSource, TeachingMode
+from app.harness.enums import ActionKind, EventType, EventSource, TeachingMode, MasteryLevel
 from app.harness.events import Event
 from app.harness.workspace_state import WorkspaceState
 from app.harness.teaching_policy import TeachingPolicy, ObservationSet
@@ -112,7 +112,8 @@ class Orchestrator:
                 and ws.current_mode != TeachingMode.REGRESS):
             obs["topic_complete"] = True
 
-        action, _ = self._limit_retrieval(self._engine.match(obs))
+        rule_action = self._engine.match(obs)
+        action, _ = self._limit_retrieval(rule_action)
 
         # P0 fix: 规则匹配后更新 weak 计数
         mastery = obs.get("mastery")
@@ -120,6 +121,16 @@ class Orchestrator:
             self._weak_count += 1
         elif mastery is not None:
             self._weak_count = 0
+        target_mode = None
+        ordinary_mastery = (
+            ws.teaching_context is not None
+            and mastery in {str(level) for level in MasteryLevel}
+            and not any(obs.get(key) for key in ("prereq_weak", "contradiction", "confusion"))
+            and rule_action in {ActionKind.TUTOR_RE_EXPLAIN, ActionKind.TUTOR_REQUEST_RECAP,
+                                ActionKind.LOOP_EXIT, ActionKind.CONDUCTOR_DECIDE}
+        )
+        if ordinary_mastery:
+            target_mode, action = self._policy.next(self._to_obs_set(obs))
         if action == ActionKind.CONDUCTOR_DECIDE:
             return [Event(type=EventType.CONDUCTOR_REQUESTED,
                           source=EventSource.ORCHESTRATOR,
@@ -130,7 +141,8 @@ class Orchestrator:
                           parent_id=tick.id)]
 
         emits: list[Event] = []
-        target_mode, _ = self._policy.next(self._to_obs_set(obs))
+        if target_mode is None:
+            target_mode, _ = self._policy.next(self._to_obs_set(obs))
         if target_mode != ws.current_mode:
             emits.append(Event(type=EventType.POLICY_TRANSITION,
                                source=EventSource.ORCHESTRATOR,
@@ -186,8 +198,11 @@ class Orchestrator:
             elif ev.type == EventType.RAG_QUALITY_ASSESSED:
                 obs["rag_quality_low"] = (ev.payload.get("score") or 0) < 0.5
             elif ev.type == EventType.GRAPH_PREREQ_WEAK_DETECTED:
-                obs["prereq_weak"] = True
-                obs["prereq_basis"] = ev.payload.get("basis")
+                basis = ev.payload.get("basis")
+                if basis in ("observed", "historical"):
+                    obs["prereq_weak"] = True
+                    if basis == "observed" or obs.get("prereq_basis") != "observed":
+                        obs["prereq_basis"] = basis
         return obs
 
     @staticmethod

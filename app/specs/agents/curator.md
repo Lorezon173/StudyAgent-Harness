@@ -6,3 +6,6 @@
 - 设计来源：design doc §2.1（Curator 行）、§6/§6.1 MasteryGraph 冷启动建图
 - 实现：`app/agents/curator.py`
 - 修改本文件时必须同步修改 `curator.prompt.md`
+# 稳定节点上下文约束
+
+有TeachingContext时仅消费本画像有效、未归档且已存在的稳定节点UUID；主题标题不作为节点标识，未知节点不创建。无有效待答或节点、评分缺失/非法时不更新掌握度，不默认零分。离线无context保留既有契约。Curator不调用LLM。

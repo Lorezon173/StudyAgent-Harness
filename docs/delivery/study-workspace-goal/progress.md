@@ -122,3 +122,31 @@ Task6 round2冻结：新非单调历史单项先红([2,3,1]vs[1,2,3])后绿，�
 Task6 round2范围复审PASS：原P2 ADDRESSED，无新阻断；API23pass，原服务16项证据有效。README已补接口/分页/版本/Task8依赖，待选择性明确文件提交，原README142行与asset34行保护。
 
 Task6 DONE：8679a76；两轮plan review PASS，原P2旧消息顺序复审ADDRESSED。API23pass，SQLite/PG服务16例成功证据齐；README/证据已本地提交，原README142行/asset34行保留。M1=Task1–6完成；Task7三层规划开始。Task8真实retry仍PENDING，总Goal active。staged check产品/测试/文档通过；原始pytest日志尾空白原样留证，没有伪称全部diff无空白。
+
+Task7 round1三层计划已据当前assembly/Agent/prompt/Task6 DTO写入，独立task7_plan_review只读审查中。当前仅计划与事实核查，无Task7产品/测试变更；重点stage语义/摘要边界/真实prompt与稳定节点。
+
+Task7计划初审NEEDS REVISION：历史渲染预算、旧问题误评分、Regress动作3阻断；扩展字段往返/Task8摘要交接补明确。仅计划修订中，产品测试未改，非外部阻塞，不跳Task8。
+
+Task7 round1 v1.1 plan PASS (task7_plan_review; SHA256 3796c7196aa30ce9e09fbac45ab62cee7e8811521f916cb51f7f26c52c1f5780), ADJ010；初审3阻断与2歧义均已补清，开始实施，产品完成仍待验证/独立review。
+
+Task7实现已派fresh task7_context_impl，base3224379；完整v1.1计划SHA3796c7196aa30ce9e09fbac45ab62cee7e8811521f916cb51f7f26c52c1f5780与文件白名单/真实prompt/预算/稳定node/Task8边界已交接。报告目标ignored task7-report.md，主会话不改产品。
+
+Task7 7.1初始17fail仅模块存在性断言，行为TDD证据受限；实现者已17pass，限制单独留证，不能伪造过去红灯。7.2起要求实际行为先失败再实现；独立review将核该缺口，必要补证须新轮plan PASS。
+
+Task7 7.2实现者报告真实行为红灯3fail/49pass（policy历史丢失、候选快照缺失、online不转发context），改后52pass；7.3真实最下游LLM客户端prompt/UUID/Regress/待答失效断言进行中。尚未独立代码审查，不标DONE。
+
+Task7 7.3原普通沙箱组合停72%，实现者丢失session_id并在原进程活跃时另跑native（执行失误已留证）；原结果不算通过。native同组99pass已读取日志核实，不再重复。要求原PID精确核实后清理本次自建测试进程；7.4快照往返及定向回归继续。
+
+Task7新增真实后续路由3fail：Analogy/Regress weak实际仍re_explain，observed被historical覆盖。Orchestrator不在原允许文件且未改；round2三层补充计划独立review中。原实现者只继续已审且不依赖新改动的7.4交接，不弱化失败断言。
+
+SC-001已由用户明确批准：当前任务目标修改为完成Task7即可。Task8及后续移出当前Goal、不假标完成。Task7完整独立code review已派task7_code_review，审后必要修复/README/明确提交后结束Goal。
+
+Task7完整code review Changes requested：2P1（其他角色历史拒绝、图谱缺载清选点）+3P2（标记断言、摘要接受/渲染预算、legacy非法类型）。round3三层修复计划独立审中，原产品冻结；用户SC-001仅Task7的范围不降验收。
+
+Task7 round3/code fix1/5计划独立PASS，SHA2192dc8f9c4817f2a16816ae3231f8c4e437c16b2e704187a58fe5e84f73694f；已交原实现者按五项修复、先真实红灯/最小改/回归/原reviewer范围复审。SC-001仅Task7。
+
+Task7 round3原5发现复审ADDRESSED，新P1：其他角色占history[-2:]保护位、长摘要挤没真实问答。round4/codefix2/5计划独立review中，仅修选择/容量/连续摘要边界，当前仍冻结不假完成。
+
+Task7 round4/code fix2/5 plan PASS，SHAe043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e，已交原实现者只修最新真实问答选择/共享容量/连续省略前缀，原5关闭项保留。审查明确首个保留项指旧摘要截止之后首项。SC-001仅Task7。
+
+Task7 round4范围复审PASS，原5与新P1全部ADDRESSED，无新阻断；388pass/1真实judge排除/旧warning。20文件最终SHA核对、SC-001范围审计和README已补，待明确文件本地提交，禁止Task8。

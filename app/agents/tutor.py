@@ -4,6 +4,7 @@ from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
+from app.harness.teaching_context import render_teaching_context
 
 
 class TutorAgent(AgentBase):
@@ -37,7 +38,7 @@ class TutorAgent(AgentBase):
         action = event.payload.get("action")
         if action == str(ActionKind.TUTOR_ASK):
             return self._ask(event, ws, intent="tutor_ask", kind="ask")
-        if action == str(ActionKind.TUTOR_PROBE_PREREQ):
+        if action in (str(ActionKind.TUTOR_PROBE_PREREQ), str(ActionKind.REGRESS_TO_PREREQ)):
             return self._ask(event, ws, intent="tutor_probe_prereq",
                              kind="probe_prereq",
                              extra={"prereq_topic": event.payload.get("prereq_topic")})
@@ -50,7 +51,7 @@ class TutorAgent(AgentBase):
         if action == str(ActionKind.TUTOR_REQUEST_RECAP):
             result = self._llm.invoke_json(
                 self._spec.compose("tutor", "tutor_request_recap"),
-                f"主题：{ws.current_topic or ''}",
+                self._prompt(ws),
                 session_id=ws.session_id, node="tutor",
                 intent="tutor_request_recap",
             )
@@ -60,7 +61,7 @@ class TutorAgent(AgentBase):
         if action == str(ActionKind.TUTOR_OFFER_ANALOGY):
             result = self._llm.invoke_json(
                 self._spec.compose("tutor", "tutor_offer_analogy"),
-                f"主题：{ws.current_topic or ''}",
+                self._prompt(ws),
                 session_id=ws.session_id, node="tutor",
                 intent="tutor_offer_analogy",
             )
@@ -71,11 +72,31 @@ class TutorAgent(AgentBase):
                               payload=payload, parent_id=event.id)]
         return []
 
+    @staticmethod
+    def _prompt(ws, note=""):
+        if ws.teaching_context is None:
+            return f"主题：{ws.current_topic or ''}" + (f"\n{note}" if note else "")
+        prompt = render_teaching_context(ws.teaching_context, "tutor", historical_note=note, current_mode=ws.current_mode)
+        return prompt
+
     def _ask(self, trigger: Event, ws: WorkspaceState, intent: str,
              kind: str, extra: dict | None = None) -> list[Event]:
+        note = ""
+        if kind == "probe_prereq":
+            context = ws.teaching_context
+            if context is not None:
+                if context.active_node_id is None:
+                    note = "尚未确定当前节点，请询问学习范围。"
+                elif context.prereq_title:
+                    note = "可信前置节点：" + context.prereq_title
+                else:
+                    note = "暂无确定前置节点，请生成当前知识点的基础诊断问题。"
+                extra = None
+            elif extra and extra.get("prereq_topic"):
+                note = "前置知识点：" + str(extra["prereq_topic"])
         result = self._llm.invoke_json(
             self._spec.compose("tutor", intent),
-            f"主题：{ws.current_topic or ''}",
+            self._prompt(ws, note),
             session_id=ws.session_id, node="tutor", intent=intent,
         )
         payload = {"content": result.get("content", ""), "kind": kind}
@@ -88,7 +109,7 @@ class TutorAgent(AgentBase):
                  mode: str) -> list[Event]:
         result = self._llm.invoke_json(
             self._spec.compose("tutor", intent),
-            f"主题：{ws.current_topic or ''}\n模式：{mode}",
+            self._prompt(ws, f"模式：{mode}"),
             session_id=ws.session_id, node="tutor", intent=intent,
         )
         return [self.emit(EventType.TUTOR_EXPLAINED, ws,

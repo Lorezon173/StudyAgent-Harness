@@ -1,0 +1,147 @@
+FF.....F                                                                 [100%]
+================================== FAILURES ===================================
+___________ test_known_field_invalid_shapes_are_named_errors[data0] ___________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(teaching_mode=[]), changed(teaching_mode={}), changed(mode_history=[[]]),
+        changed(stage=5), changed(schema_version=True), changed(last_question=5), changed(summary_until_message_id=True)])
+    def test_known_field_invalid_shapes_are_named_errors(data):
+        m = api()
+        with pytest.raises(m.TeachingContextError, match="invalid_teaching_state|unsupported_teaching_schema"):
+>           m.parse_teaching_state(snapshot(data), [])
+
+tests\unit\orchestration\test_conversation_context.py:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = namespace(session=namespace(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0... 'last_question': None, 'summary': '', 'summary_until_message_id': None, 'committed_turn_count': 0}, legacy_state=None)
+messages = []
+
+    def parse_teaching_state(snapshot, messages):
+        data = _get(snapshot, "teaching_state")
+        if data is None or "schema_version" not in data:
+            legacy = deepcopy(_get(snapshot, "legacy_state") or data or {})
+            ordered = _messages(snapshot, messages)
+            modes = {str(mode) for mode in TeachingMode}
+            mode = legacy.get("teaching_mode", legacy.get("current_mode", "Socratic"))
+            mode = mode if mode in modes else "Socratic"
+            history = legacy.get("mode_history", legacy.get("history", [mode]))
+            if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                history = [mode]
+            grouped = {}
+            for item in ordered:
+                grouped.setdefault(item.turn_index, set()).add(item.role)
+            stage = legacy.get("stage", "init")
+            question = legacy.get("last_question")
+            assistant = next((item for item in reversed(ordered) if item.role == "assistant"), None)
+            if not isinstance(question, str) or not assistant or assistant.content != question:
+                question = None
+            return TeachingState(active_node_id=_get(snapshot.session, "active_node_id"), teaching_mode=mode,
+                mode_history=deepcopy(history), stage=stage if isinstance(stage, str) and stage else "init",
+                last_question=question, committed_turn_count=sum(roles == {"user", "assistant"} for roles in grouped.values()))
+        if type(data.get("schema_version")) is not int or data["schema_version"] != 1:
+            raise TeachingContextError("unsupported_teaching_schema")
+        _json(data)
+        defaults = TeachingState().to_dict()
+        if any(key not in data for key in defaults):
+            raise TeachingContextError("invalid_teaching_state")
+        mode = data["teaching_mode"]
+        history = data["mode_history"]
+        modes = {str(item) for item in TeachingMode}
+>       if (mode not in modes or not isinstance(history, list) or not history
+            ^^^^^^^^^^^^^^^^^
+                or any(not isinstance(x, str) or x not in modes for x in history) or history[-1] != mode
+                or not isinstance(data["stage"], str) or not data["stage"]
+                or not isinstance(data["summary"], str)
+                or (data["last_question"] is not None and not isinstance(data["last_question"], str))
+                or type(data["committed_turn_count"]) is not int or data["committed_turn_count"] < 0
+                or (data["summary_until_message_id"] is not None and
+                    (type(data["summary_until_message_id"]) is not int or data["summary_until_message_id"] <= 0))):
+E                   TypeError: unhashable type: 'list'
+
+app\harness\teaching_context.py:152: TypeError
+___________ test_known_field_invalid_shapes_are_named_errors[data1] ___________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(teaching_mode=[]), changed(teaching_mode={}), changed(mode_history=[[]]),
+        changed(stage=5), changed(schema_version=True), changed(last_question=5), changed(summary_until_message_id=True)])
+    def test_known_field_invalid_shapes_are_named_errors(data):
+        m = api()
+        with pytest.raises(m.TeachingContextError, match="invalid_teaching_state|unsupported_teaching_schema"):
+>           m.parse_teaching_state(snapshot(data), [])
+
+tests\unit\orchestration\test_conversation_context.py:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+snapshot = namespace(session=namespace(session_id='session-a', user_id=1, profile_id='profile-a', active_node_id='00000000-0000-0... 'last_question': None, 'summary': '', 'summary_until_message_id': None, 'committed_turn_count': 0}, legacy_state=None)
+messages = []
+
+    def parse_teaching_state(snapshot, messages):
+        data = _get(snapshot, "teaching_state")
+        if data is None or "schema_version" not in data:
+            legacy = deepcopy(_get(snapshot, "legacy_state") or data or {})
+            ordered = _messages(snapshot, messages)
+            modes = {str(mode) for mode in TeachingMode}
+            mode = legacy.get("teaching_mode", legacy.get("current_mode", "Socratic"))
+            mode = mode if mode in modes else "Socratic"
+            history = legacy.get("mode_history", legacy.get("history", [mode]))
+            if not isinstance(history, list) or not history or any(x not in modes for x in history) or history[-1] != mode:
+                history = [mode]
+            grouped = {}
+            for item in ordered:
+                grouped.setdefault(item.turn_index, set()).add(item.role)
+            stage = legacy.get("stage", "init")
+            question = legacy.get("last_question")
+            assistant = next((item for item in reversed(ordered) if item.role == "assistant"), None)
+            if not isinstance(question, str) or not assistant or assistant.content != question:
+                question = None
+            return TeachingState(active_node_id=_get(snapshot.session, "active_node_id"), teaching_mode=mode,
+                mode_history=deepcopy(history), stage=stage if isinstance(stage, str) and stage else "init",
+                last_question=question, committed_turn_count=sum(roles == {"user", "assistant"} for roles in grouped.values()))
+        if type(data.get("schema_version")) is not int or data["schema_version"] != 1:
+            raise TeachingContextError("unsupported_teaching_schema")
+        _json(data)
+        defaults = TeachingState().to_dict()
+        if any(key not in data for key in defaults):
+            raise TeachingContextError("invalid_teaching_state")
+        mode = data["teaching_mode"]
+        history = data["mode_history"]
+        modes = {str(item) for item in TeachingMode}
+>       if (mode not in modes or not isinstance(history, list) or not history
+            ^^^^^^^^^^^^^^^^^
+                or any(not isinstance(x, str) or x not in modes for x in history) or history[-1] != mode
+                or not isinstance(data["stage"], str) or not data["stage"]
+                or not isinstance(data["summary"], str)
+                or (data["last_question"] is not None and not isinstance(data["last_question"], str))
+                or type(data["committed_turn_count"]) is not int or data["committed_turn_count"] < 0
+                or (data["summary_until_message_id"] is not None and
+                    (type(data["summary_until_message_id"]) is not int or data["summary_until_message_id"] <= 0))):
+E                   TypeError: unhashable type: 'dict'
+
+app\harness\teaching_context.py:152: TypeError
+___________ test_observation_free_text_cannot_escape_history_budget ___________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000021C617CDE80>
+
+    def test_observation_free_text_cannot_escape_history_budget(controlled):
+        from app.agents.conductor import ConductorAgent
+        ctx = api().build_teaching_context(snapshot(state()), [], "��ǰ", profile())
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "��ʷ����", "score": 40,
+            "level": "��ʷ����", "basis": "��ʷ����", "rationale": "��ʷ����"}]}), workspace(ctx))
+        extra = prompts(controlled, "conductor_decide")[-1].split("�����ֹ۲졿\n", 1)[-1]
+>       assert "��ʷ����" not in extra
+E       assert '��ʷ����' not in '[{"type": "...: "��ʷ����"}]\n'
+E         
+E         '��ʷ����' is contained here:
+E           [{"type": "��ʷ����", "score": 40, "level": "��ʷ����", "basis": "��ʷ����"}]
+E         ?            ++++
+
+tests\unit\orchestration\test_conversation_context.py:528: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_known_field_invalid_shapes_are_named_errors[data0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_known_field_invalid_shapes_are_named_errors[data1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_observation_free_text_cannot_escape_history_budget
+3 failed, 5 passed, 71 deselected in 0.79s

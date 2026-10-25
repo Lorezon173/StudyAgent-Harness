@@ -1,0 +1,841 @@
+.....................F.FFFFFFFFFFFFFFF...FF..FFFFF.                      [100%]
+================================== FAILURES ===================================
+___________ test_second_turn_real_prompt_contains_previous_exchange ___________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC971A120>
+
+    def test_second_turn_real_prompt_contains_previous_exchange(controlled):
+        m = api()
+        first = m.build_teaching_context(snapshot(state()), [], "����ѧϰAԭ��", profile())
+        result = run_context(first)
+        restored = json.loads(json.dumps(result.teaching_state, ensure_ascii=False))
+        history = [dict(id=1, turn_index=0, role="user", content="����ѧϰAԭ��"),
+                   dict(id=2, turn_index=0, role="assistant", content=result.reply)]
+        second = m.build_teaching_context(snapshot(restored), history, "�ղŵ����Ӿ�����ʲô��", profile())
+        run_context(second)
+        for intent in ("tutor_ask", "critic_assess"):
+            prompt = prompts(controlled, intent)[-1]
+>           assert "����ѧϰAԭ��" in prompt
+E           AssertionError: assert '����ѧϰAԭ��' in '���⣺�ڵ�0'
+
+tests\unit\orchestration\test_conversation_context.py:268: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_______ test_final_human_message_history_budget_all_agents[False-11999] _______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC99161E0>
+size = 11999, duplicate = False
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC99161E0>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_______ test_final_human_message_history_budget_all_agents[False-12000] _______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9838050>
+size = 12000, duplicate = False
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9838050>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 15.999999974155799, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_______ test_final_human_message_history_budget_all_agents[False-12001] _______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC98BBBC0>
+size = 12001, duplicate = False
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC98BBBC0>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_______ test_final_human_message_history_budget_all_agents[True-11999] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9838FB0>
+size = 11999, duplicate = True
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9838FB0>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_______ test_final_human_message_history_budget_all_agents[True-12000] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC983AFF0>
+size = 12000, duplicate = True
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC983AFF0>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_______ test_final_human_message_history_budget_all_agents[True-12001] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC98390A0>
+size = 12001, duplicate = True
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    @pytest.mark.parametrize("duplicate", [False, True])
+    def test_final_human_message_history_budget_all_agents(controlled, size, duplicate):
+        from app.agents.tutor import TutorAgent
+        from app.agents.critic import CriticAgent
+        from app.agents.conductor import ConductorAgent
+        m = api()
+        history = messages(13)
+        history[-2]["content"] = "����û�\n" + "��" * size
+        history[-1]["content"] = "�������\n" + "��" * size
+        question = history[-1]["content"] if duplicate else "�������" + "��" * size
+        p = profile(25)
+        for item in p.nodes:
+            item.title = "��" * 513
+            item.description = "��" * 201
+        ctx = m.build_teaching_context(snapshot(changed(summary="ժҪ" * size, last_question=question,
+            mode_history=["Socratic"] * size, stage="awaiting_response")), history, "��" * 4000, p)
+        ws = workspace(ctx)
+        actions = ["tutor_ask", "tutor_probe_prereq", "tutor_explain", "tutor_re_explain", "tutor_correct",
+                   "tutor_request_recap", "tutor_offer_analogy", "regress_to_prereq"]
+        for action in actions:
+            TutorAgent().handle(event("ActionRequested", {"action": action, "target": "tutor"}), ws)
+        CriticAgent().handle(event("UserMessage", {"text": ctx.current_message}, "user"), ws)
+        ConductorAgent().handle(event("ConductorRequested", {"observations": [{"type": "MasteryAssessed", "score": 40,
+            "rationale": "������ʷ����" * size}]}), ws)
+>       assert len(controlled.calls) == 10
+E       AssertionError: assert 9 == 10
+E        +  where 9 = len([[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...])
+E        +    where [[SystemMessage(content='# ȫ�ֹ���\n\n���� StudyAgent ѧϰ����ϵͳ��һ���֡����� Agent �������µ��߹���\n\n- ʹ���������û�����\n- �����������ṹ��Ϊ JSON��������ȷҪ...������������������������������������������������������������������������������������������������������������������������������������', additional_kwargs={}, response_metadata={})], ...] = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC98390A0>.calls
+
+tests\unit\orchestration\test_conversation_context.py:322: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 14.999999984866008, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "conductor"}
+_____ test_regress_restored_and_policy_action_generates_real_reply[valid] _____
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC4530>
+case = 'valid'
+
+    @pytest.mark.parametrize("case", ["valid", "none", "unknown", "archived", "no_current"])
+    def test_regress_restored_and_policy_action_generates_real_reply(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile(2)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ��", mastery=None)
+        prereq = str(UUID(int=2))
+        if case != "none":
+            graph.add_node(prereq, "����ǰ��", mastery=80)
+            graph.add_edge(prereq, NODE)
+        if case == "archived":
+            p.nodes[1].archived = True
+        if case == "unknown":
+            p.nodes = p.nodes[:1]
+        active = None if case == "no_current" else NODE
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode="Regress", mode_history=["Socratic", "Regress"]), node=active),
+                                           [], "���һع�", p)
+        result = run_context(ctx, graph)
+>       assert result.reply == "�ܿ�ǰ���������"
+E       AssertionError: assert '������δ���ɻظ���' == '�ܿ�ǰ���������'
+E         
+E         - �ܿ�ǰ���������
+E         + ������δ���ɻظ���
+
+tests\unit\orchestration\test_conversation_context.py:360: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+_____ test_regress_restored_and_policy_action_generates_real_reply[none] ______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC4830>
+case = 'none'
+
+    @pytest.mark.parametrize("case", ["valid", "none", "unknown", "archived", "no_current"])
+    def test_regress_restored_and_policy_action_generates_real_reply(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile(2)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ��", mastery=None)
+        prereq = str(UUID(int=2))
+        if case != "none":
+            graph.add_node(prereq, "����ǰ��", mastery=80)
+            graph.add_edge(prereq, NODE)
+        if case == "archived":
+            p.nodes[1].archived = True
+        if case == "unknown":
+            p.nodes = p.nodes[:1]
+        active = None if case == "no_current" else NODE
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode="Regress", mode_history=["Socratic", "Regress"]), node=active),
+                                           [], "���һع�", p)
+        result = run_context(ctx, graph)
+>       assert result.reply == "�ܿ�ǰ���������"
+E       AssertionError: assert '������δ���ɻظ���' == '�ܿ�ǰ���������'
+E         
+E         - �ܿ�ǰ���������
+E         + ������δ���ɻظ���
+
+tests\unit\orchestration\test_conversation_context.py:360: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+____ test_regress_restored_and_policy_action_generates_real_reply[unknown] ____
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC4E90>
+case = 'unknown'
+
+    @pytest.mark.parametrize("case", ["valid", "none", "unknown", "archived", "no_current"])
+    def test_regress_restored_and_policy_action_generates_real_reply(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile(2)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ��", mastery=None)
+        prereq = str(UUID(int=2))
+        if case != "none":
+            graph.add_node(prereq, "����ǰ��", mastery=80)
+            graph.add_edge(prereq, NODE)
+        if case == "archived":
+            p.nodes[1].archived = True
+        if case == "unknown":
+            p.nodes = p.nodes[:1]
+        active = None if case == "no_current" else NODE
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode="Regress", mode_history=["Socratic", "Regress"]), node=active),
+                                           [], "���һع�", p)
+        result = run_context(ctx, graph)
+>       assert result.reply == "�ܿ�ǰ���������"
+E       AssertionError: assert '������δ���ɻظ���' == '�ܿ�ǰ���������'
+E         
+E         - �ܿ�ǰ���������
+E         + ������δ���ɻظ���
+
+tests\unit\orchestration\test_conversation_context.py:360: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+___ test_regress_restored_and_policy_action_generates_real_reply[archived] ____
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC7290>
+case = 'archived'
+
+    @pytest.mark.parametrize("case", ["valid", "none", "unknown", "archived", "no_current"])
+    def test_regress_restored_and_policy_action_generates_real_reply(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile(2)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ��", mastery=None)
+        prereq = str(UUID(int=2))
+        if case != "none":
+            graph.add_node(prereq, "����ǰ��", mastery=80)
+            graph.add_edge(prereq, NODE)
+        if case == "archived":
+            p.nodes[1].archived = True
+        if case == "unknown":
+            p.nodes = p.nodes[:1]
+        active = None if case == "no_current" else NODE
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode="Regress", mode_history=["Socratic", "Regress"]), node=active),
+                                           [], "���һع�", p)
+        result = run_context(ctx, graph)
+>       assert result.reply == "�ܿ�ǰ���������"
+E       AssertionError: assert '������δ���ɻظ���' == '�ܿ�ǰ���������'
+E         
+E         - �ܿ�ǰ���������
+E         + ������δ���ɻظ���
+
+tests\unit\orchestration\test_conversation_context.py:360: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+__ test_regress_restored_and_policy_action_generates_real_reply[no_current] ___
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC7590>
+case = 'no_current'
+
+    @pytest.mark.parametrize("case", ["valid", "none", "unknown", "archived", "no_current"])
+    def test_regress_restored_and_policy_action_generates_real_reply(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile(2)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "��ǰ֪ʶ��", mastery=None)
+        prereq = str(UUID(int=2))
+        if case != "none":
+            graph.add_node(prereq, "����ǰ��", mastery=80)
+            graph.add_edge(prereq, NODE)
+        if case == "archived":
+            p.nodes[1].archived = True
+        if case == "unknown":
+            p.nodes = p.nodes[:1]
+        active = None if case == "no_current" else NODE
+        ctx = api().build_teaching_context(snapshot(changed(teaching_mode="Regress", mode_history=["Socratic", "Regress"]), node=active),
+                                           [], "���һع�", p)
+        result = run_context(ctx, graph)
+>       assert result.reply == "�ܿ�ǰ���������"
+E       AssertionError: assert '������δ���ɻظ���' == '�ܿ�ǰ���������'
+E         
+E         - �ܿ�ǰ���������
+E         + ������δ���ɻظ���
+
+tests\unit\orchestration\test_conversation_context.py:360: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+_ test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment0] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B95550>
+first_mode = 'Socratic'
+assessment = {'mastery_level': 'weak', 'mastery_score': 20}
+
+    @pytest.mark.parametrize("first_mode,assessment", [("Socratic", {"mastery_level": "weak", "mastery_score": 20}),
+        ("Socratic", {"confusion": {"concept_a": "A", "concept_b": "B"}})])
+    def test_explain_or_analogy_invalidates_previous_question_two_turns(controlled, first_mode, assessment):
+        m = api()
+        history = messages()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), history, "���д�", profile())
+        controlled.responses["critic_assess"] = assessment
+        first = run_context(ctx)
+        assert first.teaching_state["stage"] == "presented"
+        assert first.teaching_state["last_question"] is None
+        next_history = history + [dict(id=3, turn_index=1, role="user", content="���д�"),
+                                 dict(id=4, turn_index=1, role="assistant", content=first.reply)]
+        next_ctx = m.build_teaching_context(snapshot(json.loads(json.dumps(first.teaching_state))), next_history, "�ղŵ�����", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 70}
+        second = run_context(next_ctx)
+>       assert "��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��" in prompts(controlled, "critic_assess")[-1]
+E       AssertionError: assert '��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��' in '���⣺�ڵ�0\n�û��ش𣺸ղŵ�����'
+
+tests\unit\orchestration\test_conversation_context.py:388: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_ test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment1] _
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B96A80>
+first_mode = 'Socratic'
+assessment = {'confusion': {'concept_a': 'A', 'concept_b': 'B'}}
+
+    @pytest.mark.parametrize("first_mode,assessment", [("Socratic", {"mastery_level": "weak", "mastery_score": 20}),
+        ("Socratic", {"confusion": {"concept_a": "A", "concept_b": "B"}})])
+    def test_explain_or_analogy_invalidates_previous_question_two_turns(controlled, first_mode, assessment):
+        m = api()
+        history = messages()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), history, "���д�", profile())
+        controlled.responses["critic_assess"] = assessment
+        first = run_context(ctx)
+        assert first.teaching_state["stage"] == "presented"
+        assert first.teaching_state["last_question"] is None
+        next_history = history + [dict(id=3, turn_index=1, role="user", content="���д�"),
+                                 dict(id=4, turn_index=1, role="assistant", content=first.reply)]
+        next_ctx = m.build_teaching_context(snapshot(json.loads(json.dumps(first.teaching_state))), next_history, "�ղŵ�����", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 70}
+        second = run_context(next_ctx)
+>       assert "��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��" in prompts(controlled, "critic_assess")[-1]
+E       AssertionError: assert '��ǰû�ж�Ӧ�������⣬���޿����ֻش�֤��' in '���⣺�ڵ�0\n�û��ش𣺸ղŵ�����'
+
+tests\unit\orchestration\test_conversation_context.py:388: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______________ test_uuid_node_reused_and_unknown_never_scored[0] ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B967B0>
+score = 0
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+        result = run_context(ctx)
+        if type(score) is int and score in (0, 100):
+>           assert len(result.assessment_deltas) == 1
+E           AssertionError: assert 0 == 1
+E            +  where 0 = len([])
+E            +    where [] = NewStackResult(reply='�ܿظ�������', mastery_score=None, turn_count=11, mode_path=['Socratic', 'Feynman'], cost_est_usd=None...question': '�ܿظ�������', 'summary': '', 'summary_until_message_id': None, 'committed_turn_count': 1}, assessment_deltas=[]).assessment_deltas
+
+tests\unit\orchestration\test_conversation_context.py:400: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_____________ test_uuid_node_reused_and_unknown_never_scored[100] _____________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B96D50>
+score = 100
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+        result = run_context(ctx)
+        if type(score) is int and score in (0, 100):
+>           assert len(result.assessment_deltas) == 1
+E           AssertionError: assert 0 == 1
+E            +  where 0 = len([])
+E            +    where [] = NewStackResult(reply='�ܿظ�������', mastery_score=None, turn_count=11, mode_path=['Socratic', 'Feynman'], cost_est_usd=None...question': '�ܿظ�������', 'summary': '', 'summary_until_message_id': None, 'committed_turn_count': 1}, assessment_deltas=[]).assessment_deltas
+
+tests\unit\orchestration\test_conversation_context.py:400: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+____________ test_uuid_node_reused_and_unknown_never_scored[None] _____________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B94F50>
+score = None
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:398: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:67: in run_collab_loop
+    for new_ev in agent.handle(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\curator.py:39: in handle
+    return self._on_mastery_assessed(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\curator.py:58: in _on_mastery_assessed
+    self.graph.update_mastery(topic_id, score, rationale=rationale)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.mastery_graph.MasteryGraph object at 0x0000020FC9B95670>
+topic_id = '�ڵ�0', mastery = None, rationale = ''
+
+    def update_mastery(self, topic_id: str, mastery: float,
+                       rationale: str = "") -> MasteryNode | None:
+        """�������նȣ��� MasteryAssessed ������������ practice_count��"""
+        node = self.nodes.get(topic_id)
+        if node is None:
+            return None
+>       node.mastery = max(0.0, min(100.0, mastery))
+                                ^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<' not supported between instances of 'NoneType' and 'float'
+
+app\harness\mastery_graph.py:88: TypeError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+_____________ test_uuid_node_reused_and_unknown_never_scored[70] ______________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B96960>
+score = '70'
+
+    @pytest.mark.parametrize("score", [0, 100, -1, 101, True, None, "70", float("nan"), float("inf")])
+    def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
+        m = api()
+        ctx = m.build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="����1")), messages(), "�ش�", profile())
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": score, "topic_id": "ģ��α��ڵ�"}
+>       result = run_context(ctx)
+                 ^^^^^^^^^^^^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:398: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\orchestration\test_conversation_context.py:185: in run_context
+    return run_online_agent_session(ctx.session_id, ctx.user_id, ctx.current_message, graph=graph, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\assembly.py:208: in run_online_agent_session
+    return run_new_agent_session(
+app\orchestration\assembly.py:269: in run_new_agent_session
+    run_collab_loop(bus, ws, seeds, orchestrator=orchestrator,
+app\orchestration\collab_loop.py:67: in run_collab_loop
+    for new_ev in agent.handle(event, ws):
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\curator.py:39: in handle
+    return self._on_mastery_assessed(event, ws)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\curator.py:58: in _on_mastery_assessed
+    self.graph.update_mastery(topic_id, score, rationale=rationale)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.harness.mastery_graph.MasteryGraph object at 0x0000020FC9827DD0>
+topic_id = '�ڵ�0', mastery = '70', rationale = ''
+
+    def update_mastery(self, topic_id: str, mastery: float,
+                       rationale: str = "") -> MasteryNode | None:
+        """�������նȣ��� MasteryAssessed ������������ practice_count��"""
+        node = self.nodes.get(topic_id)
+        if node is None:
+            return None
+>       node.mastery = max(0.0, min(100.0, mastery))
+                                ^^^^^^^^^^^^^^^^^^^
+E       TypeError: '<' not supported between instances of 'str' and 'float'
+
+app\harness\mastery_graph.py:88: TypeError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+_________ test_invalid_node_or_pending_question_never_scores[no_node] _________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC4A70>
+case = 'no_node'
+
+    @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
+    def test_invalid_node_or_pending_question_never_scores(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile()
+        if case == "archived":
+            p.nodes[0].archived = True
+        active = None if case == "no_node" else str(UUID(int=8)) if case == "unknown" else NODE
+        data = changed(stage="mystery" if case == "old_stage" else "awaiting_response", last_question=None if case == "no_question" else "����1")
+        ctx = api().build_teaching_context(snapshot(data, node=active), messages(), "��", p)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "�ڵ�", mastery=None)
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        assert result.mastery_score is None and result.assessment_deltas == []
+>       assert list(graph.nodes) == [NODE]
+E       AssertionError: assert ['00000000-00...00000001', ''] == ['00000000-00...000000000001']
+E         
+E         Left contains one more item: ''
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:422: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_________ test_invalid_node_or_pending_question_never_scores[unknown] _________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9BC6F60>
+case = 'unknown'
+
+    @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
+    def test_invalid_node_or_pending_question_never_scores(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile()
+        if case == "archived":
+            p.nodes[0].archived = True
+        active = None if case == "no_node" else str(UUID(int=8)) if case == "unknown" else NODE
+        data = changed(stage="mystery" if case == "old_stage" else "awaiting_response", last_question=None if case == "no_question" else "����1")
+        ctx = api().build_teaching_context(snapshot(data, node=active), messages(), "��", p)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "�ڵ�", mastery=None)
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        assert result.mastery_score is None and result.assessment_deltas == []
+>       assert list(graph.nodes) == [NODE]
+E       AssertionError: assert ['00000000-00...00000001', ''] == ['00000000-00...000000000001']
+E         
+E         Left contains one more item: ''
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:422: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+________ test_invalid_node_or_pending_question_never_scores[archived] _________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC983BE60>
+case = 'archived'
+
+    @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
+    def test_invalid_node_or_pending_question_never_scores(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile()
+        if case == "archived":
+            p.nodes[0].archived = True
+        active = None if case == "no_node" else str(UUID(int=8)) if case == "unknown" else NODE
+        data = changed(stage="mystery" if case == "old_stage" else "awaiting_response", last_question=None if case == "no_question" else "����1")
+        ctx = api().build_teaching_context(snapshot(data, node=active), messages(), "��", p)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "�ڵ�", mastery=None)
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        assert result.mastery_score is None and result.assessment_deltas == []
+>       assert list(graph.nodes) == [NODE]
+E       AssertionError: assert ['00000000-00...00000001', ''] == ['00000000-00...000000000001']
+E         
+E         Left contains one more item: ''
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:422: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+_______ test_invalid_node_or_pending_question_never_scores[no_question] _______
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC8708DD0>
+case = 'no_question'
+
+    @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
+    def test_invalid_node_or_pending_question_never_scores(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile()
+        if case == "archived":
+            p.nodes[0].archived = True
+        active = None if case == "no_node" else str(UUID(int=8)) if case == "unknown" else NODE
+        data = changed(stage="mystery" if case == "old_stage" else "awaiting_response", last_question=None if case == "no_question" else "����1")
+        ctx = api().build_teaching_context(snapshot(data, node=active), messages(), "��", p)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "�ڵ�", mastery=None)
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        assert result.mastery_score is None and result.assessment_deltas == []
+>       assert list(graph.nodes) == [NODE]
+E       AssertionError: assert ['00000000-00...00001', '�ڵ�0'] == ['00000000-00...000000000001']
+E         
+E         Left contains one more item: '�ڵ�0'
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:422: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+________ test_invalid_node_or_pending_question_never_scores[old_stage] ________
+
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x0000020FC9B94410>
+case = 'old_stage'
+
+    @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
+    def test_invalid_node_or_pending_question_never_scores(controlled, case):
+        from app.harness.mastery_graph import MasteryGraph
+        p = profile()
+        if case == "archived":
+            p.nodes[0].archived = True
+        active = None if case == "no_node" else str(UUID(int=8)) if case == "unknown" else NODE
+        data = changed(stage="mystery" if case == "old_stage" else "awaiting_response", last_question=None if case == "no_question" else "����1")
+        ctx = api().build_teaching_context(snapshot(data, node=active), messages(), "��", p)
+        graph = MasteryGraph(1, None)
+        graph.add_node(NODE, "�ڵ�", mastery=None)
+        controlled.responses["critic_assess"] = {"mastery_level": "partial", "mastery_score": 60}
+        result = run_context(ctx, graph)
+        assert result.mastery_score is None and result.assessment_deltas == []
+>       assert list(graph.nodes) == [NODE]
+E       AssertionError: assert ['00000000-00...00001', '�ڵ�0'] == ['00000000-00...000000000001']
+E         
+E         Left contains one more item: '�ڵ�0'
+E         Use -v to get more diff
+
+tests\unit\orchestration\test_conversation_context.py:422: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_second_turn_real_prompt_contains_previous_exchange
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[False-11999]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[False-12000]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[False-12001]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[True-11999]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[True-12000]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_final_human_message_history_budget_all_agents[True-12001]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_regress_restored_and_policy_action_generates_real_reply[valid]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_regress_restored_and_policy_action_generates_real_reply[none]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_regress_restored_and_policy_action_generates_real_reply[unknown]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_regress_restored_and_policy_action_generates_real_reply[archived]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_regress_restored_and_policy_action_generates_real_reply[no_current]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_explain_or_analogy_invalidates_previous_question_two_turns[Socratic-assessment1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[100]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[None]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_uuid_node_reused_and_unknown_never_scored[70]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_invalid_node_or_pending_question_never_scores[no_node]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_invalid_node_or_pending_question_never_scores[unknown]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_invalid_node_or_pending_question_never_scores[archived]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_invalid_node_or_pending_question_never_scores[no_question]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_invalid_node_or_pending_question_never_scores[old_stage]
+23 failed, 28 passed in 2.69s

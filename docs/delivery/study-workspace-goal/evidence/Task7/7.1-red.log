@@ -1,0 +1,376 @@
+FFFFFFFFFFFFFFFFF                                                        [100%]
+================================== FAILURES ===================================
+______________ test_schema1_empty_and_nondefault_json_roundtrip _______________
+
+    def test_schema1_empty_and_nondefault_json_roundtrip():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_____________________ test_legacy_history_reconstruction ______________________
+
+    def test_legacy_history_reconstruction():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data0] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data1] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': True, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data2] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data3] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': [], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data4] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data5] _________________
+
+data = {'active_node_id': 'bad', 'committed_turn_count': 0, 'last_question': None, 'mode_history': ['Socratic'], ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data6] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'extra': nan, 'last_question': None, ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_________________ test_unknown_or_invalid_schema_fails[data7] _________________
+
+data = {'active_node_id': '00000000-0000-0000-0000-000000000001', 'committed_turn_count': 0, 'extra': <object object at 0x00000191F0E5AD50>, 'last_question': None, ...}
+
+    @pytest.mark.parametrize("data", [changed(schema_version=2), changed(committed_turn_count=True),
+        changed(teaching_mode="bad"), changed(mode_history=[]), changed(summary=4), changed(active_node_id="bad"),
+        changed(extra=float("nan")), changed(extra=object())])
+    def test_unknown_or_invalid_schema_fails(data):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_____________ test_schema1_extensions_roundtrip_without_execution _____________
+
+    def test_schema1_extensions_roundtrip_without_execution():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+_____________________ test_current_message_4000_boundary ______________________
+
+    def test_current_message_4000_boundary():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+___________________ test_history_12_and_12000_budget[11999] ___________________
+
+size = 11999
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    def test_history_12_and_12000_budget(size):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+___________________ test_history_12_and_12000_budget[12000] ___________________
+
+size = 12000
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    def test_history_12_and_12000_budget(size):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+___________________ test_history_12_and_12000_budget[12001] ___________________
+
+size = 12001
+
+    @pytest.mark.parametrize("size", [11999, 12000, 12001])
+    def test_history_12_and_12000_budget(size):
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+______________________ test_summary_boundary_and_failure ______________________
+
+    def test_summary_boundary_and_failure():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+__________________ test_profile_20_nodes_and_200_description __________________
+
+    def test_profile_20_nodes_and_200_description():
+>       m = api()
+            ^^^^^
+
+tests\unit\orchestration\test_conversation_context.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def api():
+>       assert importlib.util.find_spec("app.harness.teaching_context") is not None, "ȱ�ٽ�ѧ������ҵ����Լ"
+E       AssertionError: ȱ�ٽ�ѧ������ҵ����Լ
+E       assert None is not None
+E        +  where None = <function find_spec at 0x00000191F10D89A0>('app.harness.teaching_context')
+E        +    where <function find_spec at 0x00000191F10D89A0> = <module 'importlib.util' (frozen)>.find_spec
+E        +      where <module 'importlib.util' (frozen)> = importlib.util
+
+tests\unit\orchestration\test_conversation_context.py:14: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/orchestration/test_conversation_context.py::test_schema1_empty_and_nondefault_json_roundtrip
+FAILED tests/unit/orchestration/test_conversation_context.py::test_legacy_history_reconstruction
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data0]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data1]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data2]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data3]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data4]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data5]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data6]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_unknown_or_invalid_schema_fails[data7]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_schema1_extensions_roundtrip_without_execution
+FAILED tests/unit/orchestration/test_conversation_context.py::test_current_message_4000_boundary
+FAILED tests/unit/orchestration/test_conversation_context.py::test_history_12_and_12000_budget[11999]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_history_12_and_12000_budget[12000]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_history_12_and_12000_budget[12001]
+FAILED tests/unit/orchestration/test_conversation_context.py::test_summary_boundary_and_failure
+FAILED tests/unit/orchestration/test_conversation_context.py::test_profile_20_nodes_and_200_description
+17 failed in 1.27s

@@ -4,6 +4,7 @@ from app.harness.enums import EventType, EventSource, ActionKind
 from app.harness.workspace_state import WorkspaceState
 from app.infrastructure.llm import LLMService
 from app.specs.loader import SpecLoader
+from app.harness.teaching_context import render_teaching_context
 
 
 class ConductorAgent(AgentBase):
@@ -30,9 +31,11 @@ class ConductorAgent(AgentBase):
         if event.type != EventType.CONDUCTOR_REQUESTED:
             return []
         observations = event.payload.get("observations", [])
+        prompt = (render_teaching_context(ws.teaching_context, "conductor", observations=observations, current_mode=ws.current_mode)
+                  if ws.teaching_context is not None else f"观察集：{observations}\n当前模式：{ws.current_mode}")
         result = self._llm.invoke_json(
             self._spec.compose("conductor", "conductor_decide"),
-            f"观察集：{observations}\n当前模式：{ws.current_mode}",
+            prompt,
             session_id=ws.session_id, node="conductor",
             intent="conductor_decide",
         )

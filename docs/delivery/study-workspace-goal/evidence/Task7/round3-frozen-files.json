@@ -1,0 +1,37 @@
+[
+  {
+    "path": "app/harness/teaching_context.py",
+    "sha256": "a8eb66c30bb2aa7f800c63a4e2daceb8847fa2f35bca75415ece8006939eeaa6",
+    "before_sha256": "157e8a23049b98f5d18359ebe7f1ec6f1c8d113c5375459d99710621cb4a289e"
+  },
+  {
+    "path": "app/orchestration/assembly.py",
+    "sha256": "ed273e1a7046c1b376b5ea860580f0f2b0045247d459b2f617af72aa78f9701f",
+    "before_sha256": "48f895e301d061c7a63f6d404dc08466936fef849a49f579d97e63e5a9020dd9"
+  },
+  {
+    "path": "app/agents/tutor.py",
+    "sha256": "619094d798d0b3f111dc2801be05db7ca3a9fb3b1884ba01e5759a6ab4ae70dd",
+    "before_sha256": "d523f6aff61afeefa3fb177abbc739b0ed7a0acac50bf4e6af915775f07346ff"
+  },
+  {
+    "path": "app/agents/critic.py",
+    "sha256": "39bf0f6a41b69b8c63526ce35d733ded860a06c11336c403d8f59218c887ba7e",
+    "before_sha256": "ab5e8927712e1781d1dc10f5734a9cf67158790b8679803a18975b2351257da9"
+  },
+  {
+    "path": "app/agents/conductor.py",
+    "sha256": "08476ec0dc9efe791fc5915748aa1f5dfcacd1125057340a4cb4b08c3e3fcd86",
+    "before_sha256": "fc5711df05ea3e841fb2d0133b5aee3810f8a66c0f5542b6eca41a3ca44976f2"
+  },
+  {
+    "path": "tests/unit/orchestration/test_conversation_context.py",
+    "sha256": "34d7009b2c9e49e699edfe2d9522f486780bb78a89ece474a47c9e28514396d6",
+    "before_sha256": "4e7f87bd1074f197c9262fd670410c294118d1526d54e328103dc783b1ebe2e2"
+  },
+  {
+    "path": "tests/unit/api/test_workspace_sessions_api.py",
+    "sha256": "66f3b2c8c9a92d623ce09962554534bea596df624b24912c36cf4eefe17a0a3b",
+    "before_sha256": "678ef039605c5c7dcbd0a4001000ca702bc49c2862d93a68bcbe5be890dbc59a"
+  }
+]

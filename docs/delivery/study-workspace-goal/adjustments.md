@@ -94,3 +94,19 @@ Ruling: 依round2已审计划补数据库实际等待/真实事务及独立物�
 ## ADJ-009：Task6无参消息读取顺序兼容（A类）
 
 独立审查P2：新Service无参分支重排合法历史消息，违反已批准的旧行为保留。Ruling: 无cursor/limit时恢复MessageStore现有id ASC，显式分页和snapshot继续turn_index/role_order/id；不改变API结构、用户需求、任务顺序或验收门槛。若判断错误，代价为重新界定旧客户端显示顺序，但原历史数据不会改写。依round2三层计划独立PASS后先非单调历史HTTP红灯，再最小修复、API回归与范围复审，未通过前Task6不完成。
+
+## ADJ-010：Task7上下文规划边界（A类）
+
+Ruling: stage作为局部业务待答状态使用init/awaiting_response/presented，保留旧非空值但未知状态不给评分资格；不改流水线Stage枚举。合法JSON扩展往返保留但不渲染/执行，已知字段仍严格验证。真实摘要helper本任务受控验证，Task8加载完整连续历史、结束短事务后显式注入真实LLM，并在原子提交保存摘要边界。若判断错误，代价为调整待答恢复/扩展兼容策略，但不丢已存JSON或历史。独立计划初审三阻断已在v1.1修订并复审PASS；不降验收、不提前Task8。
+
+## ADJ-011：Task7模式策略动作与实测观察优先（A类）
+
+Ruling: 原三层计划要求Regress后续真实动作，但当前Orchestrator丢弃Policy action，且historical能覆盖observed。最小增加该文件允许范围；仅有context普通mastery采用策略动作，保留高优先DSL与检索门禁/旧离线路由；observed依据合并顺序无关。若判断错误，代价为调整模式路由选择，不改持久化数据或公开接口。已有真实3fail，round2独立计划PASS后才改受限文件，不降测试/不提前Task8。
+
+## ADJ-012：Task7完整审查五项兼容/数据保护修复（A类）
+
+Ruling: 兼容Task6其他角色为普通历史数据；有效选点与推理图不一致明确模型前失败，不清选择；最终预算校验用可信分段，摘要共享容量且接受后完整渲染；legacy非法字段先类型检验再兼容默认。若判断错误，代价为进一步调整兼容/预算策略，不改已有记录、公开API或后续任务范围。五项有具体审查复现，round3独立计划PASS后执行code fix1/5，SC-001仍仅完成Task7。
+
+## ADJ-013：Task7多角色历史的真实问答保护（A类）
+
+Ruling: 最近user/assistant按角色真实定位，优先纳入≤12并由容量/renderer共同保护；摘要仅覆盖旧截止之后首个保留项前的真实连续省略前缀，不把间隙散片推入截止。若判断错误，代价为调整上下文取舍，不丢数据库原文或修改评分权限。原5项已关闭，新P1有复现，round4独立计划PASS后执行code fix2/5；SC-001仅Task7不变。
