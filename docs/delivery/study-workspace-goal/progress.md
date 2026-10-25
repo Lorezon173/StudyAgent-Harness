@@ -150,3 +150,5 @@ Task7 round3原5发现复审ADDRESSED，新P1：其他角色占history[-2:]保�
 Task7 round4/code fix2/5 plan PASS，SHAe043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e，已交原实现者只修最新真实问答选择/共享容量/连续省略前缀，原5关闭项保留。审查明确首个保留项指旧摘要截止之后首项。SC-001仅Task7。
 
 Task7 round4范围复审PASS，原5与新P1全部ADDRESSED，无新阻断；388pass/1真实judge排除/旧warning。20文件最终SHA核对、SC-001范围审计和README已补，待明确文件本地提交，禁止Task8。
+
+Task 7: complete (commits3224379..c07bb0a, round1–4 plan PASS, original5/newP1 ADDRESSED, review clean). 388passed/1既有真实judge排除/1旧warning，README/证据本地已提交。SC-001要求到Task7即止，Task8及后续不执行；待原生Goal关闭与续跑提醒删除。

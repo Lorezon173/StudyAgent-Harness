@@ -16,6 +16,8 @@
 | 必要验证 | round4-regression-final：388passed/1deselected/1warning，session70586 exit0；130交接、9新增 | PASS（受影响组合） |
 | 独立审查阻断关闭 | 原五项round3 ADDRESSED；新P1 round4 ADDRESSED/Approved | PASS |
 | 文件与范围保全 | 最终20文件SHA核对；批准终稿/raw/两主计划/规程五哈希未改 | PASS |
-| README/明确本地提交 | 已补Task7与SC-001限制，实际提交后补SHA | VERIFIED_UNCOMMITTED |
+| README/明确本地提交 | 已补Task7与SC-001限制，代码/测试/证据提交c07bb0a | PASS |
 
 限制：真实RAGAS/OpenAI judge按既有integration配置排除，未执行；旧Starlette警告保留。初始7.1缺模块失败不冒充17业务红灯；7.3中断/独立重跑失误原样留证。未声称项目全套绿、真实模型效果、PG重启、生产HTTP/SSE已接线、React终稿或完整多会话产品交付。后续任务移出本轮，不替换成假验收。
+
+实际本地提交：c07bb0a13717d76acda1626b0cde9ebc4ca3bdc1。README用户原有142行和asset-inventory原有34行仍未暂存，app/tests无未提交差异。Task7完成标准已满足；仅结束SC-001范围，不代表原20项全部完成。

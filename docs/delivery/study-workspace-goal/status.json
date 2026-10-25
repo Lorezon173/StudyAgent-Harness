@@ -145,8 +145,8 @@
     },
     {
       "id": "Task7",
-      "status": "VERIFIED_UNCOMMITTED",
-      "commit": null,
+      "status": "DONE",
+      "commit": "c07bb0a13717d76acda1626b0cde9ebc4ca3bdc1",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task7/"
       ],
@@ -293,18 +293,20 @@
     "round": "round4",
     "plan": "docs/superpowers/plans/2026-10-25-task7-round4.md",
     "plan_review": "PASS",
-    "status": "VERIFIED_UNCOMMITTED",
+    "status": "DONE",
     "implementer": "task7_context_impl",
     "code_fix_round": 2,
     "plan_sha256": "e043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e"
   },
-  "next_step": "Task7审计/README已补，选择性本地提交并核SHA后结束SC-001 Goal",
+  "next_step": "SC-001 Task7已完成；结束原生Goal并删除续跑提醒，禁止进入Task8",
   "scope_change": {
     "id": "SC-001",
     "status": "APPROVED",
     "reference": "用户明确：当前任务目标修改为，完成task7即可",
     "document": "docs/delivery/study-workspace-goal/scope-change-001-task7-only.md",
     "stop_after": "Task7",
-    "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续"
-  }
+    "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续",
+    "completion_status": "VERIFIED"
+  },
+  "current_scope_complete": true
 }
