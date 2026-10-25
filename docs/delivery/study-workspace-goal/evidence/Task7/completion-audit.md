@@ -21,3 +21,5 @@
 限制：真实RAGAS/OpenAI judge按既有integration配置排除，未执行；旧Starlette警告保留。初始7.1缺模块失败不冒充17业务红灯；7.3中断/独立重跑失误原样留证。未声称项目全套绿、真实模型效果、PG重启、生产HTTP/SSE已接线、React终稿或完整多会话产品交付。后续任务移出本轮，不替换成假验收。
 
 实际本地提交：c07bb0a13717d76acda1626b0cde9ebc4ca3bdc1。README用户原有142行和asset-inventory原有34行仍未暂存，app/tests无未提交差异。Task7完成标准已满足；仅结束SC-001范围，不代表原20项全部完成。
+
+关闭结果：原生Goal已返回complete；automation goal已确认deleted。仅SC-001当前范围完成，Task8及后续保持待办。Goal累计计量tokensUsed=2624761、timeUsedSeconds=9521（整个历史Goal的累计计量，不等同Task7单独耗时）。

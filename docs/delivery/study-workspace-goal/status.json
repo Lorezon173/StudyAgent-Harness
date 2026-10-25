@@ -23,7 +23,7 @@
   },
   "native_goal_started": true,
   "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
-  "native_goal_status": "active",
+  "native_goal_status": "complete",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
   "current_task": "Task7",
@@ -286,7 +286,7 @@
   "current_blocker": null,
   "consecutive_blocked_goal_turns": 0,
   "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core",
-  "execution_mode": "native_goal_active",
+  "execution_mode": "native_goal_complete_sc001",
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
     "task": "Task7",
@@ -298,7 +298,7 @@
     "code_fix_round": 2,
     "plan_sha256": "e043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e"
   },
-  "next_step": "SC-001 Task7已完成；结束原生Goal并删除续跑提醒，禁止进入Task8",
+  "next_step": "无自动下一项；Task7完成、Goal已结束、续跑提醒已删除。Task8及后续待用户另行要求",
   "scope_change": {
     "id": "SC-001",
     "status": "APPROVED",
@@ -306,7 +306,13 @@
     "document": "docs/delivery/study-workspace-goal/scope-change-001-task7-only.md",
     "stop_after": "Task7",
     "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续",
-    "completion_status": "VERIFIED"
+    "completion_status": "COMPLETE"
   },
-  "current_scope_complete": true
+  "current_scope_complete": true,
+  "automation_status": "deleted",
+  "native_goal_accounting": {
+    "tokens_used": 2624761,
+    "time_used_seconds": 9521,
+    "scope": "历史原目标按用户SC-001改为完成Task7即止"
+  }
 }
