@@ -176,3 +176,5 @@ Task8 round2实现冻结，仅7允许文件变化。主会话实核RED4fail/1pas
 Task8 round2范围复审I1 ADDRESSED，但新P2 R2-N1：共用helper在父HTTP任务内直接初次Request.is_disconnected会吞外部取消并进入业务。真实Request无DB有界复现确认，round3/code fix2先写计划，尚未修源；已保存round2完整26文件基线供下一轮限定diff。
 
 Task8 round3独立范围复审Approved，I1/R2-N1均ADDRESSED，无新阻断。主会话核26文件冻结SHA和五项终稿manifest均一致，最终helper6/主要100/旧路由12/PG20通过，准备README选择性暂存与明确文件本地提交；此处尚未标任务DONE。
+
+Task8 complete：本地提交c23763d4fa0f2dfb951c4c65ef3670af4ac41d4e，三轮计划独立PASS，I1/R2-N1均ADDRESSED，最终Approved；最终主要100/旧路由12/PG20及helper6通过。README仅本任务10行已入提交，原142行保留未提交。转Task9 v1.3范围复审，尚未前端编码。
