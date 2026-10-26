@@ -26,7 +26,7 @@ def _make_client_for_chat(monkeypatch, db_session):
     async def _fake_session():
         yield db_session
 
-    monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+    monkeypatch.setattr(chat_mod, "unused_test_factory", _fake_session, raising=False)
     return TestClient(app)
 
 
@@ -56,7 +56,7 @@ def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
             async with session_factory() as session:
                 client = _make_client_for_chat(monkeypatch, session)
                 try:
-                    with patch("app.api.chat.MasteryGraph") as mock_mg:
+                    with patch("app.orchestration.conversation_service.MasteryGraph") as mock_mg:
                         resp = client.post("/api/chat", json={
                             "message": "hello",
                             "session_id": "s-anon",
@@ -139,7 +139,7 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
     sync_engine.dispose()
     aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
     test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
-    monkeypatch.setattr(cs, "async_session", test_sessionmaker)
+    monkeypatch.setattr(cs, "unused_test_factory", test_sessionmaker, raising=False)
 
     from app.orchestration.assembly import NewStackResult
 
@@ -151,7 +151,7 @@ def test_anonymous_stream_no_mastery_graph(monkeypatch):
 
     try:
         client = TestClient(app)
-        with patch("app.api.chat_stream.MasteryGraph") as mock_mg:
+        with patch("app.orchestration.conversation_service.MasteryGraph") as mock_mg:
             resp = client.post("/api/chat/stream",
                                json={"message": "hi", "session_id": "st-anon",
                                      "user_id": None})

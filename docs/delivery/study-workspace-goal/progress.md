@@ -154,3 +154,25 @@ Task7 round4范围复审PASS，原5与新P1全部ADDRESSED，无新阻断；388p
 Task 7: complete (commits3224379..c07bb0a, round1–4 plan PASS, original5/newP1 ADDRESSED, review clean). 388passed/1既有真实judge排除/1旧warning，README/证据本地已提交。SC-001要求到Task7即止，Task8及后续不执行；待原生Goal关闭与续跑提醒删除。
 
 SC-001最终关闭：Task7产品提交c07bb0a，审计检查点d98ddaf。原生Goal工具已返回complete，续跑automation goal已返回deleteStatus=deleted。原工具objective保留历史20项文本，当前完成依据为用户SC-001明确修改；未宣称其余任务完成。不再自动开始Task8。
+
+SC-002用户明确继续Task8：恢复核查HEAD75be601、Task7产品c07bb0a，app/tests无未提交差异，README142行/asset34行仍保护。get_goal=null，不另建原生Goal/自动化；仅Task8三层计划准备（task8_plan_draft），不自动Task9。
+
+Task8 round1三层计划冻结SHA079bd5182e32b8c513624efe7d4f02f892aec007617453ed15977ab7eb1a8846，task8_plan_review独立审查中。PG连通预检已实证但业务未验收；产品未改。
+
+Task8独立plan reviewer首次usage_limit失败未给结论；官方当前用量查询ordinaryAllowed true(2%/0%/无rateLimitReachedType)，仅重试同代理一次，未动reset/购买/产品。两结果不一致原因未知，若再次失败停止本轮重试。
+
+Task8 plan初审NEEDS REVISION：架构反向依赖、首次新sid竞争、旧persist覆盖workspace三阻断；统一状态reply/PG措辞，补断连commit线性点与业务/内部计数语义。仅计划v1.1修订，未编码。审查因工具读取超时改以主会话已成功读取原文供审，限制如实留证。
+
+SC-003：用户扩大范围至Task9。Task8 v1.3缩减元数据闭环已获复审核实；新增切点旧题误评分阻断，已补v1.4计划，尚未产品编码。
+
+Task9 round1 v1.2计划独立PASS，SHA2f469ecfb0e584b89d710eb5d745d1cdbf06311f7c8529d26a63dcc5ab09e267，待Task8完成后按顺序实施。Task8 phase2-green实际42passed，但完整受影响回归/PG与独立代码审查尚未完成。
+
+Task8 round1实现全源冻结，独立task8_code_review已派发。主会话核25文件实际SHA与完整diff一致；268定向通过/18真实PG通过/9补充通过，真实专用容器重启第二轮PASS；全量1325通过/1已知基准失败，未宣称全绿。Task9 v1.2计划PASS，仍待Task8完成后执行。
+
+Task8 round1代码审查Needs fixes：唯一P2显式retry未透传断连，真实ASGI复现生成阶段断开后仍completed/消息2→4。其余核心与旧断言迁移/PG证据核对通过。round2/code fix1已开始只写计划；冻结产品未改，PASS后再修复。
+
+Task8 round2实现冻结，仅7允许文件变化。主会话实核RED4fail/1pass、observer有界RED3fail；最终97主要/12旧路由/20真实PG通过；原挂起测试确证CancelScope吞取消后仅原session一次授权中断，保留原日志，不混为通过。task8_code_review已启动I1范围复审。Task9待Task8完成后执行。
+
+Task8 round2范围复审I1 ADDRESSED，但新P2 R2-N1：共用helper在父HTTP任务内直接初次Request.is_disconnected会吞外部取消并进入业务。真实Request无DB有界复现确认，round3/code fix2先写计划，尚未修源；已保存round2完整26文件基线供下一轮限定diff。
+
+Task8 round3独立范围复审Approved，I1/R2-N1均ADDRESSED，无新阻断。主会话核26文件冻结SHA和五项终稿manifest均一致，最终helper6/主要100/旧路由12/PG20通过，准备README选择性暂存与明确文件本地提交；此处尚未标任务DONE。

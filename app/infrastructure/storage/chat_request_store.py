@@ -27,7 +27,8 @@ def serializable(value):
 
 
 def utc_now(now=None):
-    value = now or datetime.now(timezone.utc)
+    value = now() if callable(now) else now
+    value = value or datetime.now(timezone.utc)
     return value.astimezone(timezone.utc).replace(tzinfo=None) if value.tzinfo else value
 
 
@@ -177,3 +178,18 @@ class ChatRequestStore:
         await self._occupy(session, request_id)
         await self.db.flush()
         return self._claim(row, True)
+
+
+    async def validate_running(self, user_id, session_id, request_id, attempt, *, now=None):
+        """公开最终栅栏校验；调用方持有短事务并负责提交。"""
+        return await self._running(user_id, session_id, request_id, attempt, now)
+
+    async def recover_expired(self, user_id, session_id, request_id, *, now=None):
+        await self._session(user_id, session_id)
+        row = await self.get(user_id, session_id, request_id)
+        if row is None:
+            return None
+        if row.status == "running" and row.lease_until is not None and row.lease_until <= utc_now(now):
+            return await self.interrupt(user_id, session_id, request_id, row.attempt,
+                expired_only=True, error_code="lease_expired", now=now)
+        return self._claim(row)

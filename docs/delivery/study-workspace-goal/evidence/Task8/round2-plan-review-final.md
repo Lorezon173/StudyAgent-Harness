@@ -1,0 +1,3 @@
+# Task8 round2 v1.1计划独立复审
+
+审查者task8_plan_review，结论PASS，冻结SHA256 74d5dadc6fba3906412a98be86799e9254cf58160f5a99c92b6ecb755fa463c5。共享API观察、retry事件透传及PreparedTurn建立后管理commit到run_claim取消边界明确；独立新连接仅核本user/session/request/attempt，未知commit不假定回滚，completed/新attempt不覆盖。真实ASGI断连、task取消窗口及PG提交胜负独立测试。主会话已核指纹，产品修复尚未执行。

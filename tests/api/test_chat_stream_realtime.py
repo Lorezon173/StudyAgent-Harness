@@ -1,60 +1,23 @@
 import json
-import os
-import tempfile
+from tests.api.test_conversation_transactions import dbkit,api_client,headers,candidate_runner
+from app.harness.events import Event
+from app.harness.enums import EventType,EventSource
 
 
-def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
-    from fastapi.testclient import TestClient
-    from sqlalchemy import create_engine
-    from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-    from app.main import app
-    from app.core.database import Base
-    import app.models.tables as _tables  # noqa: F401 — 注册表模型到 Base.metadata（别名避免遮蔽 app）
-    import app.api.chat_stream as cs
-    from app.orchestration.assembly import NewStackResult
-    from app.harness.events import Event
-    from app.harness.enums import EventType, EventSource
-
-    # 隔离 DB：用临时 sqlite 文件，避免污染开发库 + 保证可重复运行（幂等）。
-    # 表用同步 engine 建好（不触异步事件循环），请求侧再用 async engine 读同一文件。
-    tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
-    tmp.close()
-    sync_engine = create_engine(f"sqlite:///{tmp.name}")
-    Base.metadata.create_all(sync_engine)
-    sync_engine.dispose()
-    aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
-    test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
-    monkeypatch.setattr(cs, "async_session", test_sessionmaker)
-
-    def fake_run(session_id, user_id, message, current_topic=None, graph=None, on_event=None):
-        # 模拟协作环逐事件回调
-        if on_event:
-            on_event(Event(type=EventType.TUTOR_ASKED, source=EventSource.TUTOR,
-                           session_id=session_id, payload={"content": "Q?"}))
-            on_event(Event(type=EventType.MASTERY_ASSESSED, source=EventSource.CRITIC,
-                           session_id=session_id, payload={"score": 80, "level": "good"}))
-        return NewStackResult(reply="最终回答", mastery_score=80, turn_count=11,
-                              mode_path=["socratic"], cost_est_usd=None, events=[])
-
-    monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
-
-    try:
-        client = TestClient(app)
-        with client.stream("POST", "/api/chat/stream",
-                           json={"message": "hi", "session_id": "st1", "user_id": 1},
-                           headers=auth_headers()) as r:
-            body = "".join(chunk for chunk in r.iter_text())
-    finally:
-        try:
-            os.unlink(tmp.name)
-        except OSError:
-            pass
-
-    # 逐事件：至少一个 agent_event + 一个 final
-    assert "agent_event" in body
-    assert "TutorAsked" in body
-    final_lines = [l for l in body.splitlines() if l.startswith("data:") and "final" in l]
-    assert final_lines, "应有 final 事件"
-    payload = json.loads(final_lines[-1][len("data:"):].strip())
-    assert payload["reply"] == "最终回答"
-    assert payload["turn_count"] == 1   # 教学回合，非 11
+def test_chat_stream_emits_incremental_agent_events(dbkit,monkeypatch):
+    async def check(factory,engine):
+        from app.main import app
+        def runner(sid,uid,message,*,graph,on_event,context):
+            on_event(Event(type=EventType.TUTOR_ASKED,source=EventSource.TUTOR,session_id=sid,payload={'content':'Q?'}))
+            result=candidate_runner()(sid,uid,message,graph=graph,on_event=on_event,context=context)
+            result.reply='最终回答'
+            result.turn_count=11
+            return result
+        async with await api_client(factory,monkeypatch) as client:
+            app.state.conversation_service.runner=runner
+            response=await client.post('/api/chat/stream',headers=headers(),json={'message':'hi','session_id':'st1'})
+            assert 'agent_event' in response.text and 'TutorAsked' in response.text
+            events=[json.loads(line[6:]) for line in response.text.splitlines() if line.startswith('data: ')]
+            final=next(e for e in events if e['type']=='final')
+            assert final['reply']=='最终回答' and final['turn_count']==1 and final['persisted'] is True
+    dbkit(check)

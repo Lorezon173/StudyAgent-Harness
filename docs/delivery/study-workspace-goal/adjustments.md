@@ -110,3 +110,15 @@ Ruling: 兼容Task6其他角色为普通历史数据；有效选点与推理图�
 ## ADJ-013：Task7多角色历史的真实问答保护（A类）
 
 Ruling: 最近user/assistant按角色真实定位，优先纳入≤12并由容量/renderer共同保护；摘要仅覆盖旧截止之后首个保留项前的真实连续省略前缀，不把间隙散片推入截止。若判断错误，代价为调整上下文取舍，不丢数据库原文或修改评分权限。原5项已关闭，新P1有复现，round4独立计划PASS后执行code fix2/5；SC-001仅Task7不变。
+
+## ADJ-014：Task8计划范围裁决
+
+Task8 round1 v1.4独立审查PASS。核心下沉turn_commit/infra DirtyFlag防反向依赖；未知session/profile竞争分别有界重试；旧persist拒绝workspace写；明确断连与commit锁序、TurnOutcome元数据保存重放，以及切点清旧待答/legacy首次不评分。Task1未要求摘要前零模型调用，不扩成强制门槛。范围按SC-003延至Task9。
+
+## ADJ-015：Task8唯一P2断连修复与预算边界
+
+round1独立实现审查确认retry漏接HTTP断连，实际生成阶段断开后仍保存；round2 v1.1独立计划PASS后修复，共享观察helper并覆盖管理commit至run_claim取消窗口，不改变提交先胜语义。审查已核300秒为教学预算/提交准入，未另承诺DB锁等待绝对响应SLA；README明示该边界，不擅自新增全局数据库timeout。
+
+## ADJ-016：首次断连探测隔离取消域
+
+round2原I1已关闭，但独立范围复审新P2确认父任务直接首次探测可吞外部取消而进入业务。round3独立计划PASS后，仅helper/测试引入一次性probe和父shield等待，从创建起统一清理，不改业务状态机或Task取消计数；以捕获真实父Task的有界RED验证，保原ASGI/PG对照。

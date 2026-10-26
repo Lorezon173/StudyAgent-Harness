@@ -1,0 +1,456 @@
+..............FF..F.FFFF                                                 [100%]
+================================== FAILURES ===================================
+_______________ test_real_http_lifespan_atomic_state_and_replay _______________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF082520>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFF2D7E30>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFF3649E0>
+
+    def test_real_http_lifespan_atomic_state_and_replay(dbkit, monkeypatch, controlled):
+        async def check(factory, engine):
+            pid, aid, _ = await seed(factory)
+            async with await api_client(factory, monkeypatch) as client:
+                response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r1','message':'ԭ��  \n����','user_id':2})
+                assert response.status_code == 200, response.text
+                saved = response.json()
+                assert saved['persisted'] is True
+                assert saved['status'] == 'completed'
+                assert saved['turn_count'] == 2
+                assert saved['state_version'] == 1
+                assert saved['profile_revision'] == 0
+                assert saved['context_reduced'] is False
+                assert saved['reduction_reasons'] == []
+                calls = len(controlled.calls)
+                replay = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r1','message':'ԭ��  \n����'})
+                assert replay.json() == saved
+                assert len(controlled.calls) == calls
+                conflict = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r1','message':'����'})
+                assert conflict.status_code == 409
+                messages = await client.get('/api/sessions/s/messages', headers=headers())
+                assert [m['content'] for m in messages.json()][-2:] == ['ԭ��  \n����', saved['reply']]
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFF34A910>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFF34A910>
+
+    async def check(factory, engine):
+        pid, aid, _ = await seed(factory)
+        async with await api_client(factory, monkeypatch) as client:
+            response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r1','message':'ԭ��  \n����','user_id':2})
+            assert response.status_code == 200, response.text
+            saved = response.json()
+>           assert saved['persisted'] is True
+E           assert False is True
+
+tests\api\test_conversation_transactions.py:183: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+________ test_real_http_uses_previous_question_in_actual_agent_prompt _________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF95D940>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFF789460>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFF788F20>
+
+    def test_real_http_uses_previous_question_in_actual_agent_prompt(dbkit, monkeypatch, controlled):
+        async def check(factory, engine):
+            await seed(factory)
+            async with await api_client(factory, monkeypatch) as client:
+                result = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r','message':'���ڻش�'})
+                assert result.status_code == 200
+                assert any('A question' in messages[1].content and 'old answer' in messages[1].content for messages in controlled.calls)
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFABFA50>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFABFA50>
+
+    async def check(factory, engine):
+        await seed(factory)
+        async with await api_client(factory, monkeypatch) as client:
+            result = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r','message':'���ڻش�'})
+            assert result.status_code == 200
+>           assert any('A question' in messages[1].content and 'old answer' in messages[1].content for messages in controlled.calls)
+E           assert False
+E            +  where False = any(<generator object test_real_http_uses_previous_question_in_actual_agent_prompt.<locals>.check.<locals>.<genexpr> at 0x000001CCFFE46CF0>)
+
+tests\api\test_conversation_transactions.py:207: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+___ test_model_never_runs_for_inaccessible_or_unbound_session[1-False-409] ____
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF95EAC0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFF98EFC0>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFF98C560>
+owner = 1, bound = False, code = 409
+
+    @pytest.mark.parametrize('owner,bound,code', [(None,False,403),(2,False,403),(1,False,409)])
+    def test_model_never_runs_for_inaccessible_or_unbound_session(dbkit, monkeypatch, controlled, owner, bound, code):
+        async def check(factory, engine):
+            await seed(factory, state={}, owner=owner, bound=bound)
+            async with await api_client(factory, monkeypatch) as client:
+                result = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r','message':'hi'})
+                assert result.status_code == code
+                assert controlled.calls == []
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFBB0710>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFBB0710>
+
+    async def check(factory, engine):
+        await seed(factory, state={}, owner=owner, bound=bound)
+        async with await api_client(factory, monkeypatch) as client:
+            result = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'r','message':'hi'})
+>           assert result.status_code == code
+E           assert 200 == 409
+E            +  where 200 = <Response [200 OK]>.status_code
+
+tests\api\test_conversation_transactions.py:216: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[INFO] {"event": "persist_success", "context": {"session_id": "s"}}
+______ test_new_client_id_gets_owned_default_container_without_old_graph ______
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF987B00>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFF98C3E0>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFF98D040>
+
+    def test_new_client_id_gets_owned_default_container_without_old_graph(dbkit, monkeypatch, controlled):
+        async def check(factory, engine):
+            async with await api_client(factory, monkeypatch) as client:
+                result = await client.post('/api/chat', headers=headers(), json={'session_id':'my-new-id','request_id':'r','message':'hi','user_id':2})
+                assert result.json()['persisted'] is True
+                assert result.json()['mastery_score'] is None
+            async with factory() as db:
+                row = await db.get(SessionTable, 'my-new-id')
+                assert row.user_id == 1 and row.profile_id is not None
+                profile = await db.get(TopicProfileTable, row.profile_id)
+                assert profile.kind == 'legacy'
+                assert await db.scalar(select(func.count()).select_from(ProfileNodeTable)) == 0
+                assert json.loads(row.state_json)['committed_turn_count'] == 1
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFB90390>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFB90390>
+
+    async def check(factory, engine):
+        async with await api_client(factory, monkeypatch) as client:
+            result = await client.post('/api/chat', headers=headers(), json={'session_id':'my-new-id','request_id':'r','message':'hi','user_id':2})
+            assert result.json()['persisted'] is True
+            assert result.json()['mastery_score'] is None
+        async with factory() as db:
+            row = await db.get(SessionTable, 'my-new-id')
+>           assert row.user_id == 1 and row.profile_id is not None
+E           assert (1 == 1 and None is not None)
+E            +  where 1 = <app.models.tables.SessionTable object at 0x000001CCFFA9A5A0>.user_id
+E            +  and   None = <app.models.tables.SessionTable object at 0x000001CCFFA9A5A0>.profile_id
+
+tests\api\test_conversation_transactions.py:238: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[INFO] {"event": "persist_success", "context": {"session_id": "my-new-id"}}
+______________ test_two_real_turns_then_old_http_and_sse_replay _______________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF987600>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFFA99AC0>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFFA99EB0>
+
+    def test_two_real_turns_then_old_http_and_sse_replay(dbkit, monkeypatch, controlled):
+        async def check(factory, engine):
+            await seed(factory)
+            async with await api_client(factory, monkeypatch) as client:
+                first = (await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'one','message':'one'})).json()
+                assert first['persisted'] is True
+                second = await client.post('/api/chat/stream', headers=headers(), json={'session_id':'s','request_id':'two','message':'two'})
+                frames = [json.loads(line[6:]) for line in second.text.splitlines() if line.startswith('data: ')]
+                assert frames[-1]['type'] == 'final'
+                assert frames[-1]['persisted'] is True and frames[-1]['turn_count'] == 3
+                count = len(controlled.calls)
+                replay = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'one','message':'one'})
+                assert replay.json() == first
+                stream = await client.post('/api/chat/stream', headers=headers(), json={'session_id':'s','request_id':'one','message':'one'})
+                repeated = [json.loads(line[6:]) for line in stream.text.splitlines() if line.startswith('data: ')]
+                assert repeated == [{'type':'final', **first}]
+                assert len(controlled.calls) == count
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFAFEE90>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFAFEE90>
+
+    async def check(factory, engine):
+        await seed(factory)
+        async with await api_client(factory, monkeypatch) as client:
+            first = (await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'one','message':'one'})).json()
+>           assert first['persisted'] is True
+E           assert False is True
+
+tests\api\test_conversation_transactions.py:251: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+________ test_switch_b_old_a_answer_has_no_delta_until_b_new_question _________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF987C40>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFFA9BBF0>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFFA9A510>
+
+    def test_switch_b_old_a_answer_has_no_delta_until_b_new_question(dbkit, monkeypatch, controlled):
+        controlled.responses['critic_assess'] = {'mastery_level':'partial','mastery_score':65.25,'mastery_rationale':'observed'}
+        async def check(factory, engine):
+            from app.models.workspace_tables import ProfileEvidenceTable
+            pid, aid, bid = await seed(factory)
+            async with await api_client(factory, monkeypatch) as client:
+                changed = await client.patch('/api/sessions/s/active-node', headers=headers(), json={'expected_state_version':0,'node_id':bid})
+                assert changed.status_code == 200
+                response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'b-first','message':'old A answer'})
+                assert response.json()['persisted'] is True
+                assert response.json()['turn_count'] == 2
+                async with factory() as db:
+                    b = await db.get(ProfileNodeTable, bid)
+                    assert b.practice_count == 0 and b.mastery is None and b.revision == 0
+                    assert (await db.get(TopicProfileTable, pid)).revision == 0
+                    assert await db.scalar(select(func.count()).select_from(ProfileEvidenceTable)) == 0
+                response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'b-second','message':'B answer'})
+                assert response.json()['persisted'] is True
+                assert response.json()['mastery_score'] == 65.25
+                async with factory() as db:
+                    assert (await db.get(ProfileNodeTable, bid)).practice_count == 1
+                    assert (await db.get(ProfileNodeTable, aid)).practice_count == 0
+                    assert (await db.get(TopicProfileTable, pid)).revision == 1
+                    assert await db.scalar(select(func.count()).select_from(ProfileEvidenceTable)) == 1
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:290: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFD4F690>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFD4F690>
+
+    async def check(factory, engine):
+        from app.models.workspace_tables import ProfileEvidenceTable
+        pid, aid, bid = await seed(factory)
+        async with await api_client(factory, monkeypatch) as client:
+            changed = await client.patch('/api/sessions/s/active-node', headers=headers(), json={'expected_state_version':0,'node_id':bid})
+            assert changed.status_code == 200
+            response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'b-first','message':'old A answer'})
+>           assert response.json()['persisted'] is True
+E           assert False is True
+
+tests\api\test_conversation_transactions.py:275: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+______ test_full_history_summary_uses_real_llm_and_preserves_extensions _______
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001CCFF9D5080>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CCFFAD2F30>
+controlled = <tests.unit.orchestration.test_conversation_context.ControlledClient object at 0x000001CCFFAD36E0>
+
+    def test_full_history_summary_uses_real_llm_and_preserves_extensions(dbkit, monkeypatch, controlled):
+        async def check(factory, engine):
+            pid, aid, _ = await seed(factory)
+            async with factory() as db:
+                row = await db.get(SessionTable, 's')
+                state = json.loads(row.state_json)
+                state.update(summary='previous', summary_until_message_id=None, extension={'nested':[True,None,2.5]})
+                row.state_json = json.dumps(state)
+                row.next_turn_index = 31
+                await db.flush()
+                for n in range(1,31):
+                    db.add_all([MessageTable(session_id='s', turn_index=n, role='user', content=f'old user {n}'),
+                                MessageTable(session_id='s', turn_index=n, role='assistant', content=f'old assistant {n}')])
+                await db.commit()
+            async with await api_client(factory, monkeypatch) as client:
+                response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'summary','message':'now'})
+                assert response.json()['persisted'] is True
+                summaries = [c for c in controlled.calls if '���ܽ����ṩ' in c[0].content]
+                assert len(summaries) == 1
+                supplied = json.loads(summaries[0][1].content)['omitted_messages']
+                assert len(supplied) == 50 and supplied[0]['content'] == 'old answer'
+            async with factory() as db:
+                state = json.loads((await db.get(SessionTable, 's')).state_json)
+                assert state['summary_until_message_id'] == supplied[-1]['id']
+                assert state['extension'] == {'nested':[True,None,2.5]}
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:318: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFDC84D0>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001CCFFDC84D0>
+
+    async def check(factory, engine):
+        pid, aid, _ = await seed(factory)
+        async with factory() as db:
+            row = await db.get(SessionTable, 's')
+            state = json.loads(row.state_json)
+            state.update(summary='previous', summary_until_message_id=None, extension={'nested':[True,None,2.5]})
+            row.state_json = json.dumps(state)
+            row.next_turn_index = 31
+            await db.flush()
+            for n in range(1,31):
+                db.add_all([MessageTable(session_id='s', turn_index=n, role='user', content=f'old user {n}'),
+                            MessageTable(session_id='s', turn_index=n, role='assistant', content=f'old assistant {n}')])
+            await db.commit()
+        async with await api_client(factory, monkeypatch) as client:
+            response = await client.post('/api/chat', headers=headers(), json={'session_id':'s','request_id':'summary','message':'now'})
+>           assert response.json()['persisted'] is True
+E           assert False is True
+
+tests\api\test_conversation_transactions.py:309: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+=========================== short test summary info ===========================
+FAILED tests/api/test_conversation_transactions.py::test_real_http_lifespan_atomic_state_and_replay
+FAILED tests/api/test_conversation_transactions.py::test_real_http_uses_previous_question_in_actual_agent_prompt
+FAILED tests/api/test_conversation_transactions.py::test_model_never_runs_for_inaccessible_or_unbound_session[1-False-409]
+FAILED tests/api/test_conversation_transactions.py::test_new_client_id_gets_owned_default_container_without_old_graph
+FAILED tests/api/test_conversation_transactions.py::test_two_real_turns_then_old_http_and_sse_replay
+FAILED tests/api/test_conversation_transactions.py::test_switch_b_old_a_answer_has_no_delta_until_b_new_question
+FAILED tests/api/test_conversation_transactions.py::test_full_history_summary_uses_real_llm_and_preserves_extensions
+7 failed, 17 passed in 10.14s

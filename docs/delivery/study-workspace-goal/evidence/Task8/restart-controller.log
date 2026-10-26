@@ -1,0 +1,5 @@
+Verified dedicated 55440 validation container by purpose label and port; its Docker volume is used only by this container; no other client backends.
+Previous no-mount assertion stopped before mutation; handoff wording corrected: private Docker volume exists.
+restart: studyagent-goal-test-pg
+readiness: /var/run/postgresql:5432 - accepting connections
+readiness_exit=0

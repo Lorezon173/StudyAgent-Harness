@@ -1,5 +1,6 @@
-"""以画像绑定既有 MasteryGraph 四方法契约，仅供受控初始化/离线写入。"""
+"""画像图谱读取、受控离线初始化及事务内在线评估增量。"""
 from uuid import UUID
+import math
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -136,3 +137,47 @@ class ProfileMasteryStore:
         await self.db.flush()
         self._known_edges.update((self.profile_id, str(UUID(edge["from_topic"])), str(UUID(edge["to_topic"])),
                                   edge.get("type", "PREREQ")) for edge in edges)
+
+    async def apply_assessment_delta(self, user_id, session_id, request_id, answer_message_id, deltas):
+        """锁最新画像后仅应用本轮增量；不使用旧快照CAS，不提交事务。"""
+        import time
+        from app.models.tables import MessageTable
+        from app.models.workspace_tables import ChatRequestTable, ProfileEvidenceTable
+        profile = await self.db.scalar(select(TopicProfileTable).where(
+            TopicProfileTable.id == self.profile_id, TopicProfileTable.user_id == user_id
+        ).with_for_update().execution_options(populate_existing=True))
+        if profile is None:
+            raise PermissionError('topic profile does not belong to user')
+        request = await self.db.get(ChatRequestTable, (user_id, session_id, request_id))
+        answer = await self.db.get(MessageTable, answer_message_id)
+        if (request is None or request.profile_id != self.profile_id or answer is None
+                or answer.session_id != session_id or answer.role != 'user'):
+            raise ValueError('invalid assessment evidence scope')
+        final = {}
+        for delta in deltas:
+            if (type(delta.score) not in (int, float) or not math.isfinite(delta.score)
+                    or not 0 <= delta.score <= 100 or delta.node_id != request.active_node_id):
+                raise ValueError('invalid assessment delta')
+            final[delta.node_id] = delta
+        for node_id, delta in final.items():
+            node = await self.db.scalar(select(ProfileNodeTable).where(
+                ProfileNodeTable.id == node_id, ProfileNodeTable.profile_id == self.profile_id,
+                ProfileNodeTable.archived.is_(False)).with_for_update().execution_options(populate_existing=True))
+            if node is None:
+                raise ValueError('assessment node is not active in this profile')
+            duplicate = await self.db.scalar(select(ProfileEvidenceTable.id).where(
+                ProfileEvidenceTable.user_id == user_id, ProfileEvidenceTable.session_id == session_id,
+                ProfileEvidenceTable.request_id == request_id, ProfileEvidenceTable.node_id == node_id))
+            if duplicate is not None:
+                raise ValueError('assessment evidence already exists')
+            node.mastery, node.rationale = delta.score, delta.rationale
+            node.practice_count += 1
+            node.revision += 1
+            node.last_practiced_at = time.time()
+            self.db.add(ProfileEvidenceTable(user_id=user_id, profile_id=self.profile_id, node_id=node_id,
+                session_id=session_id, request_id=request_id, message_id=answer_message_id,
+                score=delta.score, rationale=delta.rationale))
+        if final:
+            profile.revision += 1
+        await self.db.flush()
+        return profile.revision

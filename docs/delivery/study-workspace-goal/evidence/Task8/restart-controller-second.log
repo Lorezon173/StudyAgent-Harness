@@ -1,0 +1,4 @@
+Second probe: verified dedicated label/55440/private exclusive volume/no other client backends.
+restart: studyagent-goal-test-pg
+readiness: /var/run/postgresql:5432 - accepting connections
+readiness_exit=0

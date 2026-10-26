@@ -1,0 +1,3 @@
+# Task8 round3独立计划审查
+
+审查者task8_plan_review，结论PASS。冻结SHA256 437df2114f1ed3f8791f6cd7ae1e19e16b0f1af27ced3e6f4b3806213a7dafcc，主会话已核。仅helper和对应测试，独立probe+父shield等待隔离内部取消域，统一finally含创建/首次等待、单receive、初始已断event及无遗留任务；测试捕获父任务确保不误取消子probe、body不进入且CancelledError传播，保真实ASGI/PG对照。产品修复仍待执行。

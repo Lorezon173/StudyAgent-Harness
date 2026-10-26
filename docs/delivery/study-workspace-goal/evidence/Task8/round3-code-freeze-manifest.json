@@ -1,0 +1,146 @@
+{
+  "frozen_at": "2026-10-26T11:25:03.259537+00:00",
+  "head": "75be6015c331185dea34dc8910e5646c6663f29e",
+  "branch": "codex/frontend-ui-optimization",
+  "brief_sha256": "437df2114f1ed3f8791f6cd7ae1e19e16b0f1af27ced3e6f4b3806213a7dafcc",
+  "round3_allowed_files": [
+    "app/api/_disconnect.py",
+    "tests/api/test_conversation_transactions.py"
+  ],
+  "round3_changed_existing": [
+    "app/api/_disconnect.py",
+    "tests/api/test_conversation_transactions.py"
+  ],
+  "files": [
+    {
+      "path": "app/api/_dirty_flag.py",
+      "sha256": "1da1f3f05aeaf713721b64a9247776ca2c3e0449db52b788903c0b34ed7b8dcf",
+      "git_tracked": true
+    },
+    {
+      "path": "app/api/_disconnect.py",
+      "sha256": "36864fe6d938e72666b6e0110b6e6865c669e69dfdfd1ab88b08e69c567233ce",
+      "git_tracked": false
+    },
+    {
+      "path": "app/api/_persist.py",
+      "sha256": "78f6b739bf388ceeb61dbdaacb4ac04c4721a7a5a52c842b6a019396d7e7a3a6",
+      "git_tracked": true
+    },
+    {
+      "path": "app/api/chat.py",
+      "sha256": "0b43834dc0fb89e07915346e4c05aec010fb66dc11a547535bcb580bf1a6845d",
+      "git_tracked": true
+    },
+    {
+      "path": "app/api/chat_stream.py",
+      "sha256": "5b2c70b8373d44b4a9b71ea78eb2ddfaf2fe9df8079946498860cab681e8b3a7",
+      "git_tracked": true
+    },
+    {
+      "path": "app/api/sessions.py",
+      "sha256": "ec7d0ef4be66510e00e5aa1e69ed900a4077950ad9835236a9573ae4bdf97fcd",
+      "git_tracked": true
+    },
+    {
+      "path": "app/infrastructure/storage/chat_request_store.py",
+      "sha256": "f44fda40101b67242ab17794392c6f114bae299c488199c0a85f4047b67e1f5c",
+      "git_tracked": true
+    },
+    {
+      "path": "app/infrastructure/storage/dirty_flag.py",
+      "sha256": "37b45b5ece736b3aaca9a8f9336ed532b5b224d5631ca431847b8467404840bb",
+      "git_tracked": false
+    },
+    {
+      "path": "app/infrastructure/storage/profile_mastery_store.py",
+      "sha256": "06aeb66cc902c4dc1f121bc2d92b787d05390c3c99487b1a62488b4e4b2b0459",
+      "git_tracked": true
+    },
+    {
+      "path": "app/main.py",
+      "sha256": "edef2f56ad34fd023b24d18d701181129cb7156f05f04c363533394a60c7485b",
+      "git_tracked": true
+    },
+    {
+      "path": "app/models/schemas.py",
+      "sha256": "0b399e2a287d66ad6796caf2c49f3140f124961ab0445f31d59cd9d402baceb4",
+      "git_tracked": true
+    },
+    {
+      "path": "app/orchestration/conversation_service.py",
+      "sha256": "d8fcc078633ca1be596776dcde3da391266cce49196d63bc59ea28af45848b14",
+      "git_tracked": false
+    },
+    {
+      "path": "app/orchestration/session_service.py",
+      "sha256": "63f636d9a5e968df7c57f7e05ddb70c911da1d2ca27b4df72dcd5d78b58b0cd0",
+      "git_tracked": true
+    },
+    {
+      "path": "app/orchestration/turn_commit.py",
+      "sha256": "ab987bda5473ecbbde984563380c4206a50e7f8080cc7c3d335c02709801dc52",
+      "git_tracked": false
+    },
+    {
+      "path": "tests/api/test_chat_stream_error.py",
+      "sha256": "bb15b4c2a5ed6992f827fa0ba5e6d84ca8c4b4bcaaf273e9bbd1479c458db0fd",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/api/test_chat_stream_realtime.py",
+      "sha256": "8452c4f0e028be36dd3fc7b2862b32b7dfaca5f11ddb33db8a5201ffa50dd8e9",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/api/test_conversation_transactions.py",
+      "sha256": "7ea1804f4648edad9af30a218b74ec534a29f79196b20d1fa4ca759549faae76",
+      "git_tracked": false
+    },
+    {
+      "path": "tests/api/test_dirty_flag.py",
+      "sha256": "d36596c71e14ded4837f5e5061d94903938ab5fb13e004a622afd9380726fc4e",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/api/test_persist_turn.py",
+      "sha256": "bfd14abd43e7497f4abaa28a5b44ff34095e36477195b0f9e97599de1a8108a7",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/integration/test_workspace_concurrency.py",
+      "sha256": "ff9c8d2179535bf6fee760abd38d188a4b545865d28afd104bff711f02d20106",
+      "git_tracked": false
+    },
+    {
+      "path": "tests/unit/api/test_chat_anonymous.py",
+      "sha256": "8ee2aadfaf01793a13ce817a2d7411a7c7d7fd46615fa991fbd469ec4ed09b20",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/unit/api/test_chat_new_stack_e2e.py",
+      "sha256": "d46f0e862ee30181bdce686982beeca7c8705398d141fa19a9f794635c8fbfa7",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/unit/api/test_chat_persist.py",
+      "sha256": "e90a3cae4e5328ead0736fdef6e47357969ffd3981284b10df8167e05460c5f4",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/unit/api/test_chat_session_ownership.py",
+      "sha256": "2c4b2e13e583725a20d260a80e45b522b0b7a26e4b2969baf8d9d814eb946f1e",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/unit/api/test_chat_stream_new_stack_e2e.py",
+      "sha256": "2a880394909ac88f5fa275f8f31f3a0bea3e972aed3f429e9ef3cf993c5d17af",
+      "git_tracked": true
+    },
+    {
+      "path": "tests/unit/api/test_workspace_sessions_api.py",
+      "sha256": "18f5010a7ace28a78f7b3658fa70815350bddccb70018a1fef59a6c3276ed170",
+      "git_tracked": true
+    }
+  ]
+}

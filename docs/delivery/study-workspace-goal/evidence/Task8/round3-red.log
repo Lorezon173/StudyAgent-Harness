@@ -1,0 +1,147 @@
+ROUND3_INITIAL_CANCEL cancel_requests [True] business_entered [True] outcome str owned_done True single_receive 1 rescue_used False
+F
+================================== FAILURES ===================================
+_ test_initial_disconnect_probe_propagates_parent_task_cancel_before_business _
+
+    def test_initial_disconnect_probe_propagates_parent_task_cancel_before_business():
+        async def check():
+            from starlette.requests import Request
+            from app.api._disconnect import observe_http_disconnect
+            loop=asyncio.get_running_loop()
+            never=asyncio.Event()
+            parent_task=None
+            calls=0
+            active,maximum=0,0
+            cancel_requests,business_entered,receive_tasks=[],[],[]
+            async def receive():
+                nonlocal calls,active,maximum
+                calls+=1
+                if calls==1:
+                    return {'type':'http.request','body':b'{}','more_body':False}
+                active+=1
+                maximum=max(maximum,active)
+                receive_tasks.append(asyncio.current_task())
+                if calls==2:
+                    # ��ʽȡ���Ѳ���ĸ�HTTP�����޸���current_task����probe��
+                    loop.call_soon(lambda:cancel_requests.append(parent_task.cancel()))
+                try:
+                    await never.wait()
+                finally:
+                    active-=1
+            request=Request({'type':'http','method':'POST','path':'/test','headers':[]},receive)
+            assert await request.body()==b'{}'
+            async def handler():
+                nonlocal parent_task
+                parent_task=asyncio.current_task()
+                async with observe_http_disconnect(request):
+                    business_entered.append(True)
+                    return 'business body ran'
+            handler_task=asyncio.create_task(handler())
+            rescue_used=False
+            try:
+                done,_=await asyncio.wait([handler_task],timeout=1)
+                if handler_task not in done:
+                    rescue_used=True
+                    never.set()
+                    handler_task.cancel()
+                    done,_=await asyncio.wait([handler_task],timeout=1)
+                    assert handler_task in done, 'bounded parent rescue did not finish'
+                outcome=(await asyncio.gather(handler_task,return_exceptions=True))[0]
+            finally:
+                pending={task for task in receive_tasks if not task.done()}
+                if pending:
+                    rescue_used=True
+                    never.set()
+                    for task in pending:
+                        task.cancel()
+                    _,pending=await asyncio.wait(pending,timeout=1)
+                    assert not pending, 'bounded receive-task rescue did not finish'
+            print('ROUND3_INITIAL_CANCEL','cancel_requests',cancel_requests,'business_entered',business_entered,
+                'outcome',type(outcome).__name__,'owned_done',all(task.done() for task in receive_tasks),
+                'single_receive',maximum,'rescue_used',rescue_used)
+            assert cancel_requests==[True]
+            assert isinstance(outcome,asyncio.CancelledError), 'parent cancellation was swallowed before business entry'
+            assert business_entered==[]
+            assert receive_tasks and all(task.done() for task in receive_tasks)
+            assert maximum==1 and active==0 and rescue_used is False
+>       asyncio.run(check())
+
+tests\api\test_conversation_transactions.py:864: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def check():
+        from starlette.requests import Request
+        from app.api._disconnect import observe_http_disconnect
+        loop=asyncio.get_running_loop()
+        never=asyncio.Event()
+        parent_task=None
+        calls=0
+        active,maximum=0,0
+        cancel_requests,business_entered,receive_tasks=[],[],[]
+        async def receive():
+            nonlocal calls,active,maximum
+            calls+=1
+            if calls==1:
+                return {'type':'http.request','body':b'{}','more_body':False}
+            active+=1
+            maximum=max(maximum,active)
+            receive_tasks.append(asyncio.current_task())
+            if calls==2:
+                # ��ʽȡ���Ѳ���ĸ�HTTP�����޸���current_task����probe��
+                loop.call_soon(lambda:cancel_requests.append(parent_task.cancel()))
+            try:
+                await never.wait()
+            finally:
+                active-=1
+        request=Request({'type':'http','method':'POST','path':'/test','headers':[]},receive)
+        assert await request.body()==b'{}'
+        async def handler():
+            nonlocal parent_task
+            parent_task=asyncio.current_task()
+            async with observe_http_disconnect(request):
+                business_entered.append(True)
+                return 'business body ran'
+        handler_task=asyncio.create_task(handler())
+        rescue_used=False
+        try:
+            done,_=await asyncio.wait([handler_task],timeout=1)
+            if handler_task not in done:
+                rescue_used=True
+                never.set()
+                handler_task.cancel()
+                done,_=await asyncio.wait([handler_task],timeout=1)
+                assert handler_task in done, 'bounded parent rescue did not finish'
+            outcome=(await asyncio.gather(handler_task,return_exceptions=True))[0]
+        finally:
+            pending={task for task in receive_tasks if not task.done()}
+            if pending:
+                rescue_used=True
+                never.set()
+                for task in pending:
+                    task.cancel()
+                _,pending=await asyncio.wait(pending,timeout=1)
+                assert not pending, 'bounded receive-task rescue did not finish'
+        print('ROUND3_INITIAL_CANCEL','cancel_requests',cancel_requests,'business_entered',business_entered,
+            'outcome',type(outcome).__name__,'owned_done',all(task.done() for task in receive_tasks),
+            'single_receive',maximum,'rescue_used',rescue_used)
+        assert cancel_requests==[True]
+>       assert isinstance(outcome,asyncio.CancelledError), 'parent cancellation was swallowed before business entry'
+E       AssertionError: parent cancellation was swallowed before business entry
+E       assert False
+E        +  where False = isinstance('business body ran', <class 'asyncio.exceptions.CancelledError'>)
+E        +    where <class 'asyncio.exceptions.CancelledError'> = asyncio.CancelledError
+
+tests\api\test_conversation_transactions.py:860: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/api/test_conversation_transactions.py::test_initial_disconnect_probe_propagates_parent_task_cancel_before_business
+1 failed, 81 deselected in 4.39s

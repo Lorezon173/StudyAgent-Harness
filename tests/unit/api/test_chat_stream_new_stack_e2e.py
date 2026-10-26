@@ -23,7 +23,11 @@ client = TestClient(_app)
 @pytest.fixture(autouse=True)
 def isolated_database(db_fixture, monkeypatch):
     from sqlalchemy import event
-    from app.models.tables import UserTable, SessionTable
+    from app.models.tables import UserTable, SessionTable, MessageTable
+    from app.models.workspace_tables import TopicProfileTable, ProfileNodeTable
+    from app.harness.teaching_context import TeachingState
+    from uuid import uuid4
+    import json
 
     async def setup():
         engine, factory = await db_fixture.setup_db()
@@ -34,13 +38,30 @@ def isolated_database(db_fixture, monkeypatch):
         async with factory() as db:
             db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
             await db.flush()
-            db.add(SessionTable(id="sse-rag-off", user_id=1, state_json="{}"))
+            profile, node = str(uuid4()), str(uuid4())
+            db.add(TopicProfileTable(id=profile, user_id=1, name="RAG"))
+            await db.flush()
+            db.add(ProfileNodeTable(id=node, profile_id=profile, title="RAG"))
+            await db.flush()
+            for session_id in ('sse-rag-off', "e2e-1"):
+                state = TeachingState(active_node_id=node, stage="awaiting_response",last_question="previous question")
+                db.add(SessionTable(id=session_id,user_id=1,profile_id=profile,active_node_id=node,state_json=json.dumps(state.to_dict()),next_turn_index=1))
+                await db.flush()
+                db.add_all([MessageTable(session_id=session_id,role="user",content="previous",turn_index=0),MessageTable(session_id=session_id,role="assistant",content="previous question",turn_index=0)])
             await db.commit()
         return engine, factory
 
     engine, factory = db_fixture.run(setup())
-    monkeypatch.setattr("app.api.chat_stream.async_session", factory)
+    from app.core.database import get_db
+    from app.orchestration.conversation_service import ConversationService
+    async def get_test_db():
+        async with factory() as db:
+            yield db
+    _app.dependency_overrides[get_db] = get_test_db
+    monkeypatch.setattr(_app.state, "conversation_service", ConversationService(factory), raising=False)
     yield factory
+    _app.dependency_overrides.pop(get_db, None)
+    db_fixture.run(_app.state.conversation_service.aclose())
     db_fixture.run(engine.dispose())
 
 

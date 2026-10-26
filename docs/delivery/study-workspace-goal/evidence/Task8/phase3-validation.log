@@ -1,0 +1,1982 @@
+............................................................FFEEEEEEEEFF [ 75%]
+FFFFFFFFFF.FFF.......F.F                                                 [100%]
+=================================== ERRORS ====================================
+__________________ ERROR at setup of test_chat_new_stack_e2e __________________
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpe7kdn_96.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279A38410>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat.async_session", factory)
+
+tests\unit\api\test_chat_new_stack_e2e.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+_______ ERROR at setup of test_chat_fail_fast_when_backend_not_pgvector _______
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp3d4d9p42.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727975B3B0>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat.async_session", factory)
+
+tests\unit\api\test_chat_new_stack_e2e.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+___________ ERROR at setup of test_chat_disabled_rag_still_teaches ____________
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp_sezh4is.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727999A9F0>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat.async_session", factory)
+
+tests\unit\api\test_chat_new_stack_e2e.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+_____ ERROR at setup of test_chat_request_generates_session_id_by_default _____
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp5a3_ch6e.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279AF2510>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat.async_session", factory)
+
+tests\unit\api\test_chat_new_stack_e2e.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+_ ERROR at setup of test_chat_requests_without_session_ids_get_distinct_sessions _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpko5m4fi3.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272799E22A0>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="http-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat.async_session", factory)
+
+tests\unit\api\test_chat_new_stack_e2e.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'>
+name = 'async_session', ann = 'app.api.chat'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+_________________ ERROR at setup of test_stream_new_stack_e2e _________________
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat_stream' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpxef8bus8.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279B7D940>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="sse-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat_stream.async_session", factory)
+
+tests\unit\api\test_chat_stream_new_stack_e2e.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat_stream has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+______ ERROR at setup of test_stream_fail_fast_when_backend_not_pgvector ______
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat_stream' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp_5ayyplj.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272799996A0>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="sse-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat_stream.async_session", factory)
+
+tests\unit\api\test_chat_stream_new_stack_e2e.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat_stream has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+__________ ERROR at setup of test_stream_disabled_rag_still_teaches ___________
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+>           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api.chat_stream' has no attribute 'async_session'. Did you mean: 'AsyncSession'?
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:92: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpdob9_ud6.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279A3BA10>
+
+    @pytest.fixture(autouse=True)
+    def isolated_database(db_fixture, monkeypatch):
+        from sqlalchemy import event
+        from app.models.tables import UserTable, SessionTable
+    
+        async def setup():
+            engine, factory = await db_fixture.setup_db()
+            @event.listens_for(engine.sync_engine, "connect")
+            def foreign_keys(connection, _):
+                connection.execute("PRAGMA foreign_keys=ON")
+            await engine.dispose()
+            async with factory() as db:
+                db.add(UserTable(id=1, username="rag-test", password_hash="unused"))
+                await db.flush()
+                db.add(SessionTable(id="sse-rag-off", user_id=1, state_json="{}"))
+                await db.commit()
+            return engine, factory
+    
+        engine, factory = db_fixture.run(setup())
+>       monkeypatch.setattr("app.api.chat_stream.async_session", factory)
+
+tests\unit\api\test_chat_stream_new_stack_e2e.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\_pytest\monkeypatch.py:106: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'>
+name = 'async_session', ann = 'app.api.chat_stream'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -> object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+>           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at app.api.chat_stream has no attribute 'async_session'
+
+.venv\Lib\site-packages\_pytest\monkeypatch.py:94: AttributeError
+================================== FAILURES ===================================
+____________ test_chat_stream_yields_error_event_on_agent_failure _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279B53080>
+auth_headers = <function auth_headers.<locals>._make at 0x000002727A3D9260>
+
+    def test_chat_stream_yields_error_event_on_agent_failure(monkeypatch, auth_headers):
+        """Collab loop raises �� SSE yields structured error event, stream ends cleanly."""
+        from fastapi.testclient import TestClient
+        from sqlalchemy import create_engine
+        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from app.main import app
+        from app.core.database import Base
+        import app.models.tables as _tables  # noqa: F401
+        import app.api.chat_stream as cs
+    
+        # DB isolation (same pattern as test_chat_stream_realtime.py)
+        tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        tmp.close()
+        sync_engine = create_engine(f"sqlite:///{tmp.name}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
+        test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
+>       monkeypatch.setattr(cs, "async_session", test_sessionmaker)
+E       AttributeError: <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'> has no attribute 'async_session'
+
+tests\api\test_chat_stream_error.py:31: AttributeError
+_______________ test_chat_stream_emits_incremental_agent_events _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796F6270>
+auth_headers = <function auth_headers.<locals>._make at 0x0000027279D19DA0>
+
+    def test_chat_stream_emits_incremental_agent_events(monkeypatch, auth_headers):
+        from fastapi.testclient import TestClient
+        from sqlalchemy import create_engine
+        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from app.main import app
+        from app.core.database import Base
+        import app.models.tables as _tables  # noqa: F401 �� ע���ģ�͵� Base.metadata�����������ڱ� app��
+        import app.api.chat_stream as cs
+        from app.orchestration.assembly import NewStackResult
+        from app.harness.events import Event
+        from app.harness.enums import EventType, EventSource
+    
+        # ���� DB������ʱ sqlite �ļ���������Ⱦ������ + ��֤���ظ����У��ݵȣ���
+        # ����ͬ�� engine ���ã������첽�¼�ѭ��������������� async engine ��ͬһ�ļ���
+        tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        tmp.close()
+        sync_engine = create_engine(f"sqlite:///{tmp.name}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
+        test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
+>       monkeypatch.setattr(cs, "async_session", test_sessionmaker)
+E       AttributeError: <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'> has no attribute 'async_session'
+
+tests\api\test_chat_stream_realtime.py:27: AttributeError
+_______ test_chat_rejects_null_owned_existing_session_before_generation _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727A47DB50>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpobuymg_h.db')
+
+    def test_chat_rejects_null_owned_existing_session_before_generation(monkeypatch, db_fixture):
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    await SessionStore(session).save("null-owned-session", {}, user_id=None)
+                    await session.commit()
+                    client = _make_client(session, monkeypatch, user_id=2)
+                    try:
+                        fake_run = Mock(return_value=_FakeResult())
+                        monkeypatch.setattr(
+                            "app.orchestration.assembly.run_online_agent_session",
+                            fake_run,
+                        )
+                        response = client.post(
+                            "/api/chat",
+                            json={"message": "hi", "session_id": "null-owned-session"},
+                        )
+                    finally:
+                        client.close()
+    
+                    fake_run.assert_not_called()
+                    assert response.status_code == 403
+                    assert response.json() == {"detail": "��Ȩд��ûỰ"}
+                    assert await _message_count(session, "null-owned-session") == 0
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_session_ownership.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_session_ownership.py:53: in _test
+    client = _make_client(session, monkeypatch, user_id=2)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000272475D3BC0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727A47DB50>
+user_id = 2
+
+    def _make_client(session, monkeypatch, user_id: int):
+        import app.api.chat as chat_mod
+        import app.api.chat_stream as stream_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_session_ownership.py:33: AttributeError
+___________ test_chat_rejects_other_users_session_before_generation ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272475D0110>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpo5vypsfz.db')
+
+    def test_chat_rejects_other_users_session_before_generation(monkeypatch, db_fixture):
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    await SessionStore(session).save("owned-session", {}, user_id=1)
+                    await session.commit()
+                    client = _make_client(session, monkeypatch, user_id=2)
+                    try:
+                        fake_run = Mock(return_value=_FakeResult())
+                        monkeypatch.setattr(
+                            "app.orchestration.assembly.run_online_agent_session",
+                            fake_run,
+                        )
+                        response = client.post(
+                            "/api/chat",
+                            json={"message": "hi", "session_id": "owned-session"},
+                        )
+                    finally:
+                        client.close()
+    
+                    fake_run.assert_not_called()
+                    assert response.status_code == 403
+                    assert response.json() == {"detail": "��Ȩд��ûỰ"}
+                    assert await _message_count(session, "owned-session") == 0
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_session_ownership.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_session_ownership.py:84: in _test
+    client = _make_client(session, monkeypatch, user_id=2)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000272796124E0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272475D0110>
+user_id = 2
+
+    def _make_client(session, monkeypatch, user_id: int):
+        import app.api.chat as chat_mod
+        import app.api.chat_stream as stream_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_session_ownership.py:33: AttributeError
+_____________ test_stream_rejects_other_users_session_before_sse ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272798CFDD0>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp_nblvcg7.db')
+
+    def test_stream_rejects_other_users_session_before_sse(monkeypatch, db_fixture):
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    await SessionStore(session).save("owned-stream", {}, user_id=1)
+                    await session.commit()
+                    client = _make_client(session, monkeypatch, user_id=2)
+                    try:
+                        fake_run = Mock(return_value=_FakeResult())
+                        monkeypatch.setattr(
+                            "app.orchestration.assembly.run_online_agent_session",
+                            fake_run,
+                        )
+                        response = client.post(
+                            "/api/chat/stream",
+                            json={"message": "hi", "session_id": "owned-stream"},
+                        )
+                    finally:
+                        client.close()
+    
+                    fake_run.assert_not_called()
+                    assert response.status_code == 403
+                    assert response.json() == {"detail": "��Ȩд��ûỰ"}
+                    assert await _message_count(session, "owned-stream") == 0
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_session_ownership.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_session_ownership.py:115: in _test
+    client = _make_client(session, monkeypatch, user_id=2)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000027279B7E270>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272798CFDD0>
+user_id = 2
+
+    def _make_client(session, monkeypatch, user_id: int):
+        import app.api.chat as chat_mod
+        import app.api.chat_stream as stream_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_session_ownership.py:33: AttributeError
+____________________ test_anonymous_chat_no_mastery_graph _____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279B52180>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpsn2k5ut_.db')
+
+    def test_anonymous_chat_no_mastery_graph(monkeypatch, db_fixture):
+        """�� Authorization �� 401��ҵ���߼����� MasteryGraph ���죩�������"""
+        from unittest.mock import patch
+    
+        # Patch run_new_agent_session to return a fake result (��Ӧ������)
+        from dataclasses import dataclass, field
+    
+        @dataclass
+        class FakeResult:
+            reply: str = "anonymous reply"
+            mastery_score: int | None = None
+            turn_count: int = 1
+            mode_path: list[str] = field(default_factory=list)
+            cost_est_usd: float | None = None
+    
+        monkeypatch.setattr(
+            "app.orchestration.assembly.run_online_agent_session",
+            lambda *a, **kw: FakeResult(),
+        )
+    
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    client = _make_client_for_chat(monkeypatch, session)
+                    try:
+                        with patch("app.api.chat.MasteryGraph") as mock_mg:
+                            resp = client.post("/api/chat", json={
+                                "message": "hello",
+                                "session_id": "s-anon",
+                                "user_id": None,
+                            })
+                            # MasteryGraph ����δ�����죨���󱻼�Ȩ�����أ�
+                            mock_mg.assert_not_called()
+                    finally:
+                        client.close()
+    
+                assert resp.status_code == 401
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_anonymous.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_anonymous.py:57: in _test
+    client = _make_client_for_chat(monkeypatch, session)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279B52180>
+db_session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000027279999550>
+
+    def _make_client_for_chat(monkeypatch, db_session):
+        """Patch chat.async_session to yield the test session."""
+        import app.api.chat as chat_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield db_session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_anonymous.py:29: AttributeError
+____________________ test_anonymous_chat_messages_persist _____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796F4D10>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp769xeqht.db')
+
+    def test_anonymous_chat_messages_persist(monkeypatch, db_fixture):
+        """�� Authorization �� 401������Ϣ���־û���"""
+        from dataclasses import dataclass, field
+    
+        @dataclass
+        class FakeResult:
+            reply: str = "anon reply"
+            mastery_score: int | None = None
+            turn_count: int = 1
+            mode_path: list[str] = field(default_factory=list)
+            cost_est_usd: float | None = None
+    
+        monkeypatch.setattr(
+            "app.orchestration.assembly.run_online_agent_session",
+            lambda *a, **kw: FakeResult(),
+        )
+    
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    client = _make_client_for_chat(monkeypatch, session)
+                    try:
+                        resp = client.post("/api/chat", json={
+                            "message": "test msg",
+                            "session_id": "s-anon-persist",
+                            "user_id": None,
+                        })
+                        assert resp.status_code == 401
+    
+                        # ����Ȩ�����أ�����Ϣ�־û�
+                        from sqlalchemy import select
+                        from app.models.tables import MessageTable
+                        r = await session.execute(
+                            select(MessageTable).where(MessageTable.session_id == "s-anon-persist")
+                        )
+                        msgs = r.scalars().all()
+                        assert len(msgs) == 0
+                    finally:
+                        client.close()
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_anonymous.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_anonymous.py:98: in _test
+    client = _make_client_for_chat(monkeypatch, session)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796F4D10>
+db_session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000027279A02450>
+
+    def _make_client_for_chat(monkeypatch, db_session):
+        """Patch chat.async_session to yield the test session."""
+        import app.api.chat as chat_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield db_session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_anonymous.py:29: AttributeError
+___________________ test_anonymous_stream_no_mastery_graph ____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796D9F40>
+
+    def test_anonymous_stream_no_mastery_graph(monkeypatch):
+        """�� Authorization �� 401����ʽ�˵�ͬ������Ȩ�����ء�"""
+        from unittest.mock import patch
+        from sqlalchemy import create_engine
+        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from app.core.database import Base
+        import app.models.tables as _tables  # noqa: F401
+        import app.api.chat_stream as cs
+    
+        tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        tmp.close()
+        sync_engine = create_engine(f"sqlite:///{tmp.name}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        aengine = create_async_engine(f"sqlite+aiosqlite:///{tmp.name}", echo=False)
+        test_sessionmaker = async_sessionmaker(aengine, class_=AsyncSession, expire_on_commit=False)
+>       monkeypatch.setattr(cs, "async_session", test_sessionmaker)
+E       AttributeError: <module 'app.api.chat_stream' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat_stream.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_anonymous.py:142: AttributeError
+________________________ test_chat_persist_happy_path _________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279999DF0>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmpqjp1p6j_.db')
+auth_headers = <function auth_headers.<locals>._make at 0x000002727A1096C0>
+
+    def test_chat_persist_happy_path(monkeypatch, db_fixture, auth_headers):
+        """First turn: session row with title, 2 messages with turn_index=0."""
+        _patch_new_stack(monkeypatch)
+    
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    client = _make_client_with_patched_db(monkeypatch, session)
+                    try:
+                        resp = client.post("/api/chat", json={
+                            "message": "�������� RAG",
+                            "session_id": "s-happy",
+                            "user_id": 1,
+                        }, headers=auth_headers())
+                        assert resp.status_code == 200
+                        data = resp.json()
+                        assert data["stack"] == "new"
+                        assert data["reply"] == "���� AI �ظ�"
+                        assert data["persisted"] is True
+    
+                        # Verify session row
+                        sess = await _get_session_row(session, "s-happy")
+                        assert sess is not None
+                        assert sess.title == "�������� RAG"
+                        assert sess.user_id == 1
+    
+                        # Verify messages
+                        msgs = await _get_messages(session, "s-happy")
+                        assert len(msgs) == 2
+                        assert msgs[0].role == "user"
+                        assert msgs[0].content == "�������� RAG"
+                        assert msgs[0].turn_index == 0
+                        assert msgs[1].role == "assistant"
+                        assert msgs[1].content == "���� AI �ظ�"
+                        assert msgs[1].turn_index == 0
+                    finally:
+                        _cleanup_client(client)
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_persist.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_persist.py:113: in _test
+    client = _make_client_with_patched_db(monkeypatch, session)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027279999DF0>
+db_session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000272798CD970>
+
+    def _make_client_with_patched_db(monkeypatch, db_session):
+        """Create TestClient with chat.async_session patched to yield the test session.
+    
+        **������**��monkeypatch.setattr �滻 chat_mod.async_session��ʹ chat() �ڲ���
+        ��������ȫ�������� *db_session*�����Խ������� pytest �Զ���ԭ��fixture scope����
+    
+        After the Task 3 refactor, chat() no longer uses FastAPI Depends(get_db);
+        it calls module-level async_session().  This helper replaces that callable
+        so all internal sessions resolve to *db_session*.
+        """
+        import app.api.chat as chat_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield db_session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_persist.py:45: AttributeError
+________________________ test_chat_persist_second_turn ________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272797472F0>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp0ppr3yui.db')
+auth_headers = <function auth_headers.<locals>._make at 0x000002727A5D8C20>
+
+    def test_chat_persist_second_turn(monkeypatch, db_fixture, auth_headers):
+        """Second turn: 4 messages total, second pair has turn_index=1, title NOT overwritten."""
+        _patch_new_stack(monkeypatch)
+    
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    client = _make_client_with_patched_db(monkeypatch, session)
+                    try:
+                        # First turn
+                        resp1 = client.post("/api/chat", json={
+                            "message": "��һ������",
+                            "session_id": "s-turn2",
+                            "user_id": 2,
+                        }, headers=auth_headers(user_id=2))
+                        assert resp1.status_code == 200
+    
+                        # Second turn
+                        resp2 = client.post("/api/chat", json={
+                            "message": "�ڶ�������",
+                            "session_id": "s-turn2",
+                            "user_id": 2,
+                        }, headers=auth_headers(user_id=2))
+                        assert resp2.status_code == 200
+    
+                        # Verify 4 messages
+                        msgs = await _get_messages(session, "s-turn2")
+                        assert len(msgs) == 4
+    
+                        # First pair: turn_index=0
+                        assert msgs[0].turn_index == 0
+                        assert msgs[1].turn_index == 0
+    
+                        # Second pair: turn_index=1
+                        assert msgs[2].turn_index == 1
+                        assert msgs[3].turn_index == 1
+                        assert msgs[2].role == "user"
+                        assert msgs[2].content == "�ڶ�������"
+                        assert msgs[3].role == "assistant"
+    
+                        # Title NOT overwritten (still from first turn)
+                        sess = await _get_session_row(session, "s-turn2")
+                        assert sess.title == "��һ������"
+                    finally:
+                        _cleanup_client(client)
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_persist.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_persist.py:157: in _test
+    client = _make_client_with_patched_db(monkeypatch, session)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272797472F0>
+db_session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000272797474D0>
+
+    def _make_client_with_patched_db(monkeypatch, db_session):
+        """Create TestClient with chat.async_session patched to yield the test session.
+    
+        **������**��monkeypatch.setattr �滻 chat_mod.async_session��ʹ chat() �ڲ���
+        ��������ȫ�������� *db_session*�����Խ������� pytest �Զ���ԭ��fixture scope����
+    
+        After the Task 3 refactor, chat() no longer uses FastAPI Depends(get_db);
+        it calls module-level async_session().  This helper replaces that callable
+        so all internal sessions resolve to *db_session*.
+        """
+        import app.api.chat as chat_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield db_session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_persist.py:45: AttributeError
+_____________________ test_chat_persist_error_resilience ______________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796B4260>
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp7ek7c_1u.db')
+auth_headers = <function auth_headers.<locals>._make at 0x000002727A494680>
+
+    def test_chat_persist_error_resilience(monkeypatch, db_fixture, auth_headers):
+        """MessageStore.add raises on second call �� rollback (0 messages), HTTP still 200."""
+        _patch_new_stack(monkeypatch)
+    
+        # Monkeypatch MessageStore.add to raise on second call
+        original_add = MessageStore.add
+        call_count = {"n": 0}
+    
+        async def flaky_add(self, session_id, role, content, turn_index):
+            call_count["n"] += 1
+            if call_count["n"] == 2:
+                raise RuntimeError("ģ�� DB ����")
+            return await original_add(self, session_id, role, content, turn_index)
+    
+        monkeypatch.setattr(MessageStore, "add", flaky_add)
+    
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                async with session_factory() as session:
+                    client = _make_client_with_patched_db(monkeypatch, session)
+                    try:
+                        resp = client.post("/api/chat", json={
+                            "message": "���Դ���ָ�",
+                            "session_id": "s-err",
+                            "user_id": 3,
+                        }, headers=auth_headers(user_id=3))
+                        # HTTP still 200 with reply, persisted=False
+                        assert resp.status_code == 200
+                        data = resp.json()
+                        assert data["reply"] == "���� AI �ظ�"
+                        assert data["stack"] == "new"
+                        assert data["persisted"] is False
+    
+                        # Rollback: 0 messages persisted
+                        msgs = await _get_messages(session, "s-err")
+                        assert len(msgs) == 0
+                    finally:
+                        _cleanup_client(client)
+            finally:
+                await engine.dispose()
+    
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_persist.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_chat_persist.py:221: in _test
+    client = _make_client_with_patched_db(monkeypatch, session)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272796B4260>
+db_session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x00000272795D8350>
+
+    def _make_client_with_patched_db(monkeypatch, db_session):
+        """Create TestClient with chat.async_session patched to yield the test session.
+    
+        **������**��monkeypatch.setattr �滻 chat_mod.async_session��ʹ chat() �ڲ���
+        ��������ȫ�������� *db_session*�����Խ������� pytest �Զ���ԭ��fixture scope����
+    
+        After the Task 3 refactor, chat() no longer uses FastAPI Depends(get_db);
+        it calls module-level async_session().  This helper replaces that callable
+        so all internal sessions resolve to *db_session*.
+        """
+        import app.api.chat as chat_mod
+    
+        @asynccontextmanager
+        async def _fake_session():
+            yield db_session
+    
+>       monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E       AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_persist.py:45: AttributeError
+___________________ test_chat_turn_count_is_teaching_round ____________________
+
+db_fixture = DbFixture(db_path='C:\\Users\\A1985\\AppData\\Local\\Temp\\tmp3cb0aq67.db')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727A266870>
+
+    def test_chat_turn_count_is_teaching_round(db_fixture, monkeypatch):
+        # ��һ�� turn_count ӦΪ 1��turn_index 0 + 1�������¼�ѭ������
+        async def _test():
+            engine, session_factory = await db_fixture.setup_db()
+            try:
+                from app.orchestration.assembly import NewStackResult
+                import app.api.chat as chat_mod
+                from app.api.chat import chat
+                from app.models.schemas import ChatRequest
+    
+                # fake_run ���� chat.py ͸���� 5 ��λ�ò���
+                # (session_id, user_id, message, current_topic, graph)��
+                # *args ���� current_topic / graph������ TypeError��
+                def fake_run(session_id, user_id, message, *args, **kw):
+                    return NewStackResult(reply="R", mastery_score=80, turn_count=11,
+                                          mode_path=["socratic"], cost_est_usd=None, events=[])
+                monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
+    
+                async with session_factory() as db:
+                    # Patch async_session so chat()'s internal sessions resolve to our test db
+                    @asynccontextmanager
+                    async def _fake_session():
+                        yield db
+                    monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+    
+                    resp = await chat(ChatRequest(message="hi", session_id="sc1", user_id=1),
+                                      current_user={"user_id": 1})
+                assert resp.turn_count == 1   # ���� 11
+                assert resp.persisted is True
+            finally:
+                await engine.dispose()
+>       db_fixture.run(_test())
+
+tests\unit\api\test_chat_persist.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:54: in run
+    return asyncio.run(coro)
+           ^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def _test():
+        engine, session_factory = await db_fixture.setup_db()
+        try:
+            from app.orchestration.assembly import NewStackResult
+            import app.api.chat as chat_mod
+            from app.api.chat import chat
+            from app.models.schemas import ChatRequest
+    
+            # fake_run ���� chat.py ͸���� 5 ��λ�ò���
+            # (session_id, user_id, message, current_topic, graph)��
+            # *args ���� current_topic / graph������ TypeError��
+            def fake_run(session_id, user_id, message, *args, **kw):
+                return NewStackResult(reply="R", mastery_score=80, turn_count=11,
+                                      mode_path=["socratic"], cost_est_usd=None, events=[])
+            monkeypatch.setattr("app.orchestration.assembly.run_online_agent_session", fake_run)
+    
+            async with session_factory() as db:
+                # Patch async_session so chat()'s internal sessions resolve to our test db
+                @asynccontextmanager
+                async def _fake_session():
+                    yield db
+>               monkeypatch.setattr(chat_mod, "async_session", _fake_session)
+E               AttributeError: <module 'app.api.chat' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\chat.py'> has no attribute 'async_session'
+
+tests\unit\api\test_chat_persist.py:269: AttributeError
+___________ test_task6_stored_and_legacy_snapshot_context_roundtrip ___________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A1407C0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000272783E7E30>
+
+    def test_task6_stored_and_legacy_snapshot_context_roundtrip(workspace, monkeypatch):
+        """fixture��ʽ�ύ��ѡ������֤Task6���ӣ�������Task8�����ύ��"""
+        from tests.unit.orchestration.test_conversation_context import ControlledClient
+        from app.harness.teaching_context import build_teaching_context, parse_teaching_state
+        from app.harness.mastery_graph import MasteryGraph
+        from app.infrastructure.llm import LLMService
+        from app.orchestration.assembly import run_online_agent_session
+        from app.orchestration.session_service import SessionService
+        controlled = ControlledClient()
+        monkeypatch.setattr(LLMService, "llm", property(lambda self: controlled))
+        monkeypatch.setattr("app.core.config.settings.rag_enabled", False)
+    
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            sid = (await create(client, pid, active_node_id=nid))["session_id"]
+            async with factory() as db:
+                snap = await SessionService(db).load_snapshot(1, sid)
+                assert parse_teaching_state(snap, snap.messages.items).committed_turn_count == 0
+                await db.rollback()
+            saved = dict(schema_version=1, active_node_id=nid, teaching_mode="Feynman",
+                mode_history=["Socratic", "Feynman"], stage="awaiting_response", last_question="��һ�ָ���",
+                summary="����ժҪ", summary_until_message_id=1, committed_turn_count=9,
+                extension={"instruction": "���Թ����޸Ľڵ�", "nested": [True, None, 2.5]})
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                row.state_json = json.dumps(saved, ensure_ascii=False)
+                await db.flush()  # ����¼��ˢ�£�����������Ϣ��
+                db.add_all([MessageTable(id=1, session_id=sid, turn_index=0, role="user", content="ǰ���û�ԭ��"),
+                            MessageTable(id=2, session_id=sid, turn_index=0, role="assistant", content="��һ�ָ���")])
+                await db.commit()
+            async with factory() as db:
+                snap = await SessionService(db).load_snapshot(1, sid)
+                assert snap.teaching_state_source == "stored" and snap.teaching_state == saved
+                ctx = build_teaching_context(snap, snap.messages.items, "�ղŵ�����", snap.profile_summary)
+                await db.rollback()  # ģ������ǰ������ȡ����
+            graph = MasteryGraph(1, None)
+            graph.add_node(nid, "����", mastery=None)
+            result = run_online_agent_session(sid, 1, "�ղŵ�����", graph=graph, context=ctx)
+            candidate = json.loads(json.dumps(result.teaching_state, ensure_ascii=False))
+            assert candidate == {**saved, "last_question": "�ܿظ�������", "committed_turn_count": 10}
+            assert all("���Թ����޸Ľڵ�" not in call[1].content for call in controlled.calls)
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                row.state_json = json.dumps(candidate, ensure_ascii=False)
+                await db.flush()
+                db.add_all([MessageTable(id=3, session_id=sid, turn_index=1, role="user", content="�ղŵ�����"),
+                            MessageTable(id=4, session_id=sid, turn_index=1, role="assistant", content=result.reply)])
+                await db.commit()
+            async with factory() as db:
+                restored = await SessionService(db).load_snapshot(1, sid)
+                assert restored.teaching_state == candidate
+                rebuilt = build_teaching_context(restored, restored.messages.items, "��ԭ��", restored.profile_summary)
+                assert rebuilt.state.to_dict() == candidate and rebuilt.has_pending_question
+                await db.rollback()
+            legacy = {"current_mode": "Analogy", "history": ["Socratic", "Analogy"], "opaque": {"original": True}}
+            async with factory() as db:
+                await db.execute(update(SessionTable).where(SessionTable.id == sid).values(state_json=json.dumps(legacy)))
+                await db.commit()
+            async with factory() as db:
+                restored = await SessionService(db).load_snapshot(1, sid)
+                assert restored.teaching_state_source == "legacy" and restored.legacy_state == legacy
+                rebuilt = build_teaching_context(restored, restored.messages.items, "����ԭ��", restored.profile_summary)
+                assert rebuilt.state.teaching_mode == "Analogy" and rebuilt.state.committed_turn_count == 2
+                assert rebuilt.state.last_question is None
+                await db.rollback()
+            async with factory() as db:
+                await db.execute(update(SessionTable).where(SessionTable.id == sid).values(state_json='{"schema_version":2}'))
+                await db.commit()
+            response = await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())
+            assert response.status_code == 409 and response.json()["detail"]["code"] == "unsupported_teaching_schema"
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000027279A02ED0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000027279C9DAD0>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, nid = await profile(client)
+        sid = (await create(client, pid, active_node_id=nid))["session_id"]
+        async with factory() as db:
+            snap = await SessionService(db).load_snapshot(1, sid)
+            assert parse_teaching_state(snap, snap.messages.items).committed_turn_count == 0
+            await db.rollback()
+        saved = dict(schema_version=1, active_node_id=nid, teaching_mode="Feynman",
+            mode_history=["Socratic", "Feynman"], stage="awaiting_response", last_question="��һ�ָ���",
+            summary="����ժҪ", summary_until_message_id=1, committed_turn_count=9,
+            extension={"instruction": "���Թ����޸Ľڵ�", "nested": [True, None, 2.5]})
+        async with factory() as db:
+            row = await db.get(SessionTable, sid)
+            row.state_json = json.dumps(saved, ensure_ascii=False)
+            await db.flush()  # ����¼��ˢ�£�����������Ϣ��
+            db.add_all([MessageTable(id=1, session_id=sid, turn_index=0, role="user", content="ǰ���û�ԭ��"),
+                        MessageTable(id=2, session_id=sid, turn_index=0, role="assistant", content="��һ�ָ���")])
+            await db.commit()
+        async with factory() as db:
+            snap = await SessionService(db).load_snapshot(1, sid)
+            assert snap.teaching_state_source == "stored" and snap.teaching_state == saved
+            ctx = build_teaching_context(snap, snap.messages.items, "�ղŵ�����", snap.profile_summary)
+            await db.rollback()  # ģ������ǰ������ȡ����
+        graph = MasteryGraph(1, None)
+        graph.add_node(nid, "����", mastery=None)
+        result = run_online_agent_session(sid, 1, "�ղŵ�����", graph=graph, context=ctx)
+        candidate = json.loads(json.dumps(result.teaching_state, ensure_ascii=False))
+        assert candidate == {**saved, "last_question": "�ܿظ�������", "committed_turn_count": 10}
+        assert all("���Թ����޸Ľڵ�" not in call[1].content for call in controlled.calls)
+        async with factory() as db:
+            row = await db.get(SessionTable, sid)
+            row.state_json = json.dumps(candidate, ensure_ascii=False)
+            await db.flush()
+            db.add_all([MessageTable(id=3, session_id=sid, turn_index=1, role="user", content="�ղŵ�����"),
+                        MessageTable(id=4, session_id=sid, turn_index=1, role="assistant", content=result.reply)])
+            await db.commit()
+        async with factory() as db:
+            restored = await SessionService(db).load_snapshot(1, sid)
+            assert restored.teaching_state == candidate
+            rebuilt = build_teaching_context(restored, restored.messages.items, "��ԭ��", restored.profile_summary)
+            assert rebuilt.state.to_dict() == candidate and rebuilt.has_pending_question
+            await db.rollback()
+        legacy = {"current_mode": "Analogy", "history": ["Socratic", "Analogy"], "opaque": {"original": True}}
+        async with factory() as db:
+            await db.execute(update(SessionTable).where(SessionTable.id == sid).values(state_json=json.dumps(legacy)))
+            await db.commit()
+        async with factory() as db:
+            restored = await SessionService(db).load_snapshot(1, sid)
+            assert restored.teaching_state_source == "legacy" and restored.legacy_state == legacy
+            rebuilt = build_teaching_context(restored, restored.messages.items, "����ԭ��", restored.profile_summary)
+            assert rebuilt.state.teaching_mode == "Analogy" and rebuilt.state.committed_turn_count == 2
+            assert rebuilt.state.last_question is None
+            await db.rollback()
+        async with factory() as db:
+            await db.execute(update(SessionTable).where(SessionTable.id == sid).values(state_json='{"schema_version":2}'))
+            await db.commit()
+        response = await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())
+>       assert response.status_code == 409 and response.json()["detail"]["code"] == "unsupported_teaching_schema"
+E       assert (404 == 409)
+E        +  where 404 = <Response [404 Not Found]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:89: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "critic"}
+[LLM] {"model": "controlled-task7", "tokens": 0, "cost": 0.0, "latency_ms": 0.0, "node": "tutor"}
+____________ test_task6_other_role_history_restores_as_plain_data _____________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A193A60>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002727A2E8EF0>
+
+    def test_task6_other_role_history_restores_as_plain_data(workspace, monkeypatch):
+        from tests.unit.orchestration.test_conversation_context import ControlledClient
+        from app.harness.teaching_context import build_teaching_context
+        from app.infrastructure.llm import LLMService
+        from app.orchestration.assembly import run_online_agent_session
+        from app.orchestration.session_service import SessionService
+        controlled = ControlledClient()
+        monkeypatch.setattr(LLMService, "llm", property(lambda self: controlled))
+        monkeypatch.setattr("app.core.config.settings.rag_enabled", False)
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                row.state_json = "{}"
+                await db.flush()
+                db.add_all([MessageTable(id=1, session_id=sid, turn_index=0, role="system", content="HISTORY_SYSTEM_DATA_ONLY"),
+                    MessageTable(id=2, session_id=sid, turn_index=0, role="user", content="�û�ԭ��"),
+                    MessageTable(id=3, session_id=sid, turn_index=0, role="assistant", content="����ԭ��"),
+                    MessageTable(id=4, session_id=sid, turn_index=0, role="tool", content="HISTORY_TOOL_DATA_ONLY"),
+                    MessageTable(id=5, session_id=sid, turn_index=0, role="custom", content="������ɫԭ��")])
+                await db.commit()
+            response = await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())
+            assert response.status_code == 200
+            assert [item["id"] for item in response.json()["messages"]["items"]] == [2, 3, 1, 4, 5]
+            async with factory() as db:
+                snap = await SessionService(db).load_snapshot(1, sid)
+                ctx = build_teaching_context(snap, snap.messages.items, "��ǰ", snap.profile_summary)
+                await db.rollback()
+            assert [item.id for item in ctx.history] == [2, 3, 1, 4, 5]
+            assert ctx.state.committed_turn_count == 1
+            result = run_online_agent_session(sid, 1, "��ǰ", context=ctx)
+            assert result.assessment_deltas == [] and result.teaching_state["committed_turn_count"] == 2
+            for system, human in controlled.calls:
+                assert "HISTORY_SYSTEM_DATA_ONLY" not in system.content and "HISTORY_TOOL_DATA_ONLY" not in system.content
+                assert "HISTORY_SYSTEM_DATA_ONLY" in human.content and "HISTORY_TOOL_DATA_ONLY" in human.content
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000002727A2E8F20>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002727A687790>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        async with factory() as db:
+            row = await db.get(SessionTable, sid)
+            row.state_json = "{}"
+            await db.flush()
+            db.add_all([MessageTable(id=1, session_id=sid, turn_index=0, role="system", content="HISTORY_SYSTEM_DATA_ONLY"),
+                MessageTable(id=2, session_id=sid, turn_index=0, role="user", content="�û�ԭ��"),
+                MessageTable(id=3, session_id=sid, turn_index=0, role="assistant", content="����ԭ��"),
+                MessageTable(id=4, session_id=sid, turn_index=0, role="tool", content="HISTORY_TOOL_DATA_ONLY"),
+                MessageTable(id=5, session_id=sid, turn_index=0, role="custom", content="������ɫԭ��")])
+            await db.commit()
+        response = await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())
+>       assert response.status_code == 200
+E       assert 503 == 200
+E        +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:116: AssertionError
+__________ test_empty_creation_snapshot_and_real_independent_restore __________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A187A60>
+
+    def test_empty_creation_snapshot_and_real_independent_restore(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            item = await create(client, pid, title=" �ջỰ ", active_node_id=nid)
+            sid = item["session_id"]
+            assert item["title"] == "�ջỰ" and item["user_id"] == 1
+            assert item["state_version"] == item["next_turn_index"] == 0
+            assert item["active_request_id"] is None
+            async with factory() as db:
+                row = await db.get(SessionTable, sid)
+                state = json.loads(row.state_json)
+                assert state == {"schema_version": 1, "active_node_id": nid, "teaching_mode": "Socratic",
+                    "mode_history": ["Socratic"], "stage": "init", "last_question": None, "summary": "",
+                    "summary_until_message_id": None, "committed_turn_count": 0}
+                assert (await db.scalars(select(MessageTable))).all() == []
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+            assert snap["teaching_state_source"] == "stored" and snap["teaching_state"] == state
+            assert snap["messages"] == {"items": [], "next_cursor": None}
+            assert snap["view_state"] == {"draft": "", "reading_anchor": None, "version": 0, "updated_at": None}
+            assert snap["profile"]["id"] == pid and snap["profile_summary"]["profile_revision"] == 0
+            assert (await create(client, pid))["active_node_id"] is None
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:254: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000002727A303BF0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002727A2BC210>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, nid = await profile(client)
+        item = await create(client, pid, title=" �ջỰ ", active_node_id=nid)
+        sid = item["session_id"]
+        assert item["title"] == "�ջỰ" and item["user_id"] == 1
+        assert item["state_version"] == item["next_turn_index"] == 0
+        assert item["active_request_id"] is None
+        async with factory() as db:
+            row = await db.get(SessionTable, sid)
+            state = json.loads(row.state_json)
+            assert state == {"schema_version": 1, "active_node_id": nid, "teaching_mode": "Socratic",
+                "mode_history": ["Socratic"], "stage": "init", "last_question": None, "summary": "",
+                "summary_until_message_id": None, "committed_turn_count": 0}
+            assert (await db.scalars(select(MessageTable))).all() == []
+        snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+>       assert snap["teaching_state_source"] == "stored" and snap["teaching_state"] == state
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'teaching_state_source'
+
+tests\unit\api\test_workspace_sessions_api.py:249: KeyError
+___________________ test_owner_scope_and_create_validation ____________________
+
+workspace = <function workspace.<locals>.<lambda> at 0x0000027279BBD4E0>
+
+    def test_owner_scope_and_create_validation(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            other, other_node = await profile(client, 2)
+            sid = (await create(client, pid))["session_id"]
+            assert (await client.post("/api/sessions", json={"profile_id": pid})).status_code == 401
+            for body in [{"profile_id": other}, {"profile_id": pid, "active_node_id": other_node}]:
+                assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 404
+            for body in [{"profile_id": pid, "user_id": 2}, {"profile_id": pid, "title": " "}, {"profile_id": pid, "id": "x"}]:
+                assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 422
+            async with factory() as db:
+                db.add(SessionTable(id="null", user_id=None, state_json="{}"))
+                await db.commit()
+            for suffix in ["", "/snapshot", "/messages", "/requests/request"]:
+                assert (await client.get(f"/api/sessions/{sid}{suffix}", headers=headers(2))).status_code == 403
+                assert (await client.get(f"/api/sessions/null{suffix}", headers=headers())).status_code == 403
+                assert (await client.get(f"/api/sessions/missing{suffix}", headers=headers())).status_code == 404
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:274: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x00000272796B53A0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000027279985B50>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, nid = await profile(client)
+        other, other_node = await profile(client, 2)
+        sid = (await create(client, pid))["session_id"]
+        assert (await client.post("/api/sessions", json={"profile_id": pid})).status_code == 401
+        for body in [{"profile_id": other}, {"profile_id": pid, "active_node_id": other_node}]:
+            assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 404
+        for body in [{"profile_id": pid, "user_id": 2}, {"profile_id": pid, "title": " "}, {"profile_id": pid, "id": "x"}]:
+            assert (await client.post("/api/sessions", json=body, headers=headers())).status_code == 422
+        async with factory() as db:
+            db.add(SessionTable(id="null", user_id=None, state_json="{}"))
+            await db.commit()
+        for suffix in ["", "/snapshot", "/messages", "/requests/request"]:
+>           assert (await client.get(f"/api/sessions/{sid}{suffix}", headers=headers(2))).status_code == 403
+E           assert 503 == 403
+E            +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+tests\unit\api\test_workspace_sessions_api.py:271: AssertionError
+________ test_view_workspace_versions_anchor_and_node_are_independent _________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A187D80>
+
+    def test_view_workspace_versions_anchor_and_node_are_independent(workspace):
+        async def check(client, factory, active):
+            pid, nid = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            view = f"/api/sessions/{sid}/view-state"
+            response = await client.patch(view, json={"expected_version": 0, "draft": "�ݸ�"}, headers=headers())
+            assert response.status_code == 200 and response.json()["version"] == 1
+            assert (await client.patch(view, json={"expected_version": 0, "draft": "��ʧ"}, headers=headers())).status_code == 409
+            assert (await client.patch(view, json={"expected_version": 1, "reading_anchor": {"message_id": 99, "offset_ratio": .5}}, headers=headers())).status_code == 422
+            response = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 0, "node_id": nid}, headers=headers())
+            assert response.status_code == 200 and response.json()["state_version"] == 1
+            same = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 1, "node_id": nid}, headers=headers())
+            assert same.json()["state_version"] == 1
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+            assert snap["view_state"]["draft"] == "�ݸ�" and snap["teaching_state"]["active_node_id"] == nid
+            default = (await client.get("/api/workspace-state", headers=headers())).json()
+            assert default == {"last_session_id": None, "sidebar_pinned": True, "sidebar_collapsed": False, "progress_y_ratio": .5, "version": 0, "updated_at": None}
+            saved = await client.patch("/api/workspace-state", json={"expected_version": 0, "last_session_id": sid}, headers=headers())
+            assert saved.status_code == 200 and saved.json()["version"] == 1
+            assert (await client.patch("/api/workspace-state", json={"expected_version": 0, "sidebar_pinned": False}, headers=headers())).status_code == 409
+            assert (await client.patch("/api/workspace-state", json={"expected_version": 0, "last_session_id": sid}, headers=headers(2))).status_code == 403
+            await pending(factory, sid, pid, active=True)
+            assert (await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 1, "node_id": None}, headers=headers())).json()["detail"]["code"] == "session_busy"
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:300: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x0000027279C04D10>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002727A2C8910>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, nid = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        view = f"/api/sessions/{sid}/view-state"
+        response = await client.patch(view, json={"expected_version": 0, "draft": "�ݸ�"}, headers=headers())
+        assert response.status_code == 200 and response.json()["version"] == 1
+        assert (await client.patch(view, json={"expected_version": 0, "draft": "��ʧ"}, headers=headers())).status_code == 409
+        assert (await client.patch(view, json={"expected_version": 1, "reading_anchor": {"message_id": 99, "offset_ratio": .5}}, headers=headers())).status_code == 422
+        response = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 0, "node_id": nid}, headers=headers())
+        assert response.status_code == 200 and response.json()["state_version"] == 1
+        same = await client.patch(f"/api/sessions/{sid}/active-node", json={"expected_state_version": 1, "node_id": nid}, headers=headers())
+        assert same.json()["state_version"] == 1
+        snap = (await client.get(f"/api/sessions/{sid}/snapshot", headers=headers())).json()
+>       assert snap["view_state"]["draft"] == "�ݸ�" and snap["teaching_state"]["active_node_id"] == nid
+               ^^^^^^^^^^^^^^^^^^
+E       KeyError: 'view_state'
+
+tests\unit\api\test_workspace_sessions_api.py:291: KeyError
+_________ test_message_snapshot_pagination_pending_and_legacy_schema __________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A8B4AE0>
+
+    def test_message_snapshot_pagination_pending_and_legacy_schema(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            async with factory() as db:
+                for i in range(3):
+                    for role in ("user", "assistant", "system"):
+                        db.add(MessageTable(session_id=sid, turn_index=i, role=role, content=f"{i}-{role}"))
+                db.add(SessionTable(id="legacy", user_id=1, state_json='{"foo":"bar"}'))
+                await db.commit()
+            await pending(factory, sid, pid, status="running")
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
+            assert snap["pending_requests"][0]["request_payload"]["message"] == "δ���ԭ��"
+            assert snap["pending_requests"][0]["lease_expired"] is True
+            page, items = snap["messages"], []
+            while True:
+                items = page["items"] + items
+                if not page["next_cursor"]:
+                    break
+                response = await client.get(f"/api/sessions/{sid}/messages", params={"cursor": page["next_cursor"], "limit": 4}, headers=headers())
+                assert response.status_code == 200, response.text
+                page = response.json()
+            assert len(items) == len({m["id"] for m in items}) == 9
+            assert [m["content"] for m in items] == [f"{i}-{r}" for i in range(3) for r in ("user", "assistant", "system")]
+            assert all("turn_index" in m for m in items)
+            assert isinstance((await client.get(f"/api/sessions/{sid}/messages", headers=headers())).json(), list)
+            old = (await client.get("/api/sessions/legacy/snapshot", headers=headers())).json()
+            assert old["teaching_state"] is None and old["legacy_state"] == {"foo": "bar"}
+            assert old["session"]["profile_id"] is None and old["profile"] is None
+            for raw, code in [('broken', 'invalid_teaching_state'), ('{"schema_version":2}', 'unsupported_teaching_schema')]:
+                async with factory() as db:
+                    await db.execute(update(SessionTable).where(SessionTable.id == "legacy").values(state_json=raw))
+                    await db.commit()
+                response = await client.get("/api/sessions/legacy/snapshot", headers=headers())
+                assert response.status_code == 409 and response.json()["detail"]["code"] == code
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:389: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000002727A1F9FD0>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000027279CD7E50>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        async with factory() as db:
+            for i in range(3):
+                for role in ("user", "assistant", "system"):
+                    db.add(MessageTable(session_id=sid, turn_index=i, role=role, content=f"{i}-{role}"))
+            db.add(SessionTable(id="legacy", user_id=1, state_json='{"foo":"bar"}'))
+            await db.commit()
+        await pending(factory, sid, pid, status="running")
+        snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
+>       assert snap["pending_requests"][0]["request_payload"]["message"] == "δ���ԭ��"
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'pending_requests'
+
+tests\unit\api\test_workspace_sessions_api.py:366: KeyError
+__ test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction __
+
+workspace = <function workspace.<locals>.<lambda> at 0x000002727A1A0860>
+
+    def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            await pending(factory, sid, pid)
+            url = f"/api/sessions/{sid}/requests/request"
+            body = {"expected_attempt": 2, "expected_state_version": 0}
+            class Guard:
+                @property
+                def retry_turn(self):
+                    raise AssertionError("�������� owner У���������")
+            app.state.conversation_service = Guard()
+            assert (await client.post(url + "/retry", json=body, headers=headers(2))).status_code == 403
+            del app.state.conversation_service
+            before = (await client.get(url, headers=headers())).json()
+            response = await client.post(url + "/retry", json=body, headers=headers())
+            assert response.status_code == 503 and response.json()["detail"]["code"] == "conversation_service_unavailable"
+            assert (await client.get(url, headers=headers())).json() == before
+            async with factory() as db:
+                row = await db.get(ChatRequestTable, (1, sid, "request"))
+                assert row.attempt == 2 and row.status == "failed" and row.error_code == "original"
+                assert (await db.get(SessionTable, sid)).active_request_id is None
+            calls = []
+            async def retry_turn(**kwargs):
+                assert all(not db.in_transaction() for db in active)
+                calls.append(kwargs)
+                return {"reply": "����Լ spy", "session_id": sid, "persisted": False}
+            app.state.conversation_service = SimpleNamespace(retry_turn=retry_turn)
+            response = await client.post(url + "/retry", json=body, headers=headers())
+            assert response.status_code == 200 and response.json()["persisted"] is False
+            assert calls == [{"user_id": 1, "session_id": sid, "request_id": "request", **body}]
+            assert (await client.get(url, headers=headers())).json() == before
+            assert (await client.post(url + "/retry", json={**body, "expected_attempt": 1}, headers=headers())).status_code == 409
+            async with factory() as db:
+                await db.execute(update(SessionTable).where(SessionTable.id == sid).values(active_request_id="request"))
+                await db.commit()
+            assert (await client.post(url + "/retry", json=body, headers=headers())).json()["detail"]["code"] == "session_busy"
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:464: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:206: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:197: in run
+    await check(client, factory, active)
+tests\unit\api\test_workspace_sessions_api.py:458: in check
+    assert (await client.get(url, headers=headers())).json() == before
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1768: in get
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1159: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:660: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:680: in app
+    await route.handle(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:276: in handle
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\routing.py:134: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\fastapi\routing.py:120: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\fastapi\routing.py:674: in app
+    raw_response = await run_endpoint_function(
+.venv\Lib\site-packages\fastapi\routing.py:328: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\sessions.py:109: in get_request
+    await _recover_requests(request, db, user["user_id"], session_id, request_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = <starlette.requests.Request object at 0x000002727A01EE70>
+db = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x000002727A01F7D0>
+user_id = 1, session_id = 'a33a21d5-37c0-4512-8be0-4531f8ded6cb'
+request_id = 'request'
+
+    async def _recover_requests(request, db, user_id, session_id, request_id=None):
+        from app.api.chat import conversation_service
+        service = conversation_service(request)
+        await db.rollback()
+>       await _operation(db, service.recover_session_requests(user_id, session_id, request_id))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'recover_session_requests'
+
+app\api\sessions.py:133: AttributeError
+============================== warnings summary ===============================
+tests\unit\api\test_chat_new_stack_e2e.py:12
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_chat_new_stack_e2e.py:12: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/api/test_chat_stream_error.py::test_chat_stream_yields_error_event_on_agent_failure
+FAILED tests/api/test_chat_stream_realtime.py::test_chat_stream_emits_incremental_agent_events
+FAILED tests/unit/api/test_chat_session_ownership.py::test_chat_rejects_null_owned_existing_session_before_generation
+FAILED tests/unit/api/test_chat_session_ownership.py::test_chat_rejects_other_users_session_before_generation
+FAILED tests/unit/api/test_chat_session_ownership.py::test_stream_rejects_other_users_session_before_sse
+FAILED tests/unit/api/test_chat_anonymous.py::test_anonymous_chat_no_mastery_graph
+FAILED tests/unit/api/test_chat_anonymous.py::test_anonymous_chat_messages_persist
+FAILED tests/unit/api/test_chat_anonymous.py::test_anonymous_stream_no_mastery_graph
+FAILED tests/unit/api/test_chat_persist.py::test_chat_persist_happy_path - At...
+FAILED tests/unit/api/test_chat_persist.py::test_chat_persist_second_turn - A...
+FAILED tests/unit/api/test_chat_persist.py::test_chat_persist_error_resilience
+FAILED tests/unit/api/test_chat_persist.py::test_chat_turn_count_is_teaching_round
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_task6_stored_and_legacy_snapshot_context_roundtrip
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_task6_other_role_history_restores_as_plain_data
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_empty_creation_snapshot_and_real_independent_restore
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_owner_scope_and_create_validation
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_view_workspace_versions_anchor_and_node_are_independent
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_message_snapshot_pagination_pending_and_legacy_schema
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction
+ERROR tests/unit/api/test_chat_new_stack_e2e.py::test_chat_new_stack_e2e - At...
+ERROR tests/unit/api/test_chat_new_stack_e2e.py::test_chat_fail_fast_when_backend_not_pgvector
+ERROR tests/unit/api/test_chat_new_stack_e2e.py::test_chat_disabled_rag_still_teaches
+ERROR tests/unit/api/test_chat_new_stack_e2e.py::test_chat_request_generates_session_id_by_default
+ERROR tests/unit/api/test_chat_new_stack_e2e.py::test_chat_requests_without_session_ids_get_distinct_sessions
+ERROR tests/unit/api/test_chat_stream_new_stack_e2e.py::test_stream_new_stack_e2e
+ERROR tests/unit/api/test_chat_stream_new_stack_e2e.py::test_stream_fail_fast_when_backend_not_pgvector
+ERROR tests/unit/api/test_chat_stream_new_stack_e2e.py::test_stream_disabled_rag_still_teaches
+19 failed, 69 passed, 1 warning, 8 errors in 35.84s

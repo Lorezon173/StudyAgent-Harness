@@ -1,0 +1,396 @@
+FFROUND2_RETRY_DB running 3 active retry-disconnect messages 2
+FROUND2_RETRY_DB failed 2 active None messages 2
+ROUND2_RETRY_DB failed 2 active None messages 2
+.ROUND2_RETRY_DB running 3 active retry-disconnect messages 2
+F
+================================== FAILURES ===================================
+______ test_retry_real_asgi_disconnect_interrupts_before_worker_release _______
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001B1028FCFE0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001B102911F10>
+
+    def test_retry_real_asgi_disconnect_interrupts_before_worker_release(dbkit,monkeypatch):
+        async def check(factory,engine):
+            from app.main import app
+            from app.harness.events import Event
+            from app.harness.enums import EventType,EventSource
+            await seed(factory)
+            release=threading.Event()
+            started,finished,disconnected=asyncio.Event(),asyncio.Event(),asyncio.Event()
+            loop=asyncio.get_running_loop()
+            errors=[]
+            previous=loop.get_exception_handler()
+            loop.set_exception_handler(lambda loop,context:errors.append(context))
+            def runner(sid,uid,text,*,graph,on_event,context):
+                loop.call_soon_threadsafe(started.set)
+                assert release.wait(15)
+                try:
+                    for _ in range(1000):
+                        on_event(Event(type=EventType.TUTOR_ASKED,source=EventSource.TUTOR,session_id=sid,payload={'content':'late retry'}))
+                    return candidate_runner(score=65)(sid,uid,text,graph=graph,on_event=on_event,context=context)
+                finally:
+                    loop.call_soon_threadsafe(finished.set)
+            try:
+                async with await api_client(factory,monkeypatch) as client:
+                    service=app.state.conversation_service
+                    path=await establish_failed_retry(client,service)
+                    before=await retry_business_state(factory)
+                    service.runner=runner
+                    task=asyncio.create_task(raw_asgi(app,path,{'expected_attempt':2,'expected_state_version':0},disconnected))
+                    try:
+                        await asyncio.wait_for(started.wait(),5)
+                        disconnected.set()
+                        deadline=loop.time()+1
+                        while loop.time()<deadline:
+                            async with factory() as db:
+                                row=await db.get(ChatRequestTable,(1,'s','retry-disconnect'))
+                                if row.status=='interrupted':
+                                    break
+                        await assert_retry_state(factory,'interrupted',4,None)
+                        assert not release.is_set()
+                        assert await retry_business_state(factory)==before
+                        await asyncio.wait_for(task,5)
+                        release.set()
+                        await asyncio.wait_for(finished.wait(),5)
+                        assert await retry_business_state(factory)==before
+                        await assert_retry_state(factory,'interrupted',4,None)
+                        assert errors==[]
+                    finally:
+                        release.set()
+                        await asyncio.gather(task,return_exceptions=True)
+            finally:
+                release.set()
+                loop.set_exception_handler(previous)
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:704: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:75: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:72: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\api\test_conversation_transactions.py:689: in check
+    await assert_retry_state(factory,'interrupted',4,None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001B10261D110>, autoflush=True, expire_on_commit=False)
+status = 'interrupted', attempt = 4, active = None
+
+    async def assert_retry_state(factory,status,attempt,active):
+        async with factory() as db:
+            row=await db.get(ChatRequestTable,(1,'s','retry-disconnect'))
+>           assert (row.status,row.attempt)==(status,attempt)
+E           AssertionError: assert ('running', 3) == ('interrupted', 4)
+E             
+E             At index 0 diff: 'running' != 'interrupted'
+E             Use -v to get more diff
+
+tests\api\test_conversation_transactions.py:647: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:395 teaching request failed: retry-disconnect
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 379, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 265, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_conversation_transactions.py", line 637, in failed
+    raise RuntimeError('controlled initial failure')
+RuntimeError: controlled initial failure
+________ test_retry_disconnected_before_generation_never_starts_runner ________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001B10407EF20>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001B103F76120>
+
+    def test_retry_disconnected_before_generation_never_starts_runner(dbkit,monkeypatch):
+        async def check(factory,engine):
+            from app.main import app
+            await seed(factory)
+            async with await api_client(factory,monkeypatch) as client:
+                service=app.state.conversation_service
+                path=await establish_failed_retry(client,service)
+                before=await retry_business_state(factory)
+                calls=[]
+                def runner(*args,**kwargs):
+                    calls.append(True)
+                    return candidate_runner(score=65)(*args,**kwargs)
+                service.runner=runner
+                disconnected=asyncio.Event()
+                disconnected.set()
+                await raw_asgi(app,path,{'expected_attempt':2,'expected_state_version':0},disconnected)
+                await assert_retry_state(factory,'interrupted',4,None)
+                assert calls==[]
+                assert await retry_business_state(factory)==before
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:726: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:75: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:72: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\api\test_conversation_transactions.py:723: in check
+    await assert_retry_state(factory,'interrupted',4,None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001B104433590>, autoflush=True, expire_on_commit=False)
+status = 'interrupted', attempt = 4, active = None
+
+    async def assert_retry_state(factory,status,attempt,active):
+        async with factory() as db:
+            row=await db.get(ChatRequestTable,(1,'s','retry-disconnect'))
+>           assert (row.status,row.attempt)==(status,attempt)
+E           AssertionError: assert ('completed', 3) == ('interrupted', 4)
+E             
+E             At index 0 diff: 'completed' != 'interrupted'
+E             Use -v to get more diff
+
+tests\api\test_conversation_transactions.py:647: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:395 teaching request failed: retry-disconnect
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 379, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 265, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_conversation_transactions.py", line 637, in failed
+    raise RuntimeError('controlled initial failure')
+RuntimeError: controlled initial failure
+_______ test_retry_task_cancel_after_management_commit_before_run_claim _______
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001B104475E40>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001B104494FB0>
+
+    def test_retry_task_cancel_after_management_commit_before_run_claim(dbkit,monkeypatch):
+        async def check(factory,engine):
+            from app.main import app
+            await seed(factory)
+            entered,release=asyncio.Event(),asyncio.Event()
+            async with await api_client(factory,monkeypatch) as client:
+                service=app.state.conversation_service
+                path=await establish_failed_retry(client,service)
+                before=await retry_business_state(factory)
+                calls=[]
+                service.runner=lambda *a,**kw:calls.append(True)
+                original=service.run_claim
+                async def entry(prepared,**kwargs):
+                    entered.set()
+                    await release.wait()
+                    return await original(prepared,**kwargs)
+                monkeypatch.setattr(service,'run_claim',entry)
+                task=asyncio.create_task(raw_asgi(app,path,{'expected_attempt':2,'expected_state_version':0},asyncio.Event()))
+                try:
+                    await asyncio.wait_for(entered.wait(),5)
+                    await assert_retry_state(factory,'running',3,'retry-disconnect')
+                    task.cancel()
+                    with pytest.raises(asyncio.CancelledError):
+                        await task
+                    await assert_retry_state(factory,'interrupted',4,None)
+                    assert calls==[] and await retry_business_state(factory)==before
+                finally:
+                    release.set()
+                    await asyncio.gather(task,return_exceptions=True)
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:758: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:75: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:72: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\api\test_conversation_transactions.py:753: in check
+    await assert_retry_state(factory,'interrupted',4,None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001B10464B3D0>, autoflush=True, expire_on_commit=False)
+status = 'interrupted', attempt = 4, active = None
+
+    async def assert_retry_state(factory,status,attempt,active):
+        async with factory() as db:
+            row=await db.get(ChatRequestTable,(1,'s','retry-disconnect'))
+>           assert (row.status,row.attempt)==(status,attempt)
+E           AssertionError: assert ('running', 3) == ('interrupted', 4)
+E             
+E             At index 0 diff: 'running' != 'interrupted'
+E             Use -v to get more diff
+
+tests\api\test_conversation_transactions.py:647: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:395 teaching request failed: retry-disconnect
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 379, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 265, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_conversation_transactions.py", line 637, in failed
+    raise RuntimeError('controlled initial failure')
+RuntimeError: controlled initial failure
+___________ test_retry_management_commit_unknown_then_cancel[True] ____________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001B1045F8B80>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001B104688770>
+after_real_commit = True
+
+    @pytest.mark.parametrize('after_real_commit',[False,True])
+    def test_retry_management_commit_unknown_then_cancel(dbkit,monkeypatch,after_real_commit):
+        async def check(factory,engine):
+            from app.main import app
+            from sqlalchemy.ext.asyncio import AsyncSession
+            await seed(factory)
+            entered,release=asyncio.Event(),asyncio.Event()
+            async with await api_client(factory,monkeypatch) as client:
+                service=app.state.conversation_service
+                path=await establish_failed_retry(client,service)
+                before=await retry_business_state(factory)
+                calls=[]
+                service.runner=lambda *a,**kw:calls.append(True)
+                original=AsyncSession.commit
+                armed=True
+                async def commit(db):
+                    nonlocal armed
+                    if not armed:
+                        return await original(db)
+                    armed=False
+                    if after_real_commit:
+                        await original(db)
+                    entered.set()
+                    await release.wait()
+                    if not after_real_commit:
+                        await original(db)
+                monkeypatch.setattr(AsyncSession,'commit',commit)
+                task=asyncio.create_task(raw_asgi(app,path,{'expected_attempt':2,'expected_state_version':0},asyncio.Event()))
+                try:
+                    await asyncio.wait_for(entered.wait(),5)
+                    await assert_retry_state(factory,'running' if after_real_commit else 'failed',3 if after_real_commit else 2,'retry-disconnect' if after_real_commit else None)
+                    task.cancel()
+                    with pytest.raises(asyncio.CancelledError):
+                        await task
+                    await assert_retry_state(factory,'interrupted' if after_real_commit else 'failed',4 if after_real_commit else 2,None)
+                    assert calls==[] and await retry_business_state(factory)==before
+                finally:
+                    release.set()
+                    await asyncio.gather(task,return_exceptions=True)
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:800: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:75: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:72: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\api\test_conversation_transactions.py:795: in check
+    await assert_retry_state(factory,'interrupted' if after_real_commit else 'failed',4 if after_real_commit else 2,None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001B10418F8D0>, autoflush=True, expire_on_commit=False)
+status = 'interrupted', attempt = 4, active = None
+
+    async def assert_retry_state(factory,status,attempt,active):
+        async with factory() as db:
+            row=await db.get(ChatRequestTable,(1,'s','retry-disconnect'))
+>           assert (row.status,row.attempt)==(status,attempt)
+E           AssertionError: assert ('running', 3) == ('interrupted', 4)
+E             
+E             At index 0 diff: 'running' != 'interrupted'
+E             Use -v to get more diff
+
+tests\api\test_conversation_transactions.py:647: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:395 teaching request failed: retry-disconnect
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 379, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 265, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_conversation_transactions.py", line 637, in failed
+    raise RuntimeError('controlled initial failure')
+RuntimeError: controlled initial failure
+=========================== short test summary info ===========================
+FAILED tests/api/test_conversation_transactions.py::test_retry_real_asgi_disconnect_interrupts_before_worker_release
+FAILED tests/api/test_conversation_transactions.py::test_retry_disconnected_before_generation_never_starts_runner
+FAILED tests/api/test_conversation_transactions.py::test_retry_task_cancel_after_management_commit_before_run_claim
+FAILED tests/api/test_conversation_transactions.py::test_retry_management_commit_unknown_then_cancel[True]
+4 failed, 1 passed, 65 deselected in 7.81s

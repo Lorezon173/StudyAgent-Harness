@@ -1,0 +1,152 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________ test_retry_rechecks_real_state_race_and_returns_conflict_http ________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x00000255FC669800>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000255FC64C950>
+
+    def test_retry_rechecks_real_state_race_and_returns_conflict_http(dbkit,monkeypatch):
+        async def check(factory,engine):
+            from app.main import app
+            _,_,bid=await seed(factory)
+            def failed(*args,**kwargs):
+                raise RuntimeError('failed generation')
+            async with await api_client(factory,monkeypatch) as client:
+                service=app.state.conversation_service
+                service.runner=failed
+                result=await client.post('/api/chat',headers=headers(),json={'session_id':'s','request_id':'retry-race','message':'answer'})
+                assert result.json()['status']=='failed' and result.json()['attempt']==2
+                original=service.retry_turn
+                async def raced(**kwargs):
+                    async with factory() as db:
+                        await SessionService(db).set_active_node(1,'s',0,bid)
+                        await db.commit()
+                    return await original(**kwargs)
+                monkeypatch.setattr(service,'retry_turn',raced)
+                response=await client.post('/api/sessions/s/requests/retry-race/retry',headers=headers(),json={'expected_attempt':2,'expected_state_version':0})
+                assert response.status_code==409 and response.json()['detail']['code']=='stale_context'
+>       dbkit(check)
+
+tests\api\test_conversation_transactions.py:773: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+tests\api\test_conversation_transactions.py:771: in check
+    response=await client.post('/api/sessions/s/requests/retry-race/retry',headers=headers(),json={'expected_attempt':2,'expected_state_version':0})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1159: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:660: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:680: in app
+    await route.handle(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:276: in handle
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\routing.py:134: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\fastapi\routing.py:120: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\fastapi\routing.py:674: in app
+    raw_response = await run_endpoint_function(
+.venv\Lib\site-packages\fastapi\routing.py:328: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\sessions.py:125: in retry_request
+    return await retry(user_id=user["user_id"], session_id=session_id, request_id=request_id,
+tests\api\test_conversation_transactions.py:769: in raced
+    return await original(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+app\orchestration\conversation_service.py:219: in retry_turn
+    claim = await ChatRequestStore(db).retry(user_id, session_id, request_id, expected_attempt,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.infrastructure.storage.chat_request_store.ChatRequestStore object at 0x00000255FDC9FA40>
+user_id = 1, session_id = 's', request_id = 'retry-race', expected_attempt = 2
+expected_state_version = 0
+
+    async def retry(self, user_id, session_id, request_id, expected_attempt, expected_state_version, *, now=None):
+        session = await self._session(user_id, session_id)
+        row = await self.get(user_id, session_id, request_id)
+        if row is None:
+            raise PermissionError("request is not owned by user/session")
+        if row.attempt != expected_attempt:
+            raise WorkspaceConflict("attempt_conflict")
+        if row.status not in {"failed", "interrupted"}:
+            raise WorkspaceConflict("request_not_retryable")
+        if expected_state_version != session.state_version or row.base_state_version != session.state_version:
+>           raise WorkspaceConflict("stale_context")
+E           app.infrastructure.storage.chat_request_store.WorkspaceConflict: stale_context
+
+app\infrastructure\storage\chat_request_store.py:171: WorkspaceConflict
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:384 teaching request failed: retry-race
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 368, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 260, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_conversation_transactions.py", line 758, in failed
+    raise RuntimeError('failed generation')
+RuntimeError: failed generation
+=========================== short test summary info ===========================
+FAILED tests/api/test_conversation_transactions.py::test_retry_rechecks_real_state_race_and_returns_conflict_http
+1 failed in 3.78s

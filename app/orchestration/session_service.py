@@ -244,6 +244,8 @@ class SessionService:
             values = dict(active_node_id=node_id, state_version=expected_state_version + 1)
             if source == "stored":
                 state["active_node_id"] = node_id
+                state["last_question"] = None
+                state["stage"] = "init"
                 values["state_json"] = json.dumps(state, ensure_ascii=False)
             result = await self.db.execute(update(SessionTable).where(SessionTable.id == session_id,
                 SessionTable.user_id == user_id, SessionTable.state_version == expected_state_version,

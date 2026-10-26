@@ -1,0 +1,177 @@
+F................................F..                                     [100%]
+================================== FAILURES ===================================
+____________ test_chat_stream_yields_error_event_on_agent_failure _____________
+
+dbkit = <function dbkit.<locals>.<lambda> at 0x000001DDD36FB1A0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001DDA16A4230>
+
+    def test_chat_stream_yields_error_event_on_agent_failure(dbkit,monkeypatch):
+        async def check(factory,engine):
+            from app.main import app
+            def crash(*args,**kwargs):
+                raise RuntimeError('agent boom')
+            async with await api_client(factory,monkeypatch) as client:
+                app.state.conversation_service.runner=crash
+                response=await client.post('/api/chat/stream',headers=headers(),json={'message':'hi','session_id':'st-err'})
+                assert response.status_code==200
+                events=[json.loads(line[6:]) for line in response.text.splitlines() if line.startswith('data: ')]
+                errors=[e for e in events if e.get('type')=='error']
+                assert len(errors)==1
+                error=errors[0]
+                assert error['code']=='AGENT_ERROR'
+                assert error['message']=='���������з�������'
+                assert error['retryable'] is False
+                assert error['persisted'] is False and error['status']=='failed' and error['attempt']==2
+                assert [e for e in events if e.get('type')=='final']==[]
+>       dbkit(check)
+
+tests\api\test_chat_stream_error.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\api\test_conversation_transactions.py:69: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\api\test_conversation_transactions.py:66: in run
+    await asyncio.wait_for(check(factory, engine), 25)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001DDA169A9D0>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001DDA169A9D0>
+
+    async def check(factory,engine):
+        from app.main import app
+        def crash(*args,**kwargs):
+            raise RuntimeError('agent boom')
+        async with await api_client(factory,monkeypatch) as client:
+            app.state.conversation_service.runner=crash
+            response=await client.post('/api/chat/stream',headers=headers(),json={'message':'hi','session_id':'st-err'})
+            assert response.status_code==200
+            events=[json.loads(line[6:]) for line in response.text.splitlines() if line.startswith('data: ')]
+            errors=[e for e in events if e.get('type')=='error']
+            assert len(errors)==1
+            error=errors[0]
+>           assert error['code']=='AGENT_ERROR'
+E           AssertionError: assert 'turn_failed' == 'AGENT_ERROR'
+E             
+E             - AGENT_ERROR
+E             + turn_failed
+
+tests\api\test_chat_stream_error.py:19: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:382 teaching request failed: 42b014c7-b59e-43b2-894b-8310807aa66b
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 366, in run_claim
+    outcome = await execution.generation
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 260, in run_turn
+    result = self.runner(loaded.prepared.session_id, loaded.prepared.user_id, context.current_message,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\api\test_chat_stream_error.py", line 10, in crash
+    raise RuntimeError('agent boom')
+RuntimeError: agent boom
+_________ test_message_snapshot_pagination_pending_and_legacy_schema __________
+
+workspace = <function workspace.<locals>.<lambda> at 0x000001DDD3A39580>
+
+    def test_message_snapshot_pagination_pending_and_legacy_schema(workspace):
+        async def check(client, factory, active):
+            pid, _ = await profile(client)
+            sid = (await create(client, pid))["session_id"]
+            async with factory() as db:
+                for i in range(3):
+                    for role in ("user", "assistant", "system"):
+                        db.add(MessageTable(session_id=sid, turn_index=i, role=role, content=f"{i}-{role}"))
+                db.add(SessionTable(id="legacy", user_id=1, state_json='{"foo":"bar"}'))
+                await db.commit()
+            await pending(factory, sid, pid, status="running")
+            snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
+            assert snap["pending_requests"][0]["request_payload"]["message"] == "δ���ԭ��"
+            assert snap["pending_requests"][0]["lease_expired"] is True
+            page, items = snap["messages"], []
+            while True:
+                items = page["items"] + items
+                if not page["next_cursor"]:
+                    break
+                response = await client.get(f"/api/sessions/{sid}/messages", params={"cursor": page["next_cursor"], "limit": 4}, headers=headers())
+                assert response.status_code == 200, response.text
+                page = response.json()
+            assert len(items) == len({m["id"] for m in items}) == 9
+            assert [m["content"] for m in items] == [f"{i}-{r}" for i in range(3) for r in ("user", "assistant", "system")]
+            assert all("turn_index" in m for m in items)
+            assert isinstance((await client.get(f"/api/sessions/{sid}/messages", headers=headers())).json(), list)
+            old = (await client.get("/api/sessions/legacy/snapshot", headers=headers())).json()
+            assert old["teaching_state"] is None and old["legacy_state"] == {"foo": "bar"}
+            assert old["session"]["profile_id"] is None and old["profile"] is None
+            for raw, code in [('broken', 'invalid_teaching_state'), ('{"schema_version":2}', 'unsupported_teaching_schema')]:
+                async with factory() as db:
+                    await db.execute(update(SessionTable).where(SessionTable.id == "legacy").values(state_json=raw))
+                    await db.commit()
+                response = await client.get("/api/sessions/legacy/snapshot", headers=headers())
+                assert response.status_code == 409 and response.json()["detail"]["code"] == code
+>       workspace(check)
+
+tests\unit\api\test_workspace_sessions_api.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\unit\api\test_workspace_sessions_api.py:208: in <lambda>
+    return lambda check: asyncio.run(run(check))
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\unit\api\test_workspace_sessions_api.py:199: in run
+    await check(client, factory, active)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <httpx.AsyncClient object at 0x000001DDD3F51C40>
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001DDD373F790>, autoflush=True, expire_on_commit=False)
+active = []
+
+    async def check(client, factory, active):
+        pid, _ = await profile(client)
+        sid = (await create(client, pid))["session_id"]
+        async with factory() as db:
+            for i in range(3):
+                for role in ("user", "assistant", "system"):
+                    db.add(MessageTable(session_id=sid, turn_index=i, role=role, content=f"{i}-{role}"))
+            db.add(SessionTable(id="legacy", user_id=1, state_json='{"foo":"bar"}'))
+            await db.commit()
+        await pending(factory, sid, pid, status="running")
+        snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
+>       assert snap["pending_requests"][0]["request_payload"]["message"] == "δ���ԭ��"
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'pending_requests'
+
+tests\unit\api\test_workspace_sessions_api.py:368: KeyError
+============================== warnings summary ===============================
+tests\unit\api\test_chat_new_stack_e2e.py:12
+  D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\unit\api\test_chat_new_stack_e2e.py:12: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/api/test_chat_stream_error.py::test_chat_stream_yields_error_event_on_agent_failure
+FAILED tests/unit/api/test_workspace_sessions_api.py::test_message_snapshot_pagination_pending_and_legacy_schema
+2 failed, 34 passed, 1 warning in 17.21s

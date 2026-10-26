@@ -1,0 +1,2 @@
+TASK8_REAL_CONTAINER_RESTART_VERIFIED workspace_task8_bffb3577ae00485d9d9503639f00f752 before 2026-10-25 16:42:54.729894+00 after 2026-10-25 18:46:38.336214+00 messages 4 persisted True expired interrupted unexpired running foreign_user 403
+TASK8_RESTART_DATABASE_DROPPED workspace_task8_bffb3577ae00485d9d9503639f00f752

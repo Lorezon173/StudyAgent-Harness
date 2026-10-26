@@ -1,0 +1,7 @@
+CURRENT_DATABASE workspace_task8_512abfae5c9847199a5d3a12c0a4427a
+SERVER_UTC 2026-10-25 17:38:40.575300
+SERVER_START 2026-10-25 16:42:54.729894+00
+REQUEST_FACT {'session_id': 'expired', 'request_id': 'pending', 'status': 'interrupted', 'attempt': 2, 'lease_until': None, 'created_at': datetime.datetime(2026, 10, 25, 15, 57, 43, 290986), 'updated_at': datetime.datetime(2026, 10, 25, 17, 14, 57, 786469)}
+REQUEST_FACT {'session_id': 's', 'request_id': 'completed', 'status': 'completed', 'attempt': 1, 'lease_until': None, 'created_at': datetime.datetime(2026, 10, 25, 15, 57, 42, 692902), 'updated_at': datetime.datetime(2026, 10, 25, 15, 57, 42, 960077)}
+REQUEST_FACT {'session_id': 'unexpired', 'request_id': 'pending', 'status': 'interrupted', 'attempt': 2, 'lease_until': None, 'created_at': datetime.datetime(2026, 10, 25, 15, 57, 43, 576871), 'updated_at': datetime.datetime(2026, 10, 25, 17, 14, 57, 896638)}
+HOST_UTC 2026-10-25T17:38:40.587646+00:00 CHECKPOINT_MTIME_UTC 2026-10-25T15:57:43.795909+00:00 ELAPSED_SECONDS 6056.791737 FIXTURE_FUTURE_LEASE_SECONDS 3600

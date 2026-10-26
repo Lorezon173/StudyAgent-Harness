@@ -192,6 +192,8 @@ def workspace(tmp_path):
                     active.remove(db)
         old = app.dependency_overrides.get(get_db)
         app.dependency_overrides[get_db] = override
+        from app.orchestration.conversation_service import ConversationService
+        app.state.conversation_service = ConversationService(factory)
         try:
             async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
                 await check(client, factory, active)
@@ -226,6 +228,9 @@ async def pending(factory, sid, pid, *, status="failed", active=False):
             status=status, attempt=2, lease_until=datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(seconds=1), error_code="original"))
         await db.flush()
         if active:
+            await db.execute(update(SessionTable).where(SessionTable.id == sid).values(active_request_id="request"))
+        if status == "running":
+            await db.flush()
             await db.execute(update(SessionTable).where(SessionTable.id == sid).values(active_request_id="request"))
         await db.commit()
 
@@ -364,7 +369,9 @@ def test_message_snapshot_pagination_pending_and_legacy_schema(workspace):
         await pending(factory, sid, pid, status="running")
         snap = (await client.get(f"/api/sessions/{sid}/snapshot?message_limit=4", headers=headers())).json()
         assert snap["pending_requests"][0]["request_payload"]["message"] == "未完成原文"
-        assert snap["pending_requests"][0]["lease_expired"] is True
+        assert snap["pending_requests"][0]["lease_expired"] is False
+        assert snap["pending_requests"][0]["status"] == "interrupted"
+        assert snap["session"]["active_request_id"] is None
         page, items = snap["messages"], []
         while True:
             items = page["items"] + items
@@ -424,7 +431,7 @@ def test_legacy_message_order_preserves_insertion_while_pagination_uses_turn_ord
     workspace(check)
 
 
-def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(workspace):
+def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(workspace, monkeypatch):
     async def check(client, factory, active):
         pid, _ = await profile(client)
         sid = (await create(client, pid))["session_id"]
@@ -437,9 +444,13 @@ def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(wo
                 raise AssertionError("不得先于 owner 校验访问能力")
         app.state.conversation_service = Guard()
         assert (await client.post(url + "/retry", json=body, headers=headers(2))).status_code == 403
-        del app.state.conversation_service
+        from app.orchestration.conversation_service import ConversationService
+        recovery_service = ConversationService(factory)
+        app.state.conversation_service = recovery_service
         before = (await client.get(url, headers=headers())).json()
+        del app.state.conversation_service
         response = await client.post(url + "/retry", json=body, headers=headers())
+        app.state.conversation_service = recovery_service
         assert response.status_code == 503 and response.json()["detail"]["code"] == "conversation_service_unavailable"
         assert (await client.get(url, headers=headers())).json() == before
         async with factory() as db:
@@ -447,18 +458,31 @@ def test_retry_precheck_unavailable_is_unchanged_and_spy_releases_transaction(wo
             assert row.attempt == 2 and row.status == "failed" and row.error_code == "original"
             assert (await db.get(SessionTable, sid)).active_request_id is None
         calls = []
+        observed = []
+        from contextlib import asynccontextmanager
+        import app.api.sessions as sessions_api
+        original_observe = sessions_api.observe_http_disconnect
+        @asynccontextmanager
+        async def observe(request):
+            async with original_observe(request) as event:
+                observed.append(event)
+                yield event
+        monkeypatch.setattr(sessions_api, "observe_http_disconnect", observe)
         async def retry_turn(**kwargs):
             assert all(not db.in_transaction() for db in active)
+            assert isinstance(kwargs["disconnect_event"], asyncio.Event)
             calls.append(kwargs)
             return {"reply": "仅契约 spy", "session_id": sid, "persisted": False}
-        app.state.conversation_service = SimpleNamespace(retry_turn=retry_turn)
+        app.state.conversation_service = SimpleNamespace(retry_turn=retry_turn, recover_session_requests=recovery_service.recover_session_requests)
         response = await client.post(url + "/retry", json=body, headers=headers())
         assert response.status_code == 200 and response.json()["persisted"] is False
-        assert calls == [{"user_id": 1, "session_id": sid, "request_id": "request", **body}]
+        assert calls == [{"user_id": 1, "session_id": sid, "request_id": "request", **body,
+            "disconnect_event": observed[0]}]
         assert (await client.get(url, headers=headers())).json() == before
         assert (await client.post(url + "/retry", json={**body, "expected_attempt": 1}, headers=headers())).status_code == 409
         async with factory() as db:
             await db.execute(update(SessionTable).where(SessionTable.id == sid).values(active_request_id="request"))
             await db.commit()
         assert (await client.post(url + "/retry", json=body, headers=headers())).json()["detail"]["code"] == "session_busy"
+        assert len(observed) == 1
     workspace(check)

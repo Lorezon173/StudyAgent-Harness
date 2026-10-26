@@ -23,10 +23,10 @@
   },
   "native_goal_started": true,
   "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
-  "native_goal_status": "complete",
+  "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task7",
+  "current_task": "Task8",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -155,13 +155,15 @@
     },
     {
       "id": "Task8",
-      "status": "PENDING",
+      "status": "RUNNING",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task8/"
+      ],
+      "review": "round1–3 plan PASS; I1 and R2-N1 ADDRESSED; final scoped code review Approved",
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "Task9",
@@ -170,8 +172,8 @@
       "evidence": [],
       "review": null,
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "Task10",
@@ -181,7 +183,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "Task11",
@@ -191,7 +193,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "Task12",
@@ -201,7 +203,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "Task13",
@@ -211,7 +213,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK0",
@@ -221,7 +223,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK1",
@@ -231,7 +233,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK2",
@@ -241,7 +243,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK3",
@@ -251,7 +253,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK4",
@@ -261,7 +263,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     },
     {
       "id": "TaskK5",
@@ -271,7 +273,7 @@
       "review": null,
       "blocked_reason": null,
       "in_current_goal": false,
-      "deferred_reason": "SC-001：用户要求完成Task7即止，保留原待办未实施"
+      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
     }
   ],
   "milestones": {
@@ -286,33 +288,68 @@
   "current_blocker": null,
   "consecutive_blocked_goal_turns": 0,
   "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core",
-  "execution_mode": "native_goal_complete_sc001",
+  "execution_mode": "task8_task9_authorized_workflow",
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
-    "task": "Task7",
-    "round": "round4",
-    "plan": "docs/superpowers/plans/2026-10-25-task7-round4.md",
-    "plan_review": "PASS",
-    "status": "DONE",
-    "implementer": "task7_context_impl",
+    "task": "Task8",
+    "round": "round3",
     "code_fix_round": 2,
-    "plan_sha256": "e043f04d239d5232f4407be252fef861dd5d423ff7ffab7a136795917b30040e"
+    "plan": "docs/superpowers/plans/2026-10-26-task8-round3.md",
+    "plan_review": "PASS",
+    "status": "COMMIT_PENDING",
+    "planner": "task8_plan_draft",
+    "reviewer": "task8_plan_review",
+    "plan_sha256": "437df2114f1ed3f8791f6cd7ae1e19e16b0f1af27ced3e6f4b3806213a7dafcc"
   },
-  "next_step": "无自动下一项；Task7完成、Goal已结束、续跑提醒已删除。Task8及后续待用户另行要求",
+  "next_step": "Task8实现/验证/独立审查通过，提交后记录实际SHA并转Task9",
   "scope_change": {
-    "id": "SC-001",
+    "id": "SC-003",
     "status": "APPROVED",
-    "reference": "用户明确：当前任务目标修改为，完成task7即可",
-    "document": "docs/delivery/study-workspace-goal/scope-change-001-task7-only.md",
-    "stop_after": "Task7",
-    "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续",
-    "completion_status": "COMPLETE"
+    "reference": "用户：继续工作，目标：持续工作，直到完成task9",
+    "document": "docs/delivery/study-workspace-goal/scope-change-003-task9.md",
+    "stop_after": "Task9",
+    "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布"
   },
-  "current_scope_complete": true,
+  "current_scope_complete": false,
   "automation_status": "deleted",
   "native_goal_accounting": {
     "tokens_used": 2624761,
     "time_used_seconds": 9521,
     "scope": "历史原目标按用户SC-001改为完成Task7即止"
+  },
+  "scope_changes": [
+    {
+      "id": "SC-001",
+      "status": "APPROVED",
+      "reference": "用户明确：当前任务目标修改为，完成task7即可",
+      "document": "docs/delivery/study-workspace-goal/scope-change-001-task7-only.md",
+      "stop_after": "Task7",
+      "completion_requirement": "Task7实现、验证、独立审查、README和明确文件本地提交完成；不进入Task8及后续",
+      "completion_status": "COMPLETE"
+    },
+    {
+      "id": "SC-002",
+      "status": "APPROVED",
+      "reference": "用户明确：继续task8",
+      "document": "docs/delivery/study-workspace-goal/scope-change-002-task8-only.md",
+      "stop_after": "Task8",
+      "completion_requirement": "Task8已批准实现/验证/独立审查/README/明确本地提交完成；不自动Task9"
+    },
+    {
+      "id": "SC-003",
+      "status": "APPROVED",
+      "reference": "用户：继续工作，目标：持续工作，直到完成task9",
+      "document": "docs/delivery/study-workspace-goal/scope-change-003-task9.md",
+      "stop_after": "Task9",
+      "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布"
+    }
+  ],
+  "previous_native_goal": {
+    "status": "complete",
+    "accounting": {
+      "tokens_used": 2624761,
+      "time_used_seconds": 9521,
+      "scope": "历史原目标按用户SC-001改为完成Task7即止"
+    }
   }
 }

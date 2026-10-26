@@ -1,0 +1,3 @@
+# round2 v1独立计划审查
+
+NEEDS REVISION：retry_turn在管理claim commit已确认至run_claim入口前缺普通submit_turn的取消清理。需PreparedTurn建立后保护管理commit及run_claim，退出原DB后shield独立核真实claim，仅matching running attempt中断，管理commit未知先查询；加生成入口前task取消屏障及已提交/未提交对照。其余共享断连观察、真实ASGI与PG胜负计划可行。审查者task8_plan_review；原SHA352304fefe641f275f2a1e692fa1d8f9254ff35c7f488196ff9c76dac7c3075a。

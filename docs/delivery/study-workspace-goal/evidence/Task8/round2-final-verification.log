@@ -1,0 +1,8 @@
+ROUND2_COMPILE_OK 7
+ROUND2_DIFF_CHECK_EXIT 0
+ warning: in the working copy of 'app/api/chat.py', LF will be replaced by CRLF the next time Git touches it
+
+ROUND2_REMAINING_TASK8_DATABASES []
+ROUND2_PRIOR_MANIFEST_KEYS ['frozen_at_utc', 'branch', 'head', 'brief_sha256', 'code_file_count', 'files']
+ROUND2_ALL_SOURCE_AND_TESTS_FROZEN 2026-10-26T06:13:11.161084+00:00 files 26 existing_changed ['app/orchestration/conversation_service.py', 'app/api/chat.py', 'app/api/sessions.py', 'tests/api/test_conversation_transactions.py', 'tests/integration/test_workspace_concurrency.py', 'tests/unit/api/test_workspace_sessions_api.py']
+ROUND2_UNTRACKED_PRODUCT_TESTS ['app/api/_disconnect.py', 'app/infrastructure/storage/dirty_flag.py', 'app/orchestration/conversation_service.py', 'app/orchestration/turn_commit.py', 'tests/api/test_conversation_transactions.py', 'tests/integration/test_workspace_concurrency.py']

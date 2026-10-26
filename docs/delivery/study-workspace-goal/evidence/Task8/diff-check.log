@@ -1,0 +1,5 @@
+warning: in the working copy of 'app/api/chat.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/api/test_chat_stream_error.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/api/test_chat_stream_realtime.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/api/test_chat_persist.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/unit/api/test_chat_session_ownership.py', LF will be replaced by CRLF the next time Git touches it

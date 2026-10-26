@@ -1,0 +1,27 @@
+{
+  "database": "workspace_task8_bffb3577ae00485d9d9503639f00f752",
+  "response": {
+    "reply": "next question",
+    "session_id": "s",
+    "mastery_score": 65.25,
+    "turn_count": 2,
+    "mode_path": [
+      "Socratic"
+    ],
+    "cost_est_usd": 0.0,
+    "stack": "new",
+    "persisted": true,
+    "request_id": "completed",
+    "state_version": 1,
+    "profile_revision": 1,
+    "active_node_id": "d8ccf5ce-cc05-4bb9-8f2e-5357229acdd1",
+    "status": "completed",
+    "attempt": 1,
+    "error_code": null,
+    "context_reduced": false,
+    "reduction_reasons": []
+  },
+  "before_start": "2026-10-25 16:42:54.729894+00",
+  "fixture_future_lease_hours": 24,
+  "fixture_live_lease_until": "2026-10-26T18:18:25.416179"
+}

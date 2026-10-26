@@ -1,0 +1,7 @@
+DIAGNOSTIC_ROOT_DONE_BEFORE_RELEASE False
+DIAGNOSTIC_TASK Task-1 cancelling 0 chain [('check', 857, {'never': False, 'polled': True, 'stopped': False})]
+DIAGNOSTIC_TASK Task-4 cancelling 1 chain [('watched', 834, {'event': False, 'stopped': False}), ('capture', 10, {'event': False}), ('watch_disconnect', 15, {'event': False}), ('wait_for', 520, {}), ('wait', 212, {'self': False})]
+DIAGNOSTIC_TASK Task-3 cancelling 0 chain [('work', 839, {'disconnected': False, 'never': False, 'polled': True}), ('__aexit__', 217, {})]
+DIAGNOSTIC_CAPTURED_EVENT 1 [False]
+ROUND2_OBSERVER normal single_receive 1 watcher_done True poll_gap 0.125
+DIAGNOSTIC_ROOT_DONE_AFTER_EVENT_RELEASE True remaining 0

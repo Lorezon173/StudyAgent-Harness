@@ -11,6 +11,7 @@ from app.models.workspace_schemas import (ActiveNodePatch, GroupedSessions, Mess
     RetryRequest, SessionCreate, SessionSnapshot, ViewPatch, ViewState, WorkspaceSession)
 from app.orchestration.session_service import SessionService
 from app.orchestration.profile_service import ProfileNotFound, InvalidProfileCursor
+from app.api._disconnect import observe_http_disconnect
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
@@ -87,8 +88,9 @@ async def get_session_messages(session_id: str, cursor: str | None = Query(None,
 
 
 @router.get("/{session_id}/snapshot", response_model=SessionSnapshot)
-async def get_snapshot(session_id: str, message_limit: int = Query(50, ge=1, le=100),
+async def get_snapshot(session_id: str, request: Request, message_limit: int = Query(50, ge=1, le=100),
     db: AsyncSession = Depends(get_db), user: dict = Depends(get_current_user)):
+    await _recover_requests(request, db, user["user_id"], session_id)
     return await _operation(db, SessionService(db).load_snapshot(user["user_id"], session_id, message_limit))
 
 
@@ -104,7 +106,8 @@ async def set_node(session_id: str, req: ActiveNodePatch, db: AsyncSession = Dep
 
 
 @router.get("/{session_id}/requests/{request_id}", response_model=RequestSnapshot)
-async def get_request(session_id: str, request_id: str, db: AsyncSession = Depends(get_db), user: dict = Depends(get_current_user)):
+async def get_request(session_id: str, request_id: str, request: Request, db: AsyncSession = Depends(get_db), user: dict = Depends(get_current_user)):
+    await _recover_requests(request, db, user["user_id"], session_id, request_id)
     return await _operation(db, SessionService(db).get_request(user["user_id"], session_id, request_id))
 
 
@@ -120,5 +123,14 @@ async def retry_request(session_id: str, request_id: str, req: RetryRequest, req
         raise HTTPException(503, {"code": "conversation_service_unavailable"})
     # 生成服务自己重新原子校验；路由不为长时间生成持有连接/锁。
     await db.rollback()
-    return await retry(user_id=user["user_id"], session_id=session_id, request_id=request_id,
-        expected_attempt=req.expected_attempt, expected_state_version=req.expected_state_version)
+    async with observe_http_disconnect(request) as disconnected:
+        return await _operation(db, retry(user_id=user["user_id"], session_id=session_id, request_id=request_id,
+            expected_attempt=req.expected_attempt, expected_state_version=req.expected_state_version,
+            disconnect_event=disconnected))
+
+
+async def _recover_requests(request, db, user_id, session_id, request_id=None):
+    from app.api.chat import conversation_service
+    service = conversation_service(request)
+    await db.rollback()
+    await _operation(db, service.recover_session_requests(user_id, session_id, request_id))

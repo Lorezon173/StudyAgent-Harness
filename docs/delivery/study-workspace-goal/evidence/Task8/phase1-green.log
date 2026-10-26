@@ -1,0 +1,429 @@
+...................FFFFF....FF..                                         [100%]
+================================== FAILURES ===================================
+__________ test_persist_success_returns_turn_index_and_clears_dirty ___________
+
+    @pytest.mark.asyncio
+    async def test_persist_success_returns_turn_index_and_clears_dirty():
+        """persist �ɹ����� turn_index����� dirty-flag"""
+        db = AsyncMock()
+        graph = MagicMock()
+        graph.save = AsyncMock()  # ������ AsyncMock ���� await
+    
+>       with patch("app.api._persist.MessageStore") as mock_store, \
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             patch("app.api._persist.SessionStore") as mock_session, \
+             patch("app.api._persist.DirtyFlag") as mock_dirty, \
+             patch("app.api._persist.get_observability"):
+
+tests\api\test_persist_turn.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1467: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000002167F717A70>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'app.api._persist' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\_persist.py'> does not have the attribute 'MessageStore'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1437: AttributeError
+_____________ test_persist_integrity_error_returns_none_no_clear ______________
+
+    @pytest.mark.asyncio
+    async def test_persist_integrity_error_returns_none_no_clear():
+        """IntegrityError��ΨһԼ����ͻ������ None������ dirty"""
+        db = AsyncMock()
+        db.commit.side_effect = IntegrityError("", "", "")
+    
+>       with patch("app.api._persist.MessageStore"), \
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             patch("app.api._persist.SessionStore"), \
+             patch("app.api._persist.DirtyFlag") as mock_dirty:
+
+tests\api\test_persist_turn.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1467: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000002167F7B1C10>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'app.api._persist' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\_persist.py'> does not have the attribute 'MessageStore'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1437: AttributeError
+_____________________ test_persist_uses_log_not_log_event _____________________
+
+    @pytest.mark.asyncio
+    async def test_persist_uses_log_not_log_event():
+        """�޸� log_event bug������ log()"""
+        db = AsyncMock()
+        db.commit.side_effect = Exception("DB error")
+    
+>       with patch("app.api._persist.get_observability") as mock_obs, \
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             patch("app.api._persist.MessageStore"), \
+             patch("app.api._persist.SessionStore"), \
+             patch("app.api._persist.DirtyFlag") as mock_dirty:
+
+tests\api\test_persist_turn.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1467: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000002167F824830>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'app.api._persist' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\_persist.py'> does not have the attribute 'get_observability'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1437: AttributeError
+____________ test_persist_operational_error_returns_none_and_logs _____________
+
+    @pytest.mark.asyncio
+    async def test_persist_operational_error_returns_none_and_logs():
+        """OperationalError�����Ӷ�ʧ/����ʱ������ None����� reason=db_layer_error"""
+        db = AsyncMock()
+        db.commit.side_effect = OperationalError("", "", Exception("connection lost"))
+    
+>       with patch("app.api._persist.MessageStore") as mock_store, \
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             patch("app.api._persist.SessionStore") as mock_session, \
+             patch("app.api._persist.get_observability") as mock_obs, \
+             patch("app.api._persist.DirtyFlag") as mock_dirty:
+
+tests\api\test_persist_turn.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1467: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000002167F827470>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'app.api._persist' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\_persist.py'> does not have the attribute 'MessageStore'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1437: AttributeError
+__________ test_persist_retry_rechecks_owner_before_writing_messages __________
+
+    @pytest.mark.asyncio
+    async def test_persist_retry_rechecks_owner_before_writing_messages():
+        """A conflicting retry must not write messages after ownership changes."""
+        db = AsyncMock()
+        db.commit.side_effect = [IntegrityError("", "", ""), None]
+    
+>       with patch("app.api._persist.MessageStore") as mock_messages, \
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             patch("app.api._persist.SessionStore") as mock_sessions, \
+             patch("app.api._persist.get_observability"), \
+             patch("app.api._persist.DirtyFlag"):
+
+tests\api\test_persist_turn.py:244: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1467: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000002167F82DF70>
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+>           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: <module 'app.api._persist' from 'D:\\backup\\basic_file\\Program\\LearningAgent\\StudyAgent-Harness\\app\\api\\_persist.py'> does not have the attribute 'MessageStore'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1437: AttributeError
+_____________________________ test_ttl_expiration _____________________________
+
+    def test_ttl_expiration():
+        """TTL ���ں� is_dirty ���� False"""
+        # ģ��ʱ�䣺�ȱ��Ϊ dirty��Ȼ����ʱ��ǰ������ TTL
+>       with patch('app.api._dirty_flag.time.time') as mock_time:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\api\test_dirty_flag.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1451: in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'app.api._dirty_flag.time'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api._dirty_flag' has no attribute 'time'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\pkgutil.py:528: AttributeError
+____________________________ test_cleanup_expired _____________________________
+
+    def test_cleanup_expired():
+        """cleanup_expired �������й�����Ŀ"""
+>       with patch('app.api._dirty_flag.time.time') as mock_time:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\api\test_dirty_flag.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\unittest\mock.py:1451: in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'app.api._dirty_flag.time'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'app.api._dirty_flag' has no attribute 'time'
+
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\pkgutil.py:528: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/api/test_persist_turn.py::test_persist_success_returns_turn_index_and_clears_dirty
+FAILED tests/api/test_persist_turn.py::test_persist_integrity_error_returns_none_no_clear
+FAILED tests/api/test_persist_turn.py::test_persist_uses_log_not_log_event - ...
+FAILED tests/api/test_persist_turn.py::test_persist_operational_error_returns_none_and_logs
+FAILED tests/api/test_persist_turn.py::test_persist_retry_rechecks_owner_before_writing_messages
+FAILED tests/api/test_dirty_flag.py::test_ttl_expiration - AttributeError: mo...
+FAILED tests/api/test_dirty_flag.py::test_cleanup_expired - AttributeError: m...
+7 failed, 25 passed in 8.21s

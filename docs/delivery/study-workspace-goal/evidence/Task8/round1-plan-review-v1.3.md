@@ -1,0 +1,3 @@
+# v1.3 独立复审
+
+审查者task8_plan_review。NEEDS REVISION：TurnOutcome元数据阻断已解除；现有set_active_node仅改active_id而保留旧last_question/stage，Task7准入按当前node，真实接线会将A旧题答案误记到B。需不同节点切换同事务清题/init、legacy无归属首次不评分及真实链路测试。RAG摘要前零调用非原要求，不阻断。

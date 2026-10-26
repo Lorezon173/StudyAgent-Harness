@@ -45,7 +45,7 @@ def test_multiple_users_independent():
 def test_ttl_expiration():
     """TTL 过期后 is_dirty 返回 False"""
     # 模拟时间：先标记为 dirty，然后让时间前进超过 TTL
-    with patch('app.api._dirty_flag.time.time') as mock_time:
+    with patch('app.infrastructure.storage.dirty_flag.time.time') as mock_time:
         mock_time.return_value = 1000.0  # 初始时间
         DirtyFlag.mark_dirty(4, ttl=0.1)  # 0.1秒TTL
         assert DirtyFlag.is_dirty(4)
@@ -57,7 +57,7 @@ def test_ttl_expiration():
 
 def test_cleanup_expired():
     """cleanup_expired 清理所有过期条目"""
-    with patch('app.api._dirty_flag.time.time') as mock_time:
+    with patch('app.infrastructure.storage.dirty_flag.time.time') as mock_time:
         mock_time.return_value = 1000.0
         DirtyFlag.mark_dirty(5, ttl=0.1)
         DirtyFlag.mark_dirty(6, ttl=0.1)

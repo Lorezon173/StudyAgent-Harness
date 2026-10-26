@@ -148,10 +148,10 @@ async def test_persist_success_returns_turn_index_and_clears_dirty():
     graph = MagicMock()
     graph.save = AsyncMock()  # 必须是 AsyncMock 才能 await
 
-    with patch("app.api._persist.MessageStore") as mock_store, \
-         patch("app.api._persist.SessionStore") as mock_session, \
-         patch("app.api._persist.DirtyFlag") as mock_dirty, \
-         patch("app.api._persist.get_observability"):
+    with patch("app.orchestration.turn_commit.MessageStore") as mock_store, \
+         patch("app.orchestration.turn_commit.SessionStore") as mock_session, \
+         patch("app.orchestration.turn_commit.DirtyFlag") as mock_dirty, \
+         patch("app.orchestration.turn_commit.get_observability"):
         # 设置 MessageStore 实例的方法
         mock_store.return_value.list_by_session = AsyncMock(return_value=[{"role": "user"}, {"role": "assistant"}])
         mock_store.return_value.add = AsyncMock()
@@ -174,9 +174,9 @@ async def test_persist_integrity_error_returns_none_no_clear():
     db = AsyncMock()
     db.commit.side_effect = IntegrityError("", "", "")
 
-    with patch("app.api._persist.MessageStore"), \
-         patch("app.api._persist.SessionStore"), \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
+    with patch("app.orchestration.turn_commit.MessageStore"), \
+         patch("app.orchestration.turn_commit.SessionStore"), \
+         patch("app.orchestration.turn_commit.DirtyFlag") as mock_dirty:
         result = await persist_turn(db, "sess1", 1, "msg", "reply", None)
 
         assert result is None
@@ -191,10 +191,10 @@ async def test_persist_uses_log_not_log_event():
     db = AsyncMock()
     db.commit.side_effect = Exception("DB error")
 
-    with patch("app.api._persist.get_observability") as mock_obs, \
-         patch("app.api._persist.MessageStore"), \
-         patch("app.api._persist.SessionStore"), \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
+    with patch("app.orchestration.turn_commit.get_observability") as mock_obs, \
+         patch("app.orchestration.turn_commit.MessageStore"), \
+         patch("app.orchestration.turn_commit.SessionStore"), \
+         patch("app.orchestration.turn_commit.DirtyFlag") as mock_dirty:
         await persist_turn(db, "sess1", 1, "msg", "reply", None)
 
         # 验证调用 log() 而非 log_event()
@@ -211,10 +211,10 @@ async def test_persist_operational_error_returns_none_and_logs():
     db = AsyncMock()
     db.commit.side_effect = OperationalError("", "", Exception("connection lost"))
 
-    with patch("app.api._persist.MessageStore") as mock_store, \
-         patch("app.api._persist.SessionStore") as mock_session, \
-         patch("app.api._persist.get_observability") as mock_obs, \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
+    with patch("app.orchestration.turn_commit.MessageStore") as mock_store, \
+         patch("app.orchestration.turn_commit.SessionStore") as mock_session, \
+         patch("app.orchestration.turn_commit.get_observability") as mock_obs, \
+         patch("app.orchestration.turn_commit.DirtyFlag") as mock_dirty:
         # MessageStore/SessionStore 需要 AsyncMock 才能 await
         mock_store.return_value.list_by_session = AsyncMock(return_value=[])
         mock_store.return_value.add = AsyncMock()
@@ -241,10 +241,10 @@ async def test_persist_retry_rechecks_owner_before_writing_messages():
     db = AsyncMock()
     db.commit.side_effect = [IntegrityError("", "", ""), None]
 
-    with patch("app.api._persist.MessageStore") as mock_messages, \
-         patch("app.api._persist.SessionStore") as mock_sessions, \
-         patch("app.api._persist.get_observability"), \
-         patch("app.api._persist.DirtyFlag"):
+    with patch("app.orchestration.turn_commit.MessageStore") as mock_messages, \
+         patch("app.orchestration.turn_commit.SessionStore") as mock_sessions, \
+         patch("app.orchestration.turn_commit.get_observability"), \
+         patch("app.orchestration.turn_commit.DirtyFlag"):
         mock_sessions.return_value.get = AsyncMock(
             side_effect=[None, {"session_id": "sess1", "user_id": 2}]
         )

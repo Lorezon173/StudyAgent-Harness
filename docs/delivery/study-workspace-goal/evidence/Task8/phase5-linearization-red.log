@@ -1,0 +1,118 @@
+TASK8_GENERATION_NO_DB_LOCK 1653 ['second', 's']
+TASK8_PG_LOCK workspace_task8_d6767a3d8aee4c6e813c75b132044fd0 observer 1658 waiters [{'pid': 1656, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1654]}] locks [{'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1656, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1656, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}, {'pid': 1656, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1656, 'locktype': 'tuple', 'mode': 'AccessExclusiveLock', 'granted': True}]
+TASK8_PROFILE_SERIALIZED cae8f0a1-d959-4286-8e6e-3dfb0a680781 count 2 node_revision 2 scores [80.5, 25.5] evidence [('second', 5), ('s', 7)]
+.TASK8_PG_LOCK workspace_task8_ce45c62cfea747ce92a6e34c4de65641 observer 1670 waiters [{'pid': 1668, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1669]}] locks [{'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1669, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1669, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1668, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1669, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1668, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}]
+.TASK8_PG_LOCK workspace_task8_8921d198b1b1493d850d8526407e98c3 observer 1684 waiters [{'pid': 1683, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1682]}] locks [{'pid': 1683, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1683, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1682, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1682, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1683, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}, {'pid': 1682, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}]
+.TASK8_PG_LOCK workspace_task8_d2d82e072dc643399d6dd6357389c06a observer 1698 waiters [{'pid': 1696, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1697]}] locks [{'pid': 1696, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1696, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1697, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1697, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1697, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1696, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}]
+.TASK8_PG_LOCK workspace_task8_f9063e3642194bbc8c5718865be8bcac observer 1711 waiters [{'pid': 1709, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1710]}] locks [{'pid': 1710, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1710, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1710, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'AccessShareLock', 'granted': True}, {'pid': 1709, 'locktype': 'relation', 'mode': 'RowExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1710, 'locktype': 'transactionid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1709, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}]
+...TASK8_PG_LOCK workspace_task8_a731537ed83c43879163efb312b5ddbc observer 1768 waiters [{'pid': 1767, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1765]}] locks [{'pid': 1767, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1767, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1767, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1767, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1767, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1767, 'locktype': 'tuple', 'mode': 'AccessExclusiveLock', 'granted': True}, {'pid': 1767, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}]
+.TASK8_PG_LOCK workspace_task8_8b6390620aa34a19817b6d5844014ff0 observer 1784 waiters [{'pid': 1783, 'wait_event_type': 'Lock', 'wait_event': 'transactionid', 'blockers': [1781]}] locks [{'pid': 1783, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1783, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1783, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1783, 'locktype': 'relation', 'mode': 'RowShareLock', 'granted': True}, {'pid': 1783, 'locktype': 'virtualxid', 'mode': 'ExclusiveLock', 'granted': True}, {'pid': 1783, 'locktype': 'transactionid', 'mode': 'ShareLock', 'granted': False}, {'pid': 1783, 'locktype': 'tuple', 'mode': 'AccessExclusiveLock', 'granted': True}]
+..F.
+================================== FAILURES ===================================
+__ test_commit_connection_error_reads_actual_completed_before_failure[True] ___
+
+pg_database = <function pg_database.<locals>.<lambda> at 0x000002830155A160>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028301506960>
+after_real_commit = True
+
+    @pytest.mark.parametrize('after_real_commit',[False,True])
+    def test_commit_connection_error_reads_actual_completed_before_failure(pg_database,monkeypatch,after_real_commit):
+        async def check(factory,engine):
+            from sqlalchemy.ext.asyncio import AsyncSession
+            from app.orchestration import turn_commit
+            pid,_,_=await seed(factory)
+            original_core,original_commit=turn_commit.commit_turn,AsyncSession.commit
+            async def core(db,**kwargs):
+                result=await original_core(db,**kwargs)
+                db.info['unknown_commit']=True
+                return result
+            async def commit(db):
+                if not db.info.get('unknown_commit'):
+                    return await original_commit(db)
+                if after_real_commit:
+                    await original_commit(db)
+                raise sa.exc.OperationalError('commit',{},Exception('controlled unknown connection result'))
+            monkeypatch.setattr(turn_commit,'commit_turn',core)
+            monkeypatch.setattr(AsyncSession,'commit',commit)
+            service=ConversationService(factory,runner=candidate_runner(score=65))
+            response=await service.submit_turn(1,ChatRequest(session_id='s',request_id='unknown-result',message='answer'))
+            assert response.persisted is after_real_commit
+            from app.infrastructure.storage.dirty_flag import DirtyFlag
+            if after_real_commit:
+                assert not DirtyFlag.is_dirty(1,profile_id=pid)
+            async with factory() as db:
+                request=await db.get(ChatRequestTable,(1,'s','unknown-result'))
+                assert request.status==('completed' if after_real_commit else 'failed')
+                assert await db.scalar(select(sa.func.count()).select_from(MessageTable))==(4 if after_real_commit else 2)
+                assert await db.scalar(select(sa.func.count()).select_from(ProfileEvidenceTable))==(1 if after_real_commit else 0)
+            await service.aclose()
+>       pg_database(check)
+
+tests\integration\test_workspace_concurrency.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\integration\test_workspace_concurrency.py:52: in <lambda>
+    yield lambda check:asyncio.run(run(check))
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\integration\test_workspace_concurrency.py:48: in run
+    await asyncio.wait_for(check(factory,engine),45)
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002830115B1D0>, autoflush=True, expire_on_commit=False)
+engine = <sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002830115B1D0>
+
+    async def check(factory,engine):
+        from sqlalchemy.ext.asyncio import AsyncSession
+        from app.orchestration import turn_commit
+        pid,_,_=await seed(factory)
+        original_core,original_commit=turn_commit.commit_turn,AsyncSession.commit
+        async def core(db,**kwargs):
+            result=await original_core(db,**kwargs)
+            db.info['unknown_commit']=True
+            return result
+        async def commit(db):
+            if not db.info.get('unknown_commit'):
+                return await original_commit(db)
+            if after_real_commit:
+                await original_commit(db)
+            raise sa.exc.OperationalError('commit',{},Exception('controlled unknown connection result'))
+        monkeypatch.setattr(turn_commit,'commit_turn',core)
+        monkeypatch.setattr(AsyncSession,'commit',commit)
+        service=ConversationService(factory,runner=candidate_runner(score=65))
+        response=await service.submit_turn(1,ChatRequest(session_id='s',request_id='unknown-result',message='answer'))
+        assert response.persisted is after_real_commit
+        from app.infrastructure.storage.dirty_flag import DirtyFlag
+        if after_real_commit:
+>           assert not DirtyFlag.is_dirty(1,profile_id=pid)
+E           AssertionError: assert not True
+E            +  where True = <function DirtyFlag.is_dirty at 0x000002837F3A5DA0>(1, profile_id='4c2c0463-f211-41b3-8228-7c80c992e556')
+E            +    where <function DirtyFlag.is_dirty at 0x000002837F3A5DA0> = <class 'app.infrastructure.storage.dirty_flag.DirtyFlag'>.is_dirty
+
+tests\integration\test_workspace_concurrency.py:344: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    app.orchestration.conversation_service:conversation_service.py:384 teaching request failed: unknown-result
+Traceback (most recent call last):
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 377, in run_claim
+    return await asyncio.shield(execution.commit)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\app\orchestration\conversation_service.py", line 312, in _commit
+    await db.commit()
+  File "D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\tests\integration\test_workspace_concurrency.py", line 336, in commit
+    raise sa.exc.OperationalError('commit',{},Exception('controlled unknown connection result'))
+sqlalchemy.exc.OperationalError: (builtins.Exception) controlled unknown connection result
+[SQL: commit]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+=========================== short test summary info ===========================
+FAILED tests/integration/test_workspace_concurrency.py::test_commit_connection_error_reads_actual_completed_before_failure[True]
+1 failed, 11 passed in 25.61s

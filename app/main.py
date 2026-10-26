@@ -4,7 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from app.core.database import init_db
+from app.core.database import init_db, async_session
+from app.orchestration.conversation_service import ConversationService
 from app.api.auth import router as auth_router
 from app.api.chat import router as chat_router
 from app.api.chat_stream import router as chat_stream_router
@@ -20,7 +21,11 @@ from app.api.workspace import router as workspace_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
-    yield
+    app.state.conversation_service = ConversationService(async_session)
+    try:
+        yield
+    finally:
+        await app.state.conversation_service.aclose()
 
 
 app = FastAPI(title="StudyAgent", version="0.1.0", lifespan=lifespan)
