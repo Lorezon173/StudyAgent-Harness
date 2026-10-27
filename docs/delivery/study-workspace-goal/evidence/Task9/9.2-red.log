@@ -1,0 +1,112 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/store/workspace.test.ts src/store/auth.test.tsx src/api/client.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/workspace.test.ts (5 tests | 4 failed) 18ms
+   × workspace account and session isolation > keeps A and B buckets, drafts and late responses independent of the active session 10ms
+     → expected { …(8) } to have property "ensureSessionBucket" with value Any<Function>
+   × workspace account and session isolation > rejects older loads, requests, absent buckets and previous accounts 1ms
+     → expected { …(8) } to have property "beginSessionLoad" with value Any<Function>
+   × independent root and group pagination > separates same-name profiles and concurrent group pages, preserving cursors and order 1ms
+     → expected { …(8) } to have property "beginGroups" with value Any<Function>
+   × independent root and group pagination > rejects late root and group results after another login 1ms
+     → expected { …(8) } to have property "beginGroups" with value Any<Function>
+ ✓ src/api/client.test.ts (10 tests) 18ms
+ ❯ src/store/auth.test.tsx (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/auth.test.tsx [ src/store/auth.test.tsx ]
+Error: Cannot find module '@testing-library/dom'
+Require stack:
+- D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\node_modules\@testing-library\react\dist\pure.js
+ ❯ Object.<anonymous> node_modules/@testing-library/react/dist/pure.js:46:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/workspace.test.ts > workspace account and session isolation > keeps A and B buckets, drafts and late responses independent of the active session
+AssertionError: expected { …(8) } to have property "ensureSessionBucket" with value Any<Function>
+
+- Expected: 
+Any<Function>
+
++ Received: 
+undefined
+
+ ❯ src/store/workspace.test.ts:19:19
+     17|   it("keeps A and B buckets, drafts and late responses independent of …
+     18|     const store = createWorkspaceStore(); store.startAccount(1, "A");
+     19|     expect(store).toHaveProperty("ensureSessionBucket", expect.any(Fun…
+       |                   ^
+     20|     store.ensureSessionBucket("A"); store.ensureSessionBucket("B");
+     21|     store.syncRouteSelection("A"); const ticket = store.beginSessionLo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/store/workspace.test.ts > workspace account and session isolation > rejects older loads, requests, absent buckets and previous accounts
+AssertionError: expected { …(8) } to have property "beginSessionLoad" with value Any<Function>
+
+- Expected: 
+Any<Function>
+
++ Received: 
+undefined
+
+ ❯ src/store/workspace.test.ts:33:19
+     31|   it("rejects older loads, requests, absent buckets and previous accou…
+     32|     const store = createWorkspaceStore(); store.startAccount(1, "A");
+     33|     expect(store).toHaveProperty("beginSessionLoad", expect.any(Functi…
+       |                   ^
+     34|     store.ensureSessionBucket("s"); const old = store.beginSessionLoad…
+     35|     expect(store.applySessionResult(old, { draft: "old" })).toBe(false…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  src/store/workspace.test.ts > independent root and group pagination > separates same-name profiles and concurrent group pages, preserving cursors and order
+AssertionError: expected { …(8) } to have property "beginGroups" with value Any<Function>
+
+- Expected: 
+Any<Function>
+
++ Received: 
+undefined
+
+ ❯ src/store/workspace.test.ts:48:19
+     46|   it("separates same-name profiles and concurrent group pages, preserv…
+     47|     const store = createWorkspaceStore(); store.startAccount(1, "A");
+     48|     expect(store).toHaveProperty("beginGroups", expect.any(Function));
+       |                   ^
+     49|     const root = store.beginGroups(null)!;
+     50|     store.appendGroups(root, { groups: [group("p1", ["a"], "A-page"), …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  src/store/workspace.test.ts > independent root and group pagination > rejects late root and group results after another login
+AssertionError: expected { …(8) } to have property "beginGroups" with value Any<Function>
+
+- Expected: 
+Any<Function>
+
++ Received: 
+undefined
+
+ ❯ src/store/workspace.test.ts:72:19
+     70|   it("rejects late root and group results after another login", () => {
+     71|     const store = createWorkspaceStore(); store.startAccount(1, "A");
+     72|     expect(store).toHaveProperty("beginGroups", expect.any(Function));
+       |                   ^
+     73|     const ticket = store.beginGroups(null)!; store.startAccount(2, "B"…
+     74|     expect(store.appendGroups(ticket, { groups: [group("p1", ["a"])], …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  4 failed | 11 passed (15)
+   Start at  04:08:26
+   Duration  2.30s (transform 192ms, setup 0ms, collect 302ms, tests 36ms, environment 1.07s, prepare 765ms)
+

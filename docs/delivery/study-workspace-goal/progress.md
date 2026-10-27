@@ -178,3 +178,15 @@ Task8 round2范围复审I1 ADDRESSED，但新P2 R2-N1：共用helper在父HTTP�
 Task8 round3独立范围复审Approved，I1/R2-N1均ADDRESSED，无新阻断。主会话核26文件冻结SHA和五项终稿manifest均一致，最终helper6/主要100/旧路由12/PG20通过，准备README选择性暂存与明确文件本地提交；此处尚未标任务DONE。
 
 Task8 complete：本地提交c23763d4fa0f2dfb951c4c65ef3670af4ac41d4e，三轮计划独立PASS，I1/R2-N1均ADDRESSED，最终Approved；最终主要100/旧路由12/PG20及helper6通过。README仅本任务10行已入提交，原142行保留未提交。转Task9 v1.3范围复审，尚未前端编码。
+
+Task9 round1 v1.3独立范围计划PASS，SHAcdf536584f59bd678c877f2343bad075173ad1da2f1db0e914fc397a45433758。Task8提交c23763d、检查点c91b60b已核；M2(Task7–8)完成。前端现无既有tracked差异，开始新实现者执行，保README原142行与资产清单旧改动。
+
+Task9实现已冻结，8文件62测试及tsc/Vite构建通过；38 web文件验证前后hash一致。主会话打包tracked与全部新增web文件，后端无差异，README原142行保留。进入独立实现审查准备，尚未标完成或提交。
+
+Task9独立审查续审：原审查代理已不在live列表，未生成终稿；续审真实探针确认R9-I1（当前401换代后同mount Login永久busy），Dialog同账号关闭后晚profile探针PASS，不修猜测。38冻结hash不变；round2只针对R9-I1先规划，代码未改。
+
+Task9 round2三层计划独立PASS，SHA6cdeea6e2ef12a33ae72a250a2a1cb053ff88d73c051b90f12c6009dc2edbf9d；审查报告写入平台限制，主会话如实转存实际PASS输出后启动。仅Login两文件，R9-I1 code fix1/5。
+
+Task9 round2冻结：RED3失败/11通过，定向14/14、全套8文件66/66与正式构建通过；仅Login两文件改动，38hash前后相同/其余36不变。开始R9-I1限定独立复审，未标完成或提交。
+
+Task9 round2独立范围复审Approved，R9-I1 ADDRESSED，无新阻断；主会话核38文件/五批准manifest一致，66测试与build实际日志通过。准备README选择性暂存与明确文件提交，尚未标DONE。

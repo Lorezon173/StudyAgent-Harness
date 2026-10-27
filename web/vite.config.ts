@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 // proxy target defaults to 8000, can be overridden via VITE_API_TARGET (e.g., 8001 when 8000 is occupied)

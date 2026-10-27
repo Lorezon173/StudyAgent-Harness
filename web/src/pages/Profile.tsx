@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { apiGet } from "../api/client";
 import { useAuth } from "../store/auth";
 
@@ -22,9 +21,6 @@ export default function Profile() {
   const placeholder = { color: "#aaa", fontStyle: "italic" as const };
   return (
     <div className="container">
-      <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <Link to="/chat">聊天</Link><Link to="/knowledge">知识库</Link><strong>画像</strong>
-      </nav>
       <section style={{ background: "#fff", padding: 16, borderRadius: 8, marginBottom: 12 }}>
         <h3>学习进度</h3>
         <p>会话数：{stats?.sessions ?? 0} ｜ 平均掌握度：{stats?.avg_mastery ?? 0}</p>

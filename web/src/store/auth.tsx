@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { registerAuthInvalidation } from "../api/client";
+import { workspaceStore } from "./workspace";
 
 interface AuthState {
   userId: number | null;
@@ -18,35 +20,39 @@ function readStoredId(): number | null {
   const raw = localStorage.getItem(KEY_ID);   // localStorage 只存字符串
   if (raw === null) return null;
   const n = Number(raw);                       // 转回 number（spec §2.3）
-  return Number.isFinite(n) ? n : null;
+  return Number.isSafeInteger(n) && n > 0 ? n : null;
+}
+
+function readStoredAuth() {
+  const id = readStoredId(); const rawToken = localStorage.getItem(KEY_TOKEN);
+  const valid = id !== null && !!rawToken?.trim();
+  const value = { userId: valid ? id : null, username: valid ? localStorage.getItem(KEY_NAME) : null, token: valid ? rawToken : null };
+  workspaceStore.bootstrapAccount(value.userId, value.token);
+  return value;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [userId, setUserId] = useState<number | null>(readStoredId());
-  const [username, setUsername] = useState<string | null>(
-    localStorage.getItem(KEY_NAME),
-  );
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem(KEY_TOKEN),
-  );
+  const [{ userId, username, token }, setAuth] = useState(readStoredAuth);
 
   function login(id: number, name: string, tok?: string) {
+    workspaceStore.startAccount(id, tok || null);
     localStorage.setItem(KEY_ID, String(id));  // number → string
     localStorage.setItem(KEY_NAME, name);
     localStorage.setItem(KEY_TOKEN, tok || "");
-    setUserId(id);
-    setUsername(name);
-    setToken(tok || null);
+    setAuth({ userId: id, username: name, token: tok || null });
   }
 
-  function logout() {
+  const logout = useCallback(() => {
+    workspaceStore.clearAccount();
     localStorage.removeItem(KEY_ID);
     localStorage.removeItem(KEY_NAME);
     localStorage.removeItem(KEY_TOKEN);
-    setUserId(null);
-    setUsername(null);
-    setToken(null);
-  }
+    setAuth({ userId: null, username: null, token: null });
+  }, []);
+
+  useEffect(() => registerAuthInvalidation(ticket => {
+    if (workspaceStore.isCurrent(ticket)) logout();
+  }), [logout]);
 
   return (
     <AuthContext.Provider value={{ userId, username, token, login, logout }}>

@@ -1,0 +1,3 @@
+# Task9 v1.3独立范围计划复审
+
+审查者task8_plan_review，结论PASS。冻结SHA256 cdf536584f59bd678c877f2343bad075173ad1da2f1db0e914fc397a45433758。v1.2五项已关闭；新增Login mount/submitSequence/accountGeneration栅栏、有效成功先结束busy再login换代/导航、StrictMode mount epoch和迟到成功/失败真实Provider测试均闭环。旧句柄缺失后仅一次新只读读取实际全文并exit0。此仅计划通过，产品/测试尚未执行。

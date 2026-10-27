@@ -1,0 +1,5984 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/store/workspace.test.ts src/components/workspace/WorkspaceLayout.test.tsx src/components/workspace/SessionSidebar.test.tsx src/components/workspace/NewSessionDialog.test.tsx src/pages/Login.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/workspace.test.ts (7 tests | 2 failed) 22ms
+   × independent root and group pagination > preserves an exhausted group's null cursor when a root page repeats the group 9ms
+     → expected 'stale' to be null
+   × independent root and group pagination > treats every URL session id as a dictionary key rather than an inherited property 2ms
+     → expected undefined to deeply equal []
+ ❯ src/pages/Login.test.tsx (8 tests | 4 failed) 2484ms
+   × rejects same-tick double submissions using a synchronous busy guard 25ms
+     → expected "spy" to be called 1 times, but got 2 times
+   × shows a normal credential failure, restores busy and allows retry (stored identity=false) 1021ms
+     → Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/login[0m
+    [36m</output>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"auth"[39m
+    [36m>[39m
+      [0m:[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m离开登录[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重进登录[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+      [33mstyle[39m=[32m"max-width: 360px; margin-top: 80px;"[39m
+    [36m>[39m
+      [36m<h1>[39m
+        [0mStudyAgent[0m
+      [36m</h1>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"margin: 16px 0px;"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mdisabled[39m=[32m""[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m注册[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; gap: 8px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"用户名"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mvalue[39m=[32m"乙"[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"密码"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mtype[39m=[32m"password"[39m
+          [33mvalue[39m=[32m"password"[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(192, 57, 43); margin-top: 8px;"[39m
+      [36m>[39m
+        [0m用户名或密码错误[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/login[0m
+    [36m</output>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"auth"[39m
+    [36m>[39m
+      [0m:[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m离开登录[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重进登录[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+      [33mstyle[39m=[32m"max-width: 360px; margin-top: 80px;"[39m
+    [36m>[39m
+      [36m<h1>[39m
+        [0mStudyAgent[0m
+      [36m</h1>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"margin: 16px 0px;"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mdisabled[39m=[32m""[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m注册[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; gap: 8px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"用户名"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mvalue[39m=[32m"乙"[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"密码"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mtype[39m=[32m"password"[39m
+          [33mvalue[39m=[32m"password"[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(192, 57, 43); margin-top: 8px;"[39m
+      [36m>[39m
+        [0m用户名或密码错误[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shows a normal credential failure, restores busy and allows retry (stored identity=true) 1027ms
+     → Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/login[0m
+    [36m</output>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"auth"[39m
+    [36m>[39m
+      [0m:[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m离开登录[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重进登录[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+      [33mstyle[39m=[32m"max-width: 360px; margin-top: 80px;"[39m
+    [36m>[39m
+      [36m<h1>[39m
+        [0mStudyAgent[0m
+      [36m</h1>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"margin: 16px 0px;"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mdisabled[39m=[32m""[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m注册[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; gap: 8px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"用户名"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mvalue[39m=[32m"乙"[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"密码"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mtype[39m=[32m"password"[39m
+          [33mvalue[39m=[32m"password"[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(192, 57, 43); margin-top: 8px;"[39m
+      [36m>[39m
+        [0m用户名或密码错误[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/login[0m
+    [36m</output>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"auth"[39m
+    [36m>[39m
+      [0m:[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m离开登录[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重进登录[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+      [33mstyle[39m=[32m"max-width: 360px; margin-top: 80px;"[39m
+    [36m>[39m
+      [36m<h1>[39m
+        [0mStudyAgent[0m
+      [36m</h1>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"margin: 16px 0px;"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mdisabled[39m=[32m""[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m注册[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; gap: 8px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"用户名"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mvalue[39m=[32m"乙"[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"密码"[39m
+          [33mrequired[39m=[32m""[39m
+          [33mtype[39m=[32m"password"[39m
+          [33mvalue[39m=[32m"password"[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m登录[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(192, 57, 43); margin-top: 8px;"[39m
+      [36m>[39m
+        [0m用户名或密码错误[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × drops an unmounted A submission's delayed success=true after B logs in 60ms
+     → expected '1:A' to be '2:B' // Object.is equality
+ ❯ src/components/workspace/SessionSidebar.test.tsx (3 tests | 3 failed) 3186ms
+   × keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 1129ms
+     → Unable to find role="button" and name "会话 a"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × distinguishes loading, root failure, retry and confirmed empty data 1029ms
+     → Unable to find role="status"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shows honest empty and unassigned groups and supports accessible expand/collapse 1027ms
+     → Unable to find an element with the text: 这个主题还没有会话. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ src/components/workspace/NewSessionDialog.test.tsx (7 tests | 7 failed) 7216ms
+   × loads real profile pages and rejects a forged option before POST 1130ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × creates from an existing profile with the real response id, protects double submit and adds no fake messages 1026ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shows a real server 403 without inventing a successful session 1015ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × uses ProfileDetail.profile.id and reuses the locked successful profile when session creation fails 1012ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × explicitly resets the binding before a changed theme can create another profile 1012ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × checks the generation between profile POST completion and session POST, even before React cleanup 1010ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × drops a session result after account change and closes Escape/cancel back to the trigger 1009ms
+     → Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx (11 tests | 11 failed) 11288ms
+   × shares one navigation and keeps account below session groups on /chat 1127ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shares one navigation and keeps account below session groups on /chat/A 1028ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shares one navigation and keeps account below session groups on /knowledge 1013ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/knowledge[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/chat"[39m
+        [36m>[39m
+          [0m聊天[0m
+        [36m</a>[39m
+        [36m<strong>[39m
+          [0m知识库[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+      [36m</nav>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"名称"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"描述"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m创建[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+      [36m>[39m
+        [0m暂无知识库[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/knowledge[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/chat"[39m
+        [36m>[39m
+          [0m聊天[0m
+        [36m</a>[39m
+        [36m<strong>[39m
+          [0m知识库[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+      [36m</nav>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"名称"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"描述"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m创建[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+      [36m>[39m
+        [0m暂无知识库[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × shares one navigation and keeps account below session groups on /profile 1027ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/profile[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/chat"[39m
+        [36m>[39m
+          [0m聊天[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<strong>[39m
+          [0m画像[0m
+        [36m</strong>[39m
+      [36m</nav>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m2[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m30[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/profile[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/chat"[39m
+        [36m>[39m
+          [0m聊天[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<strong>[39m
+          [0m画像[0m
+        [36m</strong>[39m
+      [36m</nav>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m2[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m30[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × starts pinned, collapses manually, pins open and keeps selection open 1011ms
+     → Unable to find role="button" and name "会话 A"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × keeps a separate desktop sidebar at width 481 1011ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × keeps a separate desktop sidebar at width 760 1012ms
+     → Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × uses only <=480 as a drawer, retains it on selection and closes it with Escape 1016ms
+     → expected 'idle' to be 'ready' // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+      [36m>[39m
+        [36m<nav[39m
+          [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m聊天[0m
+          [36m</strong>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/knowledge"[39m
+          [36m>[39m
+            [0m知识库[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/profile"[39m
+          [36m>[39m
+            [0m画像[0m
+          [36m</a>[39m
+          [36m<button>[39m
+            [0m新建会话[0m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mstyle[39m=[32m"margin-left: auto;"[39m
+          [36m>[39m
+            [0m用户1[0m
+          [36m</span>[39m
+          [36m<button>[39m
+            [0m退出[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+          [36m>[39m
+            [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<form[39m
+          [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33mplaceholder[39m=[32m"输入学习问题…"[39m
+            [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0m发送[0m
+          [36m</button>[39m
+        [36m</form>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × does not refill groups with a delayed previous generation after 切换账号B 1013ms
+     → expected +0 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+      [36m>[39m
+        [36m<nav[39m
+          [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m聊天[0m
+          [36m</strong>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/knowledge"[39m
+          [36m>[39m
+            [0m知识库[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/profile"[39m
+          [36m>[39m
+            [0m画像[0m
+          [36m</a>[39m
+          [36m<button>[39m
+            [0m新建会话[0m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mstyle[39m=[32m"margin-left: auto;"[39m
+          [36m>[39m
+            [0m用户1[0m
+          [36m</span>[39m
+          [36m<button>[39m
+            [0m退出[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+          [36m>[39m
+            [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<form[39m
+          [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33mplaceholder[39m=[32m"输入学习问题…"[39m
+            [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0m发送[0m
+          [36m</button>[39m
+        [36m</form>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × does not refill groups with a delayed previous generation after 重新登录A 1016ms
+     → expected +0 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+      [36m>[39m
+        [36m<nav[39m
+          [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m聊天[0m
+          [36m</strong>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/knowledge"[39m
+          [36m>[39m
+            [0m知识库[0m
+          [36m</a>[39m
+          [36m<a[39m
+            [33mhref[39m=[32m"/profile"[39m
+          [36m>[39m
+            [0m画像[0m
+          [36m</a>[39m
+          [36m<button>[39m
+            [0m新建会话[0m
+          [36m</button>[39m
+          [36m<span[39m
+            [33mstyle[39m=[32m"margin-left: auto;"[39m
+          [36m>[39m
+            [0m用户1[0m
+          [36m</span>[39m
+          [36m<button>[39m
+            [0m退出[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+          [36m>[39m
+            [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<form[39m
+          [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+        [36m>[39m
+          [36m<input[39m
+            [33mplaceholder[39m=[32m"输入学习问题…"[39m
+            [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0m发送[0m
+          [36m</button>[39m
+        [36m</form>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × never presents old /chat messages as the selected URL's history and makes no snapshot request 1013ms
+     → Unable to find role="button" and name "会话 A"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100vh;"[39m
+    [36m>[39m
+      [36m<nav[39m
+        [33mstyle[39m=[32m"display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"[39m
+      [36m>[39m
+        [36m<strong>[39m
+          [0m聊天[0m
+        [36m</strong>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/knowledge"[39m
+        [36m>[39m
+          [0m知识库[0m
+        [36m</a>[39m
+        [36m<a[39m
+          [33mhref[39m=[32m"/profile"[39m
+        [36m>[39m
+          [0m画像[0m
+        [36m</a>[39m
+        [36m<button>[39m
+          [0m新建会话[0m
+        [36m</button>[39m
+        [36m<span[39m
+          [33mstyle[39m=[32m"margin-left: auto;"[39m
+        [36m>[39m
+          [0m用户1[0m
+        [36m</span>[39m
+        [36m<button>[39m
+          [0m退出[0m
+        [36m</button>[39m
+      [36m</nav>[39m
+      [36m<div[39m
+        [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+        [36m>[39m
+          [0m输入一个学习问题开始（如「我想学二分查找」）。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"输入学习问题…"[39m
+          [33mstyle[39m=[32m"flex: 1 1 0%; padding: 8px 12px;"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m发送[0m
+        [36m</button>[39m
+      [36m</form>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Login.test.tsx > rejects same-tick double submissions using a synchronous busy guard
+AssertionError: expected "spy" to be called 1 times, but got 2 times
+ ❯ src/pages/Login.test.tsx:26:55
+     24| it("rejects same-tick double submissions using a synchronous busy guar…
+     25|   const pending = deferred<Response>(); const fetcher = vi.fn(() => pe…
+     26|   act(() => { submit(); submit(); }); expect(fetcher).toHaveBeenCalled…
+       |                                                       ^
+     27|   await act(async () => { pending.resolve(response({ detail: "稍后重试…
+     28|   expect(await screen.findByRole("alert")).toBeTruthy(); expect(screen…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  src/pages/Login.test.tsx > shows a normal credential failure, restores busy and allows retry (stored identity=false)
+ FAIL  src/pages/Login.test.tsx > shows a normal credential failure, restores busy and allows retry (stored identity=true)
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /login
+    </output>
+    <output
+      data-testid="auth"
+    >
+      :
+    </output>
+    <button>
+      离开登录
+    </button>
+    <button>
+      重进登录
+    </button>
+    <div
+      class="container"
+      style="max-width: 360px; margin-top: 80px;"
+    >
+      <h1>
+        StudyAgent
+      </h1>
+      <div
+        style="margin: 16px 0px;"
+      >
+        <button
+          disabled=""
+        >
+          登录
+        </button>
+        <button>
+          注册
+        </button>
+      </div>
+      <form
+        style="display: flex; flex-direction: column; gap: 8px;"
+      >
+        <input
+          placeholder="用户名"
+          required=""
+          value="乙"
+        />
+        <input
+          placeholder="密码"
+          required=""
+          type="password"
+          value="password"
+        />
+        <button
+          type="submit"
+        >
+          登录
+        </button>
+      </form>
+      <p
+        style="color: rgb(192, 57, 43); margin-top: 8px;"
+      >
+        用户名或密码错误
+      </p>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /login
+    </output>
+    <output
+      data-testid="auth"
+    >
+      :
+    </output>
+    <button>
+      离开登录
+    </button>
+    <button>
+      重进登录
+    </button>
+    <div
+      class="container"
+      style="max-width: 360px; margin-top: 80px;"
+    >
+      <h1>
+        StudyAgent
+      </h1>
+      <div
+        style="margin: 16px 0px;"
+      >
+        <button
+          disabled=""
+        >
+          登录
+        </button>
+        <button>
+          注册
+        </button>
+      </div>
+      <form
+        style="display: flex; flex-direction: column; gap: 8px;"
+      >
+        <input
+          placeholder="用户名"
+          required=""
+          value="乙"
+        />
+        <input
+          placeholder="密码"
+          required=""
+          type="password"
+          value="password"
+        />
+        <button
+          type="submit"
+        >
+          登录
+        </button>
+      </form>
+      <p
+        style="color: rgb(192, 57, 43); margin-top: 8px;"
+      >
+        用户名或密码错误
+      </p>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Login.test.tsx:34:24
+     32|   vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(response({ deta…
+     33|   mount(); fill("乙"); submit();
+     34|   expect((await screen.findByRole("alert")).textContent).toContain("用…
+       |                        ^
+     35|   expect(screen.queryByRole("button", { name: "提交中…" })).toBeNull();
+     36|   expect(screen.getByTestId("location").textContent).toBe("/login"); s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  src/pages/Login.test.tsx > drops an unmounted A submission's delayed success=true after B logs in
+AssertionError: expected '1:A' to be '2:B' // Object.is equality
+
+Expected: "2:B"
+Received: "1:A"
+
+ ❯ src/pages/Login.test.tsx:47:50
+     45|   fireEvent.click(screen.getByRole("button", { name: "离开登录" }));
+     46|   await act(async () => { a.resolve(success ? response({ user_id: 1, u…
+     47|   expect(screen.getByTestId("auth").textContent).toBe("2:B"); expect(l…
+       |                                                  ^
+     48|   expect(workspaceStore.getSnapshot().account.generation).toBe(before)…
+     49| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  src/store/workspace.test.ts > independent root and group pagination > preserves an exhausted group's null cursor when a root page repeats the group
+AssertionError: expected 'stale' to be null
+
+- Expected: 
+null
+
++ Received: 
+"stale"
+
+ ❯ src/store/workspace.test.ts:51:63
+     49|     store.appendGroupSessions(store.beginGroupPage("p1", "next")!, gro…
+     50|     store.appendGroups(store.beginGroups("root")!, { groups: [group("p…
+     51|     expect(store.getSnapshot().groups[0].next_session_cursor).toBeNull…
+       |                                                               ^
+     52|     expect(store.getSnapshot().groupPages.p1.nextSessionCursor).toBeNu…
+     53|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  src/store/workspace.test.ts > independent root and group pagination > treats every URL session id as a dictionary key rather than an inherited property
+AssertionError: expected undefined to deeply equal []
+
+- Expected: 
+Array []
+
++ Received: 
+undefined
+
+ ❯ src/store/workspace.test.ts:57:62
+     55|     const store = createWorkspaceStore(); store.startAccount(1, "A");
+     56|     store.syncRouteSelection("constructor");
+     57|     expect(store.getSnapshot().buckets.constructor.messages).toEqual([…
+       |                                                              ^
+     58|     store.syncRouteSelection("__proto__");
+     59|     expect(store.getSnapshot().buckets["__proto__"].load.status).toBe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > loads real profile pages and rejects a forged option before POST
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:22:76
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > creates from an existing profile with the real response id, protects double submit and adds no fake messages
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:31:98
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > shows a real server 403 without inventing a successful session
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:44:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > uses ProfileDetail.profile.id and reuses the locked successful profile when session creation fails
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:55:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > explicitly resets the binding before a changed theme can create another profile
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:68:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > checks the generation between profile POST completion and session POST, even before React cleanup
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:77:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > drops a session result after account change and closes Escape/cancel back to the trigger
+TestingLibraryElementError: Unable to find role="button" and name "开启一段新的探索"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ open src/components/workspace/NewSessionDialog.test.tsx:18:248
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:84:110
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯
+
+ FAIL  src/components/workspace/SessionSidebar.test.tsx > keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination
+TestingLibraryElementError: Unable to find role="button" and name "会话 a"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/SessionSidebar.test.tsx:20:16
+     18|     return Promise.resolve(response({ groups: [group("p1", ["a"], "A")…
+     19|   }); vi.stubGlobal("fetch", fetcher); mount();
+     20|   await screen.findByRole("button", { name: "会话 a" });
+       |                ^
+     21|   const regions = screen.getAllByRole("region", { name: "主题：同名主…
+     22|   fireEvent.click(within(regions[0]).getByRole("button", { name: "加载…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯
+
+ FAIL  src/components/workspace/SessionSidebar.test.tsx > distinguishes loading, root failure, retry and confirmed empty data
+TestingLibraryElementError: Unable to find role="status"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/SessionSidebar.test.tsx:42:32
+     40| it("distinguishes loading, root failure, retry and confirmed empty dat…
+     41|   const first = deferred<Response>(); vi.stubGlobal("fetch", vi.fn().m…
+     42|   mount(); expect(await screen.findByRole("status")).toBeTruthy();
+       |                                ^
+     43|   expect(screen.queryByText("还没有学习主题")).toBeNull();
+     44|   await act(async () => { first.resolve(response({ detail: "主题加载失…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯
+
+ FAIL  src/components/workspace/SessionSidebar.test.tsx > shows honest empty and unassigned groups and supports accessible expand/collapse
+TestingLibraryElementError: Unable to find an element with the text: 这个主题还没有会话. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/SessionSidebar.test.tsx:51:25
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > shares one navigation and keeps account below session groups on /chat
+TestingLibraryElementError: Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:15:32
+     13| it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one na…
+     14|   transport(); mount(path);
+     15|   const sidebar = await screen.findByRole("complementary", { name: "会…
+       |                                ^
+     16|   expect(screen.getAllByRole("navigation")).toHaveLength(1);
+     17|   const nav = screen.getByRole("navigation", { name: "工作区导航" });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > shares one navigation and keeps account below session groups on /chat/A
+TestingLibraryElementError: Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:15:32
+     13| it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one na…
+     14|   transport(); mount(path);
+     15|   const sidebar = await screen.findByRole("complementary", { name: "会…
+       |                                ^
+     16|   expect(screen.getAllByRole("navigation")).toHaveLength(1);
+     17|   const nav = screen.getByRole("navigation", { name: "工作区导航" });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > shares one navigation and keeps account below session groups on /knowledge
+TestingLibraryElementError: Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /knowledge
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      class="container"
+    >
+      <nav
+        style="display: flex; gap: 12px; margin-bottom: 16px;"
+      >
+        <a
+          href="/chat"
+        >
+          聊天
+        </a>
+        <strong>
+          知识库
+        </strong>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+      </nav>
+      <form
+        style="display: flex; gap: 8px; margin-bottom: 16px;"
+      >
+        <input
+          placeholder="名称"
+          value=""
+        />
+        <input
+          placeholder="描述"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          创建
+        </button>
+      </form>
+      <p
+        style="color: rgb(136, 136, 136);"
+      >
+        暂无知识库
+      </p>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /knowledge
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      class="container"
+    >
+      <nav
+        style="display: flex; gap: 12px; margin-bottom: 16px;"
+      >
+        <a
+          href="/chat"
+        >
+          聊天
+        </a>
+        <strong>
+          知识库
+        </strong>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+      </nav>
+      <form
+        style="display: flex; gap: 8px; margin-bottom: 16px;"
+      >
+        <input
+          placeholder="名称"
+          value=""
+        />
+        <input
+          placeholder="描述"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          创建
+        </button>
+      </form>
+      <p
+        style="color: rgb(136, 136, 136);"
+      >
+        暂无知识库
+      </p>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:15:32
+     13| it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one na…
+     14|   transport(); mount(path);
+     15|   const sidebar = await screen.findByRole("complementary", { name: "会…
+       |                                ^
+     16|   expect(screen.getAllByRole("navigation")).toHaveLength(1);
+     17|   const nav = screen.getByRole("navigation", { name: "工作区导航" });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > shares one navigation and keeps account below session groups on /profile
+TestingLibraryElementError: Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /profile
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      class="container"
+    >
+      <nav
+        style="display: flex; gap: 12px; margin-bottom: 16px;"
+      >
+        <a
+          href="/chat"
+        >
+          聊天
+        </a>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <strong>
+          画像
+        </strong>
+      </nav>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          2
+           ｜ 平均掌握度：
+          30
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /profile
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      class="container"
+    >
+      <nav
+        style="display: flex; gap: 12px; margin-bottom: 16px;"
+      >
+        <a
+          href="/chat"
+        >
+          聊天
+        </a>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <strong>
+          画像
+        </strong>
+      </nav>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          2
+           ｜ 平均掌握度：
+          30
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:15:32
+     13| it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one na…
+     14|   transport(); mount(path);
+     15|   const sidebar = await screen.findByRole("complementary", { name: "会…
+       |                                ^
+     16|   expect(screen.getAllByRole("navigation")).toHaveLength(1);
+     17|   const nav = screen.getByRole("navigation", { name: "工作区导航" });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > starts pinned, collapses manually, pins open and keeps selection open
+TestingLibraryElementError: Unable to find role="button" and name "会话 A"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:24:38
+     22| });
+     23| it("starts pinned, collapses manually, pins open and keeps selection o…
+     24|   transport(); mount(); await screen.findByRole("button", { name: "会…
+       |                                      ^
+     25|   expect(workspaceStore.getSnapshot().sidebar).toMatchObject({ pinned:…
+     26|   fireEvent.click(screen.getByRole("button", { name: "收起会话导航" })…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > keeps a separate desktop sidebar at width 481
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > keeps a separate desktop sidebar at width 760
+TestingLibraryElementError: Unable to find role="complementary" and name "会话导航"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:41:32
+     39| it.each([481, 760])("keeps a separate desktop sidebar at width %s", as…
+     40|   mockViewport(width); transport(); mount();
+     41|   const sidebar = await screen.findByRole("complementary", { name: "会…
+       |                                ^
+     42|   expect(sidebar.getAttribute("data-mode")).toBe("desktop");
+     43| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > uses only <=480 as a drawer, retains it on selection and closes it with Escape
+AssertionError: expected 'idle' to be 'ready' // Object.is equality
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <output
+        data-testid="location"
+      >
+        /chat
+      </output>
+      <button>
+        返回默认会话
+      </button>
+      <button>
+        切换账号B
+      </button>
+      <button>
+        重新登录A
+      </button>
+      <div
+        style="display: flex; flex-direction: column; height: 100vh;"
+      >
+        <nav
+          style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+        >
+          <strong>
+            聊天
+          </strong>
+          <a
+            href="/knowledge"
+          >
+            知识库
+          </a>
+          <a
+            href="/profile"
+          >
+            画像
+          </a>
+          <button>
+            新建会话
+          </button>
+          <span
+            style="margin-left: auto;"
+          >
+            用户1
+          </span>
+          <button>
+            退出
+          </button>
+        </nav>
+        <div
+          style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+        >
+          <p
+            style="color: rgb(136, 136, 136);"
+          >
+            输入一个学习问题开始（如「我想学二分查找」）。
+          </p>
+        </div>
+        <form
+          style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+        >
+          <input
+            placeholder="输入学习问题…"
+            style="flex: 1 1 0%; padding: 8px 12px;"
+            value=""
+          />
+          <button
+            type="submit"
+          >
+            发送
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+Expected: "ready"
+Received: "idle"
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:45:119
+     43| });
+     44| it("uses only <=480 as a drawer, retains it on selection and closes it…
+     45|   mockViewport(480); transport(); mount(); await waitFor(() => expect(…
+       |                                                                                                                       ^
+     46|   expect(screen.queryByRole("complementary", { name: "会话导航" })).to…
+     47|   fireEvent.click(screen.getByRole("button", { name: "打开会话导航" })…
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > does not refill groups with a delayed previous generation after 切换账号B
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > does not refill groups with a delayed previous generation after 重新登录A
+AssertionError: expected +0 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <output
+        data-testid="location"
+      >
+        /chat
+      </output>
+      <button>
+        返回默认会话
+      </button>
+      <button>
+        切换账号B
+      </button>
+      <button>
+        重新登录A
+      </button>
+      <div
+        style="display: flex; flex-direction: column; height: 100vh;"
+      >
+        <nav
+          style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+        >
+          <strong>
+            聊天
+          </strong>
+          <a
+            href="/knowledge"
+          >
+            知识库
+          </a>
+          <a
+            href="/profile"
+          >
+            画像
+          </a>
+          <button>
+            新建会话
+          </button>
+          <span
+            style="margin-left: auto;"
+          >
+            用户1
+          </span>
+          <button>
+            退出
+          </button>
+        </nav>
+        <div
+          style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+        >
+          <p
+            style="color: rgb(136, 136, 136);"
+          >
+            输入一个学习问题开始（如「我想学二分查找」）。
+          </p>
+        </div>
+        <form
+          style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+        >
+          <input
+            placeholder="输入学习问题…"
+            style="flex: 1 1 0%; padding: 8px 12px;"
+            value=""
+          />
+          <button
+            type="submit"
+          >
+            发送
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:58:46
+
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/27]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > never presents old /chat messages as the selected URL's history and makes no snapshot request
+TestingLibraryElementError: Unable to find role="button" and name "会话 A"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      style="display: flex; flex-direction: column; height: 100vh;"
+    >
+      <nav
+        style="display: flex; gap: 12px; padding: 8px 12px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 230, 234); align-items: center;"
+      >
+        <strong>
+          聊天
+        </strong>
+        <a
+          href="/knowledge"
+        >
+          知识库
+        </a>
+        <a
+          href="/profile"
+        >
+          画像
+        </a>
+        <button>
+          新建会话
+        </button>
+        <span
+          style="margin-left: auto;"
+        >
+          用户1
+        </span>
+        <button>
+          退出
+        </button>
+      </nav>
+      <div
+        style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+      >
+        <p
+          style="color: rgb(136, 136, 136);"
+        >
+          输入一个学习问题开始（如「我想学二分查找」）。
+        </p>
+      </div>
+      <form
+        style="display: flex; gap: 8px; padding: 12px; background: rgb(255, 255, 255); border-top: 1px solid rgb(227, 230, 234);"
+      >
+        <input
+          placeholder="输入学习问题…"
+          style="flex: 1 1 0%; padding: 8px 12px;"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          发送
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:69:25
+     67| it("never presents old /chat messages as the selected URL's history an…
+     68|   vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL) => Promise.res…
+     69|   mount(); await screen.findByRole("button", { name: "会话 A" });
+       |                         ^
+     70|   fireEvent.change(screen.getByPlaceholderText("输入学习问题…"), { tar…
+     71|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/27]⎯
+
+ Test Files  5 failed (5)
+      Tests  27 failed | 9 passed (36)
+   Start at  05:22:53
+   Duration  52.08s (transform 1.20s, setup 0ms, collect 53.23s, tests 24.20s, environment 94.39s, prepare 6.62s)
+

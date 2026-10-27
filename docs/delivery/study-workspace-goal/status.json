@@ -167,10 +167,10 @@
     },
     {
       "id": "Task9",
-      "status": "RUNNING",
+      "status": "REVIEWING",
       "commit": null,
       "evidence": [],
-      "review": null,
+      "review": "round1 v1.3/round2 plan PASS; R9-I1 ADDRESSED; scoped code review Approved",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
@@ -279,7 +279,7 @@
   "milestones": {
     "M0": "DONE",
     "M1": "DONE",
-    "M2": "PENDING",
+    "M2": "DONE",
     "M3": "PENDING",
     "M4": "PENDING",
     "M5": "PENDING",
@@ -292,16 +292,15 @@
   "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
   "current_round": {
     "task": "Task9",
-    "round": "round1",
-    "plan": "docs/superpowers/plans/2026-10-25-task9-round1.md",
-    "plan_version": "v1.3",
-    "plan_sha256": "cdf536584f59bd678c877f2343bad075173ad1da2f1db0e914fc397a45433758",
-    "plan_review": "PENDING",
-    "status": "PLAN_REVIEW",
-    "planner": "task8_plan_draft",
-    "reviewer": "task8_plan_review"
+    "round": "round2",
+    "plan": "docs/superpowers/plans/2026-10-27-task9-round2.md",
+    "plan_sha256": "6cdeea6e2ef12a33ae72a250a2a1cb053ff88d73c051b90f12c6009dc2edbf9d",
+    "plan_review": "PASS",
+    "status": "APPROVED_PENDING_COMMIT",
+    "planner": "task9_fix_plan",
+    "reviewer": "task9_fix_plan_review"
   },
-  "next_step": "Task8已本地提交；Task9 v1.3 Login迟到认证响应防护范围复审PASS后实施",
+  "next_step": "README选择性暂存、明确文件本地提交、实际SHA记账与Goal完成审计",
   "scope_change": {
     "id": "SC-003",
     "status": "APPROVED",

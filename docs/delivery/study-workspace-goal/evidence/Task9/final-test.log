@@ -1,0 +1,23 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (7 tests) 19ms
+ ✓ src/api/client.test.ts (12 tests) 33ms
+ ✓ src/api/workspace.test.ts (6 tests) 202ms
+ ✓ src/store/auth.test.tsx (5 tests) 119ms
+ ✓ src/pages/Login.test.tsx (10 tests) 695ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 613ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 450ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1040ms
+   ✓ loads real profile pages and rejects a forged option before POST 373ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 1224ms
+
+ Test Files  8 passed (8)
+      Tests  62 passed (62)
+   Start at  07:14:58
+   Duration  7.77s (transform 952ms, setup 0ms, collect 10.20s, tests 3.94s, environment 14.44s, prepare 3.49s)
+

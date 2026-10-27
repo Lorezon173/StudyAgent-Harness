@@ -122,3 +122,11 @@ round1独立实现审查确认retry漏接HTTP断连，实际生成阶段断开�
 ## ADJ-016：首次断连探测隔离取消域
 
 round2原I1已关闭，但独立范围复审新P2确认父任务直接首次探测可吞外部取消而进入业务。round3独立计划PASS后，仅helper/测试引入一次性probe和父shield等待，从创建起统一清理，不改业务状态机或Task取消计数；以捕获真实父Task的有界RED验证，保原ASGI/PG对照。
+
+## ADJ-017：Task9冻结实施边界
+
+Task9 v1.3计划独立PASS，依终稿纸感壳与真实会话分组/创建；最小纳入Chat/Knowledge/Profile去重复导航、账号同步bootstrap及显式login换代、双层分页票据与两POST绑定、URL选择单源、Login迟到结果栅栏。选中历史会话内容恢复/发送仍Task10，页面诚实提示暂不可用，不冒充完成。
+
+## ADJ-018：Task9仍挂载登录页的旧提交释放
+
+R9-I1真实复现当前保护请求401换代后Login永久busy。round2独立计划PASS后仅订阅唯一store的generation，同步失效本地sequence并清busy；旧续体栅栏保留，自有成功仍清忙→login→navigate，不新建全局代际。Dialog关闭迟到响应已实际排除，不修猜测。若错误代价为本地生命周期再调整，不承诺已发POST回滚，不扩Task10。

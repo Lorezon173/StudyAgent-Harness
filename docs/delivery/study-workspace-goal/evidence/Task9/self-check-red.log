@@ -1,0 +1,44 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/api/workspace.test.ts src/components/workspace/WorkspaceLayout.test.tsx src/components/workspace/NewSessionDialog.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/api/workspace.test.ts (6 tests | 1 failed) 220ms
+   × rejects a malformed or mismatched group page as a readable ApiError 15ms
+     → expected TypeError: Cannot read properties of null… to match object { status: 200, …(2) }
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1045ms
+   ✓ loads real profile pages and rejects a forged option before POST 389ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 1197ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/api/workspace.test.ts > rejects a malformed or mismatched group page as a readable ApiError
+AssertionError: expected TypeError: Cannot read properties of null… to match object { status: 200, …(2) }
+
+- Expected
++ Received
+
+- Object {
+-   "code": "invalid_group_page",
+-   "message": "会话分组数据不匹配",
+-   "status": 200,
+- }
++ [TypeError: Cannot read properties of null (reading 'groups')]
+
+ ❯ src/api/workspace.test.ts:29:3
+     27|   const api = await modules["./sessions.ts"]() as typeof import("./ses…
+     28|   vi.mocked(fetch).mockResolvedValueOnce({ ok: true, status: 200, json…
+     29|   await expect(api.listGroupSessions({ groupKey: "p1" })).rejects.toMa…
+       |   ^
+     30| });
+     31| it("encodes path IDs and preserves the real create/patch request bodie…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 24 passed (25)
+   Start at  06:31:47
+   Duration  7.17s (transform 503ms, setup 0ms, collect 4.85s, tests 2.46s, environment 4.97s, prepare 880ms)
+

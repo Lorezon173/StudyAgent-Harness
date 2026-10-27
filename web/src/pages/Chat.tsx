@@ -1,5 +1,4 @@
 import { useState, FormEvent } from "react";
-import { Link } from "react-router-dom";
 import { apiPost, ApiError } from "../api/client";
 import { useAuth } from "../store/auth";
 import { ChatMessage, ChatResponse } from "../types";
@@ -11,8 +10,8 @@ function newSessionId(): string {
 }
 
 export default function Chat() {
-  const { userId, username, logout } = useAuth();
-  const [sessionId, setSessionId] = useState(newSessionId());
+  const { userId } = useAuth();
+  const [sessionId] = useState(newSessionId);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,23 +38,8 @@ export default function Chat() {
     }
   }
 
-  function resetSession() {
-    setSessionId(newSessionId());
-    setMessages([]);
-    setLastResp(null);
-  }
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <nav style={{ display: "flex", gap: 12, padding: "8px 12px",
-        background: "#fff", borderBottom: "1px solid #e3e6ea", alignItems: "center" }}>
-        <strong>聊天</strong>
-        <Link to="/knowledge">知识库</Link>
-        <Link to="/profile">画像</Link>
-        <button onClick={resetSession}>新建会话</button>
-        <span style={{ marginLeft: "auto" }}>{username}</span>
-        <button onClick={logout}>退出</button>
-      </nav>
+    <div className="legacy-chat" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <TeachingStatus last={lastResp} />
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px" }}>
         {messages.length === 0 && (

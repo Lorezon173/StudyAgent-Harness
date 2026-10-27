@@ -1,0 +1,156 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/api/client.test.ts src/api/workspace.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/api/workspace.test.ts (2 tests | 2 failed) 21ms
+   × provides real workspace endpoint modules 17ms
+     → expected [] to deeply equal [ './knowledge.ts', …(3) ]
+   × keeps group cursor separate from the selected group's session cursor 3ms
+     → expected undefined to be type of 'function'
+ ❯ src/api/client.test.ts (7 tests | 4 failed) 29ms
+   × workspace HTTP contracts > exports PATCH and multipart helpers 11ms
+     → expected { ApiError: [Function ApiError], …(3), …(1) } to have property "apiPatch" with value Any<Function>
+   × workspace HTTP contracts > renders structured conflicts and validation fields without object coercion 9ms
+     → expected ApiError: [object Object] { status: 4… } to match object { status: 409, …(2) }
+(1 matching property omitted from actual)
+   × workspace HTTP contracts > accepts 204 and rejects malformed successful JSON 2ms
+     → expected null to be undefined
+   × apiPost > throws ApiError with status on non-ok response 2ms
+     → expected ApiError: 登录已过期，请重新登录 { status: 401 } to match object { status: 401, message: '用户名或密码错误' }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/api/client.test.ts > workspace HTTP contracts > exports PATCH and multipart helpers
+AssertionError: expected { ApiError: [Function ApiError], …(3), …(1) } to have property "apiPatch" with value Any<Function>
+
+- Expected: 
+Any<Function>
+
++ Received: 
+undefined
+
+ ❯ src/api/client.test.ts:19:20
+     17| describe("workspace HTTP contracts", () => {
+     18|   it("exports PATCH and multipart helpers", () => {
+     19|     expect(client).toHaveProperty("apiPatch", expect.any(Function));
+       |                    ^
+     20|     expect(client).toHaveProperty("apiPostForm", expect.any(Function));
+     21|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/api/client.test.ts > workspace HTTP contracts > renders structured conflicts and validation fields without object coercion
+AssertionError: expected ApiError: [object Object] { status: 4… } to match object { status: 409, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- Object {
+-   "code": "state_version_conflict",
+-   "message": "版本已更新",
++ ApiError {
+    "status": 409,
+  }
+
+ ❯ src/api/client.test.ts:25:5
+     23|     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, stat…
+     24|       json: async () => ({ detail: { code: "state_version_conflict", m…
+     25|     await expect(apiGet("/api/sessions")).rejects.toMatchObject({ stat…
+       |     ^
+     26|     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, stat…
+     27|       json: async () => ({ detail: [{ loc: ["body", "title"], msg: "必…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  src/api/client.test.ts > workspace HTTP contracts > accepts 204 and rejects malformed successful JSON
+AssertionError: expected null to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+null
+
+ ❯ src/api/client.test.ts:32:5
+     30|   it("accepts 204 and rejects malformed successful JSON", async () => {
+     31|     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, statu…
+     32|     await expect(apiGet("/empty")).resolves.toBeUndefined();
+       |     ^
+     33|     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, statu…
+     34|     await expect(apiGet("/broken")).rejects.toMatchObject({ status: 20…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  src/api/client.test.ts > apiPost > throws ApiError with status on non-ok response
+AssertionError: expected ApiError: 登录已过期，请重新登录 { status: 401 } to match object { status: 401, message: '用户名或密码错误' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+- Object {
+-   "message": "用户名或密码错误",
++ ApiError {
+    "status": 401,
+  }
+
+ ❯ src/api/client.test.ts:59:5
+     57|       json: async () => ({ detail: "用户名或密码错误" }),
+     58|     }));
+     59|     await expect(apiPost("/api/auth/login", {})).rejects.toMatchObject…
+       |     ^
+     60|       status: 401, message: "用户名或密码错误",
+     61|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  src/api/workspace.test.ts > provides real workspace endpoint modules
+AssertionError: expected [] to deeply equal [ './knowledge.ts', …(3) ]
+
+- Expected
++ Received
+
+- Array [
+-   "./knowledge.ts",
+-   "./profiles.ts",
+-   "./sessions.ts",
+-   "./workspace.ts",
+- ]
++ Array []
+
+ ❯ src/api/workspace.test.ts:9:39
+      7| });
+      8| it("provides real workspace endpoint modules", () => {
+      9|   expect(Object.keys(modules).sort()).toEqual(["./knowledge.ts", "./pr…
+       |                                       ^
+     10| });
+     11| it("keeps group cursor separate from the selected group's session curs…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  src/api/workspace.test.ts > keeps group cursor separate from the selected group's session cursor
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ src/api/workspace.test.ts:12:36
+     10| });
+     11| it("keeps group cursor separate from the selected group's session curs…
+     12|   expect(modules["./sessions.ts"]).toBeTypeOf("function");
+       |                                    ^
+     13|   const api = await modules["./sessions.ts"]() as typeof import("./ses…
+     14|   await api.listGroupedSessions({ cursor: "a+/=", groupLimit: 2, limit…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 3 passed (9)
+   Start at  02:27:55
+   Duration  2.32s (transform 210ms, setup 0ms, collect 301ms, tests 50ms, environment 1ms, prepare 2.45s)
+

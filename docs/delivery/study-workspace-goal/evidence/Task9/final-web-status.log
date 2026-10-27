@@ -1,0 +1,25 @@
+ M web/package-lock.json
+ M web/package.json
+ M web/src/App.tsx
+ M web/src/api/client.test.ts
+ M web/src/api/client.ts
+ M web/src/components/Sidebar.tsx
+ M web/src/index.css
+ M web/src/pages/Chat.tsx
+ M web/src/pages/Knowledge.tsx
+ M web/src/pages/Login.tsx
+ M web/src/pages/Profile.tsx
+ M web/src/store/auth.tsx
+ M web/src/types.ts
+ M web/vite.config.ts
+?? web/src/api/knowledge.ts
+?? web/src/api/profiles.ts
+?? web/src/api/sessions.ts
+?? web/src/api/workspace.test.ts
+?? web/src/api/workspace.ts
+?? web/src/components/workspace/
+?? web/src/pages/Login.test.tsx
+?? web/src/store/auth.test.tsx
+?? web/src/store/workspace.test.ts
+?? web/src/store/workspace.ts
+?? web/src/test/

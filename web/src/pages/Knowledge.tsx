@@ -1,5 +1,4 @@
 import { useState, useEffect, FormEvent, useCallback } from "react";
-import { Link } from "react-router-dom";
 import { apiGet, apiPost, apiDelete, ApiError } from "../api/client";
 import { KnowledgeResponse } from "../types";
 
@@ -43,9 +42,6 @@ export default function Knowledge() {
 
   return (
     <div className="container">
-      <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-        <Link to="/chat">聊天</Link><strong>知识库</strong><Link to="/profile">画像</Link>
-      </nav>
       <form onSubmit={create} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <input placeholder="名称" value={name} onChange={(e) => setName(e.target.value)} />
         <input placeholder="描述" value={desc} onChange={(e) => setDesc(e.target.value)} />

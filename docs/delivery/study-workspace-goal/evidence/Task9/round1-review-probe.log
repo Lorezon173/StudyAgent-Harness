@@ -1,0 +1,32 @@
+# Captured excerpt — Task9 round1 independent review probe
+# Original session 38656 is terminal; no rerun. This is the captured terminal output excerpt, not a full raw process log.
+# The retained excerpt omits initial npm headers and React Router warnings; original probe source is archived in ignored task9-review-probes.tsx.
+
+ ❯ src/review-temporary.test.tsx (2 tests | 1 failed) 219ms
+   × review login generation reset releases busy 152ms
+     → expected <button …(3)></button> to be null
+
+ FAIL  src/review-temporary.test.tsx > review login generation reset releases busy
+AssertionError: expected <button …(3)></button> to be null
+
+- Expected:
+null
+
++ Received:
+<button
+  class="primary-button"
+  disabled=""
+  type="submit"
+>
+  提交中…
+</button>
+
+ ❯ src/review-temporary.test.tsx:20:53
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  10:08:42
+   Duration  29.34s (transform 240ms, setup 0ms, collect 6.92s, tests 219ms, environment 19.97s, prepare 1.33s)
+
+# Original tool terminal receipt: exit_code=1.
+# The passing probe was the normal same-account dialog-close then delayed profile result; it asserted one POST and zero onCreated calls.

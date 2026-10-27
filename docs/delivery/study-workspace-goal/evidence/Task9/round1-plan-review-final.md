@@ -1,0 +1,5 @@
+# Task9 round1 v1.2 独立计划审查
+
+审查者task8_plan_review，结论PASS。冻结SHA256：2f469ecfb0e584b89d710eb5d745d1cdbf06311f7c8529d26a63dcc5ab09e267
+
+原五项及同id同token显式登录新阻断均已ADDRESSED；bootstrap幂等与login强制换代区分，四页唯一导航、分页票据、创建画像部分成功绑定、URL单源均具明确测试。主会话已核实际指纹。仅计划结论，编码须等Task8真实交接；产品/测试/视觉尚未验收。
