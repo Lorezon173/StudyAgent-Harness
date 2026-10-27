@@ -26,7 +26,7 @@
   "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task9",
+  "current_task": null,
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -167,10 +167,12 @@
     },
     {
       "id": "Task9",
-      "status": "REVIEWING",
-      "commit": null,
-      "evidence": [],
-      "review": "round1 v1.3/round2 plan PASS; R9-I1 ADDRESSED; scoped code review Approved",
+      "status": "DONE",
+      "commit": "edaa7c3468fc3f7a500949d6a92f8ee63f3c1eb0",
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task9/"
+      ],
+      "review": "round1 v1.3 and round2 plans independently PASS; R9-I1 ADDRESSED; scoped code review Approved; 66 frontend tests/build PASS",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
@@ -296,20 +298,21 @@
     "plan": "docs/superpowers/plans/2026-10-27-task9-round2.md",
     "plan_sha256": "6cdeea6e2ef12a33ae72a250a2a1cb053ff88d73c051b90f12c6009dc2edbf9d",
     "plan_review": "PASS",
-    "status": "APPROVED_PENDING_COMMIT",
+    "status": "DONE",
     "planner": "task9_fix_plan",
     "reviewer": "task9_fix_plan_review"
   },
-  "next_step": "README选择性暂存、明确文件本地提交、实际SHA记账与Goal完成审计",
+  "next_step": "当前SC-003范围已完成，关闭原生Goal；Task10及后续须另行授权",
   "scope_change": {
     "id": "SC-003",
     "status": "APPROVED",
     "reference": "用户：继续工作，目标：持续工作，直到完成task9",
     "document": "docs/delivery/study-workspace-goal/scope-change-003-task9.md",
     "stop_after": "Task9",
-    "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布"
+    "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布",
+    "completion_status": "COMPLETE"
   },
-  "current_scope_complete": false,
+  "current_scope_complete": true,
   "automation_status": "deleted",
   "native_goal_accounting": {
     "tokens_used": 2624761,
@@ -340,7 +343,8 @@
       "reference": "用户：继续工作，目标：持续工作，直到完成task9",
       "document": "docs/delivery/study-workspace-goal/scope-change-003-task9.md",
       "stop_after": "Task9",
-      "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布"
+      "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布",
+      "completion_status": "COMPLETE"
     }
   ],
   "previous_native_goal": {
