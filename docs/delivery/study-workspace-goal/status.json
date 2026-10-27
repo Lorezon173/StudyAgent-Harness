@@ -23,7 +23,7 @@
   },
   "native_goal_started": true,
   "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
-  "native_goal_status": "active",
+  "native_goal_status": "complete",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
   "current_task": null,
@@ -302,7 +302,7 @@
     "planner": "task9_fix_plan",
     "reviewer": "task9_fix_plan_review"
   },
-  "next_step": "当前SC-003范围已完成，关闭原生Goal；Task10及后续须另行授权",
+  "next_step": "当前Goal已关闭；Task10及后续不自动开始，未推送或发布",
   "scope_change": {
     "id": "SC-003",
     "status": "APPROVED",
@@ -315,9 +315,9 @@
   "current_scope_complete": true,
   "automation_status": "deleted",
   "native_goal_accounting": {
-    "tokens_used": 2624761,
-    "time_used_seconds": 9521,
-    "scope": "历史原目标按用户SC-001改为完成Task7即止"
+    "tokens_used": 7088810,
+    "time_used_seconds": 136951,
+    "scope": "SC-003 Task8/Task9范围完成，Goal工具实际complete"
   },
   "scope_changes": [
     {

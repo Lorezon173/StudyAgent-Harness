@@ -19,6 +19,6 @@
 | 完整前端测试、正式构建、冻结 | round2-final-test 8文件66/66，build tsc/Vite exit0，diff0；38hash验证前后相同，仅允许两文件改、36不变 | PASS |
 | 独立实现审查及阻断关闭 | round1报告唯一R9-I1；Dialog猜测已真实排除；round2限定diff复审Approved，R9-I1 ADDRESSED且无新阻断 | PASS |
 | README准确与用户原修改保护 | README已选择性提交，原README142/asset34仍未暂存 | PASS |
-| 明确文件本地提交、实际SHA、账本、Goal完成 | 功能提交edaa7c3468fc3f7a500949d6a92f8ee63f3c1eb0；实际分支与HEAD已核，Task8 c23763d保留，status记实际SHA，Goal待工具关闭 | PASS（功能及提交）；Goal关闭为最终记录动作 |
+| 明确文件本地提交、实际SHA、账本、Goal完成 | 功能提交edaa7c3468fc3f7a500949d6a92f8ee63f3c1eb0；实际分支与HEAD已核，Task8 c23763d保留，status记实际SHA，原生Goal工具已返回complete | PASS |
 
-没有真实后端JWT/模型/浏览器验收；这些属于后续批准任务，不以本阶段测试代替。所有范围要求已逐项核实；Task9功能提交edaa7c3468fc3f7a500949d6a92f8ee63f3c1eb0含72个明确文件和README选择段落。未进入Task10、未发布。当前仅关闭原生Goal与记账检查点，未宣称M3(Task9–12)全部完成。
+没有真实后端JWT/模型/浏览器验收；这些属于后续批准任务，不以本阶段测试代替。所有范围要求已逐项核实；Task9功能提交edaa7c3468fc3f7a500949d6a92f8ee63f3c1eb0含72个明确文件和README选择段落。未进入Task10、未发布。原生Goal已返回complete，关闭结果记账；未宣称M3(Task9–12)全部完成。
