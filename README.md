@@ -513,3 +513,5 @@ React工作区采用已确认的纸感书房配色：左栏按本人画像主题
 画像从当前会话定位主题，切换主题仅查看、不改会话绑定；详情与可复用摘要共享同revision数据，区分未评估与0分，显示已评估平均掌握度、覆盖n/m及真实来源会话链接。纯摘要组件供Task12后续复用，聊天浮卡和拖动尚未实施。
 
 [Task11分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)：399项前端回归及构建通过，真实HTTP文本CRUD/读回/跨账号拒绝、真实浏览器操作、两轮真实模型持久化后100%与1/2及从B会话画像来源回A均有证据。非空关系仅受控DOM、实网为空；代理断连恢复含HMR刷新后主动重填，未证明跨刷新表单持久。四组视口采集/所列目视、键盘字段可达/Escape还焦已核，BODY停留及少量分支/压力测试未覆盖的边界保留。Task11当前验收通过待明确本地提交，仍IN_PROGRESS；Task10已DONE，Task12/13未完成、B仍独立候选。未新增API、依赖或启动步骤，未推送/部署。
+
+2026-11-04 Task11已完成：真实本地提交 `bd3df180f6ef37b922674bc0e16d30d946eb9a54`，155个明确文件及空index已核，原README162行/asset34行差异保留。[分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)已追记DONE；此前待提交段及全部验收限制保留为历史。下一步Task12三层规划，尚未编码；Task13未完成、B仍独立候选，未推送/部署。

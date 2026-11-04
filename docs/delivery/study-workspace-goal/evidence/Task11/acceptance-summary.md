@@ -1,6 +1,8 @@
 # Task11 分类验收汇总（2026-11-04）
 
-状态：**IN_PROGRESS / VERIFIED_UNCOMMITTED**，commit=null。实际实现基线为 `0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50`。核心行为证据已齐；接受下列明确有限验证，待文档快审与精确本地提交后再裁决 DONE。未推送/部署；Task10 DONE 不变，Task12/13 未做，B 扩展仍独立候选。
+当前状态：**DONE**，真实本地提交 `bd3df180f6ef37b922674bc0e16d30d946eb9a54`（父 `0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50`）。主会话已核155个提交文件、空index、README原162行及asset原34行保留；本次只追记完成状态，未推送/部署。下列待提交文字均为历史检查点，原验收限制继续有效。下一步Task12三层规划，尚未编码；Task13未完成，B仍独立候选。
+
+提交前历史状态：**IN_PROGRESS / VERIFIED_UNCOMMITTED**，commit=null。实际实现基线为 `0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50`。核心行为证据已齐；接受下列明确有限验证，待文档快审与精确本地提交后再裁决 DONE。未推送/部署；Task10 DONE 不变，Task12/13 未做，B 扩展仍独立候选。
 
 ## 设计、源码与命令
 
@@ -41,3 +43,10 @@ Profile/Knowledge/dialog采集1440×900、481×900、390×844、1440×450截图�
 [最终独立审计](acceptance-audit.md)为逐项追溯；本汇总接受其非空edge实网、少量DOM边界/失败分支、特定页面重载步骤的有限覆盖，不将未覆盖项改成产品通过，不新增产品。Task12浮卡/拖动/pointer/hover/touch及Task13完整连续教学/真实PG重启/集成未执行，仍PENDING；B方案仍候选。
 
 精确清单见 [local-commit-manifest.json](local-commit-manifest.json)。README仅提交基于HEAD的[追加patch](readme-task11-only.patch)，工作区原162行diff完整保留；asset原34行全排除。排除Task10已提交文件、无关AGENTS、缓存、runtime、私有运行日志、env/凭据。保留RED及原失败报告。清单记录路径/大小/SHA256与有限扫描；仅匹配固定凭据模式，不能替代全面秘密审计。当前未stage/commit，真实SHA待后续执行者核实写入。
+
+
+## 真实本地提交后完成裁决（2026-11-04）
+
+Task11已DONE：实际提交 `bd3df180f6ef37b922674bc0e16d30d946eb9a54`，父提交 `0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50`，提交主题 Implement Task11 knowledge and profile pages，共155文件。主会话核实范围后作出完成裁决；本次只读复核HEAD、155文件、空index及README162/asset34剩余差异一致。产品12文件冻结/独立OCR v2审查及原验收限制不变，前文VERIFIED_UNCOMMITTED和manifest的commit=null保留为提交前证据，不覆盖失败历史。
+
+未上传文件/自动检索，非空edge实网未测、键盘BODY停留、HMR刷新后主动重填及少量分支/压力覆盖限制继续保留。Task10 DONE不改；Task12仅下一步三层规划、尚未编码，Task13未完成，B仍独立候选；SC-004整体未完成，无推送/部署。

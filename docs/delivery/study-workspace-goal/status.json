@@ -194,8 +194,8 @@
     },
     {
       "id": "Task11",
-      "status": "IN_PROGRESS",
-      "commit": null,
+      "status": "DONE",
+      "commit": "bd3df180f6ef37b922674bc0e16d30d946eb9a54",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md",
         "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-audit.md",
@@ -203,7 +203,7 @@
         "docs/delivery/study-workspace-goal/evidence/Task11/round1-code-review-v2.md",
         "docs/delivery/study-workspace-goal/evidence/Task11/local-commit-manifest.json"
       ],
-      "review": "原计划独审PASS；产品测试12/12 OCR v2 PASS，M1已修复；399项/build通过；核心真实HTTP/浏览器/两轮模型来源已核，接受明确有限覆盖；文档快审与本地提交待执行",
+      "review": "原计划独审PASS；产品测试12/12 OCR v2 PASS，M1已修复；399项/build及核心分层真实验收通过，有限覆盖保留；文档独立快审通过后实际本地提交bd3df180，155文件/index空/README162与asset34保留已核，主会话裁决DONE",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
@@ -312,11 +312,11 @@
     "original_reviewed_plan_sha256": "08087c333bd805c2a50035123980d8955a637bb0e94b3cfbc67ace73fbb37916",
     "raw_sha256": "92432d1711a1202342343b190b0331d3450881536958bdea4961a03d88ad7ed3",
     "plan_review": "PASS (original design)",
-    "status": "VERIFIED_UNCOMMITTED",
+    "status": "DONE",
     "planner": "task11 round1",
     "reviewer": "round1-code-review-v2 / acceptance-audit"
   },
-  "next_step": "Task11核心验收与文档准备完成；先独立文档快审，再按精确manifest与README专用patch本地提交，核真实SHA/范围后裁决DONE；Task12仅待后续三层规划，Task13未做，B仍独立候选",
+  "next_step": "Task11已DONE，实际本地提交bd3df180已核；下一步Task12三层规划及独立计划审查，尚未编码；Task13未完成，B仍独立候选，SC-004整体IN_PROGRESS",
   "scope_change": {
     "id": "SC-004",
     "status": "APPROVED",

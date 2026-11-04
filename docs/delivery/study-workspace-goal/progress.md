@@ -399,3 +399,9 @@ status的Task10与current_round现为DONE，记录实际提交与最终证据。
 - 接受有限验证：非空edge仅DOM+真实empty；独立编辑/删除失败等少量分支、特定页面刷新重开、完整长文/字号压力未逐项测。真实网络为代理断连，恢复HMR刷新后核0再主动重填为1；键盘BODY/DIALOG停留不冒称完整焦点闭环。
 - README只追加本轮能力段，原162行及asset34行保留；提交用Task11专用README patch，asset全排除，清单排除缓存/runtime/凭据/Task10已提交及任务外内容，失败证据保留。尚未stage/commit，待固定清单独立快审后本地提交与SHA验证。
 - Task10 DONE不改，Task12只待后续三层规划、Task13未做，B仍独立候选，不推送/部署。
+
+## 2026-11-04 Task11 DONE：真实本地提交已核
+
+- 主会话裁决Task11 DONE，实际提交bd3df180f6ef37b922674bc0e16d30d946eb9a54、父0bd2d742，共155文件；空index，README原162行/asset34行未提交差异仍保留。本次只读复核一致，无产品改动。
+- 产品12/12独立OCR v2审查、399项/build及分层真实验收结论和限制继续有效；[分类汇总](evidence/Task11/acceptance-summary.md)追记完成，先前待提交/RED/失败记录不改。
+- 下一步Task12三层规划，尚未编码；Task13未完成，B仍候选，SC-004 IN_PROGRESS，不推送/部署。

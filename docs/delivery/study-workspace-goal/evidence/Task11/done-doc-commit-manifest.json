@@ -1,0 +1,60 @@
+{
+  "base_commit": "bd3df180f6ef37b922674bc0e16d30d946eb9a54",
+  "task": "Task11",
+  "purpose": "DONE status follow-up only, historical evidence/product unchanged",
+  "entries": [
+    {
+      "path": "docs/delivery/study-workspace-goal/progress.md",
+      "stage_mode": "whole_file",
+      "size_bytes": 63587,
+      "sha256": "b75543db59cb6137f7ded1c3689827b5ae46b1097cb72ceffd40b9df8869a98d"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/adjustments.md",
+      "stage_mode": "whole_file",
+      "size_bytes": 19773,
+      "sha256": "5cb9ed3e5d53a2a4f7b2aa95760b450888d1e9b608f29052c867319b1d6db717"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/status.json",
+      "stage_mode": "whole_file",
+      "size_bytes": 15180,
+      "sha256": "b0173a3906cd9ca66028c34310cbc990c45052f52939eb182645516c8ed96a69"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md",
+      "stage_mode": "whole_file",
+      "size_bytes": 8338,
+      "sha256": "f86772829724d71cd8ddccfc55448324086b97447cf839c8d329cf1f8048f45f"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/readme-task11-done-only.patch",
+      "stage_mode": "whole_file",
+      "size_bytes": 1539,
+      "sha256": "866256b6b8fedb07f153b7f30dca399be4d21bde677bb62b0d68474df6b97863"
+    },
+    {
+      "path": "README.md",
+      "stage_mode": "apply_cached_patch_only",
+      "patch": "docs/delivery/study-workspace-goal/evidence/Task11/readme-task11-done-only.patch",
+      "size_bytes": 57729,
+      "sha256": "89aed1e8d8d57974286584ebee58f0636cd338eae3cf4f3e5942a704d392703b"
+    }
+  ],
+  "self": "docs/delivery/study-workspace-goal/evidence/Task11/done-doc-commit-manifest.json",
+  "exclude": [
+    "entire workspace README (use patch only)",
+    "docs/asset-inventory.md",
+    "product/test files",
+    "previous Task11 evidence and manifest",
+    "runtime/cache/env/secrets/unrelated files"
+  ],
+  "checks": {
+    "head_matches_actual_delivery": true,
+    "index_empty_before_writing": true,
+    "delivery_file_count": 155,
+    "preserved_unstaged_readme_lines": 162,
+    "preserved_unstaged_asset_lines": 34
+  },
+  "git_write_performed": false
+}
