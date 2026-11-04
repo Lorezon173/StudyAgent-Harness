@@ -32,3 +32,8 @@
 ## 提交与后续
 
 [精确提交清单](a-task10-local-commit-manifest.json)和[选择性暂存方案](a-task10-local-commit-plan.md)供执行者使用；本文不执行 Git 写入，也不生成不存在的 commit。文档/清单复核并完成实际本地提交后，由主会话记录真实 SHA 再决定 Task10 DONE；不推送、不部署。下一任务为 Task11 的独立规划，尚未开始。
+## 2026-11-04 最终完成状态（覆盖上文提交前检查点）
+
+**Task10 / A 已完成（DONE）。** 主会话已核真实本地提交 `4fff6e1fb250112c9faaa05a914f84164f7f96e9`（父 `6d5829303f639e50ca15b11a9c8f79ee093caff1`）、提交后空index与用户既有变更保留；见[提交验证记录](a-task10-local-commit-verification.md)。最终实际提交854个完整文件及README选择性段共855路径；4个解释器生成pyc按明确裁决排除，原失败/审查/真实验收证据保留。README剩162行及asset34行仍未暂存，未amend/推送/部署。
+
+上文“待本地提交/commit=null”保留为首次提交前冻结记录，由本节实际SHA与DONE裁决更新。分类矩阵、source N/A与原final-02 failed/sourceblocked、教学质量及证据限制均不变。Task11规划进行中、尚未编码，Task11–13仍未完成；B仍独立候选。本次状态追记单独准备文档提交，不修改产品或原提交。

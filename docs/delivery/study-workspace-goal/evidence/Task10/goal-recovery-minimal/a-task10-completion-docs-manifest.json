@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "prepared_date": "2026-11-04",
+  "base_commit": "4fff6e1fb250112c9faaa05a914f84164f7f96e9",
+  "purpose": "真实Task10提交后单独完成状态追记；不amend、不改产品",
+  "state": "PREPARED_NOT_STAGED",
+  "git_write_performed": false,
+  "full_file_entries": [
+    {
+      "path": "docs/delivery/study-workspace-goal/adjustments.md",
+      "size_bytes": 18181,
+      "sha256": "62385eeab1ed6cfe18ee58189208d76d5ed5313b23e69a6823d78c8ce849a426"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-summary.md",
+      "size_bytes": 7755,
+      "sha256": "d80133cf777ecc32d1f2e96dc600c70861c55217136de4795573168d24037b8c"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-completion-readme-selective.patch",
+      "size_bytes": 1862,
+      "sha256": "1c46639d9a0af141a79ccb65165147bdee968d8dc3f54f69e8d51137c464c2e5"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-local-commit-verification.md",
+      "size_bytes": 2111,
+      "sha256": "d3a5610437a5cd730e3db79d834f2afa5395addb24fc5ed964261b22dfa62ce8"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/progress.md",
+      "size_bytes": 61953,
+      "sha256": "59d8d3bd8f0e585b37715792ae192a188b6b1ef75b9bd6a3d4413daa89aedaea"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/status.json",
+      "size_bytes": 14265,
+      "sha256": "2fe57c5f9388a5ccf4d7bcfb8974ca07948d2d937e8b64f55b7bbc17e24a67f6"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-completion-docs-manifest.json",
+      "size_bytes": null,
+      "sha256": null,
+      "reason": "自指纹留空；执行前检查完整JSON和范围"
+    }
+  ],
+  "partial_file_entries": [
+    {
+      "path": "README.md",
+      "mode": "cached_patch_only",
+      "patch": "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-completion-readme-selective.patch",
+      "worktree_sha256": "ba1465b622cf1dbe99e76682e394857697ffd7f58fc82a361f02c7f85db62614",
+      "rule": "仅在新HEAD末尾追加2026-11-04完成段；保留既有162行未暂存，不整文件git add"
+    }
+  ],
+  "excluded": [
+    "product files",
+    "historical plan/raw/failed reports",
+    "original frozen a-task10-local-commit-manifest.json",
+    "docs/asset-inventory.md and its 34 unstaged lines",
+    "README pre-existing 162 unstaged lines",
+    ".superpowers/runtime/private logs/env/credentials",
+    "generated caches/pyc",
+    "unrelated user files"
+  ],
+  "execution_steps": [
+    "先核HEAD等于base_commit、index为空，逐条核现文件SHA；若不符停止核实",
+    "先读README补丁并git apply --cached --check精确补丁路径，再正常授权git apply --cached该补丁；只写index不动工作树",
+    "full_file_entries逐项git add -- 明确路径；无目录级add/无add -A；清单自身不自哈希",
+    "cached路径严格为7个完整文件+README共8路径；README只有新增完成段、asset及产品无暂存",
+    "普通本地文档commit，读取真实SHA回报；不amend、不推送、不部署；不要把后续文档commit虚构为产品交付commit"
+  ],
+  "expected_task_state": {
+    "Task10": "DONE",
+    "Task10_delivery_commit": "4fff6e1fb250112c9faaa05a914f84164f7f96e9",
+    "current_round": "DONE",
+    "Task11": "IN_PROGRESS_PLANNING_ONLY",
+    "Task12": "PENDING",
+    "Task13": "PENDING",
+    "B": "candidate_not_implemented"
+  }
+}

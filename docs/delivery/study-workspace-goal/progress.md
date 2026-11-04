@@ -386,3 +386,9 @@ continue延迟snapshot与较新观察在途测试session47324 exit1、session381
 source特定组合支持入口不可达→业务N/A；final-01原失败、final-02原failed/sourceblocked保留。连接故障实际为Vite停止→HMR reload→用户恢复本机草稿，不是browser offline或无刷新retry；未编造总尝试数。教学回复仍反问、时钟与无关联日志限制保留。
 
 Task10状态IN_PROGRESS，阶段VERIFIED_UNCOMMITTED，commit=null；本轮只收口文档、README与精确提交清单，没有执行git写入。README用户原154行、asset原34行及任务外变更不覆盖/不整文件暂存；执行者按选择性暂存方案完成本地提交并记录真实SHA后再标DONE。下一步完成文档审阅和本地提交，然后进入尚未开始的Task11独立规划；Task11/12/13仍PENDING，SC-004整体未完成，B未实施。
+
+### 2026-11-04：Task10 / A DONE，进入Task11规划前检查点
+
+主会话核对并裁决Task10完成：真实本地提交 `4fff6e1fb250112c9faaa05a914f84164f7f96e9`，父提交 `6d5829303f639e50ca15b11a9c8f79ee093caff1`，提交后index为空；见[本地提交验证](evidence/Task10/goal-recovery-minimal/a-task10-local-commit-verification.md)。初始清单中4个解释器生成缓存已按裁决排除，其余854个完整路径与README选择性段共855路径实际提交；未删除缓存工作树文件。README剩余162行及asset34行未暂存内容完整保留，未amend/推送/部署。
+
+status的Task10与current_round现为DONE，记录实际提交与最终证据。此前VERIFIED_UNCOMMITTED为历史检查点，不回写原失败记录；source不适用、受控/真实证据类型、教学质量限制仍按最终分类汇总保留。下一步Task11三层规划及独立计划审查已开始准备，尚未编码；Task11为规划中、Task12/13仍PENDING，SC-004整体未完成，B仍独立候选。本段及完成账本准备另作明确文档提交，不修改产品交付提交。

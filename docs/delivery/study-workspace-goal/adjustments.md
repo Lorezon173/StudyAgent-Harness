@@ -147,3 +147,9 @@ Task10独立计划审查最终v1.3 PASS（SHA0d7d3199）。沿用现有API，不
 依据最终独立证据审计，原A行为门槛通过，阶段VERIFIED_UNCOMMITTED，任务仍IN_PROGRESS/commit=null。source特定组合真实支持入口不可达，业务裁决N/A；保留final-02原status=failed/sourceblocked及final-01失败，不以改脚本结果或产品绕门禁制造全绿。network/cursor旧A消息匹配后仍须真实会话活动重查才可发，补的是验收漏项。实际代理连接故障/HMR后本机恢复与browser offline/无刷新retry分别表述；Task8 HTTP/SSE仅引用同冻结历史实测。教学质量、时钟与无关联日志限制见最终分类汇总。
 
 本条不改变产品、安全合同或范围，不新增B机制；只补最终README/账本及精确本地提交准备。真实提交前不标DONE，Task11尚未开始，Task13未勾完。用户README原154行与asset原34行保持，仅选择本任务README尾部；私有配置/密钥/runtime与任务外文件排除。
+
+## ADJ-022：Task10真实提交后完成裁决（2026-11-04）
+
+主会话核实本地提交4fff6e1fb250112c9faaa05a914f84164f7f96e9及父6d582930、空index、README剩余162/asset34保留后，裁决Task10 DONE；记录见最终汇总与a-task10-local-commit-verification.md。清单排除4个生成pyc，不强制加入缓存，不删工作区成果。此为真实提交后的状态追记，不提前造SHA/DONE，不改此前VERIFIED_UNCOMMITTED与失败历史；另行明确文档提交，不amend产品交付提交。
+
+原验收边界、source支持入口不可达N/A、模型反问的教学质量限制及B候选状态不变。Task11规划进行中且尚未编码，Task12/13仍PENDING、SC-004仍IN_PROGRESS；不能据Task10有限验收勾完Task13。

@@ -26,7 +26,7 @@
   "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task10",
+  "current_task": "Task11",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -179,21 +179,22 @@
     },
     {
       "id": "Task10",
-      "status": "IN_PROGRESS",
-      "commit": null,
+      "status": "DONE",
+      "commit": "4fff6e1fb250112c9faaa05a914f84164f7f96e9",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-summary.md",
         "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-audit.md",
+        "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-local-commit-verification.md",
         "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-local-commit-manifest.json"
       ],
-      "review": "A计划及产品OCR 46/46 PASS；设施v3 PASS；最终独立证据审计确认行为验收门槛通过，文档收口/明确本地提交待完成；source支持入口不可达N/A，保留原failed报告",
+      "review": "A计划及产品OCR 46/46 PASS；设施v3 PASS；独立最终证据审计及文档收口审查通过；真实行为验收完成；本地提交4fff6e1及空index/保留README与asset变更已核；source支持入口不可达N/A，原failed报告与教学质量限制保留",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
     },
     {
       "id": "Task11",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "commit": null,
       "evidence": [],
       "review": null,
@@ -303,11 +304,11 @@
     "plan_version": "2026-11-03 A approved; 2026-11-04 acceptance checklist",
     "plan_sha256": "4747f1329af80ab8b61daf34e34f39d9edc632a8f10af3a4c2f46da0f2b1c82f",
     "plan_review": "PASS",
-    "status": "VERIFIED_UNCOMMITTED",
+    "status": "DONE",
     "planner": "a_completion_strategy",
     "reviewer": "a_ocr_review"
   },
-  "next_step": "复核最终交付文档与精确清单，选择性暂存Task10并本地提交，记录真实SHA后再标Task10 DONE；随后开始Task11独立规划（尚未开始），Task13未完成，B仍独立候选",
+  "next_step": "Task10已完成并记录真实本地提交4fff6e1；Task11独立三层规划进行中，待计划审查和用户既有规划确认要求满足后才编码；Task12/13 PENDING，SC-004整体未完成，B仍独立候选",
   "scope_change": {
     "id": "SC-004",
     "status": "APPROVED",
