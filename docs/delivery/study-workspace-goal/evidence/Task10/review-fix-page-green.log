@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps an in-flight older page
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (70 tests | 69 skipped) 193ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 69 skipped (70)
+   Start at  20:21:02
+   Duration  5.30s (transform 566ms, setup 0ms, collect 2.31s, tests 193ms, environment 1.83s, prepare 243ms)
+
+
+Exit code: 0

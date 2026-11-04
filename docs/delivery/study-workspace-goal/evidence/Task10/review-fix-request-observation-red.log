@@ -1,0 +1,64 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t ignores a late request observation after a newer activity snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (94 tests | 1 failed | 93 skipped) 208ms
+   × ignores a late request observation after a newer activity snapshot 206ms
+     → expected { …(3) } to be undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > ignores a late request observation after a newer activity snapshot
+AssertionError: expected { …(3) } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+Object {
+  "association": "unknown",
+  "baseline": null,
+  "snapshot": Object {
+    "active_node_id": null,
+    "attempt": 1,
+    "base_state_version": 0,
+    "created_at": "",
+    "error_code": null,
+    "lease_expired": false,
+    "lease_until": null,
+    "profile_id": "p1",
+    "request_id": "old",
+    "request_payload": Object {
+      "active_node_id": null,
+      "base_state_version": 0,
+      "message": "old",
+      "profile_id": "p1",
+    },
+    "response_json": null,
+    "session_id": "A",
+    "status": "running",
+    "updated_at": "",
+    "user_id": 1,
+  },
+}
+
+ ❯ src/pages/Chat.test.tsx:1602:63
+    1600|   await act(async () => { pending.resolve(response(running("old"))); a…
+    1601|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+    1602|   expect(workspaceStore.getSnapshot().buckets.A.requests.old).toBeUnde…
+       |                                                               ^
+    1603| });
+    1604| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 93 skipped (94)
+   Start at  20:44:28
+   Duration  5.55s (transform 672ms, setup 0ms, collect 2.45s, tests 208ms, environment 1.88s, prepare 234ms)
+
+
+Exit code: 1

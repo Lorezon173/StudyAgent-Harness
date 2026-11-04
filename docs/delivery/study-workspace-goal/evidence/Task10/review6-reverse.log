@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t accepts a valid older association after the newer recheck fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (265 tests | 264 skipped) 340ms
+   ✓ accepts a valid older association after the newer recheck fails 338ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 264 skipped (265)
+   Start at  19:59:50
+   Duration  5.84s (transform 757ms, setup 0ms, collect 2.45s, tests 340ms, environment 1.88s, prepare 279ms)
+
+EXIT_CODE=0

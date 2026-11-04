@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not overwrite a conflicting existing message
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (64 tests | 63 skipped) 245ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 63 skipped (64)
+   Start at  18:52:14
+   Duration  5.98s (transform 609ms, setup 0ms, collect 2.76s, tests 245ms, environment 1.91s, prepare 253ms)
+
+
+Exit code: 0

@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t still-current load has a stale bridge observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (205 tests | 204 skipped) 164ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 204 skipped (205)
+   Start at  18:58:06
+   Duration  5.33s (transform 706ms, setup 0ms, collect 2.37s, tests 164ms, environment 1.79s, prepare 247ms)
+
+EXIT_CODE=0

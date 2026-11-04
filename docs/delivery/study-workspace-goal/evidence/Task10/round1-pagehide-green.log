@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (23 tests) 3816ms
+   ✓ persists an edited draft against the selected session's view version 526ms
+   ✓ persists only an owned visible message as the reading anchor 1034ms
+   ✓ records the message actually visible when the reader scrolls 1038ms
+
+ Test Files  1 passed (1)
+      Tests  23 passed (23)
+   Start at  18:57:33
+   Duration  8.53s (transform 338ms, setup 0ms, collect 1.88s, tests 3.82s, environment 1.82s, prepare 252ms)
+

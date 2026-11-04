@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/pages/Chat.test.tsx -t handles a newer
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (275 tests | 272 skipped) 1189ms
+   ✓ handles a newer conflict when two rechecks start from an existing conflict 682ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 272 skipped (275)
+   Start at  23:03:47
+   Duration  9.67s (transform 1.30s, setup 0ms, collect 3.76s, tests 1.19s, environment 3.06s, prepare 378ms)
+
+exit=0

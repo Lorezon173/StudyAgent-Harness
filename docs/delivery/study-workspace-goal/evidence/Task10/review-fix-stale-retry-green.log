@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not let a stale retry lookup
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (107 tests | 106 skipped) 207ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 106 skipped (107)
+   Start at  16:53:01
+   Duration  5.88s (transform 617ms, setup 0ms, collect 2.32s, tests 207ms, environment 2.18s, prepare 287ms)
+
+
+Exit code: 0

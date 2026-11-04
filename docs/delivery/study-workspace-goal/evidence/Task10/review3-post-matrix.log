@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t reconciles a superseded sent-request lookup|bridge-failure snapshot after bridge 401|expired bridge observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (202 tests | 197 skipped) 824ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 197 skipped (202)
+   Start at  18:54:44
+   Duration  6.04s (transform 741ms, setup 0ms, collect 2.40s, tests 824ms, environment 1.82s, prepare 247ms)
+
+EXIT_CODE=0

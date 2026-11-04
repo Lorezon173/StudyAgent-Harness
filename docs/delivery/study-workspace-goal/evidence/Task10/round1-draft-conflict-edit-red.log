@@ -1,0 +1,7 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+

@@ -1,0 +1,361 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (7 tests | 1 failed) 1980ms
+   ✓ persists an edited draft against the selected session's view version 542ms
+   × keeps the user signed in when exit cannot save, and offers a local-copy choice 1073ms
+     → Unable to find an element with the text: 部分内容未保存到服务器. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<main[39m
+      [33mclass[39m=[32m"login-page"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"login-card"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"study-brand"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"brand-mark"[39m
+          [36m>[39m
+            [0m学[0m
+          [36m</span>[39m
+          [36m<h1>[39m
+            [0mStudyAgent[0m
+          [36m</h1>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"form-intro"[39m
+        [36m>[39m
+          [0m登录你的学习书房[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"login-modes"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m登录[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m注册[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<form>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"login-username"[39m
+          [36m>[39m
+            [0m用户名[0m
+          [36m</label>[39m
+          [36m<input[39m
+            [33mautocomplete[39m=[32m"username"[39m
+            [33mid[39m=[32m"login-username"[39m
+            [33mname[39m=[32m"username"[39m
+            [33mplaceholder[39m=[32m"用户名"[39m
+            [33mrequired[39m=[32m""[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"login-password"[39m
+          [36m>[39m
+            [0m密码[0m
+          [36m</label>[39m
+          [36m<input[39m
+            [33mautocomplete[39m=[32m"current-password"[39m
+            [33mid[39m=[32m"login-password"[39m
+            [33mname[39m=[32m"password"[39m
+            [33mplaceholder[39m=[32m"密码"[39m
+            [33mrequired[39m=[32m""[39m
+            [33mtype[39m=[32m"password"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"primary-button"[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0m登录[0m
+          [36m</button>[39m
+        [36m</form>[39m
+      [36m</section>[39m
+    [36m</main>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<main[39m
+      [33mclass[39m=[32m"login-page"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"login-card"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"study-brand"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"brand-mark"[39m
+          [36m>[39m
+            [0m学[0m
+          [36m</span>[39m
+          [36m<h1>[39m
+            [0mStudyAgent[0m
+          [36m</h1>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"form-intro"[39m
+        [36m>[39m
+          [0m登录你的学习书房[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"login-modes"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m登录[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m注册[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<form>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"login-username"[39m
+          [36m>[39m
+            [0m用户名[0m
+          [36m</label>[39m
+          [36m<input[39m
+            [33mautocomplete[39m=[32m"username"[39m
+            [33mid[39m=[32m"login-username"[39m
+            [33mname[39m=[32m"username"[39m
+            [33mplaceholder[39m=[32m"用户名"[39m
+            [33mrequired[39m=[32m""[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"login-password"[39m
+          [36m>[39m
+            [0m密码[0m
+          [36m</label>[39m
+          [36m<input[39m
+            [33mautocomplete[39m=[32m"current-password"[39m
+            [33mid[39m=[32m"login-password"[39m
+            [33mname[39m=[32m"password"[39m
+            [33mplaceholder[39m=[32m"密码"[39m
+            [33mrequired[39m=[32m""[39m
+            [33mtype[39m=[32m"password"[39m
+            [33mvalue[39m=[32m""[39m
+          [36m/>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"primary-button"[39m
+            [33mtype[39m=[32m"submit"[39m
+          [36m>[39m
+            [0m登录[0m
+          [36m</button>[39m
+        [36m</form>[39m
+      [36m</section>[39m
+    [36m</main>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps the user signed in when exit cannot save, and offers a local-copy choice
+TestingLibraryElementError: Unable to find an element with the text: 部分内容未保存到服务器. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="login-page"
+    >
+      <section
+        class="login-card"
+      >
+        <div
+          class="study-brand"
+        >
+          <span
+            aria-hidden="true"
+            class="brand-mark"
+          >
+            学
+          </span>
+          <h1>
+            StudyAgent
+          </h1>
+        </div>
+        <p
+          class="form-intro"
+        >
+          登录你的学习书房
+        </p>
+        <div
+          class="login-modes"
+        >
+          <button
+            disabled=""
+            type="button"
+          >
+            登录
+          </button>
+          <button
+            type="button"
+          >
+            注册
+          </button>
+        </div>
+        <form>
+          <label
+            for="login-username"
+          >
+            用户名
+          </label>
+          <input
+            autocomplete="username"
+            id="login-username"
+            name="username"
+            placeholder="用户名"
+            required=""
+            value=""
+          />
+          <label
+            for="login-password"
+          >
+            密码
+          </label>
+          <input
+            autocomplete="current-password"
+            id="login-password"
+            name="password"
+            placeholder="密码"
+            required=""
+            type="password"
+            value=""
+          />
+          <button
+            class="primary-button"
+            type="submit"
+          >
+            登录
+          </button>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <main
+      class="login-page"
+    >
+      <section
+        class="login-card"
+      >
+        <div
+          class="study-brand"
+        >
+          <span
+            aria-hidden="true"
+            class="brand-mark"
+          >
+            学
+          </span>
+          <h1>
+            StudyAgent
+          </h1>
+        </div>
+        <p
+          class="form-intro"
+        >
+          登录你的学习书房
+        </p>
+        <div
+          class="login-modes"
+        >
+          <button
+            disabled=""
+            type="button"
+          >
+            登录
+          </button>
+          <button
+            type="button"
+          >
+            注册
+          </button>
+        </div>
+        <form>
+          <label
+            for="login-username"
+          >
+            用户名
+          </label>
+          <input
+            autocomplete="username"
+            id="login-username"
+            name="username"
+            placeholder="用户名"
+            required=""
+            value=""
+          />
+          <label
+            for="login-password"
+          >
+            密码
+          </label>
+          <input
+            autocomplete="current-password"
+            id="login-password"
+            name="password"
+            placeholder="密码"
+            required=""
+            type="password"
+            value=""
+          />
+          <button
+            class="primary-button"
+            type="submit"
+          >
+            登录
+          </button>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Chat.test.tsx:86:23
+     84|   fireEvent.click(screen.getByRole("button", { name: "账号：用户1" }));
+     85|   fireEvent.click(screen.getByRole("button", { name: "退出登录" }));
+     86|   expect(await screen.findByText("部分内容未保存到服务器")).toBeTruthy…
+       |                       ^
+     87|   expect(localStorage.getItem("studyagent_token")).toBe("A");
+     88|   expect(screen.getByRole("button", { name: "退出并保留本机草稿" })).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  15:45:00
+   Duration  6.62s (transform 283ms, setup 0ms, collect 1.77s, tests 1.98s, environment 1.83s, prepare 262ms)
+

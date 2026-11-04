@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t in a new user-initiated verification after matching|keeps a newer matched result when an older association ends
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (266 tests | 261 skipped) 947ms
+   ✓ keeps a newer matched result when an older association ends with network 345ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 261 skipped (266)
+   Start at  20:00:52
+   Duration  6.29s (transform 754ms, setup 0ms, collect 2.41s, tests 947ms, environment 1.85s, prepare 264ms)
+
+EXIT_CODE=0

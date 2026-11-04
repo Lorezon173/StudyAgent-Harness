@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t latest-session save fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (58 tests | 57 skipped) 325ms
+   ✓ shows an explicit retry when the latest-session save fails 323ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 57 skipped (58)
+   Start at  12:58:00
+   Duration  5.84s (transform 535ms, setup 0ms, collect 2.41s, tests 325ms, environment 2.07s, prepare 253ms)
+

@@ -1,0 +1,8 @@
+{
+  "text": "学\nStudyAgent\n慢慢理解，自有回响\n已固定\n收起 ‹\n开启一段新的探索\n＋\n我的学习主题 / TOPICS\n⌄\n概率论\n已加载 1\n会话 A\n测\n测试用户\n我的学习书房\n···\n我的书房 / 概率论\n知识库\n学习画像\n会话 A\n\n会话状态待确认\n\n重新查询会话状态\n双重查问题\n\n正确回答\n\n草稿未保存\n\n发送",
+  "sendDisabled": true,
+  "recovery": {
+    "studyagent:recovery:v1:draft:1:A:22cac196-958a-461c-a346-fe8002b7d097:": "{\"draft\":\"\",\"reading_anchor\":null,\"baseVersion\":0,\"sequence\":2,\"schema\":1,\"kind\":\"draft\",\"userId\":1,\"sessionId\":\"A\",\"writerId\":\"22cac196-958a-461c-a346-fe8002b7d097\",\"itemId\":\"\",\"writeId\":\"fc47c21e-8290-4920-bc99-c3a4c68feea4\",\"savedAt\":1793720101136}",
+    "studyagent:recovery:v1:request:1:A:goal-recovery-other-writer:a8852be0-2f70-4e36-9191-59727fad58cd": "{\"payload\":{\"message\":\"双重查问题\",\"session_id\":\"A\",\"profile_id\":\"p1\",\"request_id\":\"a8852be0-2f70-4e36-9191-59727fad58cd\",\"expected_state_version\":0},\"baseline\":{\"owner_user_id\":1,\"session_id\":\"A\",\"request_id\":\"a8852be0-2f70-4e36-9191-59727fad58cd\",\"profile_id\":\"p1\",\"active_node_id\":null,\"base_state_version\":0,\"expected_turn_index\":0,\"provenance\":\"before_submit\",\"snapshot_sequence\":1},\"schema\":1,\"kind\":\"request\",\"userId\":1,\"sessionId\":\"A\",\"writerId\":\"goal-recovery-other-writer\",\"itemId\":\"a8852be0-2f70-4e36-9191-59727fad58cd\",\"writeId\":\"de1251f9-a15c-457c-a3a4-ee47ad6a485b\",\"savedAt\":1793720101122}"
+  }
+}

@@ -1,11 +1,38 @@
 import { describe, expect, it } from "vitest";
 import { createWorkspaceStore } from "./workspace";
-import { ProfileItem, SessionGroup, WorkspaceSession } from "../types";
+import { ProfileItem, RequestSnapshot, SessionGroup, WorkspaceSession } from "../types";
 const profile = (id: string): ProfileItem => ({ id, user_id: 1, name: "同名主题", scope_description: "", kind: "manual", revision: 0, created_at: "2026-10-27T00:00:00Z", updated_at: "2026-10-27T00:00:00Z" });
 const session = (id: string, pid = "p1"): WorkspaceSession => ({ session_id: id, user_id: 1, title: id, profile_id: pid, active_node_id: null, state_version: 0, next_turn_index: 0, active_request_id: null, created_at: null, updated_at: null });
 const group = (id: string, ids: string[], cursor: string | null = null): SessionGroup => ({ group_key: id, profile: profile(id), summary: null, sessions: ids.map(id2 => session(id2, id)), next_session_cursor: cursor });
 
 describe("workspace account and session isolation", () => {
+  it("never lets an old running request overwrite a completed attempt or a newer retry", () => {
+    const store = createWorkspaceStore(); store.startAccount(1, "A"); store.ensureSessionBucket("s"); const ticket = store.captureTicket();
+    const base: RequestSnapshot = { user_id: 1, session_id: "s", request_id: "r", profile_id: "p1", active_node_id: null, request_payload: { message: "问题", profile_id: "p1", active_node_id: null, base_state_version: 0 }, base_state_version: 0, attempt: 1, status: "running", lease_until: null, lease_expired: false, error_code: null, response_json: null, created_at: "", updated_at: "" };
+    expect(store.mergeRequest(ticket, base)).toBe(true);
+    expect(store.mergeRequest(ticket, { ...base, status: "completed", response_json: { session_id: "s", request_id: "r", status: "completed", attempt: 1, persisted: true, state_version: 1, reply: "答案" } })).toBe(true);
+    expect(store.mergeRequest(ticket, base)).toBe(false);
+    expect(store.getSnapshot().buckets.s.requests.r.snapshot.status).toBe("completed");
+    const next = { ...base, request_id: "r2", status: "failed", attempt: 2 };
+    expect(store.mergeRequest(ticket, next)).toBe(true);
+    expect(store.mergeRequest(ticket, { ...next, status: "running", attempt: 3 })).toBe(true);
+    expect(store.mergeRequest(ticket, next)).toBe(false);
+    expect(store.getSnapshot().buckets.s.requests.r2.snapshot.attempt).toBe(3);
+  });
+  it("accepts an identical completed observation without undoing its association", () => {
+    const store = createWorkspaceStore(); store.startAccount(1, "A"); store.ensureSessionBucket("s"); const ticket = store.captureTicket();
+    const completed: RequestSnapshot = { user_id: 1, session_id: "s", request_id: "r", profile_id: "p1", active_node_id: null, request_payload: { message: "问题", profile_id: "p1", active_node_id: null, base_state_version: 0 }, base_state_version: 0, attempt: 1, status: "completed", lease_until: null, lease_expired: false, error_code: null, response_json: { session_id: "s", request_id: "r", status: "completed", attempt: 1, persisted: true, state_version: 1, reply: "答案" }, created_at: "", updated_at: "" };
+    expect(store.mergeRequest(ticket, completed)).toBe(true);
+    store.patchBucket(ticket, "s", value => ({ ...value, requests: { ...value.requests, r: { ...value.requests.r, association: "matched" } } }));
+    expect(store.mergeRequest(ticket, completed)).toBe(true);
+    expect(store.getSnapshot().buckets.s.requests.r.association).toBe("matched");
+  });
+  it("rejects a request whose payload identity disagrees with its authoritative fields", () => {
+    const store = createWorkspaceStore(); store.startAccount(1, "A"); store.ensureSessionBucket("s"); const ticket = store.captureTicket();
+    const invalid: RequestSnapshot = { user_id: 1, session_id: "s", request_id: "r", profile_id: "p1", active_node_id: null, request_payload: { message: "问题", profile_id: "other", active_node_id: null, base_state_version: 0 }, base_state_version: 0, attempt: 1, status: "running", lease_until: null, lease_expired: false, error_code: null, response_json: null, created_at: "", updated_at: "" };
+    expect(store.mergeRequest(ticket, invalid)).toBe(false);
+    expect(store.getSnapshot().buckets.s.requests.r).toBeUndefined();
+  });
   it("bootstraps idempotently but every explicit login/logout advances generation", () => {
     const store = createWorkspaceStore(); store.bootstrapAccount(1, "A");
     const first = store.captureTicket(); store.bootstrapAccount(1, "A");
@@ -89,4 +116,17 @@ describe("independent root and group pagination", () => {
     expect(store.appendGroups(ticket, { groups: [group("p1", ["a"])], next_group_cursor: null })).toBe(false);
     expect(store.getSnapshot().groups).toEqual([]);
   });
+});
+
+it("keeps profile revision independent of teaching state and preserves its source", () => {
+  const store = createWorkspaceStore(); store.startAccount(1, "A"); store.ensureSessionBucket("s");
+  const snap = (revision: number, version: number, source: "stored" | "legacy") => ({ session: { ...session("s"), state_version: version }, profile: { ...profile("p1"), revision }, profile_summary: null, teaching_state: { version }, teaching_state_source: source, messages: { items: [], next_cursor: null }, view_state: { draft: "", reading_anchor: null, version: 0, updated_at: null }, pending_requests: [] });
+  store.applySnapshot(store.beginSessionLoad("s"), snap(5, 2, "stored"));
+  store.applySnapshot(store.beginSessionLoad("s"), snap(3, 3, "legacy"));
+  expect(store.getSnapshot().buckets.s.profile?.revision).toBe(5);
+  expect(store.getSnapshot().buckets.s.teachingStateSource).toBe("legacy");
+  store.applySnapshot(store.beginSessionLoad("s"), snap(6, 1, "stored"));
+  expect(store.getSnapshot().buckets.s.profileRevision).toBe(6);
+  expect(store.getSnapshot().buckets.s.teachingStateSource).toBe("legacy");
+  expect(store.getSnapshot().buckets.s.teachingStateVersion).toBe(3);
 });

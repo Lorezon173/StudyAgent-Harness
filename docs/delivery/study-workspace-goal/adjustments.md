@@ -130,3 +130,20 @@ Task9 v1.3计划独立PASS，依终稿纸感壳与真实会话分组/创建；�
 ## ADJ-018：Task9仍挂载登录页的旧提交释放
 
 R9-I1真实复现当前保护请求401换代后Login永久busy。round2独立计划PASS后仅订阅唯一store的generation，同步失效本地sequence并清busy；旧续体栅栏保留，自有成功仍清忙→login→navigate，不新建全局代际。Dialog关闭迟到响应已实际排除，不修猜测。若错误代价为本地生命周期再调整，不承诺已发POST回滚，不扩Task10。
+
+## ADJ-019：Task10恢复与保存的前端契约
+
+Task10独立计划审查最终v1.3 PASS（SHA0d7d3199）。沿用现有API，不将ChatResponse视为含request_payload；清原输入须经本人RequestSnapshot/GET核对。completed消息关联使用可信发送前next_turn_index与base版本，不能用turn_count或相同文本猜测；旧数据无基线时明确关联不明并保留候选，服务端锁释放后用户可选择继续。草稿/准备原文/未知请求/workspace分别备份，writer和write ID防跨标签误删，401前同步捕获旧桶。此裁决不放松后端所有权、评分、幂等或事务门槛，不扩Task11/12和其他窗口意图路由；仍须完整实现、独立代码审查和真实功能验收。
+
+## ADJ-020：Task10 先 A，B 留作独立候选决策（2026-11-03）
+
+- 触发与批准依据：用户明确同意先 A，B 作为后续独立决策；要求项目级总 todolist 保存 B 概要、快速链接并保留原方案。本条只登记本次选择，不重写此前审查历史。
+- 决定：A 的最小修复与真实验收范围获准，独立计划复审通过后实施；IndexedDB 长历史、FIFO、批次事务与暂停/恢复等 B 扩展不纳入本次授权。B 可按真实瓶颈分阶段评估，但必须另行确认范围、计划与验收。
+- 影响：根 TODO.md 新增 DEC-SESSION-001 并保留原 RAG 条目与历史状态；README 和 A raw/plan 仅同步授权状态。B 原 raw/plan 原样保留，其 SHA256 与快速入口登记于 TODO；不新增全局规则，不修改 API、数据、产品实现或原验收门槛。
+- 启动 B 的判断：先有实际长历史恢复阻塞、刷新丢进度或多请求饥饿等证据，再比较局部替代、用户收益和维护成本；静态审查通过与新机制测试失败都不自动触发实施。
+- 当前检查点：文档登记完成；A 独立复审与后续实施尚待推进，Task10 未完成，Task11–13 顺序和 PENDING 状态不变。
+## ADJ-021：Task10 / A 最终证据分类与待提交（2026-11-03）
+
+依据最终独立证据审计，原A行为门槛通过，阶段VERIFIED_UNCOMMITTED，任务仍IN_PROGRESS/commit=null。source特定组合真实支持入口不可达，业务裁决N/A；保留final-02原status=failed/sourceblocked及final-01失败，不以改脚本结果或产品绕门禁制造全绿。network/cursor旧A消息匹配后仍须真实会话活动重查才可发，补的是验收漏项。实际代理连接故障/HMR后本机恢复与browser offline/无刷新retry分别表述；Task8 HTTP/SSE仅引用同冻结历史实测。教学质量、时钟与无关联日志限制见最终分类汇总。
+
+本条不改变产品、安全合同或范围，不新增B机制；只补最终README/账本及精确本地提交准备。真实提交前不标DONE，Task11尚未开始，Task13未勾完。用户README原154行与asset原34行保持，仅选择本任务README尾部；私有配置/密钥/runtime与任务外文件排除。

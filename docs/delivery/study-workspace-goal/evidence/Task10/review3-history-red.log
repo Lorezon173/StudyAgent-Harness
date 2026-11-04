@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps activity and profile when history bridging fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (196 tests | 1 failed | 195 skipped) 350ms
+   × keeps activity and profile when history bridging fails 347ms
+     → expected '概率论' to be '新画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps activity and profile when history bridging fails
+AssertionError: expected '概率论' to be '新画像' // Object.is equality
+
+Expected: "新画像"
+Received: "概率论"
+
+ ❯ src/pages/Chat.test.tsx:3119:31
+    3117|   expect(screen.getByText("旧历史")).toBeTruthy(); expect(screen.query…
+    3118|   expect(state.nextMessageCursor).toBe("old-cursor");
+    3119|   expect(state.profile?.name).toBe("新画像");
+       |                               ^
+    3120|   expect(state.pendingRequests.some(item => item.request_id === "activ…
+    3121|   expect((screen.getByRole("textbox") as HTMLTextAreaElement).disabled…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 195 skipped (196)
+   Start at  18:49:25
+   Duration  6.28s (transform 847ms, setup 0ms, collect 2.67s, tests 350ms, environment 2.16s, prepare 263ms)
+
+EXIT_CODE=1

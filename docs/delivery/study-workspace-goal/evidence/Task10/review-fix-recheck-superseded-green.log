@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t allows activity recheck again when a newer ordinary load|keeps activity gate closed after recheck fails|does not let an older normal load replace
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (111 tests | 108 skipped) 331ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 108 skipped (111)
+   Start at  17:03:03
+   Duration  5.65s (transform 569ms, setup 0ms, collect 2.13s, tests 331ms, environment 1.98s, prepare 299ms)
+
+
+Exit code: 0

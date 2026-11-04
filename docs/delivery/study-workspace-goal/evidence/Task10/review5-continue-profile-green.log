@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not continue or mix a p2 snapshot into a p1 unassociated request|keeps a newer activity observation while reporting a still-current continue history failure
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (243 tests | 241 skipped) 408ms
+   ✓ keeps a newer activity observation while reporting a still-current continue history failure 347ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 241 skipped (243)
+   Start at  19:38:03
+   Duration  5.82s (transform 849ms, setup 0ms, collect 2.52s, tests 408ms, environment 1.88s, prepare 252ms)
+
+EXIT_CODE=0

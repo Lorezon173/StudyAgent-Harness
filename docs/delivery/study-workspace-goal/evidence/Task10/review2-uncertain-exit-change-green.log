@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not ignore a newer local recovery write when storage becomes readable before exit|retires matched in-memory work with unreadable recovery storage|does not retain matched in-memory work after
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (192 tests | 180 skipped) 812ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed | 180 skipped (192)
+   Start at  18:36:10
+   Duration  5.96s (transform 680ms, setup 0ms, collect 2.30s, tests 812ms, environment 1.84s, prepare 251ms)
+
+
+Exit code: 0

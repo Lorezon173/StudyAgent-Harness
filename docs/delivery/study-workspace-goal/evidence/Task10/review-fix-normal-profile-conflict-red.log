@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a profile and warns when a normal reload
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (97 tests | 1 failed | 96 skipped) 210ms
+   × preserves a profile and warns when a normal reload has the same revision but conflicting content 208ms
+     → expected '冲突画像' to be '原画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a profile and warns when a normal reload has the same revision but conflicting content
+AssertionError: expected '冲突画像' to be '原画像' // Object.is equality
+
+Expected: "原画像"
+Received: "冲突画像"
+
+ ❯ src/pages/Chat.test.tsx:1643:64
+    1641|   mount("/chat/A"); await screen.findByText("历史A");
+    1642|   await act(async () => { await workspaceController.loadSession("A"); …
+    1643|   expect(workspaceStore.getSnapshot().buckets.A.profile?.name).toBe("…
+       |                                                                ^
+    1644|   expect(workspaceStore.getSnapshot().buckets.A.recoveryError).toMatch…
+    1645| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 96 skipped (97)
+   Start at  20:47:48
+   Duration  5.77s (transform 676ms, setup 0ms, collect 2.47s, tests 210ms, environment 2.04s, prepare 254ms)
+
+
+Exit code: 1

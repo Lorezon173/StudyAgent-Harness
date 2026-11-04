@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (23 tests | 1 failed) 3846ms
+   ✓ persists an edited draft against the selected session's view version 532ms
+   ✓ persists only an owned visible message as the reading anchor 1036ms
+   ✓ records the message actually visible when the reader scrolls 1041ms
+   × copies pending data synchronously when the page is closed 26ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > copies pending data synchronously when the page is closed
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:163:96
+    161|   fireEvent(window, new Event("pagehide"));
+    162|   const copies = createLocalRecovery(localStorage, "reader").listResul…
+    163|   expect(copies.ok).toBe(true); expect(copies.candidates.some(item => …
+       |                                                                                                ^
+    164| });
+    165| it("serializes an edit made during a view save without sending the sam…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 22 passed (23)
+   Start at  18:56:57
+   Duration  8.66s (transform 361ms, setup 0ms, collect 1.94s, tests 3.85s, environment 1.87s, prepare 242ms)
+

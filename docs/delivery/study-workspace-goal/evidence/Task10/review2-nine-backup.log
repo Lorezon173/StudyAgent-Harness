@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retain matched in-memory work after
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (190 tests | 181 skipped) 663ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed | 181 skipped (190)
+   Start at  18:33:30
+   Duration  5.84s (transform 724ms, setup 0ms, collect 2.27s, tests 663ms, environment 1.89s, prepare 260ms)
+
+
+Exit code: 0

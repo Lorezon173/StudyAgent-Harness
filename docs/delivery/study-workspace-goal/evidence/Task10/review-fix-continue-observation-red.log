@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not continue while a newer activity observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (92 tests | 1 failed | 91 skipped) 214ms
+   × does not continue while a newer activity observation is still in flight 212ms
+     → expected 'completed' to be 'unassociated' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not continue while a newer activity observation is still in flight
+AssertionError: expected 'completed' to be 'unassociated' // Object.is equality
+
+Expected: "unassociated"
+Received: "completed"
+
+ ❯ src/pages/Chat.test.tsx:1571:65
+    1569|   await act(async () => { delayed.resolve(response({ ...snapshot("A"),…
+    1570|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+    1571|   expect(workspaceStore.getSnapshot().buckets.A.request.status).toBe("…
+       |                                                                 ^
+    1572|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+    1573|   await act(async () => { newer.resolve(response({ ...snapshot("A"), s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 91 skipped (92)
+   Start at  20:42:03
+   Duration  5.71s (transform 681ms, setup 0ms, collect 2.58s, tests 214ms, environment 1.84s, prepare 253ms)
+
+
+Exit code: 1

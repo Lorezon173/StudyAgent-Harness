@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (11 tests) 20ms
+ ✓ src/api/client.test.ts (12 tests) 27ms
+ ✓ src/api/workspace.test.ts (6 tests) 158ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 24ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 33ms
+ ✓ src/store/auth.test.tsx (11 tests) 129ms
+ ✓ src/pages/Login.test.tsx (14 tests) 659ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 459ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 325ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 848ms
+   ✓ loads real profile pages and rejects a forged option before POST 308ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 894ms
+ ✓ src/pages/Chat.test.tsx (206 tests) 16973ms
+   ✓ persists an edited draft against the selected session's view version 534ms
+   ✓ offers to retry a draft save after a server failure 572ms
+   ✓ persists only an owned visible message as the reading anchor 1036ms
+   ✓ records the message actually visible when the reader scrolls 1025ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 549ms
+   ✓ polls a running request recovered in a session snapshot 3083ms
+
+ Test Files  11 passed (11)
+      Tests  296 passed (296)
+   Start at  18:59:11
+   Duration  23.83s (transform 1.69s, setup 0ms, collect 14.66s, tests 20.22s, environment 25.99s, prepare 5.03s)
+
+EXIT_CODE=0

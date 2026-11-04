@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not let an older valid association erase a newer verified conflict
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (268 tests | 267 skipped) 495ms
+   ✓ does not let an older valid association erase a newer verified conflict 492ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 267 skipped (268)
+   Start at  20:10:52
+   Duration  5.79s (transform 756ms, setup 0ms, collect 2.36s, tests 495ms, environment 1.87s, prepare 258ms)
+
+EXIT_CODE=0

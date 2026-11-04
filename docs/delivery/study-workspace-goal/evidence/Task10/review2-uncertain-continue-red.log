@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retires matched in-memory work while retaining a warning
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (158 tests | 1 failed | 157 skipped) 202ms
+   × retires matched in-memory work while retaining a warning when recovery storage becomes unreadable 200ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retires matched in-memory work while retaining a warning when recovery storage becomes unreadable
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1699:81
+    1697|   const report = workspaceStore.prepareAccountTransition(workspaceStor…
+    1698|   expect(report.items.some(item => (item.kind === "prepared" || item.k…
+    1699|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+       |                                                                                 ^
+    1700|   fireEvent.click(screen.getByRole("button", { name: "知悉本机状态不确…
+    1701|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 157 skipped (158)
+   Start at  17:58:34
+   Duration  5.42s (transform 602ms, setup 0ms, collect 2.20s, tests 202ms, environment 1.90s, prepare 294ms)
+
+
+Exit code: 1

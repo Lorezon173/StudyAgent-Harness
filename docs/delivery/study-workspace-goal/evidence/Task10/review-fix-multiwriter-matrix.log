@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps same-id multiwriter
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (126 tests | 122 skipped) 288ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 122 skipped (126)
+   Start at  17:15:51
+   Duration  6.23s (transform 655ms, setup 0ms, collect 2.46s, tests 288ms, environment 2.16s, prepare 340ms)
+
+
+Exit code: 0

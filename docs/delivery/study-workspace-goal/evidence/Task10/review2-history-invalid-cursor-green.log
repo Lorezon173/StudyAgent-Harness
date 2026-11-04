@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t rejects a malformed snapshot cursor without replacing loaded history|bridges newer snapshot pages|retains loaded history and the older cursor
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (187 tests | 184 skipped) 420ms
+   ✓ retains loaded history and the older cursor when returning to a session 319ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 184 skipped (187)
+   Start at  18:29:18
+   Duration  5.76s (transform 712ms, setup 0ms, collect 2.30s, tests 420ms, environment 1.90s, prepare 297ms)
+
+
+Exit code: 0

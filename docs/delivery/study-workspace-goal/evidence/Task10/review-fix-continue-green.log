@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps newer teaching state when continuing
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (65 tests | 64 skipped) 253ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 64 skipped (65)
+   Start at  18:53:09
+   Duration  5.69s (transform 572ms, setup 0ms, collect 2.48s, tests 253ms, environment 1.90s, prepare 269ms)
+
+
+Exit code: 0

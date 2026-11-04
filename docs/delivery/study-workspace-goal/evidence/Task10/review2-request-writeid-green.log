@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not delete a newer same-payload request copy|removes only this page.s linked copy|does not retain matched in-memory work when its
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (168 tests | 163 skipped) 530ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 163 skipped (168)
+   Start at  18:13:06
+   Duration  6.00s (transform 748ms, setup 0ms, collect 2.44s, tests 530ms, environment 1.98s, prepare 260ms)
+
+
+Exit code: 0

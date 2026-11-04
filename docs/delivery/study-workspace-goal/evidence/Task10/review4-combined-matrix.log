@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps session and teaching versions together after a newer activity check|equal-version teaching conflict|during automatic original-request recheck|does not show an old continue bridge error
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (225 tests | 211 skipped) 2079ms
+   ✓ does not show an old continue bridge error after a newer load succeeds 323ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed | 211 skipped (225)
+   Start at  19:15:16
+   Duration  7.30s (transform 720ms, setup 0ms, collect 2.34s, tests 2.08s, environment 1.85s, prepare 258ms)
+
+EXIT_CODE=0

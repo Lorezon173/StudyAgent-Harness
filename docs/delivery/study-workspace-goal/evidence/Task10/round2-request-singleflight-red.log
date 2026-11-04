@@ -1,0 +1,37 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t shares concurrent checks
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (48 tests | 1 failed | 47 skipped) 203ms
+   × shares concurrent checks for the same request instead of issuing duplicate GETs 201ms
+     → expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > shares concurrent checks for the same request instead of issuing duplicate GETs
+AssertionError: expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/pages/Chat.test.tsx:447:86
+    445|   vi.stubGlobal("fetch", fetcher); mount("/chat/A"); await screen.find…
+    446|   const one = workspaceController.reconcile("A", "r1"); const two = wo…
+    447|   expect(fetcher.mock.calls.filter(([url]) => String(url).endsWith("/r…
+       |                                                                                      ^
+    448|   await act(async () => { pending.resolve(response({ detail: "not foun…
+    449| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 47 skipped (48)
+   Start at  12:42:57
+   Duration  5.58s (transform 512ms, setup 0ms, collect 2.32s, tests 203ms, environment 1.96s, prepare 272ms)
+

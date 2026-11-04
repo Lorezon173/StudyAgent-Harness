@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t accepts a newer profile from an older teaching snapshot without replacing current history
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (188 tests | 1 failed | 187 skipped) 180ms
+   × accepts a newer profile from an older teaching snapshot without replacing current history 178ms
+     → expected '概率论' to be '更新的画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > accepts a newer profile from an older teaching snapshot without replacing current history
+AssertionError: expected '概率论' to be '更新的画像' // Object.is equality
+
+Expected: "更新的画像"
+Received: "概率论"
+
+ ❯ src/pages/Chat.test.tsx:394:64
+    392|   mount("/chat/A"); await screen.findByText("历史A");
+    393|   await act(async () => { await workspaceController.loadSession("A"); …
+    394|   expect(workspaceStore.getSnapshot().buckets.A.profile?.name).toBe("…
+       |                                                                ^
+    395|   expect(screen.getByText("历史A")).toBeTruthy(); expect(screen.queryB…
+    396| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 187 skipped (188)
+   Start at  18:29:57
+   Duration  5.34s (transform 689ms, setup 0ms, collect 2.27s, tests 180ms, environment 1.79s, prepare 274ms)
+
+
+Exit code: 1

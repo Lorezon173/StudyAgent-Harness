@@ -1,0 +1,43 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not offer retry after a linked source changes before a 404 lookup returns
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (172 tests | 1 failed | 171 skipped) 270ms
+   × does not offer retry after a linked source changes before a 404 lookup returns 268ms
+     → expected <button type="button"></button> to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not offer retry after a linked source changes before a 404 lookup returns
+AssertionError: expected <button type="button"></button> to be null
+
+- Expected: 
+null
+
++ Received: 
+<button
+  type="button"
+>
+  按原请求重试
+</button>
+
+ ❯ src/pages/Chat.test.tsx:1826:60
+    1824|   expect(recovery.writePrepared(1, "A", "prepare-old", { text: payload…
+    1825|   await act(async () => { pending.resolve(response({}, 404)); });
+    1826|   expect(screen.queryByRole("button", { name: "按原请求重试" })).toBeN…
+       |                                                            ^
+    1827|   expect(workspaceStore.getSnapshot().buckets.A.resendableRequests).no…
+    1828| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 171 skipped (172)
+   Start at  18:16:08
+   Duration  5.33s (transform 669ms, setup 0ms, collect 2.25s, tests 270ms, environment 1.79s, prepare 238ms)
+
+
+Exit code: 1

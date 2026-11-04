@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/store/auth.test.tsx src/store/workspace.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (8 tests) 15ms
+ ❯ src/store/auth.test.tsx (10 tests | 1 failed) 112ms
+   × backs up both the original prepared question and an unresolved request before changing account 15ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/auth.test.tsx > backs up both the original prepared question and an unresolved request before changing account
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/auth.test.tsx:83:128
+     81|   const recovery = getLocalRecovery();
+     82|   expect(recovery.list(1, "old", "prepared").some(candidate => candida…
+     83|   expect(recovery.list(1, "old", "request").some(candidate => (candida…
+       |                                                                                                                                ^
+     84|   expect(recovery.list(1, "old", "draft").some(candidate => candidate.…
+     85|   expect(recovery.list(2, "old", "prepared")).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 17 passed (18)
+   Start at  18:58:15
+   Duration  4.35s (transform 250ms, setup 0ms, collect 1.07s, tests 127ms, environment 2.21s, prepare 666ms)
+

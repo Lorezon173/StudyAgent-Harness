@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not accept completed snapshot activity while a newer observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (91 tests | 1 failed | 90 skipped) 231ms
+   × does not accept completed snapshot activity while a newer observation is in flight 229ms
+     → expected 'clear' to be 'uncertain' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not accept completed snapshot activity while a newer observation is in flight
+AssertionError: expected 'clear' to be 'uncertain' // Object.is equality
+
+Expected: "uncertain"
+Received: "clear"
+
+ ❯ src/pages/Chat.test.tsx:1542:63
+    1540|   await waitFor(() => expect(count).toBe(3));
+    1541|   await act(async () => { page.resolve(response({ items: [user, answer…
+    1542|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+       |                                                               ^
+    1543|   await act(async () => { newer.resolve(response({ ...snapshot("A"), s…
+    1544|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 90 skipped (91)
+   Start at  20:41:10
+   Duration  5.62s (transform 679ms, setup 0ms, collect 2.47s, tests 231ms, environment 1.90s, prepare 232ms)
+
+
+Exit code: 1

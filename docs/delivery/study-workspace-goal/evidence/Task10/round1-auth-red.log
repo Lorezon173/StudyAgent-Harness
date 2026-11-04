@@ -1,0 +1,61 @@
+
+> studyagent-web@0.1.0 test
+> vitest run auth.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/auth.test.tsx (8 tests | 3 failed) 103ms
+   × backs up unsaved content before 登录A clears the old account 15ms
+     → expected false to be true // Object.is equality
+   × backs up unsaved content before 登录B clears the old account 5ms
+     → expected false to be true // Object.is equality
+   × backs up a dirty draft before the current protected request invalidates authentication 5ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/auth.test.tsx > backs up unsaved content before 登录A clears the old account
+ FAIL  src/store/auth.test.tsx > backs up unsaved content before 登录B clears the old account
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/auth.test.tsx:53:100
+     51|   workspaceStore.patchBucket(ticket, "old", value => ({ ...value, draf…
+     52|   fireEvent.click(screen.getByText(action));
+     53|   expect(getLocalRecovery().list(1, "old", "draft").some(candidate => …
+       |                                                                                                    ^
+     54|   expect(getLocalRecovery().list(2, "old", "draft")).toEqual([]);
+     55| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/store/auth.test.tsx > backs up a dirty draft before the current protected request invalidates authentication
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/store/auth.test.tsx:63:103
+     61|   await act(async () => { await apiGet("/api/sessions").catch(() => {}…
+     62|   expect(screen.getByText("anonymous:none")).toBeTruthy();
+     63|   expect(getLocalRecovery().list(1, "old", "draft").some(candidate => …
+       |                                                                                                       ^
+     64| });
+     65| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 5 passed (8)
+   Start at  15:37:23
+   Duration  3.84s (transform 130ms, setup 0ms, collect 815ms, tests 103ms, environment 1.90s, prepare 254ms)
+

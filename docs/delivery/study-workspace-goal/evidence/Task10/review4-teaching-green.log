@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps session and teaching versions together after a newer activity check|keeps a newer activity check when a still-current load
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (212 tests | 209 skipped) 243ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 209 skipped (212)
+   Start at  19:08:07
+   Duration  5.43s (transform 720ms, setup 0ms, collect 2.29s, tests 243ms, environment 1.81s, prepare 254ms)
+
+EXIT_CODE=0

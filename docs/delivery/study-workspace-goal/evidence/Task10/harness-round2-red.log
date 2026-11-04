@@ -1,0 +1,97 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_________________ test_runtime_rejects_real_hardlink_aliases __________________
+
+tmp_path = WindowsPath('C:/Users/A1985/AppData/Local/Temp/pytest-of-Steven_local/pytest-199/test_runtime_rejects_real_hard0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000017567281910>
+
+    def test_runtime_rejects_real_hardlink_aliases(tmp_path, monkeypatch):
+        import os
+        import acceptance_harness as harness
+        import pytest
+        root = tmp_path / ".superpowers/runtime/task10-acceptance"
+        monkeypatch.setattr(harness, "__file__", str(tmp_path / "docs/delivery/study-workspace-goal/evidence/Task10/acceptance_harness.py"))
+        monkeypatch.setattr(harness, "RUNTIME_ROOT", root)
+        root.mkdir(parents=True)
+        # All samples are new empty files owned by this test, never actual user data.
+        outside = tmp_path / "study_agent.db"
+        outside.touch()
+        database = root / "acceptance.db"
+        control = root / "control.json"
+        os.link(outside, database)
+        assert database.stat().st_nlink == 2 and os.path.samefile(outside, database)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:229: Failed
+_________ test_delayed_chat_cannot_consume_reconfigured_response_loss _________
+
+    def test_delayed_chat_cannot_consume_reconfigured_response_loss():
+        async def scenario():
+            for updates in ([0, 1], [1]):
+                entered, release = asyncio.Event(), asyncio.Event()
+                inner = Dummy()
+                async def delayed(scope, receive, send):
+                    if scope["path"] == "/api/chat" and not entered.is_set():
+                        entered.set()
+                        await release.wait()
+                    await inner(scope, receive, send)
+                app = create_fault_app(delayed, TOKEN)
+                headers = {"X-Acceptance-Control": TOKEN}
+                async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://127.0.0.1") as client:
+                    await client.post("/__acceptance__/faults", headers=headers, json={"drop_chat_responses": 1})
+                    old = asyncio.create_task(client.post("/api/chat"))
+                    await entered.wait()
+                    for count in updates:
+                        await client.post("/__acceptance__/faults", headers=headers, json={"drop_chat_responses": count})
+                    release.set()
+                    assert (await old).status_code == 200
+                    assert (await client.get("/__acceptance__/faults", headers=headers)).json()["drop_chat_responses"] == 1
+                    assert (await client.post("/api/chat")).status_code == 503
+                    assert (await client.get("/__acceptance__/faults", headers=headers)).json()["drop_chat_responses"] == 0
+>       run(scenario())
+
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:40: in run
+    return asyncio.run(scenario)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    async def scenario():
+        for updates in ([0, 1], [1]):
+            entered, release = asyncio.Event(), asyncio.Event()
+            inner = Dummy()
+            async def delayed(scope, receive, send):
+                if scope["path"] == "/api/chat" and not entered.is_set():
+                    entered.set()
+                    await release.wait()
+                await inner(scope, receive, send)
+            app = create_fault_app(delayed, TOKEN)
+            headers = {"X-Acceptance-Control": TOKEN}
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://127.0.0.1") as client:
+                await client.post("/__acceptance__/faults", headers=headers, json={"drop_chat_responses": 1})
+                old = asyncio.create_task(client.post("/api/chat"))
+                await entered.wait()
+                for count in updates:
+                    await client.post("/__acceptance__/faults", headers=headers, json={"drop_chat_responses": count})
+                release.set()
+>               assert (await old).status_code == 200
+E               assert 503 == 200
+E                +  where 503 = <Response [503 Service Unavailable]>.status_code
+
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:267: AssertionError
+=========================== short test summary info ===========================
+FAILED docs/delivery/study-workspace-goal/evidence/Task10/acceptance_harness_test.py::test_runtime_rejects_real_hardlink_aliases
+FAILED docs/delivery/study-workspace-goal/evidence/Task10/acceptance_harness_test.py::test_delayed_chat_cannot_consume_reconfigured_response_loss
+2 failed, 9 deselected in 0.71s

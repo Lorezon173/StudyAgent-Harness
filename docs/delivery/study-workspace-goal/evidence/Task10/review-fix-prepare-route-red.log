@@ -1,0 +1,45 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps a private pure preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (71 tests | 1 failed | 70 skipped) 392ms
+   × keeps a private pure preparation after route cancellation and permits an explicit new send 390ms
+     → expected { text: '原始提问', sequence: 1, …(8) } to match object { schema: 2, phase: 'prepared', …(1) }
+(8 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps a private pure preparation after route cancellation and permits an explicit new send
+AssertionError: expected { text: '原始提问', sequence: 1, …(8) } to match object { schema: 2, phase: 'prepared', …(1) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  Object {
+-   "phase": "prepared",
+-   "schema": 2,
++   "schema": 1,
+    "text": "原始提问",
+  }
+
+ ❯ src/pages/Chat.test.tsx:1176:72
+    1174|   await act(async () => { preparing.resolve(response(snapshot("A"))); …
+    1175|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+    1176|   expect(workspaceStore.getSnapshot().buckets.A.preparedCandidates[0])…
+       |                                                                        ^
+    1177|   expect(workspaceStore.getSnapshot().buckets.A.preparedCandidates[0].…
+    1178|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 70 skipped (71)
+   Start at  20:22:49
+   Duration  5.65s (transform 587ms, setup 0ms, collect 2.43s, tests 392ms, environment 1.84s, prepare 238ms)
+
+
+Exit code: 1

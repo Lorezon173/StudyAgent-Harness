@@ -1,0 +1,497 @@
+{
+  "observed_utc": "2026-11-03T15:47:13.698013+00:00",
+  "statuses": {
+    "a_session": 200,
+    "a_snapshot": 200,
+    "a_messages": 200,
+    "b_snapshot": 200,
+    "profile": 200,
+    "request_1": 200,
+    "request_2": 200,
+    "request_3": 200,
+    "request_4": 200
+  },
+  "comparisons": {
+    "login_status": 200,
+    "all_http_200": true,
+    "a_session_id": true,
+    "a_state_version": true,
+    "messages_ids_content_equal_db": true,
+    "snapshot_messages_equal_db": true,
+    "messages_count": 8,
+    "requests_count": 4,
+    "all_requests_equal_db": true,
+    "b_draft_and_version_equal_db": true,
+    "b_messages_empty": true,
+    "profile_id_matches": true
+  },
+  "responses": {
+    "a_session": {
+      "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+      "user_id": 1,
+      "state_json": "{\"schema_version\": 1, \"active_node_id\": null, \"teaching_mode\": \"Socratic\", \"mode_history\": [\"Socratic\"], \"stage\": \"awaiting_response\", \"last_question\": \"你已经把“四分之二”和“二分之一”联系起来了。想一想：如果把一张披萨平均分成 2 份，取其中 1 份；再把每一份都平均切成 2 小块，取到的披萨会变吗？新的分数该怎么写？\", \"summary\": \"\", \"summary_until_message_id\": null, \"committed_turn_count\": 4}"
+    },
+    "a_snapshot": {
+      "session": {
+        "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+        "user_id": 1,
+        "title": "A验收：分数基础",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "state_version": 4,
+        "next_turn_index": 4,
+        "active_request_id": null,
+        "created_at": "2026-11-03T15:29:45.493877",
+        "updated_at": "2026-11-03T15:39:40.362393"
+      },
+      "teaching_state": {
+        "schema_version": 1,
+        "active_node_id": null,
+        "teaching_mode": "Socratic",
+        "mode_history": [
+          "Socratic"
+        ],
+        "stage": "awaiting_response",
+        "last_question": "你已经把“四分之二”和“二分之一”联系起来了。想一想：如果把一张披萨平均分成 2 份，取其中 1 份；再把每一份都平均切成 2 小块，取到的披萨会变吗？新的分数该怎么写？",
+        "summary": "",
+        "summary_until_message_id": null,
+        "committed_turn_count": 4
+      },
+      "teaching_state_source": "stored",
+      "legacy_state": null,
+      "messages": {
+        "items": [
+          {
+            "id": 1,
+            "turn_index": 0,
+            "role": "user",
+            "content": "请先用生活例子说明分数的分子和分母分别是什么，不要先考我。",
+            "created_at": "2026-11-03T15:30:28.304410"
+          },
+          {
+            "id": 2,
+            "turn_index": 0,
+            "role": "assistant",
+            "content": "想象把一张披萨平均分成 4 块，拿走其中 1 块：你觉得“4”表示什么，“1”表示什么？",
+            "created_at": "2026-11-03T15:30:28.304410"
+          },
+          {
+            "id": 3,
+            "turn_index": 1,
+            "role": "user",
+            "content": "4表示平均分成的总份数，1表示拿走的份数。请接着讲解分数加法。",
+            "created_at": "2026-11-03T15:35:12.385419"
+          },
+          {
+            "id": 4,
+            "turn_index": 1,
+            "role": "assistant",
+            "content": "如果披萨平均分成 4 份，你拿了 1 份；朋友也拿了同样大小的 1 份，把两份合起来一共是几份？你会怎样用分数表示？",
+            "created_at": "2026-11-03T15:35:12.385419"
+          },
+          {
+            "id": 5,
+            "turn_index": 2,
+            "role": "user",
+            "content": "合起来是2份，也就是四分之二。请说明约分。",
+            "created_at": "2026-11-03T15:37:21.838303"
+          },
+          {
+            "id": 6,
+            "turn_index": 2,
+            "role": "assistant",
+            "content": "你说的“四分之二”表示 4 份里取了 2 份。把披萨的 4 份两两合成一组后，2 份合起来占几组中的几组？你觉得怎样用更简单的分数表示它？",
+            "created_at": "2026-11-03T15:37:21.838303"
+          },
+          {
+            "id": 7,
+            "turn_index": 3,
+            "role": "user",
+            "content": "两两合并后是两组中的一组，所以二分之一。请解释等值分数。",
+            "created_at": "2026-11-03T15:39:40.362393"
+          },
+          {
+            "id": 8,
+            "turn_index": 3,
+            "role": "assistant",
+            "content": "你已经把“四分之二”和“二分之一”联系起来了。想一想：如果把一张披萨平均分成 2 份，取其中 1 份；再把每一份都平均切成 2 小块，取到的披萨会变吗？新的分数该怎么写？",
+            "created_at": "2026-11-03T15:39:40.362393"
+          }
+        ],
+        "next_cursor": null
+      },
+      "profile": {
+        "id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "user_id": 1,
+        "name": "分数基础验收主题",
+        "scope_description": "理解分数的含义、分子分母与简单加法",
+        "kind": "normal",
+        "revision": 0,
+        "created_at": "2026-11-03T15:29:45.421310",
+        "updated_at": "2026-11-03T15:29:45.421310"
+      },
+      "profile_summary": {
+        "profile_revision": 0,
+        "nodes": [
+          {
+            "id": "41920470-dae5-42de-9f06-957c7e997f87",
+            "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+            "title": "分数基础验收主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": [],
+        "recent_evidence": [],
+        "assessed_count": 0,
+        "total_count": 1,
+        "mastery_score": null,
+        "metric_kind": "assessed_mean",
+        "assessment_coverage": 0.0
+      },
+      "view_state": {
+        "draft": "",
+        "reading_anchor": null,
+        "version": 9,
+        "updated_at": "2026-11-03T15:39:41.109477"
+      },
+      "pending_requests": []
+    },
+    "a_messages": {
+      "items": [
+        {
+          "id": 1,
+          "turn_index": 0,
+          "role": "user",
+          "content": "请先用生活例子说明分数的分子和分母分别是什么，不要先考我。",
+          "created_at": "2026-11-03T15:30:28.304410"
+        },
+        {
+          "id": 2,
+          "turn_index": 0,
+          "role": "assistant",
+          "content": "想象把一张披萨平均分成 4 块，拿走其中 1 块：你觉得“4”表示什么，“1”表示什么？",
+          "created_at": "2026-11-03T15:30:28.304410"
+        },
+        {
+          "id": 3,
+          "turn_index": 1,
+          "role": "user",
+          "content": "4表示平均分成的总份数，1表示拿走的份数。请接着讲解分数加法。",
+          "created_at": "2026-11-03T15:35:12.385419"
+        },
+        {
+          "id": 4,
+          "turn_index": 1,
+          "role": "assistant",
+          "content": "如果披萨平均分成 4 份，你拿了 1 份；朋友也拿了同样大小的 1 份，把两份合起来一共是几份？你会怎样用分数表示？",
+          "created_at": "2026-11-03T15:35:12.385419"
+        },
+        {
+          "id": 5,
+          "turn_index": 2,
+          "role": "user",
+          "content": "合起来是2份，也就是四分之二。请说明约分。",
+          "created_at": "2026-11-03T15:37:21.838303"
+        },
+        {
+          "id": 6,
+          "turn_index": 2,
+          "role": "assistant",
+          "content": "你说的“四分之二”表示 4 份里取了 2 份。把披萨的 4 份两两合成一组后，2 份合起来占几组中的几组？你觉得怎样用更简单的分数表示它？",
+          "created_at": "2026-11-03T15:37:21.838303"
+        },
+        {
+          "id": 7,
+          "turn_index": 3,
+          "role": "user",
+          "content": "两两合并后是两组中的一组，所以二分之一。请解释等值分数。",
+          "created_at": "2026-11-03T15:39:40.362393"
+        },
+        {
+          "id": 8,
+          "turn_index": 3,
+          "role": "assistant",
+          "content": "你已经把“四分之二”和“二分之一”联系起来了。想一想：如果把一张披萨平均分成 2 份，取其中 1 份；再把每一份都平均切成 2 小块，取到的披萨会变吗？新的分数该怎么写？",
+          "created_at": "2026-11-03T15:39:40.362393"
+        }
+      ],
+      "next_cursor": null
+    },
+    "b_snapshot": {
+      "session": {
+        "session_id": "1793fae3-b7e5-425b-9435-554b5348b243",
+        "user_id": 1,
+        "title": "B验收：草稿隔离",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "state_version": 0,
+        "next_turn_index": 0,
+        "active_request_id": null,
+        "created_at": "2026-11-03T15:34:50.503192",
+        "updated_at": "2026-11-03T15:34:50.503192"
+      },
+      "teaching_state": {
+        "schema_version": 1,
+        "active_node_id": null,
+        "teaching_mode": "Socratic",
+        "mode_history": [
+          "Socratic"
+        ],
+        "stage": "init",
+        "last_question": null,
+        "summary": "",
+        "summary_until_message_id": null,
+        "committed_turn_count": 0
+      },
+      "teaching_state_source": "stored",
+      "legacy_state": null,
+      "messages": {
+        "items": [],
+        "next_cursor": null
+      },
+      "profile": {
+        "id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "user_id": 1,
+        "name": "分数基础验收主题",
+        "scope_description": "理解分数的含义、分子分母与简单加法",
+        "kind": "normal",
+        "revision": 0,
+        "created_at": "2026-11-03T15:29:45.421310",
+        "updated_at": "2026-11-03T15:29:45.421310"
+      },
+      "profile_summary": {
+        "profile_revision": 0,
+        "nodes": [
+          {
+            "id": "41920470-dae5-42de-9f06-957c7e997f87",
+            "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+            "title": "分数基础验收主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": [],
+        "recent_evidence": [],
+        "assessed_count": 0,
+        "total_count": 1,
+        "mastery_score": null,
+        "metric_kind": "assessed_mean",
+        "assessment_coverage": 0.0
+      },
+      "view_state": {
+        "draft": "B独立草稿：等待A回复时继续写。 B补充：分母不同先通分。",
+        "reading_anchor": null,
+        "version": 2,
+        "updated_at": "2026-11-03T15:35:18.283537"
+      },
+      "pending_requests": []
+    },
+    "profile": {
+      "profile": {
+        "id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "user_id": 1,
+        "name": "分数基础验收主题",
+        "scope_description": "理解分数的含义、分子分母与简单加法",
+        "kind": "normal",
+        "revision": 0,
+        "created_at": "2026-11-03T15:29:45.421310",
+        "updated_at": "2026-11-03T15:29:45.421310"
+      },
+      "profile_revision": 0,
+      "nodes": [
+        {
+          "id": "41920470-dae5-42de-9f06-957c7e997f87",
+          "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+          "title": "分数基础验收主题",
+          "description": "",
+          "mastery": null,
+          "last_practiced_at": 0.0,
+          "practice_count": 0,
+          "rationale": "",
+          "revision": 0,
+          "archived": false
+        }
+      ],
+      "edges": []
+    },
+    "request_1": {
+      "user_id": 1,
+      "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+      "request_id": "59e1f6cb-90ac-480a-8fe2-0e2ae18d811f",
+      "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+      "active_node_id": null,
+      "request_payload": {
+        "message": "请先用生活例子说明分数的分子和分母分别是什么，不要先考我。",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "base_state_version": 0
+      },
+      "base_state_version": 0,
+      "attempt": 1,
+      "status": "completed",
+      "lease_until": null,
+      "lease_expired": false,
+      "error_code": null,
+      "response_json": {
+        "reply": "想象把一张披萨平均分成 4 块，拿走其中 1 块：你觉得“4”表示什么，“1”表示什么？",
+        "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+        "mastery_score": null,
+        "turn_count": 1,
+        "mode_path": [
+          "Socratic"
+        ],
+        "cost_est_usd": null,
+        "stack": "new",
+        "persisted": true,
+        "request_id": "59e1f6cb-90ac-480a-8fe2-0e2ae18d811f",
+        "state_version": 1,
+        "profile_revision": 0,
+        "active_node_id": null,
+        "status": "completed",
+        "attempt": 1,
+        "error_code": null,
+        "context_reduced": false,
+        "reduction_reasons": []
+      },
+      "created_at": "2026-11-03T15:30:06.361975",
+      "updated_at": "2026-11-03T15:30:28.304410"
+    },
+    "request_2": {
+      "user_id": 1,
+      "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+      "request_id": "a262ee36-d307-4e39-98fc-2b7ba94ca5db",
+      "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+      "active_node_id": null,
+      "request_payload": {
+        "message": "4表示平均分成的总份数，1表示拿走的份数。请接着讲解分数加法。",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "base_state_version": 1
+      },
+      "base_state_version": 1,
+      "attempt": 1,
+      "status": "completed",
+      "lease_until": null,
+      "lease_expired": false,
+      "error_code": null,
+      "response_json": {
+        "reply": "如果披萨平均分成 4 份，你拿了 1 份；朋友也拿了同样大小的 1 份，把两份合起来一共是几份？你会怎样用分数表示？",
+        "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+        "mastery_score": null,
+        "turn_count": 2,
+        "mode_path": [
+          "Socratic"
+        ],
+        "cost_est_usd": null,
+        "stack": "new",
+        "persisted": true,
+        "request_id": "a262ee36-d307-4e39-98fc-2b7ba94ca5db",
+        "state_version": 2,
+        "profile_revision": 0,
+        "active_node_id": null,
+        "status": "completed",
+        "attempt": 1,
+        "error_code": null,
+        "context_reduced": false,
+        "reduction_reasons": []
+      },
+      "created_at": "2026-11-03T15:35:02.924317",
+      "updated_at": "2026-11-03T15:35:12.385419"
+    },
+    "request_3": {
+      "user_id": 1,
+      "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+      "request_id": "f9717713-2fa8-428b-838b-632e641b04c0",
+      "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+      "active_node_id": null,
+      "request_payload": {
+        "message": "合起来是2份，也就是四分之二。请说明约分。",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "base_state_version": 2
+      },
+      "base_state_version": 2,
+      "attempt": 1,
+      "status": "completed",
+      "lease_until": null,
+      "lease_expired": false,
+      "error_code": null,
+      "response_json": {
+        "reply": "你说的“四分之二”表示 4 份里取了 2 份。把披萨的 4 份两两合成一组后，2 份合起来占几组中的几组？你觉得怎样用更简单的分数表示它？",
+        "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+        "mastery_score": null,
+        "turn_count": 3,
+        "mode_path": [
+          "Socratic"
+        ],
+        "cost_est_usd": null,
+        "stack": "new",
+        "persisted": true,
+        "request_id": "f9717713-2fa8-428b-838b-632e641b04c0",
+        "state_version": 3,
+        "profile_revision": 0,
+        "active_node_id": null,
+        "status": "completed",
+        "attempt": 1,
+        "error_code": null,
+        "context_reduced": false,
+        "reduction_reasons": []
+      },
+      "created_at": "2026-11-03T15:37:13.709897",
+      "updated_at": "2026-11-03T15:37:21.838303"
+    },
+    "request_4": {
+      "user_id": 1,
+      "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+      "request_id": "336ae87e-8b21-4e31-88c5-a6852b3fee77",
+      "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+      "active_node_id": null,
+      "request_payload": {
+        "message": "两两合并后是两组中的一组，所以二分之一。请解释等值分数。",
+        "profile_id": "77404b40-3582-41dd-84f2-7af998f022c5",
+        "active_node_id": null,
+        "base_state_version": 3
+      },
+      "base_state_version": 3,
+      "attempt": 1,
+      "status": "completed",
+      "lease_until": null,
+      "lease_expired": false,
+      "error_code": null,
+      "response_json": {
+        "reply": "你已经把“四分之二”和“二分之一”联系起来了。想一想：如果把一张披萨平均分成 2 份，取其中 1 份；再把每一份都平均切成 2 小块，取到的披萨会变吗？新的分数该怎么写？",
+        "session_id": "0f93cb37-296e-4bea-a2e0-642ece744116",
+        "mastery_score": null,
+        "turn_count": 4,
+        "mode_path": [
+          "Socratic"
+        ],
+        "cost_est_usd": null,
+        "stack": "new",
+        "persisted": true,
+        "request_id": "336ae87e-8b21-4e31-88c5-a6852b3fee77",
+        "state_version": 4,
+        "profile_revision": 0,
+        "active_node_id": null,
+        "status": "completed",
+        "attempt": 1,
+        "error_code": null,
+        "context_reduced": false,
+        "reduction_reasons": []
+      },
+      "created_at": "2026-11-03T15:39:33.526293",
+      "updated_at": "2026-11-03T15:39:40.362393"
+    }
+  }
+}

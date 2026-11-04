@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves unassociated history when continuation bridging returns
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (185 tests | 183 skipped) 349ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 183 skipped (185)
+   Start at  18:26:39
+   Duration  5.90s (transform 689ms, setup 0ms, collect 2.28s, tests 349ms, environment 2.11s, prepare 283ms)
+
+
+Exit code: 0

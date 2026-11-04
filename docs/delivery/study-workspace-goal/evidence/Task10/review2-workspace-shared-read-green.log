@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t finishes a selected session save after its shared workspace read is superseded|does not reuse an old retry when returning to the default route|does not let a delayed workspace retry override a newer chosen session
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (151 tests | 148 skipped) 477ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 148 skipped (151)
+   Start at  17:49:28
+   Duration  6.29s (transform 673ms, setup 0ms, collect 2.30s, tests 477ms, environment 2.17s, prepare 304ms)
+
+
+Exit code: 0

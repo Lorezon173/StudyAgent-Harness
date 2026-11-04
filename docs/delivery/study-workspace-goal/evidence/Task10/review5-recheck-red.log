@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps the identity gate through incompatible rechecks
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (242 tests | 1 failed | 241 skipped) 243ms
+   × keeps the identity gate through incompatible rechecks and recovers on the original profile 241ms
+     → expected 'clear' to be 'uncertain' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps the identity gate through incompatible rechecks and recovers on the original profile
+AssertionError: expected 'clear' to be 'uncertain' // Object.is equality
+
+Expected: "uncertain"
+Received: "clear"
+
+ ❯ src/pages/Chat.test.tsx:3574:63
+    3572|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+    3573|   fireEvent.click(screen.getByRole("button", { name: "重新查询会话状态…
+    3574|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+       |                                                               ^
+    3575|   fireEvent.click(screen.getByRole("button", { name: "重新查询会话状态…
+    3576|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.ac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 241 skipped (242)
+   Start at  19:36:46
+   Duration  5.57s (transform 735ms, setup 0ms, collect 2.38s, tests 243ms, environment 1.79s, prepare 259ms)
+
+EXIT_CODE=1

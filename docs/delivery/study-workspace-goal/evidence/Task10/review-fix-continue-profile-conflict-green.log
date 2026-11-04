@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t warns on equal profile revision conflict during continue
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (98 tests | 97 skipped) 204ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 97 skipped (98)
+   Start at  20:49:12
+   Duration  5.57s (transform 694ms, setup 0ms, collect 2.47s, tests 204ms, environment 1.87s, prepare 252ms)
+
+
+Exit code: 0

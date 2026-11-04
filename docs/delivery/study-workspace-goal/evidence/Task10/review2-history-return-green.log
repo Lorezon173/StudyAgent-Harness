@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retains loaded history and the older cursor when returning to a session|keeps existing history when a normal snapshot conflicts by message id|loads older messages into the selected session
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (162 tests | 159 skipped) 481ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 159 skipped (162)
+   Start at  18:07:03
+   Duration  6.06s (transform 636ms, setup 0ms, collect 2.29s, tests 481ms, environment 2.15s, prepare 281ms)
+
+
+Exit code: 0

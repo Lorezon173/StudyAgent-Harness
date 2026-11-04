@@ -12,7 +12,7 @@ export function mockViewport(width: number) {
   Object.defineProperty(window, "matchMedia", { configurable: true, value: vi.fn((query: string) => ({ matches: query.includes("480") && width <= 480, media: query, onchange: null, addEventListener: vi.fn(), removeEventListener: vi.fn(), addListener: vi.fn(), removeListener: vi.fn(), dispatchEvent: vi.fn() })) });
 }
 beforeEach(() => {
-  vi.restoreAllMocks(); localStorage.clear(); workspaceStore.clearAccount(); window.history.replaceState(null, "", "/login"); mockViewport(1200);
+  vi.restoreAllMocks(); workspaceStore.clearAccount(); localStorage.clear(); window.history.replaceState(null, "", "/login"); mockViewport(1200);
   HTMLDialogElement.prototype.showModal = function () { this.setAttribute("open", ""); };
   HTMLDialogElement.prototype.close = function () { this.removeAttribute("open"); this.dispatchEvent(new Event("close")); };
 });

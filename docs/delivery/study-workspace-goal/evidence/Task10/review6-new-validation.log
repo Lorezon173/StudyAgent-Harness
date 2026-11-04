@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t reports a real conflict in a new user-initiated verification after matching
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (258 tests | 257 skipped) 349ms
+   ✓ reports a real conflict in a new user-initiated verification after matching 347ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 257 skipped (258)
+   Start at  19:55:27
+   Duration  6.18s (transform 888ms, setup 0ms, collect 2.64s, tests 349ms, environment 2.07s, prepare 293ms)
+
+EXIT_CODE=0

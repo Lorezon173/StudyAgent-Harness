@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not match an old linked source that changes while history is loading|continues explicitly after matching the only surviving linked copy|retries a linked preparation using its original|removes only this page.s linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (156 tests | 152 skipped) 607ms
+   ✓ continues explicitly after matching the only surviving linked copy from an older writer 306ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 152 skipped (156)
+   Start at  17:55:01
+   Duration  5.97s (transform 595ms, setup 0ms, collect 2.28s, tests 607ms, environment 1.88s, prepare 287ms)
+
+
+Exit code: 0

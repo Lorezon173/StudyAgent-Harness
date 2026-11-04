@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run localRecovery.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/localRecovery.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/localRecovery.test.ts [ src/store/localRecovery.test.ts ]
+Error: Failed to resolve import "./localRecovery" from "src/store/localRecovery.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web/src/store/localRecovery.test.ts:3:36
+  1  |  import { expect, it } from "vitest";
+  2  |  import { createLocalRecovery } from "./localRecovery";
+     |                                       ^
+  3  |  it("keeps separate writers' drafts and only removes the exact confirmed write", () => {
+  4  |    const a = createLocalRecovery(localStorage, "writer-a");
+ ❯ TransformPluginContext._formatError node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41
+ ❯ TransformPluginContext.error node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16
+ ❯ normalizeUrl node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23
+ ❯ node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7
+ ❯ PluginContainer.transform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  15:25:00
+   Duration  2.92s (transform 21ms, setup 0ms, collect 0ms, tests 0ms, environment 1.90s, prepare 255ms)
+

@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not continue an old request across
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (82 tests | 1 failed | 81 skipped) 221ms
+   × does not continue an old request across a newer activity lock 219ms
+     → expected null to be 'other' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not continue an old request across a newer activity lock
+AssertionError: expected null to be 'other' // Object.is equality
+
+- Expected: 
+"other"
+
++ Received: 
+null
+
+ ❯ src/pages/Chat.test.tsx:1364:77
+    1362|   await act(async () => { await workspaceController.loadSession("A"); …
+    1363|   await act(async () => { delayed.resolve(response({ ...snapshot("A"),…
+    1364|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+       |                                                                             ^
+    1365|   expect(workspaceStore.getSnapshot().buckets.A.request.status).toBe("…
+    1366|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 81 skipped (82)
+   Start at  20:33:06
+   Duration  5.58s (transform 631ms, setup 0ms, collect 2.34s, tests 221ms, environment 1.86s, prepare 296ms)
+
+
+Exit code: 1

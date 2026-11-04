@@ -1,0 +1,43 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/store/auth.test.tsx -t cannot be read back
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/auth.test.tsx (11 tests | 1 failed | 10 skipped) 61ms
+   × refuses to claim existing recovery candidates are safe when they cannot be read back 60ms
+     → expected undefined to deeply equal ArrayContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/auth.test.tsx > refuses to claim existing recovery candidates are safe when they cannot be read back
+AssertionError: expected undefined to deeply equal ArrayContaining{…}
+
+- Expected: 
+ArrayContaining [
+  ObjectContaining {
+    "kind": "prepared",
+    "ok": false,
+    "sessionId": "old",
+  },
+]
+
++ Received: 
+undefined
+
+ ❯ src/store/auth.test.tsx:97:24
+     95|   const report = workspaceStore.prepareAccountTransition(ticket);
+     96|   expect(report.ok).toBe(false);
+     97|   expect(report.items).toEqual(expect.arrayContaining([expect.objectCo…
+       |                        ^
+     98| });
+     99| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 skipped (11)
+   Start at  13:04:47
+   Duration  4.04s (transform 200ms, setup 0ms, collect 1.04s, tests 61ms, environment 1.95s, prepare 242ms)
+

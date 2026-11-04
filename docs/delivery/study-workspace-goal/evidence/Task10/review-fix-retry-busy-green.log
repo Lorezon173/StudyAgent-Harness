@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retry a failed request when its fresh snapshot|does not retry a failed request after a newer activity observation|shows a completed retried request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (112 tests | 109 skipped) 396ms
+   ✓ shows a completed retried request without inventing its historical turn 314ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 109 skipped (112)
+   Start at  17:03:55
+   Duration  5.83s (transform 554ms, setup 0ms, collect 2.14s, tests 396ms, environment 2.08s, prepare 289ms)
+
+
+Exit code: 0

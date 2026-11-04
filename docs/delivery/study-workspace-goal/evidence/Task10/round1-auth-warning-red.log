@@ -1,0 +1,30 @@
+
+> studyagent-web@0.1.0 test
+> vitest run auth.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/auth.test.tsx (9 tests | 1 failed) 103ms
+   × clears invalid credentials even when saving a recovery copy fails 12ms
+     → workspaceStore.recoveryWarning is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/auth.test.tsx > clears invalid credentials even when saving a recovery copy fails
+TypeError: workspaceStore.recoveryWarning is not a function
+ ❯ src/store/auth.test.tsx:74:25
+     72|   expect(screen.getByText("anonymous:none")).toBeTruthy();
+     73|   expect(localStorage.getItem("studyagent_token")).toBeNull();
+     74|   expect(workspaceStore.recoveryWarning()).toBe(true);
+       |                         ^
+     75| });
+     76| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  15:43:08
+   Duration  3.72s (transform 134ms, setup 0ms, collect 792ms, tests 103ms, environment 1.83s, prepare 252ms)
+

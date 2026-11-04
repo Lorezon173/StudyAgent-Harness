@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not post if the session changes while linked
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (76 tests | 1 failed | 75 skipped) 91ms
+   × does not post if the session changes while linked preparation is being saved 90ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not post if the session changes while linked preparation is being saved
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1252:67
+    1250|   await act(async () => { await Promise.resolve(); });
+    1251|   unsubscribe();
+    1252|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+       |                                                                   ^
+    1253|   expect(getLocalRecovery().list(1, "A", "prepared")[0].phase).toBe("l…
+    1254| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 75 skipped (76)
+   Start at  20:27:26
+   Duration  3.07s (transform 315ms, setup 0ms, collect 1.07s, tests 91ms, environment 1.01s, prepare 171ms)
+
+
+Exit code: 1

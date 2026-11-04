@@ -1,0 +1,10 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+src/pages/Chat.test.tsx(1643,99): error TS2339: Property 'candidate' does not exist on type 'Result'.
+  Property 'candidate' does not exist on type '{ ok: false; }'.
+src/pages/Chat.test.tsx(1667,99): error TS2339: Property 'candidate' does not exist on type 'Result'.
+  Property 'candidate' does not exist on type '{ ok: false; }'.
+
+Exit code: 2

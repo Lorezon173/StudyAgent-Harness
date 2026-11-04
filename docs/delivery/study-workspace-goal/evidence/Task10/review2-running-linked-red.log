@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps the linked recovery copy while an authoritative request is still running
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (166 tests | 1 failed | 165 skipped) 237ms
+   × keeps the linked recovery copy while an authoritative request is still running 235ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps the linked recovery copy while an authoritative request is still running
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1743:125
+    1741|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+    1742|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1743|   expect(getLocalRecovery().list(1, "A", "prepared").some(item => item…
+       |                                                                                                                             ^
+    1744| });
+    1745| it("does not match an old linked source that changes while history is …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 165 skipped (166)
+   Start at  18:09:48
+   Duration  5.63s (transform 672ms, setup 0ms, collect 2.38s, tests 237ms, environment 1.94s, prepare 258ms)
+
+
+Exit code: 1

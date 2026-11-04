@@ -68,7 +68,7 @@ async function request<T>(url: string, init: RequestInit): Promise<T> {
       ["studyagent_token", "studyagent_user_id", "studyagent_username"].forEach(key => localStorage.removeItem(key));
     }
     if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-      window.location.href = "/login";
+      window.location.href = workspaceStore.recoveryWarning() ? "/login?localRecovery=failed" : "/login";
     }
   }
 

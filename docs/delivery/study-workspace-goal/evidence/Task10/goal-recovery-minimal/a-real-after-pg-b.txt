@@ -1,0 +1,9 @@
+Browser tab: 3, Title: "StudyAgent", URL: "http://127.0.0.1:57544/chat/1793fae3-b7e5-425b-9435-554b5348b243".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 36-43
+~1 AXWebArea StudyAgent, URL: 127.0.0.1:57544/chat/1793fae3-b7e5-425b-9435-554b5348b243
+~			32 heading B验收：草稿隔离, Value: 1
+~				33 text B验收：草稿隔离
+~			34 text field (settable) B独立草稿：等待A回复时继续写。 B补充：分母不同先通分。
+~			35 button 发送
+The focused UI element is 29 button B验收：草稿隔离

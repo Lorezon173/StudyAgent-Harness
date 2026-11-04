@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t queries a legacy prepared id
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (95 tests | 94 skipped) 273ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 94 skipped (95)
+   Start at  20:46:00
+   Duration  5.65s (transform 685ms, setup 0ms, collect 2.45s, tests 273ms, environment 1.89s, prepare 276ms)
+
+
+Exit code: 0

@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t rejects a saved recent-session candidate when its loaded profile has changed
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (251 tests | 1 failed | 250 skipped) 172ms
+   × rejects a saved recent-session candidate when its loaded profile has changed 170ms
+     → expected { id: 'A' } to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > rejects a saved recent-session candidate when its loaded profile has changed
+AssertionError: expected { id: 'A' } to be null
+
+- Expected: 
+null
+
++ Received: 
+Object {
+  "id": "A",
+}
+
+ ❯ src/pages/Chat.test.tsx:3630:21
+    3628|   mount("/chat/A"); await screen.findByText("历史A");
+    3629|   const validated = await workspaceController.validateWorkspaceCandida…
+    3630|   expect(validated).toBeNull(); expect(workspaceStore.getSnapshot().bu…
+       |                     ^
+    3631| });
+    3632| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 250 skipped (251)
+   Start at  19:44:09
+   Duration  5.53s (transform 750ms, setup 0ms, collect 2.42s, tests 172ms, environment 1.87s, prepare 267ms)
+
+EXIT_CODE=1

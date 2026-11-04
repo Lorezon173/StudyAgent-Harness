@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t preserves the visual position
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (41 tests | 40 skipped) 310ms
+   ✓ preserves the visual position when older messages are prepended 308ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 40 skipped (41)
+   Start at  12:34:18
+   Duration  5.43s (transform 493ms, setup 0ms, collect 2.28s, tests 310ms, environment 1.82s, prepare 250ms)
+

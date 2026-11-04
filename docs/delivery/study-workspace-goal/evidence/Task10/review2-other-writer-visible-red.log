@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retains and displays another writer.s linked copy after matching this page.s request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (190 tests | 1 failed | 189 skipped) 207ms
+   × retains and displays another writer's linked copy after matching this page's request 205ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retains and displays another writer's linked copy after matching this page's request
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1903:124
+    1901|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1902|   expect(createLocalRecovery(localStorage, "reader").list(1, "A", "pre…
+    1903|   expect(workspaceStore.getSnapshot().buckets.A.preparedCandidates.som…
+       |                                                                                                                            ^
+    1904|   expect((screen.getByRole("button", { name: "发送" }) as HTMLButtonEl…
+    1905| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 189 skipped (190)
+   Start at  18:32:19
+   Duration  5.46s (transform 713ms, setup 0ms, collect 2.28s, tests 207ms, environment 1.95s, prepare 270ms)
+
+
+Exit code: 1

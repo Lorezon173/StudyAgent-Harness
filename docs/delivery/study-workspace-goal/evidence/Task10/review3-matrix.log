@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps activity and profile when history bridging fails|preserves the unassociated request but updates independent fields|automatic request recovery steal|reconciles a superseded sent-request lookup|bridge-failure snapshot after bridge 401|expired bridge observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (204 tests | 195 skipped) 1397ms
+   ✓ keeps activity and profile when history bridging fails 381ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed | 195 skipped (204)
+   Start at  18:57:39
+   Duration  6.74s (transform 730ms, setup 0ms, collect 2.44s, tests 1.40s, environment 1.85s, prepare 264ms)
+
+EXIT_CODE=0

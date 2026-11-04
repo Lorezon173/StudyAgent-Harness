@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps a private pure preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (105 tests | 104 skipped) 420ms
+   ✓ keeps a private pure preparation after route cancellation and permits an explicit new send 418ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 104 skipped (105)
+   Start at  20:56:49
+   Duration  5.58s (transform 636ms, setup 0ms, collect 2.37s, tests 420ms, environment 1.79s, prepare 245ms)
+
+
+Exit code: 0

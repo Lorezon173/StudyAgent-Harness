@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t two controllers retain risk when linking fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (103 tests | 102 skipped) 238ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 102 skipped (103)
+   Start at  20:53:03
+   Duration  5.37s (transform 635ms, setup 0ms, collect 2.35s, tests 238ms, environment 1.80s, prepare 239ms)
+
+
+Exit code: 0

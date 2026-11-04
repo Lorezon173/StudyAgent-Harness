@@ -1,0 +1,43 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps activity gate closed after recheck fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (78 tests | 1 failed | 77 skipped) 378ms
+   × keeps activity gate closed after recheck fails and clears it after a later idle snapshot 376ms
+     → expected <p role="alert"></p> to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps activity gate closed after recheck fails and clears it after a later idle snapshot
+AssertionError: expected <p role="alert"></p> to be null
+
+- Expected: 
+null
+
++ Received: 
+<p
+  role="alert"
+>
+  查询失败，请重试
+</p>
+
+ ❯ src/pages/Chat.test.tsx:1282:42
+    1280|   fireEvent.click(screen.getByRole("button", { name: "重新查询会话状态…
+    1281|   await waitFor(() => expect(screen.queryByText("会话状态待确认")).toB…
+    1282|   expect(screen.queryByText(/查询失败，请重试/)).toBeNull();
+       |                                          ^
+    1283| });
+    1284| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 77 skipped (78)
+   Start at  20:29:11
+   Duration  5.81s (transform 626ms, setup 0ms, collect 2.51s, tests 378ms, environment 1.92s, prepare 247ms)
+
+
+Exit code: 1

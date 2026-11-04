@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t shows a recoverable warning when a newer writer source vanishes
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (269 tests | 268 skipped) 404ms
+   ✓ shows a recoverable warning when a newer writer source vanishes before an older association fails 402ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 268 skipped (269)
+   Start at  20:11:37
+   Duration  5.79s (transform 776ms, setup 0ms, collect 2.42s, tests 404ms, environment 1.94s, prepare 262ms)
+
+EXIT_CODE=0

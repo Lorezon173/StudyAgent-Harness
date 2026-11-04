@@ -1,0 +1,31 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps current history but accepts a newer profile from an older continue snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (189 tests | 1 failed | 188 skipped) 182ms
+   × keeps current history but accepts a newer profile from an older continue snapshot 180ms
+     → expected '概率论' to be '更新的画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps current history but accepts a newer profile from an older continue snapshot
+AssertionError: expected '概率论' to be '更新的画像' // Object.is equality
+
+Expected: "更新的画像"
+Received: "概率论"
+
+ ❯ src/pages/Chat.test.tsx:410:64
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 188 skipped (189)
+   Start at  18:31:06
+   Duration  5.46s (transform 705ms, setup 0ms, collect 2.28s, tests 182ms, environment 1.89s, prepare 274ms)
+
+
+Exit code: 1

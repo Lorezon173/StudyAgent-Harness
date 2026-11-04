@@ -1,0 +1,14 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t uncertain send if local recovery
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (47 tests | 46 skipped) 227ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 46 skipped (47)
+   Start at  12:42:01
+   Duration  5.35s (transform 508ms, setup 0ms, collect 2.31s, tests 227ms, environment 1.83s, prepare 242ms)
+

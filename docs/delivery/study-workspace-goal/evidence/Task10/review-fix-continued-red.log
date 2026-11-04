@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t enables a new question after explicitly continuing
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (90 tests | 1 failed | 89 skipped) 352ms
+   × enables a new question after explicitly continuing its matching unassociated request 350ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > enables a new question after explicitly continuing its matching unassociated request
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1511:81
+    1509|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1510|   expect(createLocalRecovery(localStorage, "reader").listResult(1, "A"…
+    1511|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+       |                                                                                 ^
+    1512| });
+    1513| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 89 skipped (90)
+   Start at  20:40:12
+   Duration  5.53s (transform 641ms, setup 0ms, collect 2.38s, tests 352ms, environment 1.82s, prepare 238ms)
+
+
+Exit code: 1

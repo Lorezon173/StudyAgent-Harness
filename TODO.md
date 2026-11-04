@@ -7,11 +7,29 @@
 >
 > **状态图例**：✅ 已完成 | 🚧 进行中 | ⏳ 未启动 | 💬 待讨论
 >
-> 创建：2026-07-08 ｜ 最近更新：2026-07-08
+> 创建：2026-07-08 ｜ 最近更新：2026-11-03
 
 ---
 
 ## 总揽清单
+
+### 当前工作 — Task10 先完成 A，再按原顺序推进
+
+- [ ] **Task10 / A** 最小冲突修复与真实验收：2026-11-03 用户已批准先 A，独立计划复审通过后才实施；当前仍未完成，不将方案确认当作代码或验收完成。[A 三层 raw](superpowers/frontend-ui/2026-11-02-task10-goal-recovery-minimal-raw.md) · [A 实施计划](docs/superpowers/plans/2026-11-02-task10-goal-recovery-minimal.md)
+- [ ] **Task11 → Task12 → Task13** 按既有顺序和依赖推进，目前均 PENDING；Task11/12 页面与浮卡、Task13 完整回归及真实环境验收的明细只维护在[持久账本](docs/delivery/study-workspace-goal/progress.md)与[状态索引](docs/delivery/study-workspace-goal/status.json)，本索引不另建完成状态副本。
+
+### 可选方向 — DEC-SESSION-001 / B 扩展恢复能力
+
+**状态：候选，待独立决策，未实施。** 用户同意先 A；保留 B 不等于授权 B，也不将 B 全部机制塞回 Task10。
+
+- **目标收益与包含范围**：在有真实需求时改善长历史恢复、跨刷新续查与多请求公平性；候选机制包括 IndexedDB 增量历史和检查点、FIFO 公平调度、批次事务、预算及暂停/恢复。详细合同见原方案，本处仅作索引。
+- **代价与信任边界**：增加浏览器存储迁移/配额、事务结果未知、取消与恢复、并发公平和故障状态的维护验证成本。本机记录仍是待核验候选，账号/source/attempt/payload/baseline 与权威服务端消息验证不得放松；不承诺 HTTP、标签页、账号状态与 IndexedDB 的共同原子性。
+- **何时值得启动**：A 的真实验收或后续实际使用证明长历史恢复阻塞/卡顿、刷新导致恢复进度丢失或并发请求饥饿，并有入口、规模、时序、用户影响及最小替代方案对比证据；单凭静态推导或新增机制测试失败不足以启动。
+- **决策规则**：可按实际瓶颈分阶段评估，先写范围、收益、成本和验收，再独立规划/审查并取得用户确认；候选子阶段也不是已授权任务。B 的 v7 计划审查 PASS 只证明当时静态计划通过，不替代当前范围授权、代码或真实验收。
+- **快速入口**：[原 B raw](superpowers/frontend-ui/task10-review-fix-round8-raw.md) · [原 B plan](docs/superpowers/plans/2026-10-30-task10-review-fix-round8.md) · [A/B 对比页](docs/designs/task10-plan-comparison.html) · [B 计划审查 v7](docs/delivery/study-workspace-goal/evidence/Task10/review8-plan-review-v7.md)
+- **原方案保留**：2026-11-03 登记 SHA256，原 B raw/plan 均原样保留，未改标题、正文或状态；此索引的当前授权说明优先用于执行判断。raw：`9ca7afdb94b3608168e1cb8a4e548bb59c2f5ad073bd6adb08bfe16fd45c34a4`；plan：`fdde997b44bb64a23243c6d5063d639ede4c044bc2187b73f6fa48b03d08a65e`。
+
+### 原有 RAG 与迁移工作（历史状态保留）
 
 ### 🔴 P0 — RAG 接线断点修复（本次梳理，⏳ 待启动）
 - [ ] **P0-①** 检索结果接入 Tutor prompt + 新栈默认触发检索
@@ -124,4 +142,5 @@
 
 | 日期 | 变更 |
 |---|---|
+| 2026-11-03 | 新增当前 Task10/A 与后续任务入口；用 DEC-SESSION-001 保留 B 概要、独立决策条件、原文哈希和快速链接。原有 RAG 清单及历史状态未变。 |
 | 2026-07-08 | 初建。纳入本次会话梳理的 RAG 三段式（Query/召回/重排）相关工作：P0-①②③ 接线断点、P1-①② 小增强、T-① 路线分叉、P2/P3 召回增强；引用既有 B-1/B-2/B-3 与 app_old 迁移。 |

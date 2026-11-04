@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t shows a completed retried request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (43 tests | 42 skipped) 368ms
+   ✓ shows a completed retried request without inventing its historical turn 366ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 42 skipped (43)
+   Start at  12:37:33
+   Duration  5.59s (transform 498ms, setup 0ms, collect 2.36s, tests 368ms, environment 1.85s, prepare 242ms)
+

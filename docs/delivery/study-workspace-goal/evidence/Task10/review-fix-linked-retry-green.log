@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retries a linked preparation using its original
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (81 tests | 80 skipped) 348ms
+   ✓ retries a linked preparation using its original request identity and payload 346ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 80 skipped (81)
+   Start at  20:32:19
+   Duration  5.57s (transform 629ms, setup 0ms, collect 2.34s, tests 348ms, environment 1.90s, prepare 246ms)
+
+
+Exit code: 0

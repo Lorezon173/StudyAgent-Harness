@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not clean a matched local request when another writer has a different baseline|keeps a matched request complete when the same completed result is checked again|continues explicitly after matching the only surviving linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (186 tests | 183 skipped) 394ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 183 skipped (186)
+   Start at  18:27:53
+   Duration  6.01s (transform 747ms, setup 0ms, collect 2.36s, tests 394ms, environment 1.99s, prepare 342ms)
+
+
+Exit code: 0

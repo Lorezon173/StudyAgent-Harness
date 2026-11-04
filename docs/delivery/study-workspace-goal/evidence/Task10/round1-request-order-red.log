@@ -1,0 +1,26 @@
+
+> studyagent-web@0.1.0 test
+> vitest run workspace.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/workspace.test.ts (8 tests | 1 failed) 19ms
+   × workspace account and session isolation > never lets an old running request overwrite a completed attempt or a newer retry 8ms
+     → store.mergeRequest is not a function
+ ✓ src/api/workspace.test.ts (6 tests) 180ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/workspace.test.ts > workspace account and session isolation > never lets an old running request overwrite a completed attempt or a newer retry
+TypeError: store.mergeRequest is not a function
+ ❯ src/store/workspace.test.ts:12:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 13 passed (14)
+   Start at  15:52:26
+   Duration  1.33s (transform 222ms, setup 0ms, collect 335ms, tests 199ms, environment 1ms, prepare 538ms)
+

@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t handles profile null binding explicitly
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (247 tests | 243 skipped) 244ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 243 skipped (247)
+   Start at  19:38:30
+   Duration  5.74s (transform 788ms, setup 0ms, collect 2.61s, tests 244ms, environment 1.87s, prepare 250ms)
+
+EXIT_CODE=0

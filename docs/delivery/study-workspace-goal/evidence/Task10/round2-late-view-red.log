@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t newer confirmed draft
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (60 tests | 1 failed | 59 skipped) 232ms
+   × does not replace a newer confirmed draft with an older view snapshot 230ms
+     → expected '草稿A' to be '较新已保存草稿' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not replace a newer confirmed draft with an older view snapshot
+AssertionError: expected '草稿A' to be '较新已保存草稿' // Object.is equality
+
+Expected: "较新已保存草稿"
+Received: "草稿A"
+
+ ❯ src/pages/Chat.test.tsx:543:78
+    541|   act(() => workspaceStore.patchBucket(ticket, "A", value => ({ ...val…
+    542|   await act(async () => { old.resolve(response(snapshot("A"))); await …
+    543|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+       |                                                                              ^
+    544|   expect(workspaceStore.getSnapshot().buckets.A.save.viewVersion).toBe…
+    545| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 59 skipped (60)
+   Start at  12:59:43
+   Duration  5.44s (transform 532ms, setup 0ms, collect 2.41s, tests 232ms, environment 1.80s, prepare 234ms)
+

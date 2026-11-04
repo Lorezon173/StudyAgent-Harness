@@ -1,0 +1,14 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/store/auth.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/auth.test.tsx (11 tests) 142ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  22:33:07
+   Duration  4.29s (transform 205ms, setup 0ms, collect 1.04s, tests 142ms, environment 2.03s, prepare 285ms)
+

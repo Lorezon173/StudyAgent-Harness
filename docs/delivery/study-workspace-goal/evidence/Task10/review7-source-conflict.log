@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not publish a conflict from a writer source changed before its page returns
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (270 tests | 269 skipped) 281ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 269 skipped (270)
+   Start at  20:12:39
+   Duration  5.45s (transform 766ms, setup 0ms, collect 2.36s, tests 281ms, environment 1.78s, prepare 250ms)
+
+EXIT_CODE=0

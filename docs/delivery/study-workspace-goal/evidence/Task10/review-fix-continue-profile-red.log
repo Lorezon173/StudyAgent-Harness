@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t accepts newer profile independently
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (84 tests | 1 failed | 83 skipped) 222ms
+   × accepts newer profile independently of newer teaching state during continue 221ms
+     → expected 1 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > accepts newer profile independently of newer teaching state during continue
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/pages/Chat.test.tsx:1411:83
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 83 skipped (84)
+   Start at  20:35:09
+   Duration  5.47s (transform 630ms, setup 0ms, collect 2.34s, tests 222ms, environment 1.89s, prepare 244ms)
+
+
+Exit code: 1

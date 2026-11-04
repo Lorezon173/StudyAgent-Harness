@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not resend an old request after a newer activity observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (109 tests | 1 failed | 108 skipped) 253ms
+   × does not resend an old request after a newer activity observation supersedes its snapshot 252ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not resend an old request after a newer activity observation supersedes its snapshot
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1668:67
+    1666|   await act(async () => { await workspaceController.loadSession("A"); …
+    1667|   await act(async () => { pending.resolve(response(snapshot("A"))); aw…
+    1668|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+       |                                                                   ^
+    1669|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+    1670| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 108 skipped (109)
+   Start at  16:54:58
+   Duration  5.33s (transform 544ms, setup 0ms, collect 2.16s, tests 253ms, environment 1.93s, prepare 239ms)
+
+
+Exit code: 1

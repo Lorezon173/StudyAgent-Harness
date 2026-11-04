@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not retry when a fresh snapshot contains a foreign pending request|does not retry a failed request when its fresh snapshot reports another active request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (249 tests | 247 skipped) 254ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 247 skipped (249)
+   Start at  19:42:25
+   Duration  5.90s (transform 765ms, setup 0ms, collect 2.57s, tests 254ms, environment 2.01s, prepare 248ms)
+
+EXIT_CODE=0

@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not post when another authoritative request starts|keeps a private pure preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (105 tests | 103 skipped) 455ms
+   ✓ keeps a private pure preparation after route cancellation and permits an explicit new send 405ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 103 skipped (105)
+   Start at  20:57:12
+   Duration  5.62s (transform 634ms, setup 0ms, collect 2.36s, tests 455ms, environment 1.80s, prepare 249ms)
+
+
+Exit code: 0

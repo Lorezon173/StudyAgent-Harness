@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t still sends with a warning when linked preparation readback fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (100 tests | 99 skipped) 261ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 99 skipped (100)
+   Start at  20:50:55
+   Duration  6.96s (transform 762ms, setup 0ms, collect 2.86s, tests 261ms, environment 2.50s, prepare 339ms)
+
+
+Exit code: 0

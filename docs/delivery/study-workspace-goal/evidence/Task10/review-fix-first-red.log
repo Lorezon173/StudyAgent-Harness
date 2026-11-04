@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a newer teaching snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (63 tests | 1 failed | 62 skipped) 241ms
+   × preserves a newer teaching snapshot while completed turn history is loading 239ms
+     → expected 1 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a newer teaching snapshot while completed turn history is loading
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/pages/Chat.test.tsx:955:73
+    953|   await act(async () => { await workspaceController.loadSession("A"); …
+    954|   await act(async () => { page.resolve(response({ items: [user, answer…
+    955|   expect(workspaceStore.getSnapshot().buckets.A.session?.state_version…
+       |                                                                         ^
+    956|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+    957| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 62 skipped (63)
+   Start at  18:50:02
+   Duration  40.53s (transform 1.16s, setup 0ms, collect 16.36s, tests 241ms, environment 21.67s, prepare 1.26s)
+
+
+Exit code: 1

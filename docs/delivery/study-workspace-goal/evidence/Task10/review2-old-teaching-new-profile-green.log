@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t accepts a newer profile from an older teaching snapshot without replacing current history|keeps existing history when a normal snapshot conflicts by message id|preserves a newer teaching snapshot while completed turn history is loading
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (188 tests | 185 skipped) 242ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 185 skipped (188)
+   Start at  18:30:26
+   Duration  5.42s (transform 692ms, setup 0ms, collect 2.29s, tests 242ms, environment 1.85s, prepare 249ms)
+
+
+Exit code: 0

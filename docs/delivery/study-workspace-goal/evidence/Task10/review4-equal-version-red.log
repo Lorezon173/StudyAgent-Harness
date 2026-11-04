@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t equal-version teaching conflict|keeps session and teaching versions together after a newer activity check
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (220 tests | 1 failed | 215 skipped) 334ms
+   × keeps the teaching group and asks for recheck on equal-version teaching conflict 48ms
+     → expected 'node-2' to be 'node-1' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps the teaching group and asks for recheck on equal-version teaching conflict
+AssertionError: expected 'node-2' to be 'node-1' // Object.is equality
+
+Expected: "node-1"
+Received: "node-2"
+
+ ❯ src/pages/Chat.test.tsx:3412:41
+    3410|   mount("/chat/A"); await screen.findByText("历史A"); await act(async …
+    3411|   const state = workspaceStore.getSnapshot().buckets.A;
+    3412|   expect(state.session?.active_node_id).toBe("node-1"); expect(state.s…
+       |                                         ^
+    3413|   expect(state.activityGate).not.toBe("clear"); expect(screen.getByRol…
+    3414| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed | 215 skipped (220)
+   Start at  19:11:11
+   Duration  5.52s (transform 721ms, setup 0ms, collect 2.32s, tests 334ms, environment 1.82s, prepare 253ms)
+
+EXIT_CODE=1

@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a known preparation if storage becomes unreadable|does not send when another preparation appears after both own writes fail|warns and keeps sending when the
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (138 tests | 132 skipped) 405ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed | 132 skipped (138)
+   Start at  17:21:51
+   Duration  5.44s (transform 552ms, setup 0ms, collect 2.07s, tests 405ms, environment 1.94s, prepare 246ms)
+
+
+Exit code: 0

@@ -1,0 +1,79 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retain matched in-memory work after
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (180 tests | 2 failed | 174 skipped) 409ms
+   × does not retain matched in-memory work after linked-readback fails 55ms
+     → expected true to be false // Object.is equality
+   × does not retain matched in-memory work after request-readback fails 36ms
+     → expected { …(2) } to be undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retain matched in-memory work after linked-readback fails
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1959:85
+    1957|   const bucket = workspaceStore.getSnapshot().buckets.A;
+    1958|   expect(bucket.localRequests[requestId]).toBeUndefined();
+    1959|   expect(Object.values(bucket.prepared).some(item => item.requestId ==…
+       |                                                                                     ^
+    1960|   expect(bucket.requestCandidates.some(item => item.itemId === request…
+    1961|   expect(screen.getByText(/关闭页面或账号失效后未确认内容可能丢失|本机…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retain matched in-memory work after request-readback fails
+AssertionError: expected { …(2) } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+Object {
+  "baseline": Object {
+    "active_node_id": null,
+    "base_state_version": 0,
+    "expected_turn_index": 0,
+    "owner_user_id": 1,
+    "profile_id": "p1",
+    "provenance": "before_submit",
+    "request_id": "b2c8fe3c-8851-411a-a225-5a68a9918223",
+    "session_id": "A",
+    "snapshot_sequence": 1,
+  },
+  "payload": Object {
+    "expected_state_version": 0,
+    "message": "内存问题",
+    "profile_id": "p1",
+    "request_id": "b2c8fe3c-8851-411a-a225-5a68a9918223",
+    "session_id": "A",
+  },
+}
+
+ ❯ src/pages/Chat.test.tsx:1958:43
+    1956|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1957|   const bucket = workspaceStore.getSnapshot().buckets.A;
+    1958|   expect(bucket.localRequests[requestId]).toBeUndefined();
+       |                                           ^
+    1959|   expect(Object.values(bucket.prepared).some(item => item.requestId ==…
+    1960|   expect(bucket.requestCandidates.some(item => item.itemId === request…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed | 174 skipped (180)
+   Start at  18:23:33
+   Duration  5.64s (transform 672ms, setup 0ms, collect 2.38s, tests 409ms, environment 1.82s, prepare 249ms)
+
+
+Exit code: 1

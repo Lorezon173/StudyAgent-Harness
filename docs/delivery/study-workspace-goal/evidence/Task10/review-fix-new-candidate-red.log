@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send when a shared preparation appears
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (99 tests | 98 skipped) 264ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 98 skipped (99)
+   Start at  20:49:49
+   Duration  6.95s (transform 770ms, setup 0ms, collect 2.93s, tests 264ms, environment 2.42s, prepare 345ms)
+
+
+Exit code: 0

@@ -1,0 +1,45 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (20 tests | 1 failed) 3789ms
+   ✓ persists an edited draft against the selected session's view version 528ms
+   ✓ persists only an owned visible message as the reading anchor 1035ms
+   ✓ records the message actually visible when the reader scrolls 1031ms
+   × records the complete pre-submit turn identity before sending 110ms
+     → expected +0 to deeply equal { owner_user_id: 1, …(8) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > records the complete pre-submit turn identity before sending
+AssertionError: expected +0 to deeply equal { owner_user_id: 1, …(8) }
+
+- Expected: 
+Object {
+  "active_node_id": null,
+  "base_state_version": 0,
+  "expected_turn_index": 0,
+  "owner_user_id": 1,
+  "profile_id": "p1",
+  "provenance": "before_submit",
+  "request_id": "23a1fb9c-e0b2-4f8b-8746-c96c068a300e",
+  "session_id": "A",
+  "snapshot_sequence": Any<Number>,
+}
+
++ Received: 
+0
+
+ ❯ src/pages/Chat.test.tsx:217:26
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  18:53:09
+   Duration  8.56s (transform 349ms, setup 0ms, collect 1.92s, tests 3.79s, environment 1.83s, prepare 247ms)
+

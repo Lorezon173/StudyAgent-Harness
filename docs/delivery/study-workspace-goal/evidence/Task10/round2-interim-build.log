@@ -1,0 +1,5 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+src/store/workspaceController.ts(282,251): error TS18047: 'snapshot.profile' is possibly 'null'.

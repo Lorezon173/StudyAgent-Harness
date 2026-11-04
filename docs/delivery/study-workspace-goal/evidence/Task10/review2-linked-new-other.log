@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t revokes linked confirmation if another writer adds an unknown request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (169 tests | 168 skipped) 235ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 168 skipped (169)
+   Start at  18:14:08
+   Duration  5.49s (transform 686ms, setup 0ms, collect 2.33s, tests 235ms, environment 1.90s, prepare 242ms)
+
+
+Exit code: 0

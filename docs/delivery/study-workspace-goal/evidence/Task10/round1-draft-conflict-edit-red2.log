@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (27 tests | 1 failed) 4608ms
+   ✓ persists an edited draft against the selected session's view version 531ms
+   ✓ persists only an owned visible message as the reading anchor 1034ms
+   ✓ records the message actually visible when the reader scrolls 1034ms
+   × retains both drafts after a view-state conflict and asks the reader to choose 574ms
+     → expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retains both drafts after a view-state conflict and asks the reader to choose
+AssertionError: expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/pages/Chat.test.tsx:240:121
+    238|     fireEvent.change(screen.getByPlaceholderText("输入学习问题…"), { t…
+    239|     await act(async () => { vi.advanceTimersByTime(1000); });
+    240|     expect(fetcher.mock.calls.filter(([url, init]) => String(url).ends…
+       |                                                                                                                         ^
+    241|   } finally { vi.useRealTimers(); }
+    242| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 passed (27)
+   Start at  19:06:56
+   Duration  9.55s (transform 371ms, setup 0ms, collect 1.95s, tests 4.61s, environment 1.98s, prepare 250ms)
+

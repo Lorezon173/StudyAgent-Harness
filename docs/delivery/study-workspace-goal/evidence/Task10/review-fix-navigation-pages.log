@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t cancels preparation when leaving chat for
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (120 tests | 118 skipped) 357ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 118 skipped (120)
+   Start at  17:12:44
+   Duration  5.45s (transform 540ms, setup 0ms, collect 2.12s, tests 357ms, environment 1.89s, prepare 262ms)
+
+
+Exit code: 0

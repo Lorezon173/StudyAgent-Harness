@@ -1,0 +1,75 @@
+{
+  "events": [
+    {
+      "seq": 1,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/workspace-state"
+    },
+    {
+      "seq": 2,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 3,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions?group_by=profile"
+    },
+    {
+      "seq": 4,
+      "phase": "init",
+      "event": "request",
+      "method": "PATCH",
+      "path": "/api/workspace-state"
+    },
+    {
+      "seq": 5,
+      "phase": "source",
+      "event": "phase"
+    },
+    {
+      "seq": 6,
+      "phase": "source",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/requests/r-source"
+    },
+    {
+      "seq": 7,
+      "phase": "source",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 8,
+      "phase": "source",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/messages?limit=50&cursor=old"
+    },
+    {
+      "seq": 9,
+      "phase": "source",
+      "event": "held",
+      "slot": "A",
+      "cursor": "old"
+    },
+    {
+      "seq": 10,
+      "phase": "source",
+      "event": "release",
+      "slot": "A",
+      "outcome": "conflict"
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "postCount": 0
+}

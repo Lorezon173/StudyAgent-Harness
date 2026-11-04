@@ -1,0 +1,22 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (273 tests) 27483ms
+   ✓ persists an edited draft against the selected session's view version 529ms
+   ✓ offers to retry a draft save after a server failure 566ms
+   ✓ persists only an owned visible message as the reading anchor 1042ms
+   ✓ records the message actually visible when the reader scrolls 1032ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 552ms
+   ✓ polls a running request recovered in a session snapshot 3066ms
+   ✓ does not let an older valid association erase a newer verified conflict: backup unavailable 323ms
+
+ Test Files  1 passed (1)
+      Tests  273 passed (273)
+   Start at  23:02:22
+   Duration  33.53s (transform 1.05s, setup 0ms, collect 3.02s, tests 27.48s, environment 1.85s, prepare 276ms)
+
+exit=0

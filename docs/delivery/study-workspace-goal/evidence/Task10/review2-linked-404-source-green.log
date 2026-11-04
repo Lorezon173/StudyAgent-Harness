@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not offer retry after a linked source changes before a 404 lookup returns|retries a linked preparation using its original|only resends a missing request when asked
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (172 tests | 169 skipped) 462ms
+   ✓ only resends a missing request when asked, reusing its original ID and payload 319ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 169 skipped (172)
+   Start at  18:16:34
+   Duration  5.82s (transform 656ms, setup 0ms, collect 2.24s, tests 462ms, environment 2.10s, prepare 248ms)
+
+
+Exit code: 0

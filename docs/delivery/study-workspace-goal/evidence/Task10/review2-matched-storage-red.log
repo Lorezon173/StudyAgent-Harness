@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retain a memory-only request as unresolved
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (157 tests | 1 failed | 156 skipped) 195ms
+   × does not retain a memory-only request as unresolved after its persisted messages match 193ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retain a memory-only request as unresolved after its persisted messages match
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1671:100
+    1669|   expect(bucket.localRequests[requestId]).toBeUndefined();
+    1670|   expect(Object.values(bucket.prepared).some(item => item.requestId ==…
+    1671|   expect(bucket.requestCandidates.some(item => item.itemId === request…
+       |                                                                                                    ^
+    1672|   expect(screen.getByText(/关闭页面或账号失效后未确认内容可能丢失/)).t…
+    1673| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 156 skipped (157)
+   Start at  17:55:43
+   Duration  5.98s (transform 637ms, setup 0ms, collect 2.37s, tests 195ms, environment 2.09s, prepare 360ms)
+
+
+Exit code: 1

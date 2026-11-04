@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t rejects a session snapshot whose linked profile belongs to another account|does not overwrite a conflicting existing message when confirming a completed turn|does not replace existing messages when a continue snapshot has a conflicting id|keeps existing history when a normal snapshot conflicts by message id
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (166 tests | 162 skipped) 348ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 162 skipped (166)
+   Start at  18:11:01
+   Duration  5.42s (transform 653ms, setup 0ms, collect 2.26s, tests 348ms, environment 1.80s, prepare 249ms)
+
+
+Exit code: 0

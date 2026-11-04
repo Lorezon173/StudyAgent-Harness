@@ -1,0 +1,41 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not mix a different profile into a loaded session
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (233 tests | 3 failed | 230 skipped) 252ms
+   × does not mix a different profile into a loaded session at revision 1 177ms
+     → expected 'p2' to be 'p1' // Object.is equality
+   × does not mix a different profile into a loaded session at revision 2 44ms
+     → expected 'p2' to be 'p1' // Object.is equality
+   × does not mix a different profile into a loaded session at revision 3 28ms
+     → expected 'p2' to be 'p1' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not mix a different profile into a loaded session at revision 1
+ FAIL  src/pages/Chat.test.tsx > does not mix a different profile into a loaded session at revision 2
+ FAIL  src/pages/Chat.test.tsx > does not mix a different profile into a loaded session at revision 3
+AssertionError: expected 'p2' to be 'p1' // Object.is equality
+
+Expected: "p1"
+Received: "p2"
+
+ ❯ src/pages/Chat.test.tsx:3514:37
+    3512|   await act(async () => { await workspaceController.loadSession("A"); …
+    3513|   const state = workspaceStore.getSnapshot().buckets.A;
+    3514|   expect(state.session?.profile_id).toBe("p1"); expect(state.profile?.…
+       |                                     ^
+    3515|   expect(screen.getByText("历史A")).toBeTruthy(); expect(screen.queryB…
+    3516|   expect(screen.getByRole("button", { name: "重新查询会话状态" })).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 230 skipped (233)
+   Start at  19:33:02
+   Duration  5.65s (transform 736ms, setup 0ms, collect 2.32s, tests 252ms, environment 1.94s, prepare 300ms)
+
+EXIT_CODE=1

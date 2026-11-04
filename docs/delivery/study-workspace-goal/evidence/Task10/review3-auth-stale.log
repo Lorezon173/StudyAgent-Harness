@@ -1,0 +1,97 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t bridge-failure snapshot after bridge 401|expired bridge observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (199 tests | 1 failed | 197 skipped) 240ms
+   × does not publish a bridge-failure snapshot after bridge 401 invalidates the account 193ms
+     → expected { messages: [], draft: '', …(42) } to be undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not publish a bridge-failure snapshot after bridge 401 invalidates the account
+AssertionError: expected { messages: [], draft: '', …(42) } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+Object {
+  "acknowledgedPreparations": Array [],
+  "activityEpoch": 0,
+  "activityError": null,
+  "activityGate": "clear",
+  "activityObservationSequence": 1,
+  "anchorRestoreSequence": 0,
+  "cancelledPreparations": Array [],
+  "conflictView": null,
+  "conflictedRequests": Array [],
+  "continuedUnassociated": Object {},
+  "draft": "",
+  "draftRevision": 0,
+  "historyIds": Array [],
+  "historyLoaded": false,
+  "historySyncError": null,
+  "load": Object {
+    "error": null,
+    "sequence": 1,
+    "status": "loading",
+  },
+  "localRequests": Object {},
+  "messageEpoch": 0,
+  "messagePageError": null,
+  "messages": Array [],
+  "nextMessageCursor": null,
+  "pendingRequests": Array [],
+  "prepared": Object {},
+  "preparedCandidates": Array [],
+  "profile": null,
+  "profileRevision": null,
+  "profileSummary": null,
+  "readingAnchor": null,
+  "recoveryCandidates": Array [],
+  "recoveryError": null,
+  "request": Object {
+    "attempt": null,
+    "error": null,
+    "id": null,
+    "sequence": 0,
+    "status": null,
+  },
+  "requestCandidates": Array [],
+  "requests": Object {},
+  "resendableRequests": Array [],
+  "save": Object {
+    "error": null,
+    "status": "idle",
+    "viewVersion": null,
+  },
+  "session": null,
+  "staleDraftRevision": null,
+  "staleRequestId": null,
+  "teachingState": null,
+  "teachingStateSource": null,
+  "teachingStateVersion": null,
+  "uncertainMatched": Array [],
+  "uncertainPrepared": Object {},
+  "visitedMessageCursors": Array [],
+}
+
+ ❯ src/pages/Chat.test.tsx:3160:50
+    3158|   await act(async () => { await workspaceController.loadSession("A"); …
+    3159|   expect(workspaceStore.getSnapshot().account.userId).toBeNull();
+    3160|   expect(workspaceStore.getSnapshot().buckets.A).toBeUndefined();
+       |                                                  ^
+    3161|   expect(localStorage.getItem("studyagent_token")).toBeNull();
+    3162| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 197 skipped (199)
+   Start at  18:51:44
+   Duration  5.87s (transform 718ms, setup 0ms, collect 2.31s, tests 240ms, environment 2.25s, prepare 314ms)
+
+EXIT_CODE=1

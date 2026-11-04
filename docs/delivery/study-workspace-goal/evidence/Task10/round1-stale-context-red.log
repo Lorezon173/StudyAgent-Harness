@@ -1,0 +1,1141 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (34 tests | 1 failed) 9425ms
+   ✓ persists an edited draft against the selected session's view version 544ms
+   ✓ persists only an owned visible message as the reading anchor 1030ms
+   ✓ records the message actually visible when the reader scrolls 1033ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 576ms
+   × offers the original question for a new send when retry context is stale 1065ms
+     → Unable to find role="button" and name "复制原文到输入框"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"workspace-shell"[39m
+    [36m>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"会话导航"[39m
+        [33mclass[39m=[32m"workspace-sidebar"[39m
+        [33mdata-mode[39m=[32m"desktop"[39m
+        [33mid[39m=[32m"session-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"study-brand"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"brand-mark"[39m
+          [36m>[39m
+            [0m学[0m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"brand-name"[39m
+            [36m>[39m
+              [0mStudyAgent[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0m慢慢理解，自有回响[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-controls"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m已固定[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"收起会话导航"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m收起 ‹[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"开启一段新的探索"[39m
+          [33mclass[39m=[32m"new-session"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m开启一段新的探索 [0m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+          [36m>[39m
+            [0m＋[0m
+          [36m</span>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-label"[39m
+        [36m>[39m
+          [0m我的学习主题 / TOPICS[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-groups"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33maria-label[39m=[32m"主题：概率论"[39m
+            [33mclass[39m=[32m"session-group"[39m
+            [33mdata-group-key[39m=[32m"p1"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-group-p1"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"切换主题：概率论"[39m
+              [33mclass[39m=[32m"group-toggle"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m⌄[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m概率论[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m已加载 [0m
+                [0m2[0m
+              [36m</small>[39m
+            [36m</button>[39m
+            [36m<div[39m
+              [33mid[39m=[32m"session-group-p1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-current[39m=[32m"true"[39m
+                [33maria-label[39m=[32m"会话 A"[39m
+                [33mclass[39m=[32m"session-button active"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 A[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"会话 B"[39m
+                [33mclass[39m=[32m"session-button"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 B[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</section>[39m
+        [36m</div>[39m
+        [36m<footer[39m
+          [33mclass[39m=[32m"sidebar-account"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"account-actions"[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33maria-label[39m=[32m"账号：用户1"[39m
+            [33mclass[39m=[32m"account-button"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-avatar"[39m
+            [36m>[39m
+              [0m用[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m用户1[0m
+              [36m<small>[39m
+                [0m我的学习书房[0m
+              [36m</small>[39m
+            [36m</span>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-dots"[39m
+            [36m>[39m
+              [0m···[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</footer>[39m
+      [36m</aside>[39m
+      [36m<main[39m
+        [33mclass[39m=[32m"workspace-main"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"workspace-topbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-breadcrumb"[39m
+          [36m>[39m
+            [0m我的书房 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m/[0m
+            [36m</span>[39m
+            [0m [0m
+            [36m<b>[39m
+              [0m概率论[0m
+            [36m</b>[39m
+          [36m</div>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"工作区导航"[39m
+            [33mclass[39m=[32m"workspace-actions"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/knowledge"[39m
+            [36m>[39m
+              [0m知识库[0m
+            [36m</a>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/profile"[39m
+            [36m>[39m
+              [0m学习画像[0m
+            [36m</a>[39m
+          [36m</nav>[39m
+        [36m</header>[39m
+        [36m<section>[39m
+          [36m<p>[39m
+            [0m服务器最近会话：[0m
+            [0mA[0m
+            [0m；本机会话：[0m
+            [0mA[0m
+          [36m</p>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m仅打开本机会话 [0m
+            [0mA[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m设为最近会话 [0m
+            [0mA[0m
+          [36m</button>[39m
+        [36m</section>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"legacy-chat"[39m
+            [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100%;"[39m
+          [36m>[39m
+            [36m<h1>[39m
+              [0m会话 A[0m
+            [36m</h1>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mdata-message-id[39m=[32m"1"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mstyle[39m=[32m"display: flex; justify-content: flex-start; margin: 8px 0px;"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mstyle[39m=[32m"max-width: 75%; background: rgb(255, 255, 255); color: rgb(26, 26, 26); padding: 10px 14px; border-radius: 12px; border: 1px solid rgb(227, 230, 234);"[39m
+                  [36m>[39m
+                    [36m<p>[39m
+                      [0m历史A[0m
+                    [36m</p>[39m
+                  [36m</div>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<section>[39m
+              [36m<p>[39m
+                [0m旧上下文问题[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0m请求失败，可重试[0m
+              [36m</p>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m重试请求[0m
+              [36m</button>[39m
+            [36m</section>[39m
+            [36m<p[39m
+              [33mrole[39m=[32m"alert"[39m
+            [36m>[39m
+              [0m会话内容已变化，请复制原文后重新提问[0m
+            [36m</p>[39m
+            [36m<form>[39m
+              [36m<input[39m
+                [33mplaceholder[39m=[32m"输入学习问题…"[39m
+                [33mvalue[39m=[32m"草稿A"[39m
+              [36m/>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"submit"[39m
+              [36m>[39m
+                [0m发送[0m
+              [36m</button>[39m
+            [36m</form>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"workspace-shell"[39m
+    [36m>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"会话导航"[39m
+        [33mclass[39m=[32m"workspace-sidebar"[39m
+        [33mdata-mode[39m=[32m"desktop"[39m
+        [33mid[39m=[32m"session-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"study-brand"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"brand-mark"[39m
+          [36m>[39m
+            [0m学[0m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"brand-name"[39m
+            [36m>[39m
+              [0mStudyAgent[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0m慢慢理解，自有回响[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-controls"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m已固定[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"收起会话导航"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m收起 ‹[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"开启一段新的探索"[39m
+          [33mclass[39m=[32m"new-session"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m开启一段新的探索 [0m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+          [36m>[39m
+            [0m＋[0m
+          [36m</span>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-label"[39m
+        [36m>[39m
+          [0m我的学习主题 / TOPICS[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-groups"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33maria-label[39m=[32m"主题：概率论"[39m
+            [33mclass[39m=[32m"session-group"[39m
+            [33mdata-group-key[39m=[32m"p1"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-group-p1"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"切换主题：概率论"[39m
+              [33mclass[39m=[32m"group-toggle"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m⌄[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m概率论[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m已加载 [0m
+                [0m2[0m
+              [36m</small>[39m
+            [36m</button>[39m
+            [36m<div[39m
+              [33mid[39m=[32m"session-group-p1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-current[39m=[32m"true"[39m
+                [33maria-label[39m=[32m"会话 A"[39m
+                [33mclass[39m=[32m"session-button active"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 A[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"会话 B"[39m
+                [33mclass[39m=[32m"session-button"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 B[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</section>[39m
+        [36m</div>[39m
+        [36m<footer[39m
+          [33mclass[39m=[32m"sidebar-account"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"account-actions"[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33maria-label[39m=[32m"账号：用户1"[39m
+            [33mclass[39m=[32m"account-button"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-avatar"[39m
+            [36m>[39m
+              [0m用[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m用户1[0m
+              [36m<small>[39m
+                [0m我的学习书房[0m
+              [36m</small>[39m
+            [36m</span>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-dots"[39m
+            [36m>[39m
+              [0m···[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</footer>[39m
+      [36m</aside>[39m
+      [36m<main[39m
+        [33mclass[39m=[32m"workspace-main"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"workspace-topbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-breadcrumb"[39m
+          [36m>[39m
+            [0m我的书房 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m/[0m
+            [36m</span>[39m
+            [0m [0m
+            [36m<b>[39m
+              [0m概率论[0m
+            [36m</b>[39m
+          [36m</div>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"工作区导航"[39m
+            [33mclass[39m=[32m"workspace-actions"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/knowledge"[39m
+            [36m>[39m
+              [0m知识库[0m
+            [36m</a>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/profile"[39m
+            [36m>[39m
+              [0m学习画像[0m
+            [36m</a>[39m
+          [36m</nav>[39m
+        [36m</header>[39m
+        [36m<section>[39m
+          [36m<p>[39m
+            [0m服务器最近会话：[0m
+            [0mA[0m
+            [0m；本机会话：[0m
+            [0mA[0m
+          [36m</p>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m仅打开本机会话 [0m
+            [0mA[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m设为最近会话 [0m
+            [0mA[0m
+          [36m</button>[39m
+        [36m</section>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace-content"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"legacy-chat"[39m
+            [33mstyle[39m=[32m"display: flex; flex-direction: column; height: 100%;"[39m
+          [36m>[39m
+            [36m<h1>[39m
+              [0m会话 A[0m
+            [36m</h1>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mdata-message-id[39m=[32m"1"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mstyle[39m=[32m"display: flex; justify-content: flex-start; margin: 8px 0px;"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mstyle[39m=[32m"max-width: 75%; background: rgb(255, 255, 255); color: rgb(26, 26, 26); padding: 10px 14px; border-radius: 12px; border: 1px solid rgb(227, 230, 234);"[39m
+                  [36m>[39m
+                    [36m<p>[39m
+                      [0m历史A[0m
+                    [36m</p>[39m
+                  [36m</div>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<section>[39m
+              [36m<p>[39m
+                [0m旧上下文问题[0m
+              [36m</p>[39m
+              [36m<p>[39m
+                [0m请求失败，可重试[0m
+              [36m</p>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m重试请求[0m
+              [36m</button>[39m
+            [36m</section>[39m
+            [36m<p[39m
+              [33mrole[39m=[32m"alert"[39m
+            [36m>[39m
+              [0m会话内容已变化，请复制原文后重新提问[0m
+            [36m</p>[39m
+            [36m<form>[39m
+              [36m<input[39m
+                [33mplaceholder[39m=[32m"输入学习问题…"[39m
+                [33mvalue[39m=[32m"草稿A"[39m
+              [36m/>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"submit"[39m
+              [36m>[39m
+                [0m发送[0m
+              [36m</button>[39m
+            [36m</form>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ polls a running request recovered in a session snapshot 3044ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > offers the original question for a new send when retry context is stale
+TestingLibraryElementError: Unable to find role="button" and name "复制原文到输入框"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="workspace-shell"
+    >
+      <aside
+        aria-label="会话导航"
+        class="workspace-sidebar"
+        data-mode="desktop"
+        id="session-sidebar"
+      >
+        <div
+          class="study-brand"
+        >
+          <span
+            aria-hidden="true"
+            class="brand-mark"
+          >
+            学
+          </span>
+          <div>
+            <span
+              class="brand-name"
+            >
+              StudyAgent
+            </span>
+            <small>
+              慢慢理解，自有回响
+            </small>
+          </div>
+        </div>
+        <div
+          class="sidebar-controls"
+        >
+          <button
+            aria-controls="session-sidebar"
+            aria-label="取消固定侧栏，保持当前展示"
+            aria-pressed="true"
+            type="button"
+          >
+            已固定
+          </button>
+          <button
+            aria-controls="session-sidebar"
+            aria-expanded="true"
+            aria-label="收起会话导航"
+            type="button"
+          >
+            收起 ‹
+          </button>
+        </div>
+        <button
+          aria-label="开启一段新的探索"
+          class="new-session"
+          type="button"
+        >
+          开启一段新的探索 
+          <span
+            aria-hidden="true"
+          >
+            ＋
+          </span>
+        </button>
+        <div
+          class="sidebar-label"
+        >
+          我的学习主题 / TOPICS
+        </div>
+        <div
+          class="sidebar-groups"
+        >
+          <section
+            aria-label="主题：概率论"
+            class="session-group"
+            data-group-key="p1"
+          >
+            <button
+              aria-controls="session-group-p1"
+              aria-expanded="true"
+              aria-label="切换主题：概率论"
+              class="group-toggle"
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ⌄
+              </span>
+              <span>
+                概率论
+              </span>
+              <small>
+                已加载 
+                2
+              </small>
+            </button>
+            <div
+              id="session-group-p1"
+            >
+              <button
+                aria-current="true"
+                aria-label="会话 A"
+                class="session-button active"
+                type="button"
+              >
+                <span>
+                  会话 A
+                </span>
+              </button>
+              <button
+                aria-label="会话 B"
+                class="session-button"
+                type="button"
+              >
+                <span>
+                  会话 B
+                </span>
+              </button>
+            </div>
+          </section>
+        </div>
+        <footer
+          class="sidebar-account"
+        >
+          <button
+            aria-controls="account-actions"
+            aria-expanded="false"
+            aria-label="账号：用户1"
+            class="account-button"
+            type="button"
+          >
+            <span
+              aria-hidden="true"
+              class="account-avatar"
+            >
+              用
+            </span>
+            <span>
+              用户1
+              <small>
+                我的学习书房
+              </small>
+            </span>
+            <span
+              aria-hidden="true"
+              class="account-dots"
+            >
+              ···
+            </span>
+          </button>
+        </footer>
+      </aside>
+      <main
+        class="workspace-main"
+      >
+        <header
+          class="workspace-topbar"
+        >
+          <div
+            class="workspace-breadcrumb"
+          >
+            我的书房 
+            <span
+              aria-hidden="true"
+            >
+              /
+            </span>
+             
+            <b>
+              概率论
+            </b>
+          </div>
+          <nav
+            aria-label="工作区导航"
+            class="workspace-actions"
+          >
+            <a
+              class=""
+              href="/knowledge"
+            >
+              知识库
+            </a>
+            <a
+              class=""
+              href="/profile"
+            >
+              学习画像
+            </a>
+          </nav>
+        </header>
+        <section>
+          <p>
+            服务器最近会话：
+            A
+            ；本机会话：
+            A
+          </p>
+          <button
+            type="button"
+          >
+            仅打开本机会话 
+            A
+          </button>
+          <button
+            type="button"
+          >
+            设为最近会话 
+            A
+          </button>
+        </section>
+        <div
+          class="workspace-content"
+        >
+          <div
+            class="legacy-chat"
+            style="display: flex; flex-direction: column; height: 100%;"
+          >
+            <h1>
+              会话 A
+            </h1>
+            <div
+              style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+            >
+              <div
+                data-message-id="1"
+              >
+                <div
+                  style="display: flex; justify-content: flex-start; margin: 8px 0px;"
+                >
+                  <div
+                    style="max-width: 75%; background: rgb(255, 255, 255); color: rgb(26, 26, 26); padding: 10px 14px; border-radius: 12px; border: 1px solid rgb(227, 230, 234);"
+                  >
+                    <p>
+                      历史A
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <section>
+              <p>
+                旧上下文问题
+              </p>
+              <p>
+                请求失败，可重试
+              </p>
+              <button
+                type="button"
+              >
+                重试请求
+              </button>
+            </section>
+            <p
+              role="alert"
+            >
+              会话内容已变化，请复制原文后重新提问
+            </p>
+            <form>
+              <input
+                placeholder="输入学习问题…"
+                value="草稿A"
+              />
+              <button
+                type="submit"
+              >
+                发送
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="workspace-shell"
+    >
+      <aside
+        aria-label="会话导航"
+        class="workspace-sidebar"
+        data-mode="desktop"
+        id="session-sidebar"
+      >
+        <div
+          class="study-brand"
+        >
+          <span
+            aria-hidden="true"
+            class="brand-mark"
+          >
+            学
+          </span>
+          <div>
+            <span
+              class="brand-name"
+            >
+              StudyAgent
+            </span>
+            <small>
+              慢慢理解，自有回响
+            </small>
+          </div>
+        </div>
+        <div
+          class="sidebar-controls"
+        >
+          <button
+            aria-controls="session-sidebar"
+            aria-label="取消固定侧栏，保持当前展示"
+            aria-pressed="true"
+            type="button"
+          >
+            已固定
+          </button>
+          <button
+            aria-controls="session-sidebar"
+            aria-expanded="true"
+            aria-label="收起会话导航"
+            type="button"
+          >
+            收起 ‹
+          </button>
+        </div>
+        <button
+          aria-label="开启一段新的探索"
+          class="new-session"
+          type="button"
+        >
+          开启一段新的探索 
+          <span
+            aria-hidden="true"
+          >
+            ＋
+          </span>
+        </button>
+        <div
+          class="sidebar-label"
+        >
+          我的学习主题 / TOPICS
+        </div>
+        <div
+          class="sidebar-groups"
+        >
+          <section
+            aria-label="主题：概率论"
+            class="session-group"
+            data-group-key="p1"
+          >
+            <button
+              aria-controls="session-group-p1"
+              aria-expanded="true"
+              aria-label="切换主题：概率论"
+              class="group-toggle"
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ⌄
+              </span>
+              <span>
+                概率论
+              </span>
+              <small>
+                已加载 
+                2
+              </small>
+            </button>
+            <div
+              id="session-group-p1"
+            >
+              <button
+                aria-current="true"
+                aria-label="会话 A"
+                class="session-button active"
+                type="button"
+              >
+                <span>
+                  会话 A
+                </span>
+              </button>
+              <button
+                aria-label="会话 B"
+                class="session-button"
+                type="button"
+              >
+                <span>
+                  会话 B
+                </span>
+              </button>
+            </div>
+          </section>
+        </div>
+        <footer
+          class="sidebar-account"
+        >
+          <button
+            aria-controls="account-actions"
+            aria-expanded="false"
+            aria-label="账号：用户1"
+            class="account-button"
+            type="button"
+          >
+            <span
+              aria-hidden="true"
+              class="account-avatar"
+            >
+              用
+            </span>
+            <span>
+              用户1
+              <small>
+                我的学习书房
+              </small>
+            </span>
+            <span
+              aria-hidden="true"
+              class="account-dots"
+            >
+              ···
+            </span>
+          </button>
+        </footer>
+      </aside>
+      <main
+        class="workspace-main"
+      >
+        <header
+          class="workspace-topbar"
+        >
+          <div
+            class="workspace-breadcrumb"
+          >
+            我的书房 
+            <span
+              aria-hidden="true"
+            >
+              /
+            </span>
+             
+            <b>
+              概率论
+            </b>
+          </div>
+          <nav
+            aria-label="工作区导航"
+            class="workspace-actions"
+          >
+            <a
+              class=""
+              href="/knowledge"
+            >
+              知识库
+            </a>
+            <a
+              class=""
+              href="/profile"
+            >
+              学习画像
+            </a>
+          </nav>
+        </header>
+        <section>
+          <p>
+            服务器最近会话：
+            A
+            ；本机会话：
+            A
+          </p>
+          <button
+            type="button"
+          >
+            仅打开本机会话 
+            A
+          </button>
+          <button
+            type="button"
+          >
+            设为最近会话 
+            A
+          </button>
+        </section>
+        <div
+          class="workspace-content"
+        >
+          <div
+            class="legacy-chat"
+            style="display: flex; flex-direction: column; height: 100%;"
+          >
+            <h1>
+              会话 A
+            </h1>
+            <div
+              style="flex: 1 1 0%; overflow-y: auto; padding: 12px 16px;"
+            >
+              <div
+                data-message-id="1"
+              >
+                <div
+                  style="display: flex; justify-content: flex-start; margin: 8px 0px;"
+                >
+                  <div
+                    style="max-width: 75%; background: rgb(255, 255, 255); color: rgb(26, 26, 26); padding: 10px 14px; border-radius: 12px; border: 1px solid rgb(227, 230, 234);"
+                  >
+                    <p>
+                      历史A
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <section>
+              <p>
+                旧上下文问题
+              </p>
+              <p>
+                请求失败，可重试
+              </p>
+              <button
+                type="button"
+              >
+                重试请求
+              </button>
+            </section>
+            <p
+              role="alert"
+            >
+              会话内容已变化，请复制原文后重新提问
+            </p>
+            <form>
+              <input
+                placeholder="输入学习问题…"
+                value="草稿A"
+              />
+              <button
+                type="submit"
+              >
+                发送
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Chat.test.tsx:294:29
+    292|   }));
+    293|   mount("/chat/A"); fireEvent.click(await screen.findByRole("button", …
+    294|   const copy = await screen.findByRole("button", { name: "复制原文到输…
+       |                             ^
+    295|   fireEvent.click(copy); expect((screen.getByPlaceholderText("输入学习…
+    296| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 33 passed (34)
+   Start at  22:30:05
+   Duration  15.06s (transform 503ms, setup 0ms, collect 2.42s, tests 9.42s, environment 2.18s, prepare 254ms)
+

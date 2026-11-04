@@ -38,7 +38,12 @@ it("keeps same-name groups and their concurrent pages independent, deduplicates 
   expect(pageQueries.some(query => query.get("cursor") === "ROOT" && !query.has("session_cursor") && !query.has("group_key"))).toBe(true);
 });
 it("distinguishes loading, root failure, retry and confirmed empty data", async () => {
-  const first = deferred<Response>(); vi.stubGlobal("fetch", vi.fn().mockReturnValueOnce(first.promise).mockResolvedValue(response({ groups: [], next_group_cursor: null })));
+  const first = deferred<Response>(); let groupCalls = 0;
+  vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL) => {
+    if (String(url).startsWith("/api/sessions?")) return ++groupCalls === 1 ? first.promise : Promise.resolve(response({ groups: [], next_group_cursor: null }));
+    if (String(url) === "/api/workspace-state") return Promise.resolve(response({ last_session_id: null, sidebar_pinned: true, sidebar_collapsed: false, progress_y_ratio: 0.5, version: 0, updated_at: null }));
+    return Promise.resolve(response({}, 404));
+  }));
   mount(); expect(await screen.findByRole("status")).toBeTruthy();
   expect(screen.queryByText("还没有学习主题")).toBeNull();
   await act(async () => { first.resolve(response({ detail: "主题加载失败" }, 500)); });

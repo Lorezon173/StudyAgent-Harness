@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not post when another authoritative request starts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (105 tests | 1 failed | 104 skipped) 246ms
+   × does not post when another authoritative request starts during preparation 244ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not post when another authoritative request starts during preparation
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1803:67
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 104 skipped (105)
+   Start at  20:54:26
+   Duration  5.49s (transform 663ms, setup 0ms, collect 2.48s, tests 246ms, environment 1.77s, prepare 241ms)
+
+
+Exit code: 1

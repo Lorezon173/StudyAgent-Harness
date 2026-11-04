@@ -1,0 +1,78 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_chat_buffer_preserves_reused_asgi_body_events ______________
+
+    def test_chat_buffer_preserves_reused_asgi_body_events():
+        async def scenario():
+            async def inner(scope, receive, send):
+                await send({"type": "http.response.start", "status": 200, "headers": []})
+                event = {"type": "http.response.body", "body": b'{"status":"completed",', "more_body": True}
+                await send(event)
+                event.update(body=b'"persisted":true}', more_body=False)
+                await send(event)
+            app = create_fault_app(inner, TOKEN)
+            app.counts["drop_chat_responses"] = 1
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://127.0.0.1") as client:
+                assert (await client.post("/api/chat")).status_code == 503
+                assert app.counts["drop_chat_responses"] == 0
+>       run(scenario())
+
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:40: in run
+    return asyncio.run(scenario)
+           ^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\A1985\AppData\Roaming\uv\python\cpython-3.12.11-windows-x86_64-none\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness_test.py:210: in scenario
+    assert (await client.post("/api/chat")).status_code == 503
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+docs\delivery\study-workspace-goal\evidence\Task10\acceptance_harness.py:139: in __call__
+    await send(event)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+message = {'body': b'"persisted":true}', 'more_body': False, 'type': 'http.response.body'}
+
+    async def send(message: typing.MutableMapping[str, typing.Any]) -> None:
+        nonlocal status_code, response_headers, response_started
+    
+        if message["type"] == "http.response.start":
+            assert not response_started
+    
+            status_code = message["status"]
+            response_headers = message.get("headers", [])
+            response_started = True
+    
+        elif message["type"] == "http.response.body":
+>           assert not response_complete.is_set()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError
+
+.venv\Lib\site-packages\httpx\_transports\asgi.py:159: AssertionError
+=========================== short test summary info ===========================
+FAILED docs/delivery/study-workspace-goal/evidence/Task10/acceptance_harness_test.py::test_chat_buffer_preserves_reused_asgi_body_events
+1 failed, 8 deselected in 0.83s

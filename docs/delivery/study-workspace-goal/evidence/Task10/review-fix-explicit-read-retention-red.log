@@ -1,0 +1,45 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retains a known .* candidate when its explicit action cannot read storage
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (141 tests | 3 failed | 138 skipped) 343ms
+   × retains a known prepared candidate when its explicit action cannot read storage 242ms
+     → expected false to be true // Object.is equality
+   × retains a known linked candidate when its explicit action cannot read storage 53ms
+     → expected false to be true // Object.is equality
+   × retains a known legacy candidate when its explicit action cannot read storage 47ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retains a known prepared candidate when its explicit action cannot read storage
+ FAIL  src/pages/Chat.test.tsx > retains a known linked candidate when its explicit action cannot read storage
+ FAIL  src/pages/Chat.test.tsx > retains a known legacy candidate when its explicit action cannot read storage
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1324:111
+    1322|   fireEvent.click(screen.getByRole("button", { name: phase === "prepar…
+    1323|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1324|   expect(workspaceStore.getSnapshot().buckets.A.preparedCandidates.som…
+       |                                                                                                               ^
+    1325|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+    1326| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 138 skipped (141)
+   Start at  17:22:29
+   Duration  5.49s (transform 573ms, setup 0ms, collect 2.13s, tests 343ms, environment 1.83s, prepare 285ms)
+
+
+Exit code: 1

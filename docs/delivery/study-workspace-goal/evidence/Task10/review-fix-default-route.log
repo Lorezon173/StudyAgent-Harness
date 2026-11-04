@@ -1,0 +1,20 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t cancels an old preparation when the default chat route
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+stderr | src/pages/Chat.test.tsx > cancels an old preparation when the default chat route restores the same session
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Chat.test.tsx (146 tests | 145 skipped) 270ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 145 skipped (146)
+   Start at  17:27:08
+   Duration  5.91s (transform 672ms, setup 0ms, collect 2.39s, tests 270ms, environment 2.08s, prepare 275ms)
+
+
+Exit code: 0

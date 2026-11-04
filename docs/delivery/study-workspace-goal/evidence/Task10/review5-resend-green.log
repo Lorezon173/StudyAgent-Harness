@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not resend a linked request with a foreign pending request|retries a linked preparation using its original request identity
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (250 tests | 248 skipped) 376ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 248 skipped (250)
+   Start at  19:43:35
+   Duration  5.69s (transform 756ms, setup 0ms, collect 2.31s, tests 376ms, environment 1.89s, prepare 287ms)
+
+EXIT_CODE=0

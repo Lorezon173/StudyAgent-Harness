@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps an in-flight older page
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (70 tests | 1 failed | 69 skipped) 223ms
+   × keeps an in-flight older page when an unassociated continue snapshot arrives 222ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps an in-flight older page when an unassociated continue snapshot arrives
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1152:181
+    1150|   await waitFor(() => expect(count).toBe(2));
+    1151|   await act(async () => { continued.resolve(response({ ...snapshot("A"…
+    1152|   await act(async () => { older.resolve(response({ items: [{ id: 9, tu…
+       |                                                                                                                                                                                     ^
+    1153|   expect(workspaceStore.getSnapshot().buckets.A.nextMessageCursor).toB…
+    1154|   expect(screen.getByText("更早内容")).toBeTruthy();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 69 skipped (70)
+   Start at  20:20:24
+   Duration  5.76s (transform 606ms, setup 0ms, collect 2.57s, tests 223ms, environment 1.88s, prepare 257ms)
+
+
+Exit code: 1

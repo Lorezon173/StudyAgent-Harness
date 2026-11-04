@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps loaded history and continues paging after explicitly continuing an unassociated request|keeps an in-flight older page when an unassociated continue snapshot arrives|keeps newer teaching state when continuing an unassociated request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (163 tests | 160 skipped) 365ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 160 skipped (163)
+   Start at  18:08:07
+   Duration  5.62s (transform 647ms, setup 0ms, collect 2.28s, tests 365ms, environment 1.99s, prepare 242ms)
+
+
+Exit code: 0

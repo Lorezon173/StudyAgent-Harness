@@ -1,0 +1,32 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t warns when equal profile revisions
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (85 tests | 1 failed | 84 skipped) 214ms
+   × warns when equal profile revisions contain different values 212ms
+     → .toMatch() expects to receive a string, but got object
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > warns when equal profile revisions contain different values
+TypeError: .toMatch() expects to receive a string, but got object
+ ❯ src/pages/Chat.test.tsx:1443:64
+    1441|   await act(async () => { page.resolve(response({ items: [user, answer…
+    1442|   expect(workspaceStore.getSnapshot().buckets.A.profile?.name).toBe("…
+    1443|   expect(workspaceStore.getSnapshot().buckets.A.recoveryError).toMatch…
+       |                                                                ^
+    1444|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+    1445| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 84 skipped (85)
+   Start at  20:36:04
+   Duration  5.58s (transform 638ms, setup 0ms, collect 2.41s, tests 214ms, environment 1.81s, prepare 265ms)
+
+
+Exit code: 1

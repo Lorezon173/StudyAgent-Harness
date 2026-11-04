@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t orders messages within a turn by server role order
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (175 tests | 174 skipped) 147ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 174 skipped (175)
+   Start at  18:18:49
+   Duration  5.29s (transform 680ms, setup 0ms, collect 2.29s, tests 147ms, environment 1.86s, prepare 255ms)
+
+
+Exit code: 0

@@ -1,0 +1,26 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t cancels scheduled request polling|preserves a newer teaching snapshot while completed
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (109 tests | 1 failed | 107 skipped) 5175ms
+   × preserves a newer teaching snapshot while completed turn history is loading 5018ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a newer teaching snapshot while completed turn history is loading
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 107 skipped (109)
+   Start at  16:56:41
+   Duration  10.15s (transform 523ms, setup 0ms, collect 2.06s, tests 5.18s, environment 1.86s, prepare 263ms)
+
+
+Exit code: 1

@@ -1,0 +1,86 @@
+
+> studyagent-web@0.1.0 test
+> vitest run localRecovery
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/localRecovery.test.ts (8 tests | 4 failed) 22ms
+   × rejects malformed fields and credentials without replacing the valid draft 11ms
+     → expected true to be false // Object.is equality
+   × reports a damaged candidate while retaining valid candidates and storage 1ms
+     → recovery.listResult is not a function
+   × reports storage failures distinctly from an empty account 1ms
+     → recovery.listResult is not a function
+   × preserves unknown request baselines as null and rejects mismatched request identity 1ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/localRecovery.test.ts > rejects malformed fields and credentials without replacing the valid draft
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/store/localRecovery.test.ts:36:128
+     34|   const recovery = createLocalRecovery(localStorage, "writer-a");
+     35|   recovery.writeDraft(1, "session", { draft: "safe", reading_anchor: n…
+     36|   expect(recovery.writeDraft(1, "session", { draft: "x".repeat(4001), …
+       |                                                                                                                                ^
+     37|   expect(recovery.writePrepared(1, "session", "p", { text: "x", sequen…
+     38|   expect(recovery.writeWorkspace(1, { lastSessionId: "session", baseVe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/store/localRecovery.test.ts > reports a damaged candidate while retaining valid candidates and storage
+TypeError: recovery.listResult is not a function
+ ❯ src/store/localRecovery.test.ts:45:27
+     43|   recovery.writeDraft(1, "session", { draft: "safe", reading_anchor: n…
+     44|   localStorage.setItem("studyagent:recovery:v1:draft:1:session:broken:…
+     45|   const result = recovery.listResult(1, "session", "draft");
+       |                           ^
+     46|   expect(result.ok).toBe(false); expect(result.candidates).toHaveLengt…
+     47|   expect(result.issues).toEqual(["invalid_candidate"]); expect(localSt…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/store/localRecovery.test.ts > reports storage failures distinctly from an empty account
+TypeError: recovery.listResult is not a function
+ ❯ src/store/localRecovery.test.ts:52:19
+     50|   const blocked = { get length() { throw Error("blocked"); } } as Stor…
+     51|   const recovery = createLocalRecovery(blocked, "writer-a");
+     52|   expect(recovery.listResult(1, "session", "draft")).toEqual({ ok: fal…
+       |                   ^
+     53| });
+     54| it("preserves unknown request baselines as null and rejects mismatched…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/store/localRecovery.test.ts > preserves unknown request baselines as null and rejects mismatched request identity
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/store/localRecovery.test.ts:61:86
+     59|   if (!result.ok) throw Error("write failed");
+     60|   expect(result.candidate.baseline).toBeNull();
+     61|   expect(recovery.writeRequest(1, "session", "other", { payload, basel…
+       |                                                                                      ^
+     62| });
+     63| it("requires exact writer/write/content identity and verifies deletion…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+   Start at  18:51:41
+   Duration  2.94s (transform 63ms, setup 0ms, collect 123ms, tests 22ms, environment 1.82s, prepare 240ms)
+

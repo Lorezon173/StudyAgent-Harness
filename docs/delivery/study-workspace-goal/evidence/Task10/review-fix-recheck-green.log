@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send after another tab changes
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (73 tests | 72 skipped) 302ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 72 skipped (73)
+   Start at  20:25:05
+   Duration  5.63s (transform 624ms, setup 0ms, collect 2.51s, tests 302ms, environment 1.83s, prepare 238ms)
+
+
+Exit code: 0

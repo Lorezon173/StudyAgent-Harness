@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a newer activity lock
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (68 tests | 1 failed | 67 skipped) 259ms
+   × preserves a newer activity lock when an old completed snapshot returns 257ms
+     → expected null to be 'other' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a newer activity lock when an old completed snapshot returns
+AssertionError: expected null to be 'other' // Object.is equality
+
+- Expected: 
+"other"
+
++ Received: 
+null
+
+ ❯ src/pages/Chat.test.tsx:1096:77
+    1094|   await act(async () => { await workspaceController.loadSession("A"); …
+    1095|   await act(async () => { page.resolve(response({ items: [user, answer…
+    1096|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+       |                                                                             ^
+    1097|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+    1098| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 67 skipped (68)
+   Start at  18:55:58
+   Duration  5.86s (transform 594ms, setup 0ms, collect 2.50s, tests 259ms, environment 1.86s, prepare 331ms)
+
+
+Exit code: 1

@@ -1,0 +1,5 @@
+original session2076: terminated intentionally after bounded environment diagnosis; child pytest exit=-1; wrapper shell exit=0
+original session2403: terminated intentionally after bounded environment diagnosis; child pytest exit=-1; wrapper shell exit=0
+native RED: pytest exit=1; 1 failed, 8 deselected; reused ASGI response mapping causes duplicated final segment
+native GREEN: pytest exit=0; 9 passed
+native compile: exit=0

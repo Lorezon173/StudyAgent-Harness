@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t visibly blocks sending an unknown preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (101 tests | 1 failed | 100 skipped) 277ms
+   × visibly blocks sending an unknown preparation until the user acknowledges its risk 275ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > visibly blocks sending an unknown preparation until the user acknowledges its risk
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1706:86
+    1704|   expect(recovery.writePrepared(1, "A", "other", { text: "待确认原文",…
+    1705|   installTransport(); mount("/chat/A"); await screen.findByText("历史A…
+    1706|   expect((screen.getByRole("button", { name: "发送" }) as HTMLButtonEl…
+       |                                                                                      ^
+    1707|   fireEvent.change(screen.getByPlaceholderText("输入学习问题…"), { tar…
+    1708|   fireEvent.click(screen.getByRole("button", { name: "复制原文并自行决…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 100 skipped (101)
+   Start at  20:51:32
+   Duration  5.48s (transform 630ms, setup 0ms, collect 2.39s, tests 277ms, environment 1.82s, prepare 243ms)
+
+
+Exit code: 1

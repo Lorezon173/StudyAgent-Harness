@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (11 tests) 26ms
+ ✓ src/api/client.test.ts (12 tests) 29ms
+ ✓ src/api/workspace.test.ts (6 tests) 183ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 28ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 39ms
+ ✓ src/store/auth.test.tsx (11 tests) 165ms
+ ✓ src/pages/Login.test.tsx (14 tests) 886ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 572ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 405ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1120ms
+   ✓ loads real profile pages and rejects a forged option before POST 363ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 1220ms
+stderr | src/pages/Chat.test.tsx > two providers sharing storage keep a cached preparation blocked after its owner links and sends
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Chat.test.tsx (120 tests) 11975ms
+   ✓ persists an edited draft against the selected session's view version 563ms
+   ✓ offers to retry a draft save after a server failure 605ms
+   ✓ persists only an owned visible message as the reading anchor 1048ms
+   ✓ records the message actually visible when the reader scrolls 1027ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 547ms
+   ✓ polls a running request recovered in a session snapshot 3033ms
+
+ Test Files  11 passed (11)
+      Tests  210 passed (210)
+   Start at  17:13:18
+   Duration  20.07s (transform 1.72s, setup 0ms, collect 16.31s, tests 16.24s, environment 32.05s, prepare 6.03s)
+
+
+Exit code: 0

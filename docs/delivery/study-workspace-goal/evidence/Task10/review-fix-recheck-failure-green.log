@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps activity gate closed after recheck fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (78 tests | 77 skipped) 349ms
+   ✓ keeps activity gate closed after recheck fails and clears it after a later idle snapshot 347ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 77 skipped (78)
+   Start at  20:29:33
+   Duration  5.59s (transform 603ms, setup 0ms, collect 2.32s, tests 349ms, environment 1.95s, prepare 238ms)
+
+
+Exit code: 0

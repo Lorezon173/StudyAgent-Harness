@@ -6,7 +6,7 @@ interface AuthState {
   userId: number | null;
   username: string | null;
   token: string | null;
-  login: (userId: number, username: string, token?: string) => void;
+  login: (userId: number, username: string, token?: string) => boolean;
   logout: () => void;
 }
 
@@ -35,11 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [{ userId, username, token }, setAuth] = useState(readStoredAuth);
 
   function login(id: number, name: string, tok?: string) {
-    workspaceStore.startAccount(id, tok || null);
+    if (!workspaceStore.startAccount(id, tok || null)) return false;
     localStorage.setItem(KEY_ID, String(id));  // number → string
     localStorage.setItem(KEY_NAME, name);
     localStorage.setItem(KEY_TOKEN, tok || "");
     setAuth({ userId: id, username: name, token: tok || null });
+    return true;
   }
 
   const logout = useCallback(() => {

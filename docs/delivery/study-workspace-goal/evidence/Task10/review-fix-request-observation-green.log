@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t ignores a late request observation after a newer activity snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (94 tests | 93 skipped) 175ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 93 skipped (94)
+   Start at  20:44:57
+   Duration  5.42s (transform 653ms, setup 0ms, collect 2.47s, tests 175ms, environment 1.77s, prepare 235ms)
+
+
+Exit code: 0

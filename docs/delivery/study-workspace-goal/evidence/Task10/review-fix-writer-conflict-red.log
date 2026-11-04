@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t blocks continued request when another writer
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (93 tests | 1 failed | 92 skipped) 210ms
+   × blocks continued request when another writer has a conflicting baseline 209ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > blocks continued request when another writer has a conflicting baseline
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1582:81
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 92 skipped (93)
+   Start at  20:43:17
+   Duration  5.72s (transform 630ms, setup 0ms, collect 2.36s, tests 210ms, environment 2.05s, prepare 288ms)
+
+
+Exit code: 1

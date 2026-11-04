@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send after navigating A to B to A
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (67 tests | 1 failed | 66 skipped) 424ms
+   × does not send after navigating A to B to A during preparation 422ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not send after navigating A to B to A during preparation
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1064:67
+    1062|   fireEvent.click(screen.getByRole("button", { name: "会话 A" })); awa…
+    1063|   await act(async () => { preparing.resolve(response(snapshot("A"))); …
+    1064|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+       |                                                                   ^
+    1065|   expect(Object.values(workspaceStore.getSnapshot().buckets.A.prepared…
+    1066|   fireEvent.click(screen.getByRole("button", { name: "会话 A" })); awa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 66 skipped (67)
+   Start at  18:54:56
+   Duration  5.78s (transform 579ms, setup 0ms, collect 2.47s, tests 424ms, environment 1.83s, prepare 267ms)
+
+
+Exit code: 1

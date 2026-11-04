@@ -1,0 +1,29 @@
+
+> studyagent-web@0.1.0 test
+> vitest run src/pages/Chat.test.tsx -t keeps a newer verified conflict when two rechecks start from an existing conflict
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (273 tests | 1 failed | 272 skipped) 641ms
+   × keeps a newer verified conflict when two rechecks start from an existing conflict 638ms
+     → expected 'matched' to be 'inconsistent' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps a newer verified conflict when two rechecks start from an existing conflict
+AssertionError: expected 'matched' to be 'inconsistent' // Object.is equality
+
+Expected: "inconsistent"
+Received: "matched"
+
+ ❯ src/pages/Chat.test.tsx:3881:82
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 272 skipped (273)
+   Start at  23:01:10
+   Duration  42.08s (transform 1.27s, setup 0ms, collect 17.00s, tests 641ms, environment 22.17s, prepare 1.31s)
+

@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+src/store/workspaceController.ts(700,136): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,151): error TS2339: Property 'profile_id' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'profile_id' does not exist on type 'number'.
+src/store/workspaceController.ts(700,191): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,206): error TS2339: Property 'active_node_id' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'active_node_id' does not exist on type 'number'.
+src/store/workspaceController.ts(700,254): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,269): error TS2339: Property 'base_state_version' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'base_state_version' does not exist on type 'number'.
+src/store/workspaceController.ts(700,389): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,404): error TS2339: Property 'profile_id' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'profile_id' does not exist on type 'number'.
+src/store/workspaceController.ts(700,460): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,475): error TS2339: Property 'active_node_id' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'active_node_id' does not exist on type 'number'.
+src/store/workspaceController.ts(700,539): error TS18047: 'local.baseline' is possibly 'null'.
+src/store/workspaceController.ts(700,554): error TS2339: Property 'base_state_version' does not exist on type 'number | RequestTurnBaseline'.
+  Property 'base_state_version' does not exist on type 'number'.
+src/store/workspaceController.ts(701,59): error TS2322: Type 'SessionClientState | { requests: { [x: string]: RequestRecord | { baseline: number | RequestTurnBaseline | null; snapshot: RequestSnapshot; association: "unknown" | ... 3 more ... | "inconsistent"; }; }; ... 42 more ...; localRequests: Record<...>; }' is not assignable to type 'SessionClientState'.
+  Type '{ requests: { [x: string]: RequestRecord | { baseline: number | RequestTurnBaseline | null; snapshot: RequestSnapshot; association: "unknown" | "pending_messages" | "matched" | "unassociated" | "inconsistent"; }; }; ... 42 more ...; localRequests: Record<string, { payload: Record<string, unknown>; baseline: RequestT...' is not assignable to type 'SessionClientState'.
+    Types of property 'requests' are incompatible.
+      Type '{ [x: string]: RequestRecord | { baseline: number | RequestTurnBaseline | null; snapshot: RequestSnapshot; association: "unknown" | "pending_messages" | "matched" | "unassociated" | "inconsistent"; }; }' is not assignable to type 'Record<string, RequestRecord>'.
+        'string' index signatures are incompatible.
+          Type 'RequestRecord | { baseline: number | RequestTurnBaseline | null; snapshot: RequestSnapshot; association: "unknown" | "pending_messages" | "matched" | "unassociated" | "inconsistent"; }' is not assignable to type 'RequestRecord'.
+            Type '{ baseline: number | RequestTurnBaseline | null; snapshot: RequestSnapshot; association: "unknown" | "pending_messages" | "matched" | "unassociated" | "inconsistent"; }' is not assignable to type 'RequestRecord'.
+              Types of property 'baseline' are incompatible.
+                Type 'number | RequestTurnBaseline | null' is not assignable to type 'RequestTurnBaseline | null'.
+                  Type 'number' is not assignable to type 'RequestTurnBaseline'.
+EXIT_CODE=2

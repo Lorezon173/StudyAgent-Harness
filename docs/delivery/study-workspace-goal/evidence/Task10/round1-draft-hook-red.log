@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/hooks/useDraftPersistence.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/hooks/useDraftPersistence.test.tsx (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/hooks/useDraftPersistence.test.tsx [ src/hooks/useDraftPersistence.test.tsx ]
+Error: Failed to resolve import "./useDraftPersistence" from "src/hooks/useDraftPersistence.test.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web/src/hooks/useDraftPersistence.test.tsx:4:36
+  1  |  import { act, renderHook } from "@testing-library/react";
+  2  |  import { expect, it } from "vitest";
+  3  |  import { useDraftPersistence } from "./useDraftPersistence";
+     |                                       ^
+  4  |  import { workspaceStore } from "../store/workspace";
+  5  |  import { storeIdentity } from "../test/setup";
+ ❯ TransformPluginContext._formatError node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41
+ ❯ TransformPluginContext.error node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16
+ ❯ normalizeUrl node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23
+ ❯ node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7
+ ❯ PluginContainer.transform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  18:51:25
+   Duration  3.07s (transform 19ms, setup 0ms, collect 0ms, tests 0ms, environment 2.02s, prepare 254ms)
+

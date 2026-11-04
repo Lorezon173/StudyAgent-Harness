@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps activity and profile when history bridging fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (196 tests | 195 skipped) 311ms
+   ✓ keeps activity and profile when history bridging fails 309ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 195 skipped (196)
+   Start at  18:50:03
+   Duration  5.67s (transform 765ms, setup 0ms, collect 2.40s, tests 311ms, environment 1.93s, prepare 237ms)
+
+EXIT_CODE=0

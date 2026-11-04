@@ -1,0 +1,190 @@
+{
+  "events": [
+    {
+      "seq": 1,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/workspace-state"
+    },
+    {
+      "seq": 2,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 3,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions?group_by=profile"
+    },
+    {
+      "seq": 4,
+      "phase": "init",
+      "event": "request",
+      "method": "PATCH",
+      "path": "/api/workspace-state"
+    },
+    {
+      "seq": 5,
+      "phase": "init",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 6,
+      "phase": "init",
+      "event": "request",
+      "method": "POST",
+      "path": "/api/chat"
+    },
+    {
+      "seq": 7,
+      "phase": "initial-conflict",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/requests/c6f87929-d928-491f-a472-567986060821"
+    },
+    {
+      "seq": 8,
+      "phase": "initial-conflict",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 9,
+      "phase": "A",
+      "event": "phase"
+    },
+    {
+      "seq": 10,
+      "phase": "A",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/requests/c6f87929-d928-491f-a472-567986060821"
+    },
+    {
+      "seq": 11,
+      "phase": "A",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 12,
+      "phase": "A",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/messages?limit=50&cursor=old"
+    },
+    {
+      "seq": 13,
+      "phase": "A",
+      "event": "held",
+      "slot": "A",
+      "cursor": "old"
+    },
+    {
+      "seq": 14,
+      "phase": "B",
+      "event": "phase"
+    },
+    {
+      "seq": 15,
+      "phase": "B",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/requests/c6f87929-d928-491f-a472-567986060821"
+    },
+    {
+      "seq": 16,
+      "phase": "B",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    },
+    {
+      "seq": 17,
+      "phase": "B",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/messages?limit=50&cursor=new"
+    },
+    {
+      "seq": 18,
+      "phase": "B",
+      "event": "held",
+      "slot": "B",
+      "cursor": "new"
+    },
+    {
+      "seq": 19,
+      "phase": "B",
+      "event": "release",
+      "slot": "B",
+      "outcome": "conflict"
+    },
+    {
+      "seq": 20,
+      "phase": "B",
+      "event": "network-finished",
+      "slot": "B",
+      "status": 200,
+      "fixture": "conflict"
+    },
+    {
+      "seq": 21,
+      "phase": "B",
+      "event": "render-observed",
+      "slot": "B"
+    },
+    {
+      "seq": 22,
+      "phase": "B",
+      "event": "release",
+      "slot": "A",
+      "outcome": "success"
+    },
+    {
+      "seq": 23,
+      "phase": "B",
+      "event": "network-finished",
+      "slot": "A",
+      "status": 200,
+      "fixture": "success"
+    },
+    {
+      "seq": 24,
+      "phase": "B",
+      "event": "render-observed",
+      "slot": "A"
+    },
+    {
+      "seq": 25,
+      "phase": "recover",
+      "event": "phase"
+    },
+    {
+      "seq": 26,
+      "phase": "recover",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/requests/c6f87929-d928-491f-a472-567986060821"
+    },
+    {
+      "seq": 27,
+      "phase": "recover",
+      "event": "request",
+      "method": "GET",
+      "path": "/api/sessions/A/snapshot?message_limit=50"
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "postCount": 1
+}

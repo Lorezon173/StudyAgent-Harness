@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t ignores a late incompatible profile snapshot after a newer valid load
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (252 tests | 251 skipped) 170ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 251 skipped (252)
+   Start at  19:45:03
+   Duration  5.89s (transform 768ms, setup 0ms, collect 2.51s, tests 170ms, environment 2.12s, prepare 245ms)
+
+EXIT_CODE=0

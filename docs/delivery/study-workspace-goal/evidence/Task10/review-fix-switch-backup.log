@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps the old account and unresolved request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (106 tests | 105 skipped) 220ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 105 skipped (106)
+   Start at  20:57:43
+   Duration  5.41s (transform 634ms, setup 0ms, collect 2.39s, tests 220ms, environment 1.79s, prepare 249ms)
+
+
+Exit code: 0

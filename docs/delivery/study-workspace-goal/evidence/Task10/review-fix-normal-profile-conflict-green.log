@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a profile and warns when a normal reload
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (97 tests | 96 skipped) 180ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 96 skipped (97)
+   Start at  20:48:14
+   Duration  5.36s (transform 615ms, setup 0ms, collect 2.31s, tests 180ms, environment 1.85s, prepare 257ms)
+
+
+Exit code: 0

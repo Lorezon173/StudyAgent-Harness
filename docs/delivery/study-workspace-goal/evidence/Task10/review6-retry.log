@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps a current association failure visible and lets the user retry successfully
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (259 tests | 258 skipped) 272ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 258 skipped (259)
+   Start at  19:56:02
+   Duration  5.77s (transform 822ms, setup 0ms, collect 2.55s, tests 272ms, environment 1.91s, prepare 270ms)
+
+EXIT_CODE=0

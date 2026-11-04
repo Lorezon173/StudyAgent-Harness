@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t cancels scheduled request polling|preserves a newer teaching snapshot while completed
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (109 tests | 107 skipped) 209ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 107 skipped (109)
+   Start at  16:59:22
+   Duration  5.27s (transform 557ms, setup 0ms, collect 2.17s, tests 209ms, environment 1.79s, prepare 257ms)
+
+
+Exit code: 0

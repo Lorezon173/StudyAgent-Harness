@@ -1,0 +1,27 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not match an old linked source that changes while history is loading
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (156 tests | 1 failed | 155 skipped) 328ms
+   × does not match an old linked source that changes while history is loading 327ms
+     → expected 'matched' not to be 'matched' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not match an old linked source that changes while history is loading
+AssertionError: expected 'matched' not to be 'matched' // Object.is equality
+ ❯ src/pages/Chat.test.tsx:1647:90
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 155 skipped (156)
+   Start at  17:54:02
+   Duration  5.28s (transform 576ms, setup 0ms, collect 2.15s, tests 328ms, environment 1.80s, prepare 242ms)
+
+
+Exit code: 1

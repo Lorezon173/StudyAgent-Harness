@@ -1,0 +1,5 @@
+pytestExit=0 compileExit=0
+native RED pytestExit=1; 2 failed, 9 deselected; exec wrapper exit0
+native targeted GREEN pytestExit=0; 6 passed, 9 deselected; exec wrapper exit0
+native full GREEN pytestExit=0; 15 passed; exec wrapper exit0
+native compileExit=0

@@ -1,0 +1,18 @@
+{
+  "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "runId": "20261103-a-controlled-1519",
+  "engines": ">=20",
+  "node": "v24.11.0",
+  "frozenHashes": {
+    "web/src/store/workspaceController.ts": "10A4301621A0783E1BF2E8E66A38D00D4207B3732BB51253C553D65959149A5B",
+    "web/src/store/workspace.ts": "BD507C778BB24123B33ED244A912FFD7E5C5B8B6EF5CC67AD1B6734DF3C43F73",
+    "web/src/pages/Chat.test.tsx": "ADB7AEF08A34EDCA6FA1CA3EE20068D2511A98C63F1027CE91516B2A5D2AE8FE",
+    "web/src/pages/Chat.tsx": "86AB2E7385C0754E857C2B42DAE32C6ED6C7BAA46B6B2E8FF5BCAD35E248289D",
+    "web/src/store/localRecovery.ts": "B2FAAFE8916B82129F2264DFB9A705AA1C0EE27610325BC13E26C7FE468898DE",
+    "web/src/api/client.ts": "F346F1E64A5CEAD00E4339FA5A5A6DF0B6F5F98F76EB13EA543E5ABBEED144AB"
+  },
+  "playwright": "1.64.1",
+  "note": "Registry version checked before installation; synthetic backend only.",
+  "browserVersion": "156.0.8078.80",
+  "head": "6d5829303f639e50ca15b11a9c8f79ee093caff1"
+}

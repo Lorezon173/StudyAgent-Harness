@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not let a delayed workspace retry override a newer chosen session
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (149 tests | 148 skipped) 267ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 148 skipped (149)
+   Start at  17:46:02
+   Duration  5.48s (transform 623ms, setup 0ms, collect 2.31s, tests 267ms, environment 1.90s, prepare 250ms)
+
+
+Exit code: 0

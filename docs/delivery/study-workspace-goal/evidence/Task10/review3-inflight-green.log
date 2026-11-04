@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t automatic request recovery steal|reconciles a superseded sent-request lookup
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (204 tests | 199 skipped) 1123ms
+   ✓ reconciles a superseded sent-request lookup: completed 347ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 199 skipped (204)
+   Start at  18:57:02
+   Duration  6.24s (transform 708ms, setup 0ms, collect 2.25s, tests 1.12s, environment 1.81s, prepare 255ms)
+
+EXIT_CODE=0

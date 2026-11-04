@@ -1,0 +1,42 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t clears this tab.s prepared record
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (56 tests | 1 failed | 55 skipped) 312ms
+   × clears this tab's prepared record after the original is deliberately restored 310ms
+     → expected { p1: { text: '待恢复原文', sequence: 1 } } to deeply equal {}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > clears this tab's prepared record after the original is deliberately restored
+AssertionError: expected { p1: { text: '待恢复原文', sequence: 1 } } to deeply equal {}
+
+- Expected
++ Received
+
+- Object {}
++ Object {
++   "p1": Object {
++     "sequence": 1,
++     "text": "待恢复原文",
++   },
++ }
+
+ ❯ src/pages/Chat.test.tsx:766:59
+    764|   fireEvent.click(screen.getByRole("button", { name: "恢复待发送原文" …
+    765|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+    766|   expect(workspaceStore.getSnapshot().buckets.A.prepared).toEqual({});
+       |                                                           ^
+    767| });
+    768| it("does not clear a sent draft until the owned request payload is ver…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 55 skipped (56)
+   Start at  12:55:17
+   Duration  5.54s (transform 516ms, setup 0ms, collect 2.38s, tests 312ms, environment 1.84s, prepare 239ms)
+

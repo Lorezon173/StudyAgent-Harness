@@ -1,0 +1,27 @@
+{
+  "mode": "real browser / synthetic controlled network",
+  "node": "v24.11.0",
+  "tool": "playwright-core@1.64.1",
+  "browserPath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "hashesBefore": {
+    "web/src/pages/Chat.tsx": "86ab2e7385c0754e857c2b42dae32c6ed6c7baa46b6b2e8ff5bcad35e248289d",
+    "web/src/pages/Chat.test.tsx": "adb7aef08a34edca6fa1ca3ee20068d2511a98c63f1027ce91516b2a5d2ae8fe",
+    "web/src/store/workspace.ts": "bd507c778bb24123b33ed244a912ffd7e5c5b8b6ef5cc67ad1b6734df3c43f73",
+    "web/src/store/workspaceController.ts": "10a4301621a0783e1bf2e8e66a38d00d4207b3732bb51253c553d65959149a5b",
+    "web/src/store/localRecovery.ts": "b2faafe8916b82129f2264dfb9a705aa1c0ee27610325bc13e26c7fe468898de",
+    "web/src/api/client.ts": "f346f1e64a5cead00e4339fa5a5a6df0b6f5f98f76eb13ea543e5abbeed144ab"
+  },
+  "scenario": "all",
+  "status": "pass",
+  "browserVersion": "156.0.8078.80",
+  "probe": "pass",
+  "portReleased": true,
+  "hashesAfter": {
+    "web/src/pages/Chat.tsx": "86ab2e7385c0754e857c2b42dae32c6ed6c7baa46b6b2e8ff5bcad35e248289d",
+    "web/src/pages/Chat.test.tsx": "adb7aef08a34edca6fa1ca3ee20068d2511a98c63f1027ce91516b2a5d2ae8fe",
+    "web/src/store/workspace.ts": "bd507c778bb24123b33ed244a912ffd7e5c5b8b6ef5cc67ad1b6734df3c43f73",
+    "web/src/store/workspaceController.ts": "10a4301621a0783e1bf2e8e66a38d00d4207b3732bb51253c553d65959149a5b",
+    "web/src/store/localRecovery.ts": "b2faafe8916b82129f2264dfb9a705aa1c0ee27610325bc13e26c7fe468898de",
+    "web/src/api/client.ts": "f346f1e64a5cead00e4339fa5a5a6df0b6f5f98f76eb13ea543e5abbeed144ab"
+  }
+}

@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (11 tests) 14ms
+ ✓ src/api/client.test.ts (12 tests) 17ms
+ ✓ src/api/workspace.test.ts (6 tests) 351ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 12ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 27ms
+ ✓ src/store/auth.test.tsx (11 tests) 105ms
+ ✓ src/pages/Login.test.tsx (14 tests) 635ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 728ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 528ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1648ms
+   ✓ loads real profile pages and rejects a forged option before POST 501ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 1904ms
+   ✓ starts pinned, collapses manually, pins open and keeps selection open 384ms
+ ✓ src/pages/Chat.test.tsx (275 tests) 37339ms
+   ✓ persists an edited draft against the selected session's view version 563ms
+   ✓ offers to retry a draft save after a server failure 653ms
+   ✓ persists only an owned visible message as the reading anchor 1073ms
+   ✓ records the message actually visible when the reader scrolls 1067ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 615ms
+   ✓ polls a running request recovered in a session snapshot 3123ms
+   ✓ recovers the sole linked copy after a request write failure and a new writer starts 337ms
+   ✓ reconciles a superseded sent-request lookup: not found 324ms
+   ✓ reconciles a superseded sent-request lookup: running 308ms
+   ✓ protects a replaced during automatic original-request recheck 337ms
+   ✓ does not let an older valid association erase a newer verified conflict: backed up 341ms
+   ✓ does not let an older valid association erase a newer verified conflict: backup unavailable 358ms
+
+ Test Files  11 passed (11)
+      Tests  365 passed (365)
+   Start at  23:05:55
+   Duration  42.89s (transform 1.49s, setup 0ms, collect 9.40s, tests 42.78s, environment 22.42s, prepare 4.77s)
+
+exit=0

@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not treat a linked request without a trusted baseline as matched
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (177 tests | 176 skipped) 263ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 176 skipped (177)
+   Start at  18:22:35
+   Duration  5.62s (transform 719ms, setup 0ms, collect 2.36s, tests 263ms, environment 1.82s, prepare 288ms)
+
+
+Exit code: 0

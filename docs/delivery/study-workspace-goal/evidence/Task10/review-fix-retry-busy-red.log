@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retry a failed request when its fresh snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (112 tests | 1 failed | 111 skipped) 167ms
+   × does not retry a failed request when its fresh snapshot reports another active request 165ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retry a failed request when its fresh snapshot reports another active request
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1732:124
+    1730|   vi.stubGlobal("fetch", fetcher); mount("/chat/A"); await screen.find…
+    1731|   await act(async () => { await workspaceController.retry("A", "old");…
+    1732|   expect(fetcher.mock.calls.some(([url, init]) => String(url).includes…
+       |                                                                                                                            ^
+    1733|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("un…
+    1734| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 111 skipped (112)
+   Start at  17:03:28
+   Duration  5.51s (transform 534ms, setup 0ms, collect 2.06s, tests 167ms, environment 2.23s, prepare 246ms)
+
+
+Exit code: 1

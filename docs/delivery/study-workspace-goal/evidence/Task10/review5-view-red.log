@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not offer a different-profile draft when resolving a view conflict
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (248 tests | 1 failed | 247 skipped) 195ms
+   × does not offer a different-profile draft when resolving a view conflict 193ms
+     → expected { draft: '其他画像草稿', …(3) } to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not offer a different-profile draft when resolving a view conflict
+AssertionError: expected { draft: '其他画像草稿', …(3) } to be null
+
+- Expected: 
+null
+
++ Received: 
+Object {
+  "draft": "其他画像草稿",
+  "reading_anchor": null,
+  "updated_at": null,
+  "version": 1,
+}
+
+ ❯ src/pages/Chat.test.tsx:3606:63
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 247 skipped (248)
+   Start at  19:40:13
+   Duration  5.39s (transform 751ms, setup 0ms, collect 2.38s, tests 195ms, environment 1.83s, prepare 252ms)
+
+EXIT_CODE=1

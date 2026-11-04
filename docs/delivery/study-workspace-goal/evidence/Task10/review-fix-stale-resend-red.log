@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not report a stale original-request lookup
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (108 tests | 1 failed | 107 skipped) 219ms
+   × does not report a stale original-request lookup after a newer activity observation 217ms
+     → expected '原请求仍未确认：加载失败，请重试' to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not report a stale original-request lookup after a newer activity observation
+AssertionError: expected '原请求仍未确认：加载失败，请重试' to be null
+
+- Expected: 
+null
+
++ Received: 
+"原请求仍未确认：加载失败，请重试"
+
+ ❯ src/pages/Chat.test.tsx:1643:64
+    1641|   await act(async () => { await workspaceController.loadSession("A"); …
+    1642|   await act(async () => { pending.resolve(response({}, 404)); await re…
+    1643|   expect(workspaceStore.getSnapshot().buckets.A.recoveryError).toBeNul…
+       |                                                                ^
+    1644|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+    1645| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 107 skipped (108)
+   Start at  16:53:40
+   Duration  6.03s (transform 595ms, setup 0ms, collect 2.42s, tests 219ms, environment 2.10s, prepare 340ms)
+
+
+Exit code: 1

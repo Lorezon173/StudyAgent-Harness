@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not associate or clear an old history page
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (144 tests | 1 failed | 142 skipped) 370ms
+   × does not associate or clear an old history page after account changes 134ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not associate or clear an old history page after account changes
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1007:108
+    1005|   expect(bucket.requests.r1?.association).not.toBe("matched");
+    1006|   expect(bucket.messages.some(item => item.id === 20 || item.id === 21…
+    1007|   expect(getLocalRecovery().list(1, "A", "request").some(item => item.…
+       |                                                                                                            ^
+    1008| });
+    1009| it("does not overwrite a conflicting existing message when confirming …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 142 skipped (144)
+   Start at  17:25:12
+   Duration  5.55s (transform 581ms, setup 0ms, collect 2.09s, tests 370ms, environment 1.93s, prepare 292ms)
+
+
+Exit code: 1

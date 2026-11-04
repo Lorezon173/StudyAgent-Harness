@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not apply an old association failure after
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (262 tests | 259 skipped) 394ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 259 skipped (262)
+   Start at  19:56:51
+   Duration  6.30s (transform 753ms, setup 0ms, collect 2.55s, tests 394ms, environment 2.13s, prepare 337ms)
+
+EXIT_CODE=0

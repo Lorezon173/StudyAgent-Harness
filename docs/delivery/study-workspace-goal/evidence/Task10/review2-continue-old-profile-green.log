@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps current history but accepts a newer profile from an older continue snapshot|accepts a newer profile from an older teaching snapshot|keeps newer teaching state when continuing an unassociated request|keeps loaded history and continues paging after explicitly continuing
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (189 tests | 185 skipped) 408ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 185 skipped (189)
+   Start at  18:31:36
+   Duration  5.63s (transform 692ms, setup 0ms, collect 2.33s, tests 408ms, environment 1.84s, prepare 258ms)
+
+
+Exit code: 0

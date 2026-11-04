@@ -1,0 +1,8 @@
+{
+  "text": "学\nStudyAgent\n慢慢理解，自有回响\n已固定\n收起 ‹\n开启一段新的探索\n＋\n我的学习主题 / TOPICS\n⌄\n概率论\n已加载 1\n会话 A\n测\n测试用户\n我的学习书房\n···\n我的书房 / 概率论\n知识库\n学习画像\n会话 A\n\n另一份原文\n\n另一页面可能已经发送，重新提问可能产生重复回复；系统无法确认是否已发送。\n\n复制原文并自行决定是否重新提问\n\n来源问题\n\n另一页面可能已经发送，重新提问可能产生重复回复；系统无法确认是否已发送。\n\n查询原请求复制原文并自行决定是否重新提问\n发送",
+  "sendDisabled": true,
+  "recovery": {
+    "studyagent:recovery:v1:prepared:1:A:other-source-writer:other-source": "{\"text\":\"另一份原文\",\"sequence\":1,\"phase\":\"prepared\",\"schema\":2,\"kind\":\"prepared\",\"userId\":1,\"sessionId\":\"A\",\"writerId\":\"other-source-writer\",\"writeId\":\"other-source-write\",\"itemId\":\"other-source\",\"savedAt\":1}",
+    "studyagent:recovery:v1:prepared:1:A:source-writer:source": "{\"text\":\"来源问题\",\"sequence\":1,\"phase\":\"linked\",\"requestId\":\"r-source\",\"payload\":{\"message\":\"来源问题\",\"session_id\":\"A\",\"profile_id\":\"p1\",\"request_id\":\"r-source\",\"expected_state_version\":0},\"baseline\":{\"owner_user_id\":1,\"session_id\":\"A\",\"request_id\":\"r-source\",\"profile_id\":\"p1\",\"active_node_id\":null,\"base_state_version\":0,\"expected_turn_index\":0,\"provenance\":\"before_submit\",\"snapshot_sequence\":1},\"schema\":2,\"kind\":\"prepared\",\"userId\":1,\"sessionId\":\"A\",\"writerId\":\"source-writer\",\"writeId\":\"source-write\",\"itemId\":\"source\",\"savedAt\":1}"
+  }
+}

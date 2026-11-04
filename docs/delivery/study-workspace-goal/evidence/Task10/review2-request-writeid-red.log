@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not delete a newer same-payload request copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (168 tests | 1 failed | 167 skipped) 278ms
+   × does not delete a newer same-payload request copy when its history confirmation arrives 276ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not delete a newer same-payload request copy when its history confirmation arrives
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1764:109
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 167 skipped (168)
+   Start at  18:12:30
+   Duration  5.27s (transform 622ms, setup 0ms, collect 2.17s, tests 278ms, environment 1.81s, prepare 249ms)
+
+
+Exit code: 1

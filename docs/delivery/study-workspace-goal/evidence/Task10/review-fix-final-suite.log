@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (11 tests) 25ms
+ ✓ src/api/client.test.ts (12 tests) 31ms
+ ✓ src/api/workspace.test.ts (6 tests) 215ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 27ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 38ms
+ ✓ src/store/auth.test.tsx (11 tests) 135ms
+ ✓ src/pages/Login.test.tsx (14 tests) 735ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 732ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 537ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1288ms
+   ✓ loads real profile pages and rejects a forged option before POST 484ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 1417ms
+   ✓ starts pinned, collapses manually, pins open and keeps selection open 318ms
+stderr | src/pages/Chat.test.tsx > two providers sharing storage keep a cached preparation blocked after its owner links and sends
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Chat.test.tsx (117 tests) 11965ms
+   ✓ persists an edited draft against the selected session's view version 546ms
+   ✓ offers to retry a draft save after a server failure 612ms
+   ✓ persists only an owned visible message as the reading anchor 1031ms
+   ✓ records the message actually visible when the reader scrolls 1033ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 578ms
+   ✓ polls a running request recovered in a session snapshot 3060ms
+
+ Test Files  11 passed (11)
+      Tests  207 passed (207)
+   Start at  17:11:15
+   Duration  19.45s (transform 1.61s, setup 0ms, collect 14.55s, tests 16.61s, environment 29.75s, prepare 5.46s)
+
+
+Exit code: 0

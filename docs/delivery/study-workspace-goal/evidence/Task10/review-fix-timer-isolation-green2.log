@@ -1,0 +1,32 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t cancels scheduled request polling|diagnoses timer isolation|preserves a newer teaching snapshot while completed
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (110 tests | 1 failed | 107 skipped) 296ms
+   × cancels scheduled request polling when the account generation changes 229ms
+     → expected 4 to be less than 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > cancels scheduled request polling when the account generation changes
+AssertionError: expected 4 to be less than 1
+ ❯ src/pages/Chat.test.tsx:916:32
+    914|     expect(vi.getTimerCount()).toBe(before + 1);
+    915|     act(() => { workspaceStore.startAccount(1, "A"); });
+    916|     expect(vi.getTimerCount()).toBeLessThan(before + 1);
+       |                                ^
+    917|   } finally { vi.useRealTimers(); }
+    918| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed | 107 skipped (110)
+   Start at  16:58:48
+   Duration  5.43s (transform 570ms, setup 0ms, collect 2.22s, tests 296ms, environment 1.85s, prepare 266ms)
+
+
+Exit code: 1

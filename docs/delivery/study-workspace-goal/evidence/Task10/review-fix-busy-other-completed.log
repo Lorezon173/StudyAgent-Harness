@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t recovers the original id when another client completes it
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (118 tests | 117 skipped) 309ms
+   ✓ recovers the original id when another client completes it after a busy response and an initial 404 307ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 117 skipped (118)
+   Start at  17:11:48
+   Duration  5.70s (transform 549ms, setup 0ms, collect 2.08s, tests 309ms, environment 2.16s, prepare 338ms)
+
+
+Exit code: 0

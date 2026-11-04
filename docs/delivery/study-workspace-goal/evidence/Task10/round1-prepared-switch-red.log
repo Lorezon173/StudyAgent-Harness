@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (13 tests | 1 failed) 1367ms
+   ✓ persists an edited draft against the selected session's view version 529ms
+   × retains the clicked question separately when the user edits and changes sessions while send preparation is pending 50ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retains the clicked question separately when the user edits and changes sessions while send preparation is pending
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:192:109
+    190|   await act(async () => { preparing.resolve(response(snapshot("A"))); …
+    191|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+    192|   expect(Object.values(workspaceStore.getSnapshot().buckets.A.prepared…
+       |                                                                                                             ^
+    193|   fireEvent.click(screen.getByRole("button", { name: "会话 A" })); awa…
+    194|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  18:39:32
+   Duration  6.83s (transform 320ms, setup 0ms, collect 1.83s, tests 1.37s, environment 2.58s, prepare 269ms)
+

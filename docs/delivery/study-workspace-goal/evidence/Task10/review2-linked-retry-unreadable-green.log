@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not offer an original-id retry while other request copies are unreadable|retries a linked preparation using its original|only resends a missing request when asked|keeps a busy rejection unknown
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (176 tests | 172 skipped) 562ms
+   ✓ only resends a missing request when asked, reusing its original ID and payload 328ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 172 skipped (176)
+   Start at  18:20:16
+   Duration  5.97s (transform 686ms, setup 0ms, collect 2.50s, tests 562ms, environment 1.89s, prepare 246ms)
+
+
+Exit code: 0

@@ -1,0 +1,1803 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (8 tests) 23ms
+ ✓ src/api/client.test.ts (12 tests) 40ms
+ ✓ src/api/workspace.test.ts (6 tests) 228ms
+ ✓ src/store/localRecovery.test.ts (12 tests) 18ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 44ms
+ ✓ src/store/auth.test.tsx (10 tests) 121ms
+ ✓ src/pages/Login.test.tsx (14 tests) 656ms
+ ❯ src/components/workspace/SessionSidebar.test.tsx (3 tests | 1 failed) 419ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 311ms
+   × distinguishes loading, root failure, retry and confirmed empty data 30ms
+     → expected <p class="sidebar-note"></p> to be null
+ ❯ src/components/workspace/NewSessionDialog.test.tsx (7 tests | 1 failed) 795ms
+   × creates from an existing profile with the real response id, protects double submit and adds no fake messages 111ms
+     → expected 'error' to be 'idle' // Object.is equality
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx (12 tests | 5 failed) 3718ms
+   × starts pinned, collapses manually, pins open and keeps selection open 182ms
+     → expected true to be false // Object.is equality
+   × opens the real account actions and logs out without a saved-state claim 1062ms
+     → expected '/chat' to be '/login' // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m浏览器后退[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"workspace-shell"[39m
+      [36m>[39m
+        [36m<aside[39m
+          [33maria-label[39m=[32m"会话导航"[39m
+          [33mclass[39m=[32m"workspace-sidebar"[39m
+          [33mdata-mode[39m=[32m"desktop"[39m
+          [33mid[39m=[32m"session-sidebar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"study-brand"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"brand-mark"[39m
+            [36m>[39m
+              [0m学[0m
+            [36m</span>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"brand-name"[39m
+              [36m>[39m
+                [0mStudyAgent[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m慢慢理解，自有回响[0m
+              [36m</small>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-controls"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m已固定[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"收起会话导航"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m收起 ‹[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"开启一段新的探索"[39m
+            [33mclass[39m=[32m"new-session"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m开启一段新的探索 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m＋[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-label"[39m
+          [36m>[39m
+            [0m我的学习主题 / TOPICS[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-groups"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33maria-label[39m=[32m"主题：概率论"[39m
+              [33mclass[39m=[32m"session-group"[39m
+              [33mdata-group-key[39m=[32m"p1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-controls[39m=[32m"session-group-p1"[39m
+                [33maria-expanded[39m=[32m"true"[39m
+                [33maria-label[39m=[32m"切换主题：概率论"[39m
+                [33mclass[39m=[32m"group-toggle"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                [36m>[39m
+                  [0m⌄[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m概率论[0m
+                [36m</span>[39m
+                [36m<small>[39m
+                  [0m已加载 [0m
+                  [0m2[0m
+                [36m</small>[39m
+              [36m</button>[39m
+              [36m<div[39m
+                [33mid[39m=[32m"session-group-p1"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"会话 A"[39m
+                  [33mclass[39m=[32m"session-button"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m会话 A[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"会话 B"[39m
+                  [33mclass[39m=[32m"session-button"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m会话 B[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+          [36m<footer[39m
+            [33mclass[39m=[32m"sidebar-account"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"account-actions"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"账号：用户1"[39m
+              [33mclass[39m=[32m"account-button"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-avatar"[39m
+              [36m>[39m
+                [0m用[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m用户1[0m
+                [36m<small>[39m
+                  [0m我的学习书房[0m
+                [36m</small>[39m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-dots"[39m
+              [36m>[39m
+                [0m···[0m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<div[39m
+              [33maria-label[39m=[32m"账号操作"[39m
+              [33mclass[39m=[32m"account-actions"[39m
+              [33mid[39m=[32m"account-actions"[39m
+              [33mrole[39m=[32m"group"[39m
+            [36m>[39m
+              [36m<p>[39m
+                [0m用户1[0m
+              [36m</p>[39m
+              [36m<button[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m退出登录[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</footer>[39m
+        [36m</aside>[39m
+        [36m<main[39m
+          [33mclass[39m=[32m"workspace-main"[39m
+        [36m>[39m
+          [36m<header[39m
+            [33mclass[39m=[32m"workspace-topbar"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"workspace-breadcrumb"[39m
+            [36m>[39m
+              [0m我的书房 [0m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m/[0m
+              [36m</span>[39m
+              [0m [0m
+              [36m<b>[39m
+                [0m开始学习[0m
+              [36m</b>[39m
+            [36m</div>[39m
+            [36m<nav[39m
+              [33maria-label[39m=[32m"工作区导航"[39m
+              [33mclass[39m=[32m"workspace-actions"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/knowledge"[39m
+              [36m>[39m
+                [0m知识库[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/profile"[39m
+              [36m>[39m
+                [0m学习画像[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+          [36m</header>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-content"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33mclass[39m=[32m"selected-session"[39m
+            [36m>[39m
+              [36m<h1>[39m
+                [0m开始学习[0m
+              [36m</h1>[39m
+              [36m<p>[39m
+                [0m从左侧开启一段新的探索。[0m
+              [36m</p>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+        [36m</main>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"退出登录"[39m
+          [33mrole[39m=[32m"dialog"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0m部分内容未保存到服务器[0m
+          [36m</p>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m重试保存[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m退出并保留本机草稿[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m留在页面[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × does not refill groups with a delayed previous generation after 切换账号B 1020ms
+     → expected 2 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m浏览器后退[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"workspace-shell"[39m
+      [36m>[39m
+        [36m<aside[39m
+          [33maria-label[39m=[32m"会话导航"[39m
+          [33mclass[39m=[32m"workspace-sidebar"[39m
+          [33mdata-mode[39m=[32m"desktop"[39m
+          [33mid[39m=[32m"session-sidebar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"study-brand"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"brand-mark"[39m
+            [36m>[39m
+              [0m学[0m
+            [36m</span>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"brand-name"[39m
+              [36m>[39m
+                [0mStudyAgent[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m慢慢理解，自有回响[0m
+              [36m</small>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-controls"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m已固定[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"收起会话导航"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m收起 ‹[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"开启一段新的探索"[39m
+            [33mclass[39m=[32m"new-session"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m开启一段新的探索 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m＋[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-label"[39m
+          [36m>[39m
+            [0m我的学习主题 / TOPICS[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-groups"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33maria-label[39m=[32m"主题：新代主题"[39m
+              [33mclass[39m=[32m"session-group"[39m
+              [33mdata-group-key[39m=[32m"p2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-controls[39m=[32m"session-group-p2"[39m
+                [33maria-expanded[39m=[32m"true"[39m
+                [33maria-label[39m=[32m"切换主题：新代主题"[39m
+                [33mclass[39m=[32m"group-toggle"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                [36m>[39m
+                  [0m⌄[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m新代主题[0m
+                [36m</span>[39m
+                [36m<small>[39m
+                  [0m已加载 [0m
+                  [0m1[0m
+                [36m</small>[39m
+              [36m</button>[39m
+              [36m<div[39m
+                [33mid[39m=[32m"session-group-p2"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"会话 new"[39m
+                  [33mclass[39m=[32m"session-button"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m会话 new[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+          [36m<footer[39m
+            [33mclass[39m=[32m"sidebar-account"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"account-actions"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33maria-label[39m=[32m"账号：用户1"[39m
+              [33mclass[39m=[32m"account-button"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-avatar"[39m
+              [36m>[39m
+                [0m用[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m用户1[0m
+                [36m<small>[39m
+                  [0m我的学习书房[0m
+                [36m</small>[39m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-dots"[39m
+              [36m>[39m
+                [0m···[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</footer>[39m
+        [36m</aside>[39m
+        [36m<main[39m
+          [33mclass[39m=[32m"workspace-main"[39m
+        [36m>[39m
+          [36m<header[39m
+            [33mclass[39m=[32m"workspace-topbar"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"workspace-breadcrumb"[39m
+            [36m>[39m
+              [0m我的书房 [0m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m/[0m
+              [36m</span>[39m
+              [0m [0m
+              [36m<b>[39m
+                [0m开始学习[0m
+              [36m</b>[39m
+            [36m</div>[39m
+            [36m<nav[39m
+              [33maria-label[39m=[32m"工作区导航"[39m
+              [33mclass[39m=[32m"workspace-actions"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/knowledge"[39m
+              [36m>[39m
+                [0m知识库[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/profile"[39m
+              [36m>[39m
+                [0m学习画像[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+          [36m</header>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-content"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33mclass[39m=[32m"selected-session"[39m
+            [36m>[39m
+              [36m<h1>[39m
+                [0m开始学习[0m
+              [36m</h1>[39m
+              [36m<p>[39m
+                [0m从左侧开启一段新的探索。[0m
+              [36m</p>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+        [36m</main>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × does not refill groups with a delayed previous generation after 重新登录A 1012ms
+     → expected 2 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33mdata-testid[39m=[32m"location"[39m
+      [36m>[39m
+        [0m/chat[0m
+      [36m</output>[39m
+      [36m<button>[39m
+        [0m返回默认会话[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m浏览器后退[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m切换账号B[0m
+      [36m</button>[39m
+      [36m<button>[39m
+        [0m重新登录A[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"workspace-shell"[39m
+      [36m>[39m
+        [36m<aside[39m
+          [33maria-label[39m=[32m"会话导航"[39m
+          [33mclass[39m=[32m"workspace-sidebar"[39m
+          [33mdata-mode[39m=[32m"desktop"[39m
+          [33mid[39m=[32m"session-sidebar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"study-brand"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"brand-mark"[39m
+            [36m>[39m
+              [0m学[0m
+            [36m</span>[39m
+            [36m<div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"brand-name"[39m
+              [36m>[39m
+                [0mStudyAgent[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m慢慢理解，自有回响[0m
+              [36m</small>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-controls"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m已固定[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-sidebar"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"收起会话导航"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m收起 ‹[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"开启一段新的探索"[39m
+            [33mclass[39m=[32m"new-session"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m开启一段新的探索 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m＋[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-label"[39m
+          [36m>[39m
+            [0m我的学习主题 / TOPICS[0m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-groups"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33maria-label[39m=[32m"主题：新代主题"[39m
+              [33mclass[39m=[32m"session-group"[39m
+              [33mdata-group-key[39m=[32m"p2"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-controls[39m=[32m"session-group-p2"[39m
+                [33maria-expanded[39m=[32m"true"[39m
+                [33maria-label[39m=[32m"切换主题：新代主题"[39m
+                [33mclass[39m=[32m"group-toggle"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                [36m>[39m
+                  [0m⌄[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m新代主题[0m
+                [36m</span>[39m
+                [36m<small>[39m
+                  [0m已加载 [0m
+                  [0m1[0m
+                [36m</small>[39m
+              [36m</button>[39m
+              [36m<div[39m
+                [33mid[39m=[32m"session-group-p2"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"会话 new"[39m
+                  [33mclass[39m=[32m"session-button"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0m会话 new[0m
+                  [36m</span>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+          [36m<footer[39m
+            [33mclass[39m=[32m"sidebar-account"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"account-actions"[39m
+              [33maria-expanded[39m=[32m"false"[39m
+              [33maria-label[39m=[32m"账号：用户1"[39m
+              [33mclass[39m=[32m"account-button"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-avatar"[39m
+              [36m>[39m
+                [0m用[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m用户1[0m
+                [36m<small>[39m
+                  [0m我的学习书房[0m
+                [36m</small>[39m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"account-dots"[39m
+              [36m>[39m
+                [0m···[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</footer>[39m
+        [36m</aside>[39m
+        [36m<main[39m
+          [33mclass[39m=[32m"workspace-main"[39m
+        [36m>[39m
+          [36m<header[39m
+            [33mclass[39m=[32m"workspace-topbar"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"workspace-breadcrumb"[39m
+            [36m>[39m
+              [0m我的书房 [0m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m/[0m
+              [36m</span>[39m
+              [0m [0m
+              [36m<b>[39m
+                [0m开始学习[0m
+              [36m</b>[39m
+            [36m</div>[39m
+            [36m<nav[39m
+              [33maria-label[39m=[32m"工作区导航"[39m
+              [33mclass[39m=[32m"workspace-actions"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/knowledge"[39m
+              [36m>[39m
+                [0m知识库[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/profile"[39m
+              [36m>[39m
+                [0m学习画像[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+          [36m</header>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-content"[39m
+          [36m>[39m
+            [36m<section[39m
+              [33mclass[39m=[32m"selected-session"[39m
+            [36m>[39m
+              [36m<h1>[39m
+                [0m开始学习[0m
+              [36m</h1>[39m
+              [36m<p>[39m
+                [0m从左侧开启一段新的探索。[0m
+              [36m</p>[39m
+            [36m</section>[39m
+          [36m</div>[39m
+        [36m</main>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × never presents old /chat messages as the selected URL's history and makes no snapshot request 31ms
+     → Unable to find an element with the placeholder text of: 输入学习问题…
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<output[39m
+      [33mdata-testid[39m=[32m"location"[39m
+    [36m>[39m
+      [0m/chat[0m
+    [36m</output>[39m
+    [36m<button>[39m
+      [0m返回默认会话[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m浏览器后退[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m切换账号B[0m
+    [36m</button>[39m
+    [36m<button>[39m
+      [0m重新登录A[0m
+    [36m</button>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"workspace-shell"[39m
+    [36m>[39m
+      [36m<aside[39m
+        [33maria-label[39m=[32m"会话导航"[39m
+        [33mclass[39m=[32m"workspace-sidebar"[39m
+        [33mdata-mode[39m=[32m"desktop"[39m
+        [33mid[39m=[32m"session-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"study-brand"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"brand-mark"[39m
+          [36m>[39m
+            [0m学[0m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"brand-name"[39m
+            [36m>[39m
+              [0mStudyAgent[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0m慢慢理解，自有回响[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-controls"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-label[39m=[32m"取消固定侧栏，保持当前展示"[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m已固定[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"session-sidebar"[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"收起会话导航"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m收起 ‹[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"开启一段新的探索"[39m
+          [33mclass[39m=[32m"new-session"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m开启一段新的探索 [0m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+          [36m>[39m
+            [0m＋[0m
+          [36m</span>[39m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-label"[39m
+        [36m>[39m
+          [0m我的学习主题 / TOPICS[0m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-groups"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33maria-label[39m=[32m"主题：概率论"[39m
+            [33mclass[39m=[32m"session-group"[39m
+            [33mdata-group-key[39m=[32m"p1"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-controls[39m=[32m"session-group-p1"[39m
+              [33maria-expanded[39m=[32m"true"[39m
+              [33maria-label[39m=[32m"切换主题：概率论"[39m
+              [33mclass[39m=[32m"group-toggle"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+              [36m>[39m
+                [0m⌄[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m概率论[0m
+              [36m</span>[39m
+              [36m<small>[39m
+                [0m已加载 [0m
+                [0m2[0m
+              [36m</small>[39m
+            [36m</button>[39m
+            [36m<div[39m
+              [33mid[39m=[32m"session-group-p1"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"会话 A"[39m
+                [33mclass[39m=[32m"session-button"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 A[0m
+                [36m</span>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"会话 B"[39m
+                [33mclass[39m=[32m"session-button"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m会话 B[0m
+                [36m</span>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</section>[39m
+        [36m</div>[39m
+        [36m<footer[39m
+          [33mclass[39m=[32m"sidebar-account"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-controls[39m=[32m"account-actions"[39m
+            [33maria-expanded[39m=[32m"false"[39m
+            [33maria-label[39m=[32m"账号：用户1"[39m
+            [33mclass[39m=[32m"account-button"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-avatar"[39m
+            [36m>[39m
+              [0m用[0m
+            [36m</span>[39m
+            [36m<span>[39m
+              [0m用户1[0m
+              [36m<small>[39m
+                [0m我的学习书房[0m
+              [36m</small>[39m
+            [36m</span>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"account-dots"[39m
+            [36m>[39m
+              [0m···[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</footer>[39m
+      [36m</aside>[39m
+      [36m<main[39m
+        [33mclass[39m=[32m"workspace-main"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"workspace-topbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"workspace-breadcrumb"[39m
+          [36m>[39m
+            [0m我的书房 [0m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+            [36m>[39m
+              [0m/[0m
+            [36m</span>[39m
+            [0m [0m
+            [36m<b>[39m
+              [0m开始学习[0m
+            [36m</b>[39m
+          [36m</div>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"工作区导航"[39m
+            [33mclass[39m=[32m"workspace-actions"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/knowledge"[39m
+            [36m>[39m
+              [0m知识库[0m
+            [36m</a>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/profile"[39m
+            [36m>[39m
+              [0m学习画像[0m
+            [36m</a>[39m
+          [36m</nav>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace-content"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33mclass[39m=[32m"selected-session"[39m
+          [36m>[39m
+            [36m<h1>[39m
+              [0m开始学习[0m
+            [36m</h1>[39m
+            [36m<p>[39m
+              [0m从左侧开启一段新的探索。[0m
+            [36m</p>[39m
+          [36m</section>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ✓ src/pages/Chat.test.tsx (29 tests) 7650ms
+   ✓ persists an edited draft against the selected session's view version 547ms
+   ✓ persists only an owned visible message as the reading anchor 1029ms
+   ✓ records the message actually visible when the reader scrolls 1027ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 564ms
+   ✓ polls a running request recovered in a session snapshot 3050ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/workspace/NewSessionDialog.test.tsx > creates from an existing profile with the real response id, protects double submit and adds no fake messages
+AssertionError: expected 'error' to be 'idle' // Object.is equality
+
+Expected: "idle"
+Received: "error"
+
+ ❯ src/components/workspace/NewSessionDialog.test.tsx:41:71
+     39|   expect(workspaceStore.getSnapshot().activeSessionId).toBe("real/id");
+     40|   expect(workspaceStore.getSnapshot().buckets["real/id"].messages).toE…
+     41|   expect(workspaceStore.getSnapshot().buckets["real/id"].load.status).…
+       |                                                                       ^
+     42|   expect(screen.getByText("此会话的内容暂不可用")).toBeTruthy();
+     43| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/components/workspace/SessionSidebar.test.tsx > distinguishes loading, root failure, retry and confirmed empty data
+AssertionError: expected <p class="sidebar-note"></p> to be null
+
+- Expected: 
+null
+
++ Received: 
+<p
+  class="sidebar-note"
+>
+  还没有学习主题
+</p>
+
+ ❯ src/components/workspace/SessionSidebar.test.tsx:43:41
+     41|   const first = deferred<Response>(); vi.stubGlobal("fetch", vi.fn().m…
+     42|   mount(); expect(await screen.findByRole("status")).toBeTruthy();
+     43|   expect(screen.queryByText("还没有学习主题")).toBeNull();
+       |                                         ^
+     44|   await act(async () => { first.resolve(response({ detail: "主题加载失…
+     45|   expect(await screen.findByRole("alert")).toBeTruthy(); expect(screen…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > starts pinned, collapses manually, pins open and keeps selection open
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:41:89
+     39|   await waitFor(() => expect(workspaceStore.getSnapshot().activeSessio…
+     40|   expect(screen.getByRole("button", { name: "会话 A" }).getAttribute("…
+     41|   expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).inclu…
+       |                                                                                         ^
+     42| });
+     43| it.each([481, 760])("keeps a separate desktop sidebar at width %s", as…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > opens the real account actions and logs out without a saved-state claim
+AssertionError: expected '/chat' to be '/login' // Object.is equality
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <output
+        data-testid="location"
+      >
+        /chat
+      </output>
+      <button>
+        返回默认会话
+      </button>
+      <button>
+        浏览器后退
+      </button>
+      <button>
+        切换账号B
+      </button>
+      <button>
+        重新登录A
+      </button>
+      <div
+        class="workspace-shell"
+      >
+        <aside
+          aria-label="会话导航"
+          class="workspace-sidebar"
+          data-mode="desktop"
+          id="session-sidebar"
+        >
+          <div
+            class="study-brand"
+          >
+            <span
+              aria-hidden="true"
+              class="brand-mark"
+            >
+              学
+            </span>
+            <div>
+              <span
+                class="brand-name"
+              >
+                StudyAgent
+              </span>
+              <small>
+                慢慢理解，自有回响
+              </small>
+            </div>
+          </div>
+          <div
+            class="sidebar-controls"
+          >
+            <button
+              aria-controls="session-sidebar"
+              aria-label="取消固定侧栏，保持当前展示"
+              aria-pressed="true"
+              type="button"
+            >
+              已固定
+            </button>
+            <button
+              aria-controls="session-sidebar"
+              aria-expanded="true"
+              aria-label="收起会话导航"
+              type="button"
+            >
+              收起 ‹
+            </button>
+          </div>
+          <button
+            aria-label="开启一段新的探索"
+            class="new-session"
+            type="button"
+          >
+            开启一段新的探索 
+            <span
+              aria-hidden="true"
+            >
+              ＋
+            </span>
+          </button>
+          <div
+            class="sidebar-label"
+          >
+            我的学习主题 / TOPICS
+          </div>
+          <div
+            class="sidebar-groups"
+          >
+            <section
+              aria-label="主题：概率论"
+              class="session-group"
+              data-group-key="p1"
+            >
+              <button
+                aria-controls="session-group-p1"
+                aria-expanded="true"
+                aria-label="切换主题：概率论"
+                class="group-toggle"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                >
+                  ⌄
+                </span>
+                <span>
+                  概率论
+                </span>
+                <small>
+                  已加载 
+                  2
+                </small>
+              </button>
+              <div
+                id="session-group-p1"
+              >
+                <button
+                  aria-label="会话 A"
+                  class="session-button"
+                  type="button"
+                >
+                  <span>
+                    会话 A
+                  </span>
+                </button>
+                <button
+                  aria-label="会话 B"
+                  class="session-button"
+                  type="button"
+                >
+                  <span>
+                    会话 B
+                  </span>
+                </button>
+              </div>
+            </section>
+          </div>
+          <footer
+            class="sidebar-account"
+          >
+            <button
+              aria-controls="account-actions"
+              aria-expanded="true"
+              aria-label="账号：用户1"
+              class="account-button"
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                class="account-avatar"
+              >
+                用
+              </span>
+              <span>
+                用户1
+                <small>
+                  我的学习书房
+                </small>
+              </span>
+              <span
+                aria-hidden="true"
+                class="account-dots"
+              >
+                ···
+              </span>
+            </button>
+            <div
+              aria-label="账号操作"
+              class="account-actions"
+              id="account-actions"
+              role="group"
+            >
+              <p>
+                用户1
+              </p>
+              <button
+                type="button"
+              >
+                退出登录
+              </button>
+            </div>
+          </footer>
+        </aside>
+        <main
+          class="workspace-main"
+        >
+          <header
+            class="workspace-topbar"
+          >
+            <div
+              class="workspace-breadcrumb"
+            >
+              我的书房 
+              <span
+                aria-hidden="true"
+              >
+                /
+              </span>
+               
+              <b>
+                开始学习
+              </b>
+            </div>
+            <nav
+              aria-label="工作区导航"
+              class="workspace-actions"
+            >
+              <a
+                class=""
+                href="/knowledge"
+              >
+                知识库
+              </a>
+              <a
+                class=""
+                href="/profile"
+              >
+                学习画像
+              </a>
+            </nav>
+          </header>
+          <div
+            class="workspace-content"
+          >
+            <section
+              class="selected-session"
+            >
+              <h1>
+                开始学习
+              </h1>
+              <p>
+                从左侧开启一段新的探索。
+              </p>
+            </section>
+          </div>
+        </main>
+        <div
+          aria-label="退出登录"
+          role="dialog"
+        >
+          <p>
+            部分内容未保存到服务器
+          </p>
+          <button
+            type="button"
+          >
+            重试保存
+          </button>
+          <button
+            type="button"
+          >
+            退出并保留本机草稿
+          </button>
+          <button
+            type="button"
+          >
+            留在页面
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+Expected: "/login"
+Received: "/chat"
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:66:74
+     64|   transport(); mount(); await screen.findByRole("button", { name: "会…
+     65|   fireEvent.click(screen.getByRole("button", { name: "账号：用户1" }))…
+     66|   await waitFor(() => expect(screen.getByTestId("location").textConten…
+       |                                                                          ^
+     67|   expect(localStorage.getItem("studyagent_token")).toBeNull(); expect(…
+     68|   expect(screen.queryByText("已保存")).toBeNull();
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > does not refill groups with a delayed previous generation after 切换账号B
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > does not refill groups with a delayed previous generation after 重新登录A
+AssertionError: expected 2 to be 1 // Object.is equality
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <output
+        data-testid="location"
+      >
+        /chat
+      </output>
+      <button>
+        返回默认会话
+      </button>
+      <button>
+        浏览器后退
+      </button>
+      <button>
+        切换账号B
+      </button>
+      <button>
+        重新登录A
+      </button>
+      <div
+        class="workspace-shell"
+      >
+        <aside
+          aria-label="会话导航"
+          class="workspace-sidebar"
+          data-mode="desktop"
+          id="session-sidebar"
+        >
+          <div
+            class="study-brand"
+          >
+            <span
+              aria-hidden="true"
+              class="brand-mark"
+            >
+              学
+            </span>
+            <div>
+              <span
+                class="brand-name"
+              >
+                StudyAgent
+              </span>
+              <small>
+                慢慢理解，自有回响
+              </small>
+            </div>
+          </div>
+          <div
+            class="sidebar-controls"
+          >
+            <button
+              aria-controls="session-sidebar"
+              aria-label="取消固定侧栏，保持当前展示"
+              aria-pressed="true"
+              type="button"
+            >
+              已固定
+            </button>
+            <button
+              aria-controls="session-sidebar"
+              aria-expanded="true"
+              aria-label="收起会话导航"
+              type="button"
+            >
+              收起 ‹
+            </button>
+          </div>
+          <button
+            aria-label="开启一段新的探索"
+            class="new-session"
+            type="button"
+          >
+            开启一段新的探索 
+            <span
+              aria-hidden="true"
+            >
+              ＋
+            </span>
+          </button>
+          <div
+            class="sidebar-label"
+          >
+            我的学习主题 / TOPICS
+          </div>
+          <div
+            class="sidebar-groups"
+          >
+            <section
+              aria-label="主题：新代主题"
+              class="session-group"
+              data-group-key="p2"
+            >
+              <button
+                aria-controls="session-group-p2"
+                aria-expanded="true"
+                aria-label="切换主题：新代主题"
+                class="group-toggle"
+                type="button"
+              >
+                <span
+                  aria-hidden="true"
+                >
+                  ⌄
+                </span>
+                <span>
+                  新代主题
+                </span>
+                <small>
+                  已加载 
+                  1
+                </small>
+              </button>
+              <div
+                id="session-group-p2"
+              >
+                <button
+                  aria-label="会话 new"
+                  class="session-button"
+                  type="button"
+                >
+                  <span>
+                    会话 new
+                  </span>
+                </button>
+              </div>
+            </section>
+          </div>
+          <footer
+            class="sidebar-account"
+          >
+            <button
+              aria-controls="account-actions"
+              aria-expanded="false"
+              aria-label="账号：用户1"
+              class="account-button"
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                class="account-avatar"
+              >
+                用
+              </span>
+              <span>
+                用户1
+                <small>
+                  我的学习书房
+                </small>
+              </span>
+              <span
+                aria-hidden="true"
+                class="account-dots"
+              >
+                ···
+              </span>
+            </button>
+          </footer>
+        </aside>
+        <main
+          class="workspace-main"
+        >
+          <header
+            class="workspace-topbar"
+          >
+            <div
+              class="workspace-breadcrumb"
+            >
+              我的书房 
+              <span
+                aria-hidden="true"
+              >
+                /
+              </span>
+               
+              <b>
+                开始学习
+              </b>
+            </div>
+            <nav
+              aria-label="工作区导航"
+              class="workspace-actions"
+            >
+              <a
+                class=""
+                href="/knowledge"
+              >
+                知识库
+              </a>
+              <a
+                class=""
+                href="/profile"
+              >
+                学习画像
+              </a>
+            </nav>
+          </header>
+          <div
+            class="workspace-content"
+          >
+            <section
+              class="selected-session"
+            >
+              <h1>
+                开始学习
+              </h1>
+              <p>
+                从左侧开启一段新的探索。
+              </p>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:74:46
+
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > never presents old /chat messages as the selected URL's history and makes no snapshot request
+TestingLibraryElementError: Unable to find an element with the placeholder text of: 输入学习问题…
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <output
+      data-testid="location"
+    >
+      /chat
+    </output>
+    <button>
+      返回默认会话
+    </button>
+    <button>
+      浏览器后退
+    </button>
+    <button>
+      切换账号B
+    </button>
+    <button>
+      重新登录A
+    </button>
+    <div
+      class="workspace-shell"
+    >
+      <aside
+        aria-label="会话导航"
+        class="workspace-sidebar"
+        data-mode="desktop"
+        id="session-sidebar"
+      >
+        <div
+          class="study-brand"
+        >
+          <span
+            aria-hidden="true"
+            class="brand-mark"
+          >
+            学
+          </span>
+          <div>
+            <span
+              class="brand-name"
+            >
+              StudyAgent
+            </span>
+            <small>
+              慢慢理解，自有回响
+            </small>
+          </div>
+        </div>
+        <div
+          class="sidebar-controls"
+        >
+          <button
+            aria-controls="session-sidebar"
+            aria-label="取消固定侧栏，保持当前展示"
+            aria-pressed="true"
+            type="button"
+          >
+            已固定
+          </button>
+          <button
+            aria-controls="session-sidebar"
+            aria-expanded="true"
+            aria-label="收起会话导航"
+            type="button"
+          >
+            收起 ‹
+          </button>
+        </div>
+        <button
+          aria-label="开启一段新的探索"
+          class="new-session"
+          type="button"
+        >
+          开启一段新的探索 
+          <span
+            aria-hidden="true"
+          >
+            ＋
+          </span>
+        </button>
+        <div
+          class="sidebar-label"
+        >
+          我的学习主题 / TOPICS
+        </div>
+        <div
+          class="sidebar-groups"
+        >
+          <section
+            aria-label="主题：概率论"
+            class="session-group"
+            data-group-key="p1"
+          >
+            <button
+              aria-controls="session-group-p1"
+              aria-expanded="true"
+              aria-label="切换主题：概率论"
+              class="group-toggle"
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ⌄
+              </span>
+              <span>
+                概率论
+              </span>
+              <small>
+                已加载 
+                2
+              </small>
+            </button>
+            <div
+              id="session-group-p1"
+            >
+              <button
+                aria-label="会话 A"
+                class="session-button"
+                type="button"
+              >
+                <span>
+                  会话 A
+                </span>
+              </button>
+              <button
+                aria-label="会话 B"
+                class="session-button"
+                type="button"
+              >
+                <span>
+                  会话 B
+                </span>
+              </button>
+            </div>
+          </section>
+        </div>
+        <footer
+          class="sidebar-account"
+        >
+          <button
+            aria-controls="account-actions"
+            aria-expanded="false"
+            aria-label="账号：用户1"
+            class="account-button"
+            type="button"
+          >
+            <span
+              aria-hidden="true"
+              class="account-avatar"
+            >
+              用
+            </span>
+            <span>
+              用户1
+              <small>
+                我的学习书房
+              </small>
+            </span>
+            <span
+              aria-hidden="true"
+              class="account-dots"
+            >
+              ···
+            </span>
+          </button>
+        </footer>
+      </aside>
+      <main
+        class="workspace-main"
+      >
+        <header
+          class="workspace-topbar"
+        >
+          <div
+            class="workspace-breadcrumb"
+          >
+            我的书房 
+            <span
+              aria-hidden="true"
+            >
+              /
+            </span>
+             
+            <b>
+              开始学习
+            </b>
+          </div>
+          <nav
+            aria-label="工作区导航"
+            class="workspace-actions"
+          >
+            <a
+              class=""
+              href="/knowledge"
+            >
+              知识库
+            </a>
+            <a
+              class=""
+              href="/profile"
+            >
+              学习画像
+            </a>
+          </nav>
+        </header>
+        <div
+          class="workspace-content"
+        >
+          <section
+            class="selected-session"
+          >
+            <h1>
+              开始学习
+            </h1>
+            <p>
+              从左侧开启一段新的探索。
+            </p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:86:27
+     84|   vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL) => Promise.res…
+     85|   mount(); await screen.findByRole("button", { name: "会话 A" });
+     86|   fireEvent.change(screen.getByPlaceholderText("输入学习问题…"), { tar…
+       |                           ^
+     87|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+     88|   await screen.findByText("来自旧会话的真实响应");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ Test Files  3 failed | 8 passed (11)
+      Tests  7 failed | 107 passed (114)
+   Start at  22:20:41
+   Duration  14.63s (transform 1.14s, setup 0ms, collect 11.36s, tests 13.71s, environment 27.58s, prepare 7.11s)
+

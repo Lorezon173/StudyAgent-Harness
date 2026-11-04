@@ -1,0 +1,5 @@
+Browser tab: 3, Title: "StudyAgent", URL: "http://127.0.0.1:57544/chat/1793fae3-b7e5-425b-9435-554b5348b243".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			34 text 草稿未保存 ：连接失败
++			35 button 重试保存草稿
+The focused UI element is 32 text field (settable) B独立草稿：等待A回复时继续写。 B补充：分母不同先通分。 连接故障验收：这段必须保留。

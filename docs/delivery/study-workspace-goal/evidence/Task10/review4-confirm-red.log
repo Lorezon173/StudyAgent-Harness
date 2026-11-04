@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps teaching and session together when completed-message confirmation meets newer activity
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (226 tests | 1 failed | 225 skipped) 226ms
+   × keeps teaching and session together when completed-message confirmation meets newer activity 224ms
+     → expected +0 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps teaching and session together when completed-message confirmation meets newer activity
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ src/pages/Chat.test.tsx:3459:95
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 225 skipped (226)
+   Start at  19:15:52
+   Duration  5.51s (transform 739ms, setup 0ms, collect 2.36s, tests 226ms, environment 1.91s, prepare 253ms)
+
+EXIT_CODE=1

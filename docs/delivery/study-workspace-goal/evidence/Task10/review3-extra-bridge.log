@@ -1,0 +1,32 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps activity and profile when history bridging fails|drops a continue bridge failure
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (209 tests | 1 failed | 205 skipped) 766ms
+   ✓ keeps activity and profile when history bridging fails: first page 370ms
+   × drops a continue bridge failure after account changes 143ms
+     → expected '迟到画像' not to be '迟到画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > drops a continue bridge failure after account changes
+AssertionError: expected '迟到画像' not to be '迟到画像' // Object.is equality
+ ❯ src/pages/Chat.test.tsx:3318:35
+    3316|   await act(async () => { page.resolve(response({}, 503)); await conti…
+    3317|   const state = workspaceStore.getSnapshot().buckets.A;
+    3318|   expect(state.profile?.name).not.toBe("迟到画像"); expect(state.histo…
+       |                                   ^
+    3319|   if (changed === "attempt") expect(state.request.attempt).toBe(2);
+    3320| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 205 skipped (209)
+   Start at  19:01:08
+   Duration  6.44s (transform 794ms, setup 0ms, collect 2.59s, tests 766ms, environment 2.00s, prepare 267ms)
+
+EXIT_CODE=1

@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not let automatic request recovery steal a newer in-flight activity observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (204 tests | 1 failed | 203 skipped) 384ms
+   × does not let automatic request recovery steal a newer in-flight activity observation 383ms
+     → expected null to be 'other' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not let automatic request recovery steal a newer in-flight activity observation
+AssertionError: expected null to be 'other' // Object.is equality
+
+- Expected: 
+"other"
+
++ Received: 
+null
+
+ ❯ src/pages/Chat.test.tsx:3246:77
+    3244|   await act(async () => { newerSnapshot.resolve(response({ ...snapshot…
+    3245|   await screen.findByText("历史A");
+    3246|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+       |                                                                             ^
+    3247|   expect(workspaceStore.getSnapshot().buckets.A.pendingRequests.some(i…
+    3248|   expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 203 skipped (204)
+   Start at  18:56:17
+   Duration  6.04s (transform 803ms, setup 0ms, collect 2.76s, tests 384ms, environment 1.84s, prepare 262ms)
+
+EXIT_CODE=1

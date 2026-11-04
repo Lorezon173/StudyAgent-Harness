@@ -1,0 +1,14 @@
+
+> studyagent-web@0.1.0 test
+> vitest run localRecovery.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/localRecovery.test.ts (3 tests) 7ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  15:28:39
+   Duration  23.54s (transform 117ms, setup 0ms, collect 184ms, tests 7ms, environment 21.06s, prepare 1.28s)
+

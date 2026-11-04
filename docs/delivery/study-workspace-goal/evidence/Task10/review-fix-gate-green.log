@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t blocks sending and offers activity recheck
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (69 tests | 68 skipped) 295ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 68 skipped (69)
+   Start at  20:19:49
+   Duration  6.46s (transform 644ms, setup 0ms, collect 2.86s, tests 295ms, environment 2.20s, prepare 294ms)
+
+
+Exit code: 0

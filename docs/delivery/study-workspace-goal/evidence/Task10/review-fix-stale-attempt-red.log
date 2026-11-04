@@ -1,0 +1,34 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not write an old continue failure
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (83 tests | 1 failed | 82 skipped) 222ms
+   × does not write an old continue failure into a newer attempt 220ms
+     → expected '尚无法继续，请重新查询' to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not write an old continue failure into a newer attempt
+AssertionError: expected '尚无法继续，请重新查询' to be null
+
+- Expected: 
+null
+
++ Received: 
+"尚无法继续，请重新查询"
+
+ ❯ src/pages/Chat.test.tsx:1385:64
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 82 skipped (83)
+   Start at  20:33:59
+   Duration  5.53s (transform 623ms, setup 0ms, collect 2.44s, tests 222ms, environment 1.83s, prepare 258ms)
+
+
+Exit code: 1

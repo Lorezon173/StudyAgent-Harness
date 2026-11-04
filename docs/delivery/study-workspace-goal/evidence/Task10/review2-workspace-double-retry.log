@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t coalesces repeated recent-session load retries
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (184 tests | 183 skipped) 242ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 183 skipped (184)
+   Start at  18:26:09
+   Duration  5.53s (transform 677ms, setup 0ms, collect 2.27s, tests 242ms, environment 1.87s, prepare 297ms)
+
+
+Exit code: 0

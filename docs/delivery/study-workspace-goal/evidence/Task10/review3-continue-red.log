@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t preserves the unassociated request but updates independent fields on continue bridge failure
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (197 tests | 1 failed | 196 skipped) 279ms
+   × preserves the unassociated request but updates independent fields on continue bridge failure 277ms
+     → expected '概率论' to be '继续时新画像' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves the unassociated request but updates independent fields on continue bridge failure
+AssertionError: expected '概率论' to be '继续时新画像' // Object.is equality
+
+Expected: "继续时新画像"
+Received: "概率论"
+
+ ❯ src/pages/Chat.test.tsx:3144:31
+    3142|   const state = workspaceStore.getSnapshot().buckets.A;
+    3143|   expect(state.nextMessageCursor).toBe("old"); expect(state.requests.r…
+    3144|   expect(state.profile?.name).toBe("继续时新画像"); expect(state.pendi…
+       |                               ^
+    3145|   expect(screen.getByText("继续前历史")).toBeTruthy(); expect(screen.q…
+    3146| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 196 skipped (197)
+   Start at  18:50:34
+   Duration  5.39s (transform 717ms, setup 0ms, collect 2.30s, tests 279ms, environment 1.79s, prepare 245ms)
+
+EXIT_CODE=1

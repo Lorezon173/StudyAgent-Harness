@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t during automatic original-request recheck
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (217 tests | 212 skipped) 1158ms
+   ✓ protects a replaced during automatic original-request recheck 389ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 212 skipped (217)
+   Start at  19:10:36
+   Duration  6.38s (transform 706ms, setup 0ms, collect 2.30s, tests 1.16s, environment 1.87s, prepare 265ms)
+
+EXIT_CODE=0

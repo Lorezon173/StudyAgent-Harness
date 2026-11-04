@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t invalidates the account on 401 and retains a loss warning
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (104 tests | 103 skipped) 213ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 103 skipped (104)
+   Start at  20:53:51
+   Duration  5.39s (transform 637ms, setup 0ms, collect 2.40s, tests 213ms, environment 1.78s, prepare 236ms)
+
+
+Exit code: 0

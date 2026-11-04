@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t bridges newer snapshot pages|retains the old history and offers retry when a snapshot gap
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (165 tests | 163 skipped) 298ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 163 skipped (165)
+   Start at  18:08:44
+   Duration  5.30s (transform 648ms, setup 0ms, collect 2.19s, tests 298ms, environment 1.79s, prepare 250ms)
+
+
+Exit code: 0

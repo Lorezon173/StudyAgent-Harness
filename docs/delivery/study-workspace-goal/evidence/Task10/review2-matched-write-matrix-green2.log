@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retain matched in-memory work when its|retires matched in-memory work while retaining a warning|continues explicitly after matching the only surviving linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (160 tests | 155 skipped) 536ms
+   ✓ continues explicitly after matching the only surviving linked copy from an older writer 317ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 155 skipped (160)
+   Start at  18:03:35
+   Duration  6.15s (transform 676ms, setup 0ms, collect 2.35s, tests 536ms, environment 2.03s, prepare 334ms)
+
+
+Exit code: 0

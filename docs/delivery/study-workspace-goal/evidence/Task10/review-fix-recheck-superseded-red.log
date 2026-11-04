@@ -1,0 +1,32 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t allows activity recheck again when a newer ordinary load
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (111 tests | 1 failed | 110 skipped) 180ms
+   × allows activity recheck again when a newer ordinary load supersedes an in-flight recheck 178ms
+     → expected 'checking' not to be 'checking' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > allows activity recheck again when a newer ordinary load supersedes an in-flight recheck
+AssertionError: expected 'checking' not to be 'checking' // Object.is equality
+ ❯ src/pages/Chat.test.tsx:1321:67
+    1319|   await act(async () => { await workspaceController.loadSession("A"); …
+    1320|   await act(async () => { old.resolve(response(snapshot("A"))); await …
+    1321|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).not.toBe…
+       |                                                                   ^
+    1322|   expect((screen.getByRole("button", { name: "重新查询会话状态" }) as …
+    1323| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 110 skipped (111)
+   Start at  17:02:32
+   Duration  5.20s (transform 545ms, setup 0ms, collect 2.13s, tests 180ms, environment 1.88s, prepare 243ms)
+
+
+Exit code: 1

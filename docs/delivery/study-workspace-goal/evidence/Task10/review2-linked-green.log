@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t removes only this page.s linked copy after an unknown submission is matched|continues explicitly after matching the only surviving linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (155 tests | 153 skipped) 505ms
+   ✓ continues explicitly after matching the only surviving linked copy from an older writer 395ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 153 skipped (155)
+   Start at  17:53:23
+   Duration  6.88s (transform 735ms, setup 0ms, collect 2.73s, tests 505ms, environment 2.06s, prepare 452ms)
+
+
+Exit code: 0

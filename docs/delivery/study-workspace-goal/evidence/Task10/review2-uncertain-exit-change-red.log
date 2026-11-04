@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not ignore a newer local recovery write when storage becomes readable before exit
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (192 tests | 1 failed | 191 skipped) 183ms
+   × does not ignore a newer local recovery write when storage becomes readable before exit 181ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not ignore a newer local recovery write when storage becomes readable before exit
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1965:98
+    1963|   const newer = getLocalRecovery().writeRequest(1, "A", "r1", { payloa…
+    1964|   const report = workspaceStore.prepareAccountTransition(ticket);
+    1965|   expect(report.items.some(item => item.kind === "request" && item.ite…
+       |                                                                                                  ^
+    1966|   expect(getLocalRecovery().list(1, "A", "request").some(item => item.…
+    1967| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 191 skipped (192)
+   Start at  18:35:37
+   Duration  5.33s (transform 713ms, setup 0ms, collect 2.30s, tests 183ms, environment 1.80s, prepare 255ms)
+
+
+Exit code: 1

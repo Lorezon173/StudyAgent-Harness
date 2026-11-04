@@ -1,0 +1,7 @@
+{
+  "sentAt": "2026-11-03T15:37:14.890Z",
+  "submitReturnedAt": "2026-11-03T15:37:14.957Z",
+  "switchStartedAt": "2026-11-03T15:37:22.052Z",
+  "switchReturnedAt": "2026-11-03T15:37:22.230Z",
+  "switchState": "Browser tab: 2, Title: \"StudyAgent\", URL: \"http://127.0.0.1:57544/chat/1793fae3-b7e5-425b-9435-554b5348b243\".\nThe following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.\nRemoved element IDs: 35-46\n~0 AXWebArea StudyAgent, URL: 127.0.0.1:57544/chat/1793fae3-b7e5-425b-9435-554b5348b243\n~\t\t\t30 heading B验收：草稿隔离, Value: 1\n~\t\t\t\t31 text B验收：草稿隔离\n~\t\t\t32 text 草稿已保存\n~\t\t\t33 text field (settable) B独立草稿：等待A回复时继续写。 B补充：分母不同先通分。\n~\t\t\t34 button 发送\nThe focused UI element is 15 button B验收：草稿隔离"
+}

@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t blocks a new question while an unrelated local request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (89 tests | 1 failed | 88 skipped) 193ms
+   × blocks a new question while an unrelated local request is unknown 190ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > blocks a new question while an unrelated local request is unknown
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1493:81
+    1491|   expect(recovery.writeRequest(1, "A", "unknown-other", { payload, bas…
+    1492|   const fetcher = installTransport(); mount("/chat/A"); await screen.f…
+    1493|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+       |                                                                                 ^
+    1494|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+    1495|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 88 skipped (89)
+   Start at  20:39:23
+   Duration  5.39s (transform 631ms, setup 0ms, collect 2.37s, tests 193ms, environment 1.81s, prepare 256ms)
+
+
+Exit code: 1

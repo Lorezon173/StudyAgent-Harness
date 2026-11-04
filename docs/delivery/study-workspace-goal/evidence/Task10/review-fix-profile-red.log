@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a newer profile while
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (66 tests | 1 failed | 65 skipped) 257ms
+   × preserves a newer profile while completed turn history is loading 255ms
+     → expected 1 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a newer profile while completed turn history is loading
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/pages/Chat.test.tsx:1041:83
+    1039|   await act(async () => { await workspaceController.loadSession("A"); …
+    1040|   await act(async () => { page.resolve(response({ items: [user, answer…
+    1041|   expect(workspaceStore.getSnapshot().buckets.A.profileSummary?.profil…
+       |                                                                                   ^
+    1042|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+    1043| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 65 skipped (66)
+   Start at  18:53:53
+   Duration  5.71s (transform 574ms, setup 0ms, collect 2.57s, tests 257ms, environment 1.84s, prepare 241ms)
+
+
+Exit code: 1

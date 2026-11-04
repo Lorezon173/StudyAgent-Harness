@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t continues explicitly after matching the only surviving linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (154 tests | 153 skipped) 285ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 153 skipped (154)
+   Start at  17:52:09
+   Duration  5.75s (transform 603ms, setup 0ms, collect 2.32s, tests 285ms, environment 2.12s, prepare 249ms)
+
+
+Exit code: 0

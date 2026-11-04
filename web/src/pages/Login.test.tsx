@@ -88,7 +88,8 @@ it("preserves a retry's error when an invalidated submission finishes later", as
   expect((await screen.findByRole("alert")).textContent).toBe("当前重试失败");
   await act(async () => { oldLogin.resolve(response({ detail: "旧提交失败" }, 401)); });
   expect(screen.getByRole("alert").textContent).toBe("当前重试失败"); expect(screen.queryByRole("button", { name: "提交中…" })).toBeNull();
-  submit(); await waitFor(() => expect(screen.getByTestId("auth").textContent).toBe("2:RETRY"));
+  submit(); await waitFor(() => expect(screen.getByTestId("location").textContent).toBe("/chat"));
+  expect(screen.getByTestId("auth").textContent).toBe("2:RETRY");
   expect(screen.getByTestId("location").textContent).toBe("/chat"); expect(fetcher).toHaveBeenCalledTimes(4);
 });
 it("keeps the active submission locked across same-generation workspace notifications", async () => {

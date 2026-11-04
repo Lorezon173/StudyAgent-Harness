@@ -1,0 +1,5 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+src/store/auth.test.tsx(94,183): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.

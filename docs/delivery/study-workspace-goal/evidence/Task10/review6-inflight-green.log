@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not show an older association failure while a newer recheck is still in flight|accepts a valid older association after the newer recheck fails|in a new user-initiated verification after matching|keeps a newer matched result when an older association ends
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (267 tests | 260 skipped) 1359ms
+   ✓ keeps a newer matched result when an older association ends with network 339ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed | 260 skipped (267)
+   Start at  20:02:13
+   Duration  7.01s (transform 838ms, setup 0ms, collect 2.61s, tests 1.36s, environment 1.91s, prepare 253ms)
+
+EXIT_CODE=0

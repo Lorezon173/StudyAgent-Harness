@@ -1,0 +1,52 @@
+
+> studyagent-web@0.1.0 test
+> vitest run localRecovery.test.ts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/store/localRecovery.test.ts (3 tests | 2 failed) 16ms
+   × retains a newer edit when an earlier save is acknowledged 10ms
+     → expected 'B' to be 'new' // Object.is equality
+   × keeps a prepared original independently of the edited draft 2ms
+     → expected 'B' to be 'new edit' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/store/localRecovery.test.ts > retains a newer edit when an earlier save is acknowledged
+AssertionError: expected 'B' to be 'new' // Object.is equality
+
+Expected: "new"
+Received: "B"
+
+ ❯ src/store/localRecovery.test.ts:22:57
+     20|   if (!old.ok) throw Error("write failed");
+     21|   expect(recovery.remove(old.candidate)).toBe(false);
+     22|   expect(recovery.list(1, "session", "draft")[0].draft).toBe("new");
+       |                                                         ^
+     23| });
+     24| it("keeps a prepared original independently of the edited draft", () =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/store/localRecovery.test.ts > keeps a prepared original independently of the edited draft
+AssertionError: expected 'B' to be 'new edit' // Object.is equality
+
+Expected: "new edit"
+Received: "B"
+
+ ❯ src/store/localRecovery.test.ts:29:57
+     27|   recovery.writeDraft(1, "session", { draft: "new edit", reading_ancho…
+     28|   expect(recovery.list(1, "session", "prepared")[0].text).toBe("origin…
+     29|   expect(recovery.list(1, "session", "draft")[0].draft).toBe("new edit…
+       |                                                         ^
+     30| });
+     31| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  15:27:08
+   Duration  3.16s (transform 57ms, setup 0ms, collect 124ms, tests 16ms, environment 1.96s, prepare 265ms)
+

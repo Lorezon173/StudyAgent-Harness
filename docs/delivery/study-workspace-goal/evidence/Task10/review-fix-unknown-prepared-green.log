@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t visibly blocks sending an unknown preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (101 tests | 100 skipped) 324ms
+   ✓ visibly blocks sending an unknown preparation until the user acknowledges its risk 322ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 100 skipped (101)
+   Start at  20:51:56
+   Duration  5.50s (transform 649ms, setup 0ms, collect 2.39s, tests 324ms, environment 1.78s, prepare 243ms)
+
+
+Exit code: 0

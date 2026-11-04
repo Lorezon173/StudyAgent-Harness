@@ -1,0 +1,29 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps a matched request complete
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (39 tests | 1 failed | 38 skipped) 306ms
+   × keeps a matched request complete when the same completed result is checked again 304ms
+     → expected 'unassociated' to be 'completed' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps a matched request complete when the same completed result is checked again
+AssertionError: expected 'unassociated' to be 'completed' // Object.is equality
+
+Expected: "completed"
+Received: "unassociated"
+
+ ❯ src/pages/Chat.test.tsx:374:65
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 38 skipped (39)
+   Start at  12:31:08
+   Duration  50.98s (transform 1.23s, setup 0ms, collect 19.06s, tests 306ms, environment 28.05s, prepare 2.21s)
+

@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not let a stale retry lookup
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (107 tests | 1 failed | 106 skipped) 196ms
+   × does not let a stale retry lookup overwrite the current request after a newer activity observation 194ms
+     → expected 'unknown' to be 'failed' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not let a stale retry lookup overwrite the current request after a newer activity observation
+AssertionError: expected 'unknown' to be 'failed' // Object.is equality
+
+Expected: "failed"
+Received: "unknown"
+
+ ❯ src/pages/Chat.test.tsx:1620:65
+    1618|   await act(async () => { await workspaceController.loadSession("A"); …
+    1619|   await act(async () => { pending.resolve(response({}, 503)); await re…
+    1620|   expect(workspaceStore.getSnapshot().buckets.A.request.status).toBe("…
+       |                                                                 ^
+    1621|   expect(workspaceStore.getSnapshot().buckets.A.request.error).toBe("…
+    1622|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 106 skipped (107)
+   Start at  16:52:23
+   Duration  5.20s (transform 542ms, setup 0ms, collect 2.14s, tests 196ms, environment 1.84s, prepare 272ms)
+
+
+Exit code: 1

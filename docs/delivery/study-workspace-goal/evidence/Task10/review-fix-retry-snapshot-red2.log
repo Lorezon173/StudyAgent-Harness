@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retry a failed request after a newer activity observation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (110 tests | 1 failed | 109 skipped) 186ms
+   × does not retry a failed request after a newer activity observation supersedes its snapshot 184ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retry a failed request after a newer activity observation supersedes its snapshot
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1697:124
+    1695|   await act(async () => { await workspaceController.loadSession("A"); …
+    1696|   await act(async () => { pending.resolve(response(snapshot("A"))); aw…
+    1697|   expect(fetcher.mock.calls.some(([url, init]) => String(url).includes…
+       |                                                                                                                            ^
+    1698|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+    1699| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 109 skipped (110)
+   Start at  17:01:19
+   Duration  5.51s (transform 534ms, setup 0ms, collect 2.14s, tests 186ms, environment 2.08s, prepare 274ms)
+
+
+Exit code: 1

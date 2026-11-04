@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not resend when its saved request candidate changes|retries a linked preparation using its original|only resends a missing request when asked
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (114 tests | 111 skipped) 528ms
+   ✓ only resends a missing request when asked, reusing its original ID and payload 326ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 111 skipped (114)
+   Start at  17:06:36
+   Duration  5.67s (transform 525ms, setup 0ms, collect 2.02s, tests 528ms, environment 1.94s, prepare 316ms)
+
+
+Exit code: 0

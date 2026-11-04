@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps an in-flight newer activity check while an older continue bridge fails
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (253 tests | 252 skipped) 380ms
+   ✓ keeps an in-flight newer activity check while an older continue bridge fails 378ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 252 skipped (253)
+   Start at  19:45:42
+   Duration  5.66s (transform 771ms, setup 0ms, collect 2.39s, tests 380ms, environment 1.82s, prepare 249ms)
+
+EXIT_CODE=0

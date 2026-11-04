@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (11 tests | 1 failed) 1296ms
+   × serializes rapid B to C selection without issuing two writes at the same version 122ms
+     → expected [ …(2) ] to have a length of 1 but got 2
+   ✓ persists an edited draft against the selected session's view version 526ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > serializes rapid B to C selection without issuing two writes at the same version
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/pages/Chat.test.tsx:74:18
+     72|   await waitFor(() => expect(fetcher.mock.calls.some(([url, init]) => …
+     73|   const writes = fetcher.mock.calls.filter(([url, init]) => url === "/…
+     74|   expect(writes).toHaveLength(1); expect(JSON.parse(String(writes[0][1…
+       |                  ^
+     75| });
+     76| it("persists an edited draft against the selected session's view versi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  18:34:03
+   Duration  5.98s (transform 321ms, setup 0ms, collect 1.83s, tests 1.30s, environment 1.83s, prepare 262ms)
+

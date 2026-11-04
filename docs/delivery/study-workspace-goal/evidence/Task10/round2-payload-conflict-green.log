@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t disables resend on a payload conflict
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (61 tests | 60 skipped) 425ms
+   ✓ preserves the original and disables resend on a payload conflict 423ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 60 skipped (61)
+   Start at  13:02:52
+   Duration  5.73s (transform 541ms, setup 0ms, collect 2.45s, tests 425ms, environment 1.82s, prepare 250ms)
+

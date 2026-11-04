@@ -11,6 +11,8 @@ function Probe() { const auth = useAuth(); const location = useLocation(); switc
 function mockServer(post: (url: string, init: RequestInit) => Promise<Response>, more = false) {
   const fetcher = vi.fn((url: RequestInfo | URL, init?: RequestInit) => {
     if (init?.method === "POST") return post(String(url), init);
+    if (String(url) === "/api/workspace-state") return Promise.resolve(response({ last_session_id: null, sidebar_pinned: true, sidebar_collapsed: false, progress_y_ratio: 0.5, version: 0, updated_at: null }));
+    if (String(url).startsWith("/api/sessions/real%2Fid/snapshot")) return Promise.resolve(response({ session: { ...session("real/id"), title: "真实标题" }, profile: profile(), profile_summary: null, teaching_state: null, teaching_state_source: "stored", view_state: { draft: "", reading_anchor: null, version: 0, updated_at: null }, pending_requests: [], messages: { items: [], next_cursor: null } }));
     if (String(url).startsWith("/api/topic-profiles")) return Promise.resolve(response({ items: [String(url).includes("cursor=") ? profile("p2", "第二页主题") : profile()], next_cursor: more && !String(url).includes("cursor=") ? "p+/=" : null }));
     return Promise.resolve(response({ groups: [], next_group_cursor: null }));
   }); vi.stubGlobal("fetch", fetcher); return fetcher;
@@ -38,8 +40,9 @@ it("creates from an existing profile with the real response id, protects double 
   await waitFor(() => expect(screen.getByTestId("location").textContent).toBe("/chat/real%2Fid"));
   expect(workspaceStore.getSnapshot().activeSessionId).toBe("real/id");
   expect(workspaceStore.getSnapshot().buckets["real/id"].messages).toEqual([]);
-  expect(workspaceStore.getSnapshot().buckets["real/id"].load.status).toBe("idle");
-  expect(screen.getByText("此会话的内容暂不可用")).toBeTruthy();
+  await waitFor(() => expect(workspaceStore.getSnapshot().buckets["real/id"].load.status).toBe("ready"));
+  expect(workspaceStore.getSnapshot().buckets["real/id"].session?.session_id).toBe("real/id");
+  expect(fetcher.mock.calls.some(([url]) => String(url).startsWith("/api/sessions/real%2Fid/snapshot"))).toBe(true);
 });
 it("shows a real server 403 without inventing a successful session", async () => {
   mockServer(async () => response({ detail: { code: "forbidden", message: "无权访问此主题" } }, 403)); await open();

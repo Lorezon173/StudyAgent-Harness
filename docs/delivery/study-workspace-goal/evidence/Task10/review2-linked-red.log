@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t removes only this page.s linked copy after an unknown submission is matched
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (155 tests | 1 failed | 154 skipped) 297ms
+   × removes only this page's linked copy after an unknown submission is matched 295ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > removes only this page's linked copy after an unknown submission is matched
+AssertionError: expected [ Array(1) ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/pages/Chat.test.tsx:1622:100
+    1620|   completed = true; fireEvent.click(screen.getByRole("button", { name:…
+    1621|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1622|   expect(getLocalRecovery().list(1, "A", "prepared").filter(item => it…
+       |                                                                                                    ^
+    1623|   expect(getLocalRecovery().list(1, "A", "request").filter(item => ite…
+    1624|   expect((screen.getByPlaceholderText("输入学习问题…") as HTMLInputEle…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 154 skipped (155)
+   Start at  17:52:38
+   Duration  5.24s (transform 568ms, setup 0ms, collect 2.07s, tests 297ms, environment 1.83s, prepare 261ms)
+
+
+Exit code: 1

@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send when another preparation appears after both own preparation writes fail|warns and keeps sending when the|does not send when a shared preparation appears
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (136 tests | 131 skipped) 339ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 131 skipped (136)
+   Start at  17:19:52
+   Duration  5.81s (transform 679ms, setup 0ms, collect 2.44s, tests 339ms, environment 1.86s, prepare 297ms)
+
+
+Exit code: 0

@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a newer activity lock
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (68 tests | 67 skipped) 243ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 67 skipped (68)
+   Start at  18:56:27
+   Duration  5.79s (transform 598ms, setup 0ms, collect 2.53s, tests 243ms, environment 1.84s, prepare 266ms)
+
+
+Exit code: 0

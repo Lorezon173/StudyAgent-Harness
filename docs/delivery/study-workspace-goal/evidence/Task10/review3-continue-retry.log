@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t retries a failed continue bridge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (206 tests | 205 skipped) 299ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 205 skipped (206)
+   Start at  18:58:41
+   Duration  5.41s (transform 672ms, setup 0ms, collect 2.28s, tests 299ms, environment 1.84s, prepare 245ms)
+
+EXIT_CODE=0

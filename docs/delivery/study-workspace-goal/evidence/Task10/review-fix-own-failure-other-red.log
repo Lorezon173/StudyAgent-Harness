@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send when another preparation appears after both own preparation writes fail
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (136 tests | 1 failed | 135 skipped) 190ms
+   × does not send when another preparation appears after both own preparation writes fail 188ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not send when another preparation appears after both own preparation writes fail
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:2023:67
+    2021|   expect(createLocalRecovery(localStorage, "other-tab").writePrepared(…
+    2022|   await act(async () => { pending.resolve(response(snapshot("A"))); });
+    2023|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+       |                                                                   ^
+    2024|   expect(workspaceStore.getSnapshot().buckets.A.recoveryError).toMatch…
+    2025| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 135 skipped (136)
+   Start at  17:19:27
+   Duration  5.41s (transform 575ms, setup 0ms, collect 2.15s, tests 190ms, environment 2.05s, prepare 254ms)
+
+
+Exit code: 1

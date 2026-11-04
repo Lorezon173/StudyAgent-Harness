@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps the cursor and messages when an older page conflicts
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (87 tests | 86 skipped) 312ms
+   ✓ keeps the cursor and messages when an older page conflicts by message id 311ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 86 skipped (87)
+   Start at  20:38:04
+   Duration  5.59s (transform 639ms, setup 0ms, collect 2.37s, tests 312ms, environment 1.92s, prepare 237ms)
+
+
+Exit code: 0

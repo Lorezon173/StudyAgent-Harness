@@ -1,0 +1,30 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (15 tests | 1 failed) 1413ms
+   ✓ persists an edited draft against the selected session's view version 533ms
+   × persists only an owned visible message as the reading anchor 26ms
+     → workspaceController.setAnchor is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > persists only an owned visible message as the reading anchor
+TypeError: workspaceController.setAnchor is not a function
+ ❯ src/pages/Chat.test.tsx:94:35
+
+ ❯ node_modules/@testing-library/react/dist/act-compat.js:47:24
+ ❯ act node_modules/react/cjs/react.development.js:2512:16
+ ❯ Proxy.<anonymous> node_modules/@testing-library/react/dist/act-compat.js:46:25
+ ❯ src/pages/Chat.test.tsx:94:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  18:44:43
+   Duration  6.09s (transform 322ms, setup 0ms, collect 1.84s, tests 1.41s, environment 1.82s, prepare 258ms)
+

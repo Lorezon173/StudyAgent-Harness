@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not overwrite a conflicting existing message
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (64 tests | 1 failed | 63 skipped) 229ms
+   × does not overwrite a conflicting existing message when confirming a completed turn 227ms
+     → expected '问题' to be '已有不同内容' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not overwrite a conflicting existing message when confirming a completed turn
+AssertionError: expected '问题' to be '已有不同内容' // Object.is equality
+
+Expected: "已有不同内容"
+Received: "问题"
+
+ ❯ src/pages/Chat.test.tsx:985:97
+    983|   await act(async () => { await workspaceController.loadSession("A"); …
+    984|   await act(async () => { page.resolve(response({ items: [user, answer…
+    985|   expect(workspaceStore.getSnapshot().buckets.A.messages.find(item => …
+       |                                                                                                 ^
+    986|   expect(workspaceStore.getSnapshot().buckets.A.requests.r1.associatio…
+    987| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 63 skipped (64)
+   Start at  18:51:40
+   Duration  5.61s (transform 567ms, setup 0ms, collect 2.53s, tests 229ms, environment 1.84s, prepare 247ms)
+
+
+Exit code: 1

@@ -23,10 +23,10 @@
   },
   "native_goal_started": true,
   "native_goal_thread_id": "01a16887-1abd-7d11-b366-330574fea82f",
-  "native_goal_status": "complete",
+  "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": null,
+  "current_task": "Task10",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -179,13 +179,17 @@
     },
     {
       "id": "Task10",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-summary.md",
+        "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-audit.md",
+        "docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-local-commit-manifest.json"
+      ],
+      "review": "A计划及产品OCR 46/46 PASS；设施v3 PASS；最终独立证据审计确认行为验收门槛通过，文档收口/明确本地提交待完成；source支持入口不可达N/A，保留原failed报告",
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "Task11",
@@ -194,8 +198,8 @@
       "evidence": [],
       "review": null,
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "Task12",
@@ -204,8 +208,8 @@
       "evidence": [],
       "review": null,
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "Task13",
@@ -214,8 +218,8 @@
       "evidence": [],
       "review": null,
       "blocked_reason": null,
-      "in_current_goal": false,
-      "deferred_reason": "SC-003：当前目标止于Task9，后续待另行要求"
+      "in_current_goal": true,
+      "deferred_reason": null
     },
     {
       "id": "TaskK0",
@@ -290,29 +294,30 @@
   "current_blocker": null,
   "consecutive_blocked_goal_turns": 0,
   "sdd_workspace": ".superpowers/sdd/2026-10-23-study-workspace-core",
-  "execution_mode": "task8_task9_authorized_workflow",
-  "round_execution_policy": "每轮plan→独立review plan PASS→执行；修复轮同样适用",
+  "execution_mode": "task10_task13_authorized_workflow",
+  "round_execution_policy": "每步三层计划→独立子代理计划审查PASS→编码→独立子代理代码审查→功能验收；修复轮同样适用",
   "current_round": {
-    "task": "Task9",
-    "round": "round2",
-    "plan": "docs/superpowers/plans/2026-10-27-task9-round2.md",
-    "plan_sha256": "6cdeea6e2ef12a33ae72a250a2a1cb053ff88d73c051b90f12c6009dc2edbf9d",
+    "task": "Task10",
+    "round": "A-acceptance-closeout",
+    "plan": "docs/superpowers/plans/2026-11-02-task10-goal-recovery-minimal.md",
+    "plan_version": "2026-11-03 A approved; 2026-11-04 acceptance checklist",
+    "plan_sha256": "4747f1329af80ab8b61daf34e34f39d9edc632a8f10af3a4c2f46da0f2b1c82f",
     "plan_review": "PASS",
-    "status": "DONE",
-    "planner": "task9_fix_plan",
-    "reviewer": "task9_fix_plan_review"
+    "status": "VERIFIED_UNCOMMITTED",
+    "planner": "a_completion_strategy",
+    "reviewer": "a_ocr_review"
   },
-  "next_step": "当前Goal已关闭；Task10及后续不自动开始，未推送或发布",
+  "next_step": "复核最终交付文档与精确清单，选择性暂存Task10并本地提交，记录真实SHA后再标Task10 DONE；随后开始Task11独立规划（尚未开始），Task13未完成，B仍独立候选",
   "scope_change": {
-    "id": "SC-003",
+    "id": "SC-004",
     "status": "APPROVED",
-    "reference": "用户：继续工作，目标：持续工作，直到完成task9",
-    "document": "docs/delivery/study-workspace-goal/scope-change-003-task9.md",
-    "stop_after": "Task9",
-    "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布",
-    "completion_status": "COMPLETE"
+    "reference": "本会话新原生Goal：继续工作，每一步都按照写plan、subagent plan review、编码、编码用subagent review、功能验收测试的顺序实现，完成到task13",
+    "document": "docs/delivery/study-workspace-goal/scope-change-004-task13.md",
+    "stop_after": "Task13",
+    "completion_requirement": "依序完成Task10–13，每步三层计划、独立子代理计划审查、编码、独立子代理代码审查、功能验收、README与明确文件提交；Task13真实模型、PostgreSQL重启和跨账号、浏览器真实验收。",
+    "completion_status": "IN_PROGRESS"
   },
-  "current_scope_complete": true,
+  "current_scope_complete": false,
   "automation_status": "deleted",
   "native_goal_accounting": {
     "tokens_used": 7088810,
@@ -345,6 +350,15 @@
       "stop_after": "Task9",
       "completion_requirement": "Task8及Task9实现、验证、独立审查、README和明确文件本地提交完成；不进入Task10、不发布",
       "completion_status": "COMPLETE"
+    },
+    {
+      "id": "SC-004",
+      "status": "APPROVED",
+      "reference": "本会话新原生Goal：继续工作，每一步都按照写plan、subagent plan review、编码、编码用subagent review、功能验收测试的顺序实现，完成到task13",
+      "document": "docs/delivery/study-workspace-goal/scope-change-004-task13.md",
+      "stop_after": "Task13",
+      "completion_requirement": "依序完成Task10–13，每步三层计划、独立子代理计划审查、编码、独立子代理代码审查、功能验收、README与明确文件提交；Task13真实模型、PostgreSQL重启和跨账号、浏览器真实验收。",
+      "completion_status": "IN_PROGRESS"
     }
   ],
   "previous_native_goal": {

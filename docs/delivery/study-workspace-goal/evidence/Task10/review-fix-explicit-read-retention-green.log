@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retains a known .* candidate when its explicit action cannot read storage|preserves a known preparation if storage becomes unreadable
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (141 tests | 137 skipped) 388ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 137 skipped (141)
+   Start at  17:23:10
+   Duration  5.68s (transform 567ms, setup 0ms, collect 2.10s, tests 388ms, environment 2.04s, prepare 299ms)
+
+
+Exit code: 0

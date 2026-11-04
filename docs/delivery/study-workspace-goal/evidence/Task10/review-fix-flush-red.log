@@ -1,0 +1,36 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves linked preparation identity during account transition
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (75 tests | 1 failed | 74 skipped) 239ms
+   × preserves linked preparation identity during account transition backup 237ms
+     → expected 'prepared' to be 'linked' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves linked preparation identity during account transition backup
+AssertionError: expected 'prepared' to be 'linked' // Object.is equality
+
+Expected: "linked"
+Received: "prepared"
+
+ ❯ src/pages/Chat.test.tsx:1235:23
+    1233|   act(() => { workspaceStore.prepareAccountTransition(workspaceStore.c…
+    1234|   const after = getLocalRecovery().list(1, "A", "prepared")[0];
+    1235|   expect(after.phase).toBe("linked");
+       |                       ^
+    1236|   expect(after.requestId).toBe(before.requestId);
+    1237|   await act(async () => { pending.resolve(response({}, 503)); });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 74 skipped (75)
+   Start at  20:26:37
+   Duration  5.51s (transform 601ms, setup 0ms, collect 2.44s, tests 239ms, environment 1.82s, prepare 249ms)
+
+
+Exit code: 1

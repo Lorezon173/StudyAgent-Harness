@@ -1,0 +1,43 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not offer an original-id retry while other request copies are unreadable
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (176 tests | 1 failed | 175 skipped) 256ms
+   × does not offer an original-id retry while other request copies are unreadable 254ms
+     → expected <button type="button"></button> to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not offer an original-id retry while other request copies are unreadable
+AssertionError: expected <button type="button"></button> to be null
+
+- Expected: 
+null
+
++ Received: 
+<button
+  type="button"
+>
+  按原请求重试
+</button>
+
+ ❯ src/pages/Chat.test.tsx:1897:60
+    1895|   mount("/chat/A"); await screen.findByText("旧原文"); fireEvent.click…
+    1896|   await waitFor(() => expect(fetcher.mock.calls.some(([url]) => String…
+    1897|   expect(screen.queryByRole("button", { name: "按原请求重试" })).toBeN…
+       |                                                            ^
+    1898|   expect(workspaceStore.getSnapshot().buckets.A.resendableRequests).no…
+    1899|   expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 175 skipped (176)
+   Start at  18:19:28
+   Duration  5.42s (transform 655ms, setup 0ms, collect 2.22s, tests 256ms, environment 1.89s, prepare 268ms)
+
+
+Exit code: 1

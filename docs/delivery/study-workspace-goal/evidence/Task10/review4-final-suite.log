@@ -1,0 +1,52 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/api/client.test.ts (12 tests) 23ms
+ ✓ src/store/workspace.test.ts (11 tests) 24ms
+ ✓ src/api/workspace.test.ts (6 tests) 201ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 26ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 35ms
+ ✓ src/store/auth.test.tsx (11 tests) 124ms
+ ❯ src/pages/Login.test.tsx (14 tests | 1 failed) 650ms
+   × preserves a retry's error when an invalidated submission finishes later 39ms
+     → expected '/login' to be '/chat' // Object.is equality
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 444ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 314ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 831ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (12 tests) 864ms
+ ✓ src/pages/Chat.test.tsx (229 tests) 19020ms
+   ✓ persists an edited draft against the selected session's view version 529ms
+   ✓ offers to retry a draft save after a server failure 586ms
+   ✓ persists only an owned visible message as the reading anchor 1027ms
+   ✓ records the message actually visible when the reader scrolls 1031ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 549ms
+   ✓ polls a running request recovered in a session snapshot 3082ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Login.test.tsx > preserves a retry's error when an invalidated submission finishes later
+AssertionError: expected '/login' to be '/chat' // Object.is equality
+
+Expected: "/chat"
+Received: "/login"
+
+ ❯ src/pages/Login.test.tsx:92:54
+     90|   expect(screen.getByRole("alert").textContent).toBe("当前重试失败"); …
+     91|   submit(); await waitFor(() => expect(screen.getByTestId("auth").text…
+     92|   expect(screen.getByTestId("location").textContent).toBe("/chat"); ex…
+       |                                                      ^
+     93| });
+     94| it("keeps the active submission locked across same-generation workspac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 10 passed (11)
+      Tests  1 failed | 318 passed (319)
+   Start at  19:18:25
+   Duration  25.75s (transform 2.03s, setup 0ms, collect 14.32s, tests 22.24s, environment 25.66s, prepare 5.16s)
+
+EXIT_CODE=1

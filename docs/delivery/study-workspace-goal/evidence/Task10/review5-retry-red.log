@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not retry when a fresh snapshot contains a foreign pending request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (249 tests | 1 failed | 248 skipped) 192ms
+   × does not retry when a fresh snapshot contains a foreign pending request 189ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not retry when a fresh snapshot contains a foreign pending request
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:3613:124
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 248 skipped (249)
+   Start at  19:42:01
+   Duration  5.59s (transform 752ms, setup 0ms, collect 2.43s, tests 192ms, environment 1.89s, prepare 255ms)
+
+EXIT_CODE=1

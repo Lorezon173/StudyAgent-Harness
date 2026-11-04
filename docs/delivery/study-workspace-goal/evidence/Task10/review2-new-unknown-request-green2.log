@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send when another writer adds an unknown request during preparation|does not retain matched in-memory work after|retires matched in-memory work with unreadable recovery storage|warns and keeps sending when the
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (193 tests | 178 skipped) 983ms
+
+ Test Files  1 passed (1)
+      Tests  15 passed | 178 skipped (193)
+   Start at  18:38:00
+   Duration  6.49s (transform 753ms, setup 0ms, collect 2.50s, tests 983ms, environment 1.96s, prepare 262ms)
+
+
+Exit code: 0

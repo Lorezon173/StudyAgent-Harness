@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t two different recovered requests associate independently
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (264 tests | 263 skipped) 417ms
+   ✓ two different recovered requests associate independently without replacing the active request 415ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 263 skipped (264)
+   Start at  19:58:35
+   Duration  5.70s (transform 744ms, setup 0ms, collect 2.39s, tests 417ms, environment 1.86s, prepare 271ms)
+
+EXIT_CODE=0

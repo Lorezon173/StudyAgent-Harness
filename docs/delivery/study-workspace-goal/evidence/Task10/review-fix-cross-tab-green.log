@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t warns before copying an unknown preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (72 tests | 71 skipped) 292ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 71 skipped (72)
+   Start at  20:24:16
+   Duration  5.67s (transform 613ms, setup 0ms, collect 2.53s, tests 292ms, environment 1.86s, prepare 244ms)
+
+
+Exit code: 0

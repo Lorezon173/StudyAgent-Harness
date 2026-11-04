@@ -1,0 +1,58 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t retires matched in-memory work while retaining a warning
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (158 tests | 1 failed | 157 skipped) 197ms
+   × retires matched in-memory work while retaining a warning when recovery storage becomes unreadable 195ms
+     → expected { payload: { …(5) }, …(1) } to be undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > retires matched in-memory work while retaining a warning when recovery storage becomes unreadable
+AssertionError: expected { payload: { …(5) }, …(1) } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+Object {
+  "baseline": Object {
+    "active_node_id": null,
+    "base_state_version": 0,
+    "expected_turn_index": 0,
+    "owner_user_id": 1,
+    "profile_id": "p1",
+    "provenance": "before_submit",
+    "request_id": "213f1c17-854e-451d-9920-01b7ace7d6a7",
+    "session_id": "A",
+    "snapshot_sequence": 1,
+  },
+  "payload": Object {
+    "expected_state_version": 0,
+    "message": "已保存问题",
+    "profile_id": "p1",
+    "request_id": "213f1c17-854e-451d-9920-01b7ace7d6a7",
+    "session_id": "A",
+  },
+}
+
+ ❯ src/pages/Chat.test.tsx:1694:43
+    1692|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    1693|   const bucket = workspaceStore.getSnapshot().buckets.A;
+    1694|   expect(bucket.localRequests[requestId]).toBeUndefined();
+       |                                           ^
+    1695|   expect(Object.values(bucket.prepared).some(item => item.requestId ==…
+    1696|   expect(screen.getByText(/本机副本状态无法确认/)).toBeTruthy();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 157 skipped (158)
+   Start at  17:57:09
+   Duration  5.16s (transform 587ms, setup 0ms, collect 2.13s, tests 197ms, environment 1.79s, prepare 253ms)
+
+
+Exit code: 1

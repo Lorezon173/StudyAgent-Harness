@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t continues explicitly after matching the only surviving linked copy with|revokes linked confirmation if another writer adds an unknown request|does not send when another writer adds an unknown request during preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (194 tests | 190 skipped) 489ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 190 skipped (194)
+   Start at  18:39:42
+   Duration  5.82s (transform 712ms, setup 0ms, collect 2.30s, tests 489ms, environment 1.92s, prepare 256ms)
+
+
+Exit code: 0

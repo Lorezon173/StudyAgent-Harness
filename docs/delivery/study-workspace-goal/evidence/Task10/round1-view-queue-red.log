@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (12 tests | 1 failed) 1330ms
+   ✓ persists an edited draft against the selected session's view version 533ms
+   × serializes an edit made during a view save without sending the same new version twice 54ms
+     → expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > serializes an edit made during a view save without sending the same new version twice
+AssertionError: expected [ [ …(2) ], [ …(2) ] ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/pages/Chat.test.tsx:102:18
+    100|   await waitFor(() => expect(fetcher.mock.calls.some(([url, init]) => …
+    101|   const writes = fetcher.mock.calls.filter(([url, init]) => String(url…
+    102|   expect(writes).toHaveLength(1); expect(JSON.parse(String(writes[0][1…
+       |                  ^
+    103| });
+    104| it("sends the selected session id and fixed request id instead of gene…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  18:35:52
+   Duration  5.94s (transform 304ms, setup 0ms, collect 1.81s, tests 1.33s, environment 1.81s, prepare 245ms)
+

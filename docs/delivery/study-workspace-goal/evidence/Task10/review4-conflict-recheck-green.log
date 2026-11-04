@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t equal-version teaching conflict|keeps session and teaching versions together after a newer activity check
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (225 tests | 220 skipped) 482ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 220 skipped (225)
+   Start at  19:14:39
+   Duration  5.91s (transform 806ms, setup 0ms, collect 2.51s, tests 482ms, environment 1.88s, prepare 249ms)
+
+EXIT_CODE=0

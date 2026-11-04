@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not let an older normal load
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (79 tests | 1 failed | 78 skipped) 207ms
+   × does not let an older normal load replace a newer activity recheck 206ms
+     → expected 'old-running' to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not let an older normal load replace a newer activity recheck
+AssertionError: expected 'old-running' to be null
+
+- Expected: 
+null
+
++ Received: 
+"old-running"
+
+ ❯ src/pages/Chat.test.tsx:1299:77
+    1297|   await act(async () => { await workspaceController.recheckSessionActi…
+    1298|   await act(async () => { old.resolve(response({ ...snapshot("A"), ses…
+    1299|   expect(workspaceStore.getSnapshot().buckets.A.session?.active_reques…
+       |                                                                             ^
+    1300|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).toBe("cl…
+    1301| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 78 skipped (79)
+   Start at  20:30:02
+   Duration  5.58s (transform 612ms, setup 0ms, collect 2.31s, tests 207ms, environment 1.90s, prepare 313ms)
+
+
+Exit code: 1

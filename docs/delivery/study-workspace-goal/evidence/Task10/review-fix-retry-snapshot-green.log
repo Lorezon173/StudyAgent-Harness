@@ -1,0 +1,17 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retry a failed request after a newer activity observation|offers the original question for a new send when retry context is stale|shows a completed retried request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (110 tests | 107 skipped) 489ms
+   ✓ offers the original question for a new send when retry context is stale 324ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 107 skipped (110)
+   Start at  17:01:54
+   Duration  6.25s (transform 544ms, setup 0ms, collect 2.20s, tests 489ms, environment 2.09s, prepare 409ms)
+
+
+Exit code: 0

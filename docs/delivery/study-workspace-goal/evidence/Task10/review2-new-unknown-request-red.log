@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not send when another writer adds an unknown request during preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (193 tests | 1 failed | 192 skipped) 237ms
+   × does not send when another writer adds an unknown request during preparation 235ms
+     → expected [ [ '/api/chat', …(1) ] ] to have a length of +0 but got 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not send when another writer adds an unknown request during preparation
+AssertionError: expected [ [ '/api/chat', …(1) ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/pages/Chat.test.tsx:2100:69
+    2098|   expect(createLocalRecovery(localStorage, "other-writer").writeReques…
+    2099|   await act(async () => { pending.resolve(response(snapshot("A"))); });
+    2100|   expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).to…
+       |                                                                     ^
+    2101|   expect(workspaceStore.getSnapshot().buckets.A.requestCandidates.some…
+    2102| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 192 skipped (193)
+   Start at  18:36:50
+   Duration  5.61s (transform 732ms, setup 0ms, collect 2.45s, tests 237ms, environment 1.88s, prepare 254ms)
+
+
+Exit code: 1

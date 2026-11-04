@@ -1,0 +1,35 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t keeps a newer activity observation while reporting a still-current continue history failure
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (230 tests | 1 failed | 229 skipped) 337ms
+   × keeps a newer activity observation while reporting a still-current continue history failure 335ms
+     → expected '历史消息同步失败，请重试' to be '已有请求提示' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > keeps a newer activity observation while reporting a still-current continue history failure
+AssertionError: expected '历史消息同步失败，请重试' to be '已有请求提示' // Object.is equality
+
+Expected: "已有请求提示"
+Received: "历史消息同步失败，请重试"
+
+ ❯ src/pages/Chat.test.tsx:3498:31
+    3496|   await screen.findByRole("button", { name: "重新同步历史" });
+    3497|   const state = workspaceStore.getSnapshot().buckets.A;
+    3498|   expect(state.request.error).toBe("已有请求提示"); expect(state.profi…
+       |                               ^
+    3499|   expect(state.pendingRequests.some(item => item.request_id === "other…
+    3500|   expect(state.historySyncError).toBeTruthy(); expect(state.nextMessag…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 229 skipped (230)
+   Start at  19:31:53
+   Duration  5.75s (transform 720ms, setup 0ms, collect 2.31s, tests 337ms, environment 2.06s, prepare 282ms)
+
+EXIT_CODE=1

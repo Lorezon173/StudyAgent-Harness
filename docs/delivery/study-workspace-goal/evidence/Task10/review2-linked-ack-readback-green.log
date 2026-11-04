@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t continues explicitly after matching the only surviving linked copy with|revokes linked confirmation if another writer adds an unknown request|does not send when another writer adds an unknown request during preparation
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (194 tests | 1 failed | 190 skipped) 550ms
+   ✓ continues explicitly after matching the only surviving linked copy with normal 329ms
+   × revokes linked confirmation if another writer adds an unknown request before sending 83ms
+     → expected [ Array(1) ] to not include '3c5bd41f-d4e3-444f-a0c8-2e17927de050'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > revokes linked confirmation if another writer adds an unknown request before sending
+AssertionError: expected [ Array(1) ] to not include '3c5bd41f-d4e3-444f-a0c8-2e17927de050'
+ ❯ src/pages/Chat.test.tsx:2087:79
+    2085|   fireEvent.change(screen.getByPlaceholderText("输入学习问题…"), { tar…
+    2086|   expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).to…
+    2087|   expect(workspaceStore.getSnapshot().buckets.A.acknowledgedPreparatio…
+       |                                                                               ^
+    2088|   expect(workspaceStore.getSnapshot().buckets.A.requestCandidates.some…
+    2089| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed | 190 skipped (194)
+   Start at  18:39:10
+   Duration  5.77s (transform 720ms, setup 0ms, collect 2.41s, tests 550ms, environment 1.81s, prepare 251ms)
+
+
+Exit code: 1

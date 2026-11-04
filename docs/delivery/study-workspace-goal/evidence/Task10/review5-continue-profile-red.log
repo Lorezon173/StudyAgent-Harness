@@ -1,0 +1,30 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not continue or mix a p2 snapshot into a p1 unassociated request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (243 tests | 1 failed | 242 skipped) 249ms
+   × does not continue or mix a p2 snapshot into a p1 unassociated request 247ms
+     → expected 'p2' to be 'p1' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not continue or mix a p2 snapshot into a p1 unassociated request
+AssertionError: expected 'p2' to be 'p1' // Object.is equality
+
+Expected: "p1"
+Received: "p2"
+
+ ❯ src/pages/Chat.test.tsx:3587:83
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 242 skipped (243)
+   Start at  19:37:40
+   Duration  5.72s (transform 803ms, setup 0ms, collect 2.45s, tests 249ms, environment 2.02s, prepare 241ms)
+
+EXIT_CODE=1

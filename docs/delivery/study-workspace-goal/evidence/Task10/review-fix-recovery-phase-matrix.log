@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t recovers conservatively after restart with only
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (129 tests | 126 skipped) 306ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 126 skipped (129)
+   Start at  17:16:29
+   Duration  5.48s (transform 559ms, setup 0ms, collect 2.05s, tests 306ms, environment 1.90s, prepare 317ms)
+
+
+Exit code: 0

@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not continue an old request across
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (82 tests | 1 failed | 81 skipped) 208ms
+   × does not continue an old request across a newer activity lock 206ms
+     → expected 1 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not continue an old request across a newer activity lock
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/pages/Chat.test.tsx:1364:73
+    1362|   await act(async () => { await workspaceController.loadSession("A"); …
+    1363|   await act(async () => { delayed.resolve(response({ ...snapshot("A"),…
+    1364|   expect(workspaceStore.getSnapshot().buckets.A.session?.state_version…
+       |                                                                         ^
+    1365|   expect(workspaceStore.getSnapshot().buckets.A.teachingStateVersion).…
+    1366| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 81 skipped (82)
+   Start at  20:32:42
+   Duration  5.31s (transform 615ms, setup 0ms, collect 2.31s, tests 208ms, environment 1.81s, prepare 237ms)
+
+
+Exit code: 1

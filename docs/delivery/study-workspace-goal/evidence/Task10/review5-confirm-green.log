@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not associate or erase a p1 request from a p2 confirmation snapshot|does not send a loaded p1 conversation using a p2 preparation snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (241 tests | 239 skipped) 244ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 239 skipped (241)
+   Start at  19:36:10
+   Duration  5.50s (transform 733ms, setup 0ms, collect 2.32s, tests 244ms, environment 1.87s, prepare 242ms)
+
+EXIT_CODE=0

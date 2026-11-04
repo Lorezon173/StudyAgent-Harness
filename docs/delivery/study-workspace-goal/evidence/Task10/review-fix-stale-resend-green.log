@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not report a stale original-request lookup
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (108 tests | 107 skipped) 155ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 107 skipped (108)
+   Start at  16:54:13
+   Duration  5.02s (transform 513ms, setup 0ms, collect 2.06s, tests 155ms, environment 1.83s, prepare 241ms)
+
+
+Exit code: 0

@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not accept a request lookup after its saved candidate changes|retries a linked preparation using its original|offers to recheck an unknown request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (113 tests | 110 skipped) 344ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 110 skipped (113)
+   Start at  17:05:34
+   Duration  5.31s (transform 515ms, setup 0ms, collect 1.99s, tests 344ms, environment 1.83s, prepare 289ms)
+
+
+Exit code: 0

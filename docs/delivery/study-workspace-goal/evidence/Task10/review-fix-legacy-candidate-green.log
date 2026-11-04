@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not accept a legacy request lookup|queries a legacy prepared id
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (117 tests | 115 skipped) 248ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 115 skipped (117)
+   Start at  17:10:45
+   Duration  5.13s (transform 533ms, setup 0ms, collect 2.02s, tests 248ms, environment 1.82s, prepare 253ms)
+
+
+Exit code: 0

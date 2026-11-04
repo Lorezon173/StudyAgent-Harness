@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not let an older normal load
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (79 tests | 78 skipped) 188ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 78 skipped (79)
+   Start at  20:30:31
+   Duration  5.33s (transform 620ms, setup 0ms, collect 2.36s, tests 188ms, environment 1.80s, prepare 238ms)
+
+
+Exit code: 0

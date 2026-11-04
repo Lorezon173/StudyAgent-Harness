@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t preserves a known preparation if storage becomes unreadable
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (138 tests | 1 failed | 137 skipped) 254ms
+   × preserves a known preparation if storage becomes unreadable during send 252ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > preserves a known preparation if storage becomes unreadable during send
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Chat.test.tsx:1309:107
+    1307|   fireEvent.submit(screen.getByPlaceholderText("输入学习问题…").closes…
+    1308|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+    1309|   expect(workspaceStore.getSnapshot().buckets.A.preparedCandidates.som…
+       |                                                                                                           ^
+    1310|   expect(workspaceStore.getSnapshot().buckets.A.acknowledgedPreparatio…
+    1311| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 137 skipped (138)
+   Start at  17:21:26
+   Duration  5.32s (transform 577ms, setup 0ms, collect 2.12s, tests 254ms, environment 1.84s, prepare 252ms)
+
+
+Exit code: 1

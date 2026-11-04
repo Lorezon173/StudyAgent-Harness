@@ -1,0 +1,6 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+src/store/workspaceController.ts(123,135): error TS2345: Argument of type 'AuthTicket' is not assignable to parameter of type 'AsyncTicket'.
+  Type 'AuthTicket' is missing the following properties from type 'AsyncTicket': kind, sequence, requestCursor

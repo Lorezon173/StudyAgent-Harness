@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiPost, ApiError } from "../api/client";
 import { useAuth } from "../store/auth";
 import { AuthResponse } from "../types";
@@ -13,6 +13,7 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const alive = useRef(false); const mountEpoch = useRef(0); const submitSequence = useRef(0); const busyRef = useRef(false);
   useLayoutEffect(() => {
     const mount = ++mountEpoch.current; alive.current = true;
@@ -41,7 +42,7 @@ export default function Login() {
       if (!current()) return;
       // 自有 login 会换代；先结束本次忙状态，再同步 login → navigate。
       setError(""); busyRef.current = false; setBusy(false);
-      login(resp.user_id, resp.username, resp.token ?? undefined);
+      if (!login(resp.user_id, resp.username, resp.token ?? undefined)) { setError("本机草稿备份失败，请重试"); return; }
       navigate("/chat");
     } catch (err) {
       if (current()) setError(err instanceof ApiError ? err.message : "请求失败");
@@ -53,6 +54,7 @@ export default function Login() {
   return (
     <main className="login-page"><section className="login-card">
       <div className="study-brand"><span className="brand-mark" aria-hidden="true">学</span><h1>StudyAgent</h1></div><p className="form-intro">登录你的学习书房</p>
+      {(workspaceStore.recoveryWarning() || new URLSearchParams(location.search).get("localRecovery") === "failed") && <p role="alert" className="form-error">本机恢复副本未保存，未确认内容可能丢失</p>}
       <div className="login-modes">
         <button type="button" onClick={() => { setMode("login"); setError(""); }} disabled={busy || mode === "login"}>登录</button>
         <button type="button" onClick={() => { setMode("register"); setError(""); }} disabled={busy || mode === "register"}>注册</button>

@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t does not send a loaded p1 conversation using a p2 preparation snapshot
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (240 tests | 1 failed | 239 skipped) 226ms
+   × does not send a loaded p1 conversation using a p2 preparation snapshot 223ms
+     → expected [ [ '/api/chat', …(1) ] ] to have a length of +0 but got 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not send a loaded p1 conversation using a p2 preparation snapshot
+AssertionError: expected [ [ '/api/chat', …(1) ] ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/pages/Chat.test.tsx:3551:69
+    3549|   await waitFor(() => expect(count).toBe(2));
+    3550|   await waitFor(() => expect(workspaceStore.getSnapshot().buckets.A.re…
+    3551|   expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).to…
+       |                                                                     ^
+    3552|   expect(workspaceStore.getSnapshot().buckets.A.activityGate).not.toBe…
+    3553| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 239 skipped (240)
+   Start at  19:34:50
+   Duration  5.53s (transform 747ms, setup 0ms, collect 2.43s, tests 226ms, environment 1.85s, prepare 258ms)
+
+EXIT_CODE=1

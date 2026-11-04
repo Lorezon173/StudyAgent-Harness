@@ -1,0 +1,39 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not resend when its saved request candidate changes
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (114 tests | 1 failed | 113 skipped) 259ms
+   × does not resend when its saved request candidate changes during the snapshot 257ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > does not resend when its saved request candidate changes during the snapshot
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/pages/Chat.test.tsx:1738:67
+    1736|   expect(recovery.writeRequest(1, "A", "old", { payload: { ...payload,…
+    1737|   await act(async () => { pending.resolve(response(snapshot("A"))); aw…
+    1738|   expect(fetcher.mock.calls.some(([url]) => url === "/api/chat")).toBe…
+       |                                                                   ^
+    1739|   expect(workspaceStore.getSnapshot().buckets.A.recoveryError).toMatch…
+    1740| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 113 skipped (114)
+   Start at  17:06:01
+   Duration  5.14s (transform 516ms, setup 0ms, collect 2.03s, tests 259ms, environment 1.83s, prepare 247ms)
+
+
+Exit code: 1

@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/pages/Chat.test.tsx -t restores the local reading anchor
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Chat.test.tsx (50 tests | 1 failed | 49 skipped) 331ms
+   × restores the local reading anchor together with the selected draft 330ms
+     → expected null to deeply equal { message_id: 1, offset_ratio: 0.4 }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Chat.test.tsx > restores the local reading anchor together with the selected draft
+AssertionError: expected null to deeply equal { message_id: 1, offset_ratio: 0.4 }
+
+- Expected: 
+Object {
+  "message_id": 1,
+  "offset_ratio": 0.4,
+}
+
++ Received: 
+null
+
+ ❯ src/pages/Chat.test.tsx:579:64
+    577|   installTransport(); mount("/chat/A"); await screen.findByText("历史A…
+    578|   fireEvent.click(await screen.findByRole("button", { name: "恢复本机…
+    579|   expect(workspaceStore.getSnapshot().buckets.A.readingAnchor).toEqual…
+       |                                                                ^
+    580| });
+    581| it("warns when local recovery storage cannot be read", async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 49 skipped (50)
+   Start at  12:49:17
+   Duration  5.54s (transform 525ms, setup 0ms, collect 2.39s, tests 331ms, environment 1.81s, prepare 263ms)
+

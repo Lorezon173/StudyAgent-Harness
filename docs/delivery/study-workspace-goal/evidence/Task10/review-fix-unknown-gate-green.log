@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t blocks a new question while an unrelated local request
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (89 tests | 88 skipped) 175ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 88 skipped (89)
+   Start at  20:39:50
+   Duration  5.37s (transform 609ms, setup 0ms, collect 2.34s, tests 175ms, environment 1.84s, prepare 262ms)
+
+
+Exit code: 0

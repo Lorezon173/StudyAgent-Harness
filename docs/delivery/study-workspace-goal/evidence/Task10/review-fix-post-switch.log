@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t keeps an already submitted response in its original session
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (122 tests | 121 skipped) 288ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 121 skipped (122)
+   Start at  17:15:12
+   Duration  5.47s (transform 571ms, setup 0ms, collect 2.12s, tests 288ms, environment 1.83s, prepare 310ms)
+
+
+Exit code: 0

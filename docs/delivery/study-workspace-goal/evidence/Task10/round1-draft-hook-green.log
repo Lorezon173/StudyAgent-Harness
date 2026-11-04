@@ -1,0 +1,18 @@
+
+> studyagent-web@0.1.0 test
+> vitest run --run src/hooks/useDraftPersistence.test.tsx src/pages/Chat.test.tsx
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 29ms
+ ✓ src/pages/Chat.test.tsx (19 tests) 3612ms
+   ✓ persists an edited draft against the selected session's view version 529ms
+   ✓ persists only an owned visible message as the reading anchor 1034ms
+   ✓ records the message actually visible when the reader scrolls 1032ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  18:52:09
+   Duration  8.60s (transform 450ms, setup 0ms, collect 2.85s, tests 3.64s, environment 4.23s, prepare 570ms)
+

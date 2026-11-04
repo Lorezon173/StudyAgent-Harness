@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t does not retain a memory-only request as unresolved|removes only this page.s linked copy|continues explicitly after matching the only surviving linked copy
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (157 tests | 154 skipped) 412ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 154 skipped (157)
+   Start at  17:56:29
+   Duration  5.55s (transform 615ms, setup 0ms, collect 2.24s, tests 412ms, environment 1.88s, prepare 248ms)
+
+
+Exit code: 0

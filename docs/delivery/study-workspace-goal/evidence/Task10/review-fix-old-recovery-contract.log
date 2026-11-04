@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Chat -t offers a risk-aware copy|clears this tab.s prepared record
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Chat.test.tsx (109 tests | 107 skipped) 266ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 107 skipped (109)
+   Start at  16:59:58
+   Duration  5.11s (transform 509ms, setup 0ms, collect 2.03s, tests 266ms, environment 1.81s, prepare 244ms)
+
+
+Exit code: 0
