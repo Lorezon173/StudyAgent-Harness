@@ -196,8 +196,14 @@
       "id": "Task11",
       "status": "IN_PROGRESS",
       "commit": null,
-      "evidence": [],
-      "review": null,
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md",
+        "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-audit.md",
+        "docs/delivery/study-workspace-goal/evidence/Task11/round1-plan-review.md",
+        "docs/delivery/study-workspace-goal/evidence/Task11/round1-code-review-v2.md",
+        "docs/delivery/study-workspace-goal/evidence/Task11/local-commit-manifest.json"
+      ],
+      "review": "原计划独审PASS；产品测试12/12 OCR v2 PASS，M1已修复；399项/build通过；核心真实HTTP/浏览器/两轮模型来源已核，接受明确有限覆盖；文档快审与本地提交待执行",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
@@ -298,17 +304,19 @@
   "execution_mode": "task10_task13_authorized_workflow",
   "round_execution_policy": "每步三层计划→独立子代理计划审查PASS→编码→独立子代理代码审查→功能验收；修复轮同样适用",
   "current_round": {
-    "task": "Task10",
-    "round": "A-acceptance-closeout",
-    "plan": "docs/superpowers/plans/2026-11-02-task10-goal-recovery-minimal.md",
-    "plan_version": "2026-11-03 A approved; 2026-11-04 acceptance checklist",
-    "plan_sha256": "4747f1329af80ab8b61daf34e34f39d9edc632a8f10af3a4c2f46da0f2b1c82f",
-    "plan_review": "PASS",
-    "status": "DONE",
-    "planner": "a_completion_strategy",
-    "reviewer": "a_ocr_review"
+    "task": "Task11",
+    "round": "acceptance-closeout",
+    "plan": "docs/superpowers/plans/2026-11-04-task11-round1.md",
+    "plan_version": "2026-11-04 execution checklist; original reviewed SHA retained",
+    "plan_sha256": "1f033df2f6549f42152dc7d9473d2fe2669c39bafaa337853a650894875bf525",
+    "original_reviewed_plan_sha256": "08087c333bd805c2a50035123980d8955a637bb0e94b3cfbc67ace73fbb37916",
+    "raw_sha256": "92432d1711a1202342343b190b0331d3450881536958bdea4961a03d88ad7ed3",
+    "plan_review": "PASS (original design)",
+    "status": "VERIFIED_UNCOMMITTED",
+    "planner": "task11 round1",
+    "reviewer": "round1-code-review-v2 / acceptance-audit"
   },
-  "next_step": "Task10已完成并记录真实本地提交4fff6e1；Task11独立三层规划进行中，待计划审查和用户既有规划确认要求满足后才编码；Task12/13 PENDING，SC-004整体未完成，B仍独立候选",
+  "next_step": "Task11核心验收与文档准备完成；先独立文档快审，再按精确manifest与README专用patch本地提交，核真实SHA/范围后裁决DONE；Task12仅待后续三层规划，Task13未做，B仍独立候选",
   "scope_change": {
     "id": "SC-004",
     "status": "APPROVED",

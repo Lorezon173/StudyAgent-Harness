@@ -1,0 +1,50 @@
+[
+  {
+    "dialog": {
+      "bottom": 830.3542098999023,
+      "left": 400,
+      "right": 1040,
+      "top": 69.64583587646484
+    },
+    "documentWidth": 1440,
+    "focused": "关闭",
+    "height": 900,
+    "width": 1440
+  },
+  {
+    "dialog": {
+      "bottom": 830.3542098999023,
+      "left": 17,
+      "right": 464.3333435058594,
+      "top": 69.64583587646484
+    },
+    "documentWidth": 481,
+    "focused": "关闭",
+    "height": 900,
+    "width": 481
+  },
+  {
+    "dialog": {
+      "bottom": 802.3542098999023,
+      "left": 17,
+      "right": 373,
+      "top": 41.64583587646485
+    },
+    "documentWidth": 390,
+    "focused": "关闭",
+    "height": 844,
+    "width": 390
+  },
+  {
+    "dialog": {
+      "bottom": 434,
+      "left": 400,
+      "right": 1040,
+      "top": 16
+    },
+    "documentWidth": 1440,
+    "focused": "关闭",
+    "height": 450,
+    "width": 1440
+  }
+]

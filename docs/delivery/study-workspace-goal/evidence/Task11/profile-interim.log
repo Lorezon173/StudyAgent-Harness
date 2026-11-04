@@ -1,0 +1,18 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Profile ProfileSummaryCard
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+stderr | src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Profile.test.tsx (2 tests) 206ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  11:32:00
+   Duration  3.38s (transform 239ms, setup 0ms, collect 961ms, tests 206ms, environment 1.37s, prepare 168ms)
+

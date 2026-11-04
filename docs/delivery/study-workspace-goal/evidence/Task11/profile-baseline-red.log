@@ -1,0 +1,1435 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Profile
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/components/profile/ProfileSummaryCard.test.tsx (1 test) 26ms
+stderr | src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ❯ src/pages/Profile.test.tsx (7 tests | 7 failed) 7153ms
+   × renders a verified profile and its real assessed summary 1049ms
+     → Unable to find an element with the text: 物理. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × retries mismatched revisions and keeps the previous matching pair when both retries mismatch 1020ms
+     → Unable to find an element with the text: /80%/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × resolves the most recent session read-only and links evidence to its real session 1015ms
+     → Unable to find an element with the text: /当前知识点：力学/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × rejects a session linked to another profile without showing either profile as a successful result 1016ms
+     → Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × ignores an older profile response after selecting another profile 1019ms
+     → Unable to find role="option" and name "化学"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × loads additional profile options and opens one without issuing writes 1017ms
+     → Unable to find a label with the text of: 画像摘要
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × does not display a previous account late response after account transition 1017ms
+     → Unable to find role="option" and name "物理"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+TestingLibraryElementError: Unable to find an element with the text: 物理. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:15:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > retries mismatched revisions and keeps the previous matching pair when both retries mismatch
+TestingLibraryElementError: Unable to find an element with the text: /80%/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:28:24
+     26|   const { fireEvent } = await import('@testing-library/react');
+     27|   render(<AuthProvider><MemoryRouter initialEntries={['/profile?profil…
+     28|   expect((await screen.findAllByText(/80%/)).length).toBeGreaterThan(0…
+       |                        ^
+     29|   expect(summaryCalls).toBe(2);
+     30|   // Trigger a same-target reload through a failed first request on th…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > resolves the most recent session read-only and links evidence to its real session
+TestingLibraryElementError: Unable to find an element with the text: /当前知识点：力学/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:44:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > rejects a session linked to another profile without showing either profile as a successful result
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:55:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > ignores an older profile response after selecting another profile
+TestingLibraryElementError: Unable to find role="option" and name "化学"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:65:16
+     63|   const { fireEvent, act } = await import('@testing-library/react');
+     64|   render(<AuthProvider><MemoryRouter initialEntries={['/profile?profil…
+     65|   await screen.findByRole('option', { name: '化学' }); fireEvent.chang…
+       |                ^
+     66|   expect((await screen.findByLabelText('画像摘要')).textContent).toCon…
+     67|   await act(async () => slow.resolve(response({ profile: p1, profile_r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > loads additional profile options and opens one without issuing writes
+TestingLibraryElementError: Unable to find a label with the text of: 画像摘要
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:77:16
+     75|   const { fireEvent } = await import('@testing-library/react');
+     76|   render(<AuthProvider><MemoryRouter initialEntries={['/profile?profil…
+     77|   await screen.findByLabelText('画像摘要'); fireEvent.click(screen.get…
+       |                ^
+     78|   await screen.findByRole('option', { name: '化学' }); fireEvent.chang…
+     79|   expect((await screen.findByLabelText('画像摘要')).textContent).toCon…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  src/pages/Profile.test.tsx > does not display a previous account late response after account transition
+TestingLibraryElementError: Unable to find role="option" and name "物理"
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:89:16
+     87|   const { act } = await import('@testing-library/react');
+     88|   render(<AuthProvider><MemoryRouter initialEntries={['/profile?profil…
+     89|   await screen.findByRole('option', { name: '物理' });
+       |                ^
+     90|   await act(async () => { workspaceStore.startAccount(2, 'B'); slow.re…
+     91|   expect(screen.queryByLabelText('画像摘要')).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  7 failed | 1 passed (8)
+   Start at  11:35:25
+   Duration  10.11s (transform 194ms, setup 0ms, collect 1.07s, tests 7.18s, environment 3.17s, prepare 409ms)
+
+exit_code=1

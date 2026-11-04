@@ -1,0 +1,18 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/pages/Knowledge.test.tsx (17 tests) 1433ms
+   ✓ paginates by the lowest id and restarts at the first page for a new search 307ms
+   ✓ keeps failed search retry intact until the new result can be paginated 346ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  11:50:26
+   Duration  4.61s (transform 178ms, setup 0ms, collect 768ms, tests 1.43s, environment 1.57s, prepare 163ms)
+
+
+exit_code=0

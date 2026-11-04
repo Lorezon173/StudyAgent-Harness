@@ -1,0 +1,478 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Knowledge.test.tsx (5 tests | 1 failed) 1476ms
+   × marks list refresh failure separately after a confirmed create 1061ms
+     → Unable to find an element with the text: /已保存，列表刷新失败/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"paper-page"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"paper-heading"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"eyebrow"[39m
+          [36m>[39m
+            [0mYOUR PERSONAL LIBRARY[0m
+          [36m</div>[39m
+          [36m<h1>[39m
+            [0m把知识，留在手边。[0m
+          [36m</h1>[39m
+          [36m<p>[39m
+            [0m收藏自己的文本资料，为下一次探索留下一点线索。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"paper-primary"[39m
+        [36m>[39m
+          [0m＋ 新建文本资料[0m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"paper-search"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mfor[39m=[32m"library-search"[39m
+        [36m>[39m
+          [0m搜索资料[0m
+        [36m</label>[39m
+        [36m<input[39m
+          [33mid[39m=[32m"library-search"[39m
+          [33mtype[39m=[32m"search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m搜索[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<div[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0m网络错误[0m
+        [0m [0m
+        [36m<button>[39m
+          [0m重试加载[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"paper-cards"[39m
+      [36m/>[39m
+    [36m</div>[39m
+    [36m<dialog[39m
+      [33maria-labelledby[39m=[32m"resource-heading"[39m
+      [33mclass[39m=[32m"resource-dialog"[39m
+      [33mopen[39m=[32m""[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"关闭"[39m
+        [33mclass[39m=[32m"dialog-close"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m×[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"eyebrow"[39m
+      [36m>[39m
+        [0mON YOUR SHELF[0m
+      [36m</div>[39m
+      [36m<h2[39m
+        [33mid[39m=[32m"resource-heading"[39m
+      [36m>[39m
+        [0m已保存[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [0m已保存[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mmanual[0m
+        [0m · [0m
+        [0m暂无说明[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"resource-text"[39m
+      [36m>[39m
+        [0m正文[0m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"dialog-actions"[39m
+      [36m>[39m
+        [36m<button>[39m
+          [0m编辑[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m删除[0m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</dialog>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"paper-page"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"paper-heading"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"eyebrow"[39m
+          [36m>[39m
+            [0mYOUR PERSONAL LIBRARY[0m
+          [36m</div>[39m
+          [36m<h1>[39m
+            [0m把知识，留在手边。[0m
+          [36m</h1>[39m
+          [36m<p>[39m
+            [0m收藏自己的文本资料，为下一次探索留下一点线索。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"paper-primary"[39m
+        [36m>[39m
+          [0m＋ 新建文本资料[0m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"paper-search"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mfor[39m=[32m"library-search"[39m
+        [36m>[39m
+          [0m搜索资料[0m
+        [36m</label>[39m
+        [36m<input[39m
+          [33mid[39m=[32m"library-search"[39m
+          [33mtype[39m=[32m"search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m搜索[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<div[39m
+        [33mrole[39m=[32m"alert"[39m
+      [36m>[39m
+        [0m网络错误[0m
+        [0m [0m
+        [36m<button>[39m
+          [0m重试加载[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"paper-cards"[39m
+      [36m/>[39m
+    [36m</div>[39m
+    [36m<dialog[39m
+      [33maria-labelledby[39m=[32m"resource-heading"[39m
+      [33mclass[39m=[32m"resource-dialog"[39m
+      [33mopen[39m=[32m""[39m
+    [36m>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"关闭"[39m
+        [33mclass[39m=[32m"dialog-close"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m×[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"eyebrow"[39m
+      [36m>[39m
+        [0mON YOUR SHELF[0m
+      [36m</div>[39m
+      [36m<h2[39m
+        [33mid[39m=[32m"resource-heading"[39m
+      [36m>[39m
+        [0m已保存[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mrole[39m=[32m"status"[39m
+      [36m>[39m
+        [0m已保存[0m
+      [36m</p>[39m
+      [36m<p>[39m
+        [0mmanual[0m
+        [0m · [0m
+        [0m暂无说明[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"resource-text"[39m
+      [36m>[39m
+        [0m正文[0m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"dialog-actions"[39m
+      [36m>[39m
+        [36m<button>[39m
+          [0m编辑[0m
+        [36m</button>[39m
+        [36m<button>[39m
+          [0m删除[0m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</dialog>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Knowledge.test.tsx > marks list refresh failure separately after a confirmed create
+TestingLibraryElementError: Unable to find an element with the text: /已保存，列表刷新失败/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="paper-page"
+    >
+      <header
+        class="paper-heading"
+      >
+        <div>
+          <div
+            class="eyebrow"
+          >
+            YOUR PERSONAL LIBRARY
+          </div>
+          <h1>
+            把知识，留在手边。
+          </h1>
+          <p>
+            收藏自己的文本资料，为下一次探索留下一点线索。
+          </p>
+        </div>
+        <button
+          class="paper-primary"
+        >
+          ＋ 新建文本资料
+        </button>
+      </header>
+      <form
+        class="paper-search"
+      >
+        <label
+          for="library-search"
+        >
+          搜索资料
+        </label>
+        <input
+          id="library-search"
+          type="search"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          搜索
+        </button>
+      </form>
+      <div
+        role="alert"
+      >
+        网络错误
+         
+        <button>
+          重试加载
+        </button>
+      </div>
+      <div
+        class="paper-cards"
+      />
+    </div>
+    <dialog
+      aria-labelledby="resource-heading"
+      class="resource-dialog"
+      open=""
+    >
+      <button
+        aria-label="关闭"
+        class="dialog-close"
+        type="button"
+      >
+        ×
+      </button>
+      <div
+        class="eyebrow"
+      >
+        ON YOUR SHELF
+      </div>
+      <h2
+        id="resource-heading"
+      >
+        已保存
+      </h2>
+      <p
+        role="status"
+      >
+        已保存
+      </p>
+      <p>
+        manual
+         · 
+        暂无说明
+      </p>
+      <div
+        class="resource-text"
+      >
+        正文
+      </div>
+      <div
+        class="dialog-actions"
+      >
+        <button>
+          编辑
+        </button>
+        <button>
+          删除
+        </button>
+      </div>
+    </dialog>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="paper-page"
+    >
+      <header
+        class="paper-heading"
+      >
+        <div>
+          <div
+            class="eyebrow"
+          >
+            YOUR PERSONAL LIBRARY
+          </div>
+          <h1>
+            把知识，留在手边。
+          </h1>
+          <p>
+            收藏自己的文本资料，为下一次探索留下一点线索。
+          </p>
+        </div>
+        <button
+          class="paper-primary"
+        >
+          ＋ 新建文本资料
+        </button>
+      </header>
+      <form
+        class="paper-search"
+      >
+        <label
+          for="library-search"
+        >
+          搜索资料
+        </label>
+        <input
+          id="library-search"
+          type="search"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          搜索
+        </button>
+      </form>
+      <div
+        role="alert"
+      >
+        网络错误
+         
+        <button>
+          重试加载
+        </button>
+      </div>
+      <div
+        class="paper-cards"
+      />
+    </div>
+    <dialog
+      aria-labelledby="resource-heading"
+      class="resource-dialog"
+      open=""
+    >
+      <button
+        aria-label="关闭"
+        class="dialog-close"
+        type="button"
+      >
+        ×
+      </button>
+      <div
+        class="eyebrow"
+      >
+        ON YOUR SHELF
+      </div>
+      <h2
+        id="resource-heading"
+      >
+        已保存
+      </h2>
+      <p
+        role="status"
+      >
+        已保存
+      </p>
+      <p>
+        manual
+         · 
+        暂无说明
+      </p>
+      <div
+        class="resource-text"
+      >
+        正文
+      </div>
+      <div
+        class="dialog-actions"
+      >
+        <button>
+          编辑
+        </button>
+        <button>
+          删除
+        </button>
+      </div>
+    </dialog>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Knowledge.test.tsx:107:23
+    105|   fireEvent.change(screen.getByLabelText('名称'), { target: { value: '…
+    106|   fireEvent.click(screen.getByRole('button', { name: '保存' }));
+    107|   expect(await screen.findByText(/已保存，列表刷新失败/)).toBeTruthy();
+       |                       ^
+    108| });
+    109| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  11:33:13
+   Duration  4.81s (transform 204ms, setup 0ms, collect 831ms, tests 1.48s, environment 1.54s, prepare 198ms)
+
+
+exit_code=1

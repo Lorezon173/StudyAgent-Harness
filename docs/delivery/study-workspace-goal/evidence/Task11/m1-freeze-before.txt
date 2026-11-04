@@ -1,0 +1,17 @@
+0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50
+
+Algorithm Hash                                                             Path
+--------- ----                                                             ----
+SHA256    A7E100A72DEA8CE7FD15AB806D6F9885E480649F92C6C01D9B2C7A919055EA6C D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Knowledge.tsx
+SHA256    0C7C09B75ACF78AD255DDC28B6D2DEDCE690373B522A0CDBDB8E3A67C213F6BB D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Knowledge.test.tsx
+SHA256    D7989F4C444C05E6F075A03FD1F950072B6510806E657EB62C03EF5CAADE766A D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Profile.tsx
+SHA256    7124DF7C66077E92E5FA92B13829FC5E40F2803A4EA7021B5C0FF1E78FAFD1FA D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Profile.test.tsx
+SHA256    089B0E7B58B805A5A5E359216A41F35239F7C20BCA3ED4FA12065C86DE4D6F2F D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\workspace\WorkspaceLayout.tsx
+SHA256    9C1E20D2E800F126D6B493E25382E65E93F0C401D0477F4B3C1B6B3CCDE5C78E D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\workspace\WorkspaceLayout.test.tsx
+SHA256    EDB689D327CD6B6B141EFABD2F89BF082C6E92C4CB6611D5A9461A07B21FD325 D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\index.css
+SHA256    4E1C364AF24120801F875A4A291143F2AC34E5454D40B67A655A13E9F3F236BB D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\knowledge\KnowledgeLibrary.tsx
+SHA256    1D691AD0A025FDDE0C22CF37DA69DDA60E453F6914760666F08A6036329E6AF2 D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\knowledge\ResourceDialog.tsx
+SHA256    562B3290D8E98FBC32FD9C1C605EA2F6F55C0E67E347A328D61CA4298E5ABA8B D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\profile\ProfileDetail.tsx
+SHA256    DDC4CE8B8F3394CCDC34FCC353DE23A517D13D2C2E653F7DFEEBB2A57DD97A7E D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\profile\ProfileSummaryCard.test.tsx
+SHA256    8A4B90E6D96F6B0F2E72516706FDC607BEA80572E0633DA0C469D9ECD9C1F3E7 D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\profile\ProfileSummaryCard.tsx
+

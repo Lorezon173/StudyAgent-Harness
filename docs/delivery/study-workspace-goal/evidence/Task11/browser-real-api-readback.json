@@ -1,0 +1,33 @@
+{
+  "statuses": {
+    "deleted": 404,
+    "list": 200,
+    "session": 200,
+    "detail": 200,
+    "summary": 200,
+    "empty_detail": 200,
+    "empty_summary": 200
+  },
+  "deleted_id_3_404": true,
+  "remaining_ids": [
+    2
+  ],
+  "session_binding_active_version_unchanged": true,
+  "session_profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+  "session_active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+  "session_state_version": 0,
+  "profile_revision": 1,
+  "summary_revision": 1,
+  "revision_equal": true,
+  "active_nodes": 2,
+  "assessed_count": 0,
+  "total_count": 2,
+  "mastery_null": true,
+  "edge_count": 0,
+  "evidence_count": 0,
+  "empty_revision": 1,
+  "empty_total": 0,
+  "empty_mastery_null": true,
+  "empty_nodes": 0,
+  "empty_edges": 0
+}

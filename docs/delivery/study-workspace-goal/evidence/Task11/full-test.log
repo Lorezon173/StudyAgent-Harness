@@ -1,0 +1,41 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/api/client.test.ts (12 tests) 18ms
+ ✓ src/store/workspace.test.ts (11 tests) 16ms
+ ✓ src/api/workspace.test.ts (6 tests) 343ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 13ms
+ ✓ src/components/profile/ProfileSummaryCard.test.tsx (1 test) 42ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 29ms
+ ✓ src/store/auth.test.tsx (11 tests) 117ms
+stderr | src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Profile.test.tsx (15 tests) 575ms
+ ✓ src/pages/Login.test.tsx (14 tests) 679ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 437ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 301ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 818ms
+ ✓ src/pages/Knowledge.test.tsx (16 tests) 1636ms
+   ✓ paginates by the lowest id and restarts at the first page for a new search 409ms
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (13 tests) 911ms
+ ✓ src/pages/Chat.test.tsx (275 tests) 21934ms
+   ✓ persists an edited draft against the selected session's view version 529ms
+   ✓ offers to retry a draft save after a server failure 561ms
+   ✓ persists only an owned visible message as the reading anchor 1021ms
+   ✓ records the message actually visible when the reader scrolls 1026ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 541ms
+   ✓ polls a running request recovered in a session snapshot 3060ms
+
+ Test Files  14 passed (14)
+      Tests  398 passed (398)
+   Start at  11:40:44
+   Duration  28.30s (transform 2.07s, setup 0ms, collect 17.42s, tests 27.57s, environment 33.31s, prepare 5.89s)
+
+
+exit_code=0

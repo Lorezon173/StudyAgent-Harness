@@ -1,0 +1,16 @@
+
+> studyagent-web@0.1.0 test
+> vitest run WorkspaceLayout
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (13 tests) 655ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  11:32:18
+   Duration  4.24s (transform 367ms, setup 0ms, collect 1.52s, tests 655ms, environment 1.21s, prepare 166ms)
+
+
+exit_code=0

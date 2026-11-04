@@ -85,6 +85,12 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
     if (latest.sequence !== result.sequence || latest.dirty || latest.conflict) return;
     navigate(`/chat/${encodeURIComponent(result.id)}`, { replace: true });
   }
+  const selectedId = selected?.params.sessionId;
+  const selectedBucket = selectedId ? state.buckets[selectedId] : null;
+  const selectedSession = selectedBucket?.session;
+  const selectedProfile = selectedBucket?.profile;
+  const validProfileTarget = selectedId && selectedSession?.session_id === selectedId && selectedSession.user_id === state.account.userId && selectedSession.profile_id && selectedProfile?.id === selectedSession.profile_id && selectedProfile.user_id === state.account.userId;
+  const profileTarget = validProfileTarget ? `/profile?${new URLSearchParams({ profile_id: selectedProfile!.id, session_id: selectedId })}` : location.pathname === "/profile" ? `/profile${location.search}` : "/profile";
   const group = state.groups.find(item => item.sessions.some(session => session.session_id === state.activeSessionId));
   const breadcrumb = location.pathname === "/knowledge" ? "知识库" : location.pathname === "/profile" ? "学习画像" : group?.profile?.name || (state.activeSessionId ? "学习会话" : "开始学习");
   return <div className="workspace-shell">
@@ -95,7 +101,7 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
     <main className="workspace-main"><header className="workspace-topbar">
       {(mobile || state.sidebar.collapsed) && <button type="button" className="sidebar-open" ref={openButton} aria-controls="session-sidebar" aria-expanded={visible} aria-label={mobile ? "打开会话导航" : "展开会话导航"} onClick={() => mobile ? workspaceStore.setMobileOpen(true) : workspaceStore.expandSidebar()}>☰<span>会话</span></button>}
       <div className="workspace-breadcrumb">我的书房 <span aria-hidden="true">/</span> <b>{breadcrumb}</b></div>
-      <nav className="workspace-actions" aria-label="工作区导航"><NavLink to="/knowledge">知识库</NavLink><NavLink to="/profile">学习画像</NavLink></nav>
+      <nav className="workspace-actions" aria-label="工作区导航"><NavLink to="/knowledge">知识库</NavLink><NavLink to={profileTarget}>学习画像</NavLink></nav>
     </header>{state.workspace.recoveryError && <p role="alert">{state.workspace.recoveryError}</p>}
     {state.workspace.error && !state.workspace.conflict && <section role="alert"><p>{state.workspace.errorSource === "load" ? "最近会话加载失败" : "最近会话未保存"}：{state.workspace.error}</p><button type="button" onClick={() => void retryWorkspace()}>{state.workspace.errorSource === "load" ? "重试加载最近会话" : "重试保存最近会话"}</button></section>}
     {state.workspace.conflict && <section role="alert"><p>服务器最近会话：{state.workspace.lastSessionId ?? "无"}；本机最近会话：{state.workspace.desiredSessionId ?? "无"}</p><button type="button" onClick={workspaceController.useServerWorkspace}>使用服务器最近会话</button><button type="button" onClick={workspaceController.saveLocalWorkspace}>保存本机最近会话</button></section>}
@@ -105,3 +111,4 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
     {exitError && <div role="dialog" aria-label="退出登录"><p>部分内容未保存到服务器</p>{failedItems.map((item, index) => <p key={index}>{item.kind === "workspace" ? "最近会话未保存" : `会话 ${item.sessionId} 的${item.kind === "draft" ? "草稿" : item.kind === "prepared" ? "待发送内容" : "请求"}未保存`}{item.itemId ? ` / ${item.itemId}` : ""}</p>)}{backupError && <p role="alert">本机备份失败，请重试或留在页面</p>}<button type="button" onClick={() => void requestLogout()}>重试保存</button><button type="button" onClick={logoutWithBackup}>退出并保留本机草稿</button><button type="button" onClick={() => { setExitError(false); workspaceStore.setExitPending(false); }}>留在页面</button></div>}
   </div>;
 }
+

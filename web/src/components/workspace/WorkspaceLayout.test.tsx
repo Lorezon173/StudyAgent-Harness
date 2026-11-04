@@ -11,7 +11,7 @@ function Controls() { const auth = useAuth(); const navigate = useNavigate(); co
 function mount(path = "/chat") { storeIdentity(); return render(<AuthProvider><MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Controls /><App /></MemoryRouter></AuthProvider>); }
 const workspace = { last_session_id: null, sidebar_pinned: true, sidebar_collapsed: false, progress_y_ratio: 0.5, version: 0, updated_at: null };
 const snapshot = (id: string) => ({ session: session(id), profile: profile(), profile_summary: null, teaching_state: null, teaching_state_source: "stored", view_state: { draft: "", reading_anchor: null, version: 0, updated_at: null }, pending_requests: [], messages: { items: [{ id: id === "A" ? 1 : 2, role: "assistant", content: `真实历史 ${id}`, turn_index: 0, created_at: null }], next_cursor: null } });
-function transport() { vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL, init?: RequestInit) => { const path = String(url); if (path === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...workspace, last_session_id: body.last_session_id, version: body.expected_version + 1 })); } if (path === "/api/workspace-state") return Promise.resolve(response(workspace)); if (path.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response(snapshot("A"))); if (path.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B"))); return Promise.resolve(response(path.startsWith("/api/sessions?") ? groups : path.startsWith("/api/profile") ? { user_id: 1, stats: { sessions: 2, avg_mastery: 30 } } : [])); })); }
+function transport() { vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL, init?: RequestInit) => { const path = String(url); if (path === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...workspace, last_session_id: body.last_session_id, version: body.expected_version + 1 })); } if (path === "/api/workspace-state") return Promise.resolve(response(workspace)); if (path.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response(snapshot("A"))); if (path.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B"))); return Promise.resolve(response(path.startsWith("/api/sessions?") ? groups : path.startsWith("/api/topic-profiles") ? { items: [], next_cursor: null } : [])); })); }
 it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one navigation and keeps account below session groups on %s", async path => {
   transport(); mount(path);
   const sidebar = await screen.findByRole("complementary", { name: "会话导航" });
@@ -90,3 +90,10 @@ it("loads selected URL histories independently from their real snapshots", async
   expect(screen.queryByText("真实历史 A")).toBeNull();
   expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes("/B/snapshot"))).toBe(true);
 });
+
+it('carries the verified current session and profile to the portrait link', async () => {
+  transport(); mount('/chat/A'); await screen.findByText('真实历史 A');
+  const link = screen.getByRole('link', { name: '学习画像' });
+  expect(link.getAttribute('href')).toBe('/profile?profile_id=p1&session_id=A');
+});
+

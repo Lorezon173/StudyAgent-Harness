@@ -392,3 +392,10 @@ Task10状态IN_PROGRESS，阶段VERIFIED_UNCOMMITTED，commit=null；本轮只�
 主会话核对并裁决Task10完成：真实本地提交 `4fff6e1fb250112c9faaa05a914f84164f7f96e9`，父提交 `6d5829303f639e50ca15b11a9c8f79ee093caff1`，提交后index为空；见[本地提交验证](evidence/Task10/goal-recovery-minimal/a-task10-local-commit-verification.md)。初始清单中4个解释器生成缓存已按裁决排除，其余854个完整路径与README选择性段共855路径实际提交；未删除缓存工作树文件。README剩余162行及asset34行未暂存内容完整保留，未amend/推送/部署。
 
 status的Task10与current_round现为DONE，记录实际提交与最终证据。此前VERIFIED_UNCOMMITTED为历史检查点，不回写原失败记录；source不适用、受控/真实证据类型、教学质量限制仍按最终分类汇总保留。下一步Task11三层规划及独立计划审查已开始准备，尚未编码；Task11为规划中、Task12/13仍PENDING，SC-004整体未完成，B仍独立候选。本段及完成账本准备另作明确文档提交，不修改产品交付提交。
+
+## 2026-11-04 Task11 核心验收完成、待本地提交
+
+- Task11 IN_PROGRESS / VERIFIED_UNCOMMITTED、commit=null；[分类汇总](evidence/Task11/acceptance-summary.md)记录原计划独审、12文件OCR v2复审、M1业务RED/修复/399项与build、真实HTTP CRUD及跨账号、浏览器及两轮模型来源B→A。
+- 接受有限验证：非空edge仅DOM+真实empty；独立编辑/删除失败等少量分支、特定页面刷新重开、完整长文/字号压力未逐项测。真实网络为代理断连，恢复HMR刷新后核0再主动重填为1；键盘BODY/DIALOG停留不冒称完整焦点闭环。
+- README只追加本轮能力段，原162行及asset34行保留；提交用Task11专用README patch，asset全排除，清单排除缓存/runtime/凭据/Task10已提交及任务外内容，失败证据保留。尚未stage/commit，待固定清单独立快审后本地提交与SHA验证。
+- Task10 DONE不改，Task12只待后续三层规划、Task13未做，B仍独立候选，不推送/部署。

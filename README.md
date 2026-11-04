@@ -505,3 +505,11 @@ React工作区采用已确认的纸感书房配色：左栏按本人画像主题
 2026-11-03 Task10/A 最终状态（更新此前阶段记录）：[分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-summary.md)及[独立证据审计](docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-audit.md)确认局部冲突保护、365项回归/构建、三个真实浏览器受控核心场景，以及真实模型/草稿退出恢复/在途切换/PG重启/本人读取/跨账号与实际代理连接故障恢复已通过。特定source组合支持入口不可达按N/A裁决，原浏览器总failed/sourceblocked报告保留；模型回复仍反问的教学质量限制另记。当前验收通过待本地明确提交，尚不标Task10 DONE；Task11未开始、Task13整体验收未完成，B仍独立候选。未新增API、产品依赖或启动方式，未推送/部署。
 
 2026-11-04 Task10/A 已完成：真实本地提交 `4fff6e1fb250112c9faaa05a914f84164f7f96e9`，验收和提交保留范围见[最终分类汇总](docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-acceptance-summary.md)及[提交验证](docs/delivery/study-workspace-goal/evidence/Task10/goal-recovery-minimal/a-task10-local-commit-verification.md)。此前待提交段为历史检查点；source不适用、原浏览器failed报告和教学质量限制继续保留。下一步为Task11独立规划，现规划进行中、尚未编码；Task11–13未完成、B仍独立候选，未推送或部署。
+
+### Task11：真实文本知识库与主题画像（2026-11-04）
+
+知识库现支持本人文本资料搜索、详情、新建、编辑、清空说明、解除主题关联及删除；失败时保留已读结果或输入，创建结果不确定时提示先核对并说明主动重发风险。仅支持手动文本，未支持文件/PDF上传或自动进入教学检索。知识库和学习画像沿用工作区右上入口。
+
+画像从当前会话定位主题，切换主题仅查看、不改会话绑定；详情与可复用摘要共享同revision数据，区分未评估与0分，显示已评估平均掌握度、覆盖n/m及真实来源会话链接。纯摘要组件供Task12后续复用，聊天浮卡和拖动尚未实施。
+
+[Task11分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)：399项前端回归及构建通过，真实HTTP文本CRUD/读回/跨账号拒绝、真实浏览器操作、两轮真实模型持久化后100%与1/2及从B会话画像来源回A均有证据。非空关系仅受控DOM、实网为空；代理断连恢复含HMR刷新后主动重填，未证明跨刷新表单持久。四组视口采集/所列目视、键盘字段可达/Escape还焦已核，BODY停留及少量分支/压力测试未覆盖的边界保留。Task11当前验收通过待明确本地提交，仍IN_PROGRESS；Task10已DONE，Task12/13未完成、B仍独立候选。未新增API、依赖或启动步骤，未推送/部署。

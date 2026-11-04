@@ -1,0 +1,996 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+stderr | src/pages/Knowledge.test.tsx > deduplicates overlapping records when a later page contains repeated ids
+Warning: Encountered two children with the same key, `50`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at div
+    at div
+    at KnowledgeLibrary (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\components\knowledge\KnowledgeLibrary.tsx:47:110)
+    at KnowledgePage (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Knowledge.tsx:22:51)
+    at Knowledge (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\pages\Knowledge.tsx:14:39)
+    at AuthProvider (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\src\store\auth.tsx:27:25)
+
+ ❯ src/pages/Knowledge.test.tsx (14 tests | 1 failed) 2182ms
+   ✓ paginates by the lowest id and restarts at the first page for a new search 369ms
+   × deduplicates overlapping records when a later page contains repeated ids 1086ms
+     → Found multiple elements with the role "button" and name "查看 资料50"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33maria-label[39m=[32m"查看 资料50"[39m
+[36m>[39m
+  [0m阅读 ↗[0m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33maria-label[39m=[32m"查看 资料50"[39m
+[36m>[39m
+  [0m阅读 ↗[0m
+[36m</button>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"paper-page"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"paper-heading"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"eyebrow"[39m
+          [36m>[39m
+            [0mYOUR PERSONAL LIBRARY[0m
+          [36m</div>[39m
+          [36m<h1>[39m
+            [0m把知识，留在手边。[0m
+          [36m</h1>[39m
+          [36m<p>[39m
+            [0m收藏自己的文本资料，为下一次探索留下一点线索。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"paper-primary"[39m
+        [36m>[39m
+          [0m＋ 新建文本资料[0m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"paper-search"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mfor[39m=[32m"library-search"[39m
+        [36m>[39m
+          [0m搜索资料[0m
+        [36m</label>[39m
+        [36m<input[39m
+          [33mid[39m=[32m"library-search"[39m
+          [33mtype[39m=[32m"search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m搜索[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"paper-cards"[39m
+      [36m>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料100[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料100"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料99[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料99"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料98[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料98"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料97[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料97"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料96[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料96"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料95[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料95"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"paper-page"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"paper-heading"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"eyebrow"[39m
+          [36m>[39m
+            [0mYOUR PERSONAL LIBRARY[0m
+          [36m</div>[39m
+          [36m<h1>[39m
+            [0m把知识，留在手边。[0m
+          [36m</h1>[39m
+          [36m<p>[39m
+            [0m收藏自己的文本资料，为下一次探索留下一点线索。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"paper-primary"[39m
+        [36m>[39m
+          [0m＋ 新建文本资料[0m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<form[39m
+        [33mclass[39m=[32m"paper-search"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mfor[39m=[32m"library-search"[39m
+        [36m>[39m
+          [0m搜索资料[0m
+        [36m</label>[39m
+        [36m<input[39m
+          [33mid[39m=[32m"library-search"[39m
+          [33mtype[39m=[32m"search"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m搜索[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"paper-cards"[39m
+      [36m>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料100[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料100"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料99[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料99"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料98[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料98"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料97[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料97"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料96[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料96"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"paper-resource-icon"[39m
+          [36m>[39m
+            [0m文[0m
+          [36m</span>[39m
+          [36m<h2>[39m
+            [0m资料95[0m
+          [36m</h2>[39m
+          [36m<p>[39m
+            [0m暂无说明[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"paper-card-footer"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0m文本资料 · [0m
+              [0mmanual[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"查看 资料95"[39m
+            [36m>[39m
+              [0m阅读 ↗[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</article>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"paper-resource"[39m
+        [36m>[39m
+          [36m<span[39m...
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Knowledge.test.tsx > deduplicates overlapping records when a later page contains repeated ids
+TestingLibraryElementError: Found multiple elements with the role "button" and name "查看 资料50"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<button
+  aria-label="查看 资料50"
+>
+  阅读 ↗
+</button>
+
+Ignored nodes: comments, script, style
+<button
+  aria-label="查看 资料50"
+>
+  阅读 ↗
+</button>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="paper-page"
+    >
+      <header
+        class="paper-heading"
+      >
+        <div>
+          <div
+            class="eyebrow"
+          >
+            YOUR PERSONAL LIBRARY
+          </div>
+          <h1>
+            把知识，留在手边。
+          </h1>
+          <p>
+            收藏自己的文本资料，为下一次探索留下一点线索。
+          </p>
+        </div>
+        <button
+          class="paper-primary"
+        >
+          ＋ 新建文本资料
+        </button>
+      </header>
+      <form
+        class="paper-search"
+      >
+        <label
+          for="library-search"
+        >
+          搜索资料
+        </label>
+        <input
+          id="library-search"
+          type="search"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          搜索
+        </button>
+      </form>
+      <div
+        class="paper-cards"
+      >
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料100
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料100"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料99
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料99"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料98
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料98"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料97
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料97"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料96
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料96"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料95
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料95"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span...
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="paper-page"
+    >
+      <header
+        class="paper-heading"
+      >
+        <div>
+          <div
+            class="eyebrow"
+          >
+            YOUR PERSONAL LIBRARY
+          </div>
+          <h1>
+            把知识，留在手边。
+          </h1>
+          <p>
+            收藏自己的文本资料，为下一次探索留下一点线索。
+          </p>
+        </div>
+        <button
+          class="paper-primary"
+        >
+          ＋ 新建文本资料
+        </button>
+      </header>
+      <form
+        class="paper-search"
+      >
+        <label
+          for="library-search"
+        >
+          搜索资料
+        </label>
+        <input
+          id="library-search"
+          type="search"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          搜索
+        </button>
+      </form>
+      <div
+        class="paper-cards"
+      >
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料100
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料100"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料99
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料99"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料98
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料98"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料97
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料97"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料96
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料96"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span
+            aria-hidden="true"
+            class="paper-resource-icon"
+          >
+            文
+          </span>
+          <h2>
+            资料95
+          </h2>
+          <p>
+            暂无说明
+          </p>
+          <div
+            class="paper-card-footer"
+          >
+            <span>
+              文本资料 · 
+              manual
+            </span>
+            <button
+              aria-label="查看 资料95"
+            >
+              阅读 ↗
+            </button>
+          </div>
+        </article>
+        <article
+          class="paper-resource"
+        >
+          <span...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Knowledge.test.tsx:262:16
+    260|   render(<AuthProvider><Knowledge /></AuthProvider>);
+    261|   fireEvent.click(await screen.findByRole('button', { name: '加载更多'…
+    262|   await screen.findByRole('button', { name: '查看 资料50' });
+       |                ^
+    263|   expect(screen.getAllByRole('button', { name: '查看 资料50' })).toHav…
+    264|   expect(screen.getAllByRole('button', { name: '查看 资料51' })).toHav…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  11:38:20
+   Duration  5.16s (transform 168ms, setup 0ms, collect 658ms, tests 2.18s, environment 1.41s, prepare 212ms)
+
+
+exit_code=1

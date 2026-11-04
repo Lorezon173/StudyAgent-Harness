@@ -1,0 +1,31 @@
+Browser tab: 2, Title: "StudyAgent", URL: "http://127.0.0.1:50531/knowledge".
+0 AXWebArea StudyAgent, URL: 127.0.0.1:50531/knowledge
+	1 container root
+		2 container Description: 会话导航, ID: session-sidebar
+			3 text StudyAgent
+			4 text 慢慢理解，自有回响
+			5 checkbox Description: 取消固定侧栏，保持当前展示, Value: 1
+			6 button (expanded) Description: 收起会话导航, Secondary Actions: Collapse
+			7 button 开启一段新的探索
+			8 text 我的学习主题 / TOPICS
+			9 text 还没有学习主题
+			10 button (collapsed) Description: 账号：task11_b_ui_20261104, Secondary Actions: Expand
+				11 text task11_b_ui_20261104
+				12 text 我的学习书房
+		13 container
+			14 container
+				15 text 我的书房  知识库
+			16 container 工作区导航
+				17 link Description: 知识库, Value: 127.0.0.1:50531/knowledge
+				18 link Description: 学习画像, Value: 127.0.0.1:50531/profile
+			19 text YOUR PERSONAL LIBRARY
+			20 heading 把知识，留在手边。, Value: 1
+				21 text 把知识，留在手边。
+			22 text 收藏自己的文本资料，为下一次探索留下一点线索。
+			23 button ＋ 新建文本资料
+			24 text 搜索资料
+			25 search text field (settable) 搜索资料, ID: library-search
+			26 button 搜索
+			27 text 暂无文本资料
+
+The focused UI element is 17 link Description: 知识库, URL: 127.0.0.1:50531/knowledge

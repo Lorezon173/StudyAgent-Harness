@@ -1,0 +1,239 @@
+{
+  "utc": "2026-11-04T04:08:25.537964+00:00",
+  "request_id": "b91db917-d9b2-4d99-807f-af9a62140f83",
+  "http_status": 200,
+  "response": {
+    "reply": "如果另一块披萨平均分成 8 份，你吃了其中 3 份，你吃了整块披萨的几分之几？",
+    "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+    "mastery_score": 100.0,
+    "turn_count": 2,
+    "mode_path": [
+      "Socratic"
+    ],
+    "cost_est_usd": null,
+    "stack": "new",
+    "persisted": true,
+    "request_id": "b91db917-d9b2-4d99-807f-af9a62140f83",
+    "state_version": 2,
+    "profile_revision": 2,
+    "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+    "status": "completed",
+    "attempt": 1,
+    "error_code": null,
+    "context_reduced": false,
+    "reduction_reasons": []
+  },
+  "snapshot": {
+    "session": {
+      "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+      "user_id": 1,
+      "title": "Task11验收会话A",
+      "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+      "state_version": 2,
+      "next_turn_index": 2,
+      "active_request_id": null,
+      "created_at": "2026-11-04T03:58:25.512473",
+      "updated_at": "2026-11-04T04:08:25.779294"
+    },
+    "teaching_state": {
+      "schema_version": 1,
+      "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+      "teaching_mode": "Socratic",
+      "mode_history": [
+        "Socratic"
+      ],
+      "stage": "awaiting_response",
+      "last_question": "如果另一块披萨平均分成 8 份，你吃了其中 3 份，你吃了整块披萨的几分之几？",
+      "summary": "",
+      "summary_until_message_id": null,
+      "committed_turn_count": 2
+    },
+    "teaching_state_source": "stored",
+    "legacy_state": null,
+    "messages": {
+      "items": [
+        {
+          "id": 1,
+          "turn_index": 0,
+          "role": "user",
+          "content": "请用日常例子提出一个有关分数的简单问题，我会尝试回答。",
+          "created_at": "2026-11-04T04:07:35.575910"
+        },
+        {
+          "id": 2,
+          "turn_index": 0,
+          "role": "assistant",
+          "content": "一块披萨平均分成 4 份，你吃了其中 1 份。你吃了整块披萨的几分之几？",
+          "created_at": "2026-11-04T04:07:35.575910"
+        },
+        {
+          "id": 3,
+          "turn_index": 1,
+          "role": "user",
+          "content": "吃了四分之一，因为把整块平均分成四份，吃掉其中一份。",
+          "created_at": "2026-11-04T04:08:25.779294"
+        },
+        {
+          "id": 4,
+          "turn_index": 1,
+          "role": "assistant",
+          "content": "如果另一块披萨平均分成 8 份，你吃了其中 3 份，你吃了整块披萨的几分之几？",
+          "created_at": "2026-11-04T04:08:25.779294"
+        }
+      ],
+      "next_cursor": null
+    },
+    "profile": {
+      "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "user_id": 1,
+      "name": "Task11验收主题",
+      "scope_description": "真实隔离接口测试",
+      "kind": "normal",
+      "revision": 2,
+      "created_at": "2026-11-04T03:58:25.420308",
+      "updated_at": "2026-11-04T04:08:25.779294"
+    },
+    "profile_summary": {
+      "profile_revision": 2,
+      "nodes": [
+        {
+          "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "title": "Task11验收主题",
+          "description": "",
+          "mastery": 100.0,
+          "last_practiced_at": 1793765305.4618444,
+          "practice_count": 1,
+          "rationale": "正确回答为四分之一，并说明整块平均分成四份、吃掉其中一份，体现了对分数含义的理解。",
+          "revision": 1,
+          "archived": false
+        },
+        {
+          "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "title": "第二知识点",
+          "description": "未评估节点",
+          "mastery": null,
+          "last_practiced_at": 0.0,
+          "practice_count": 0,
+          "rationale": "",
+          "revision": 0,
+          "archived": false
+        }
+      ],
+      "edges": [],
+      "recent_evidence": [
+        {
+          "id": "065d178e-b2a1-436f-a24f-a7b3201e17d7",
+          "node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+          "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+          "request_id": "b91db917-d9b2-4d99-807f-af9a62140f83",
+          "message_id": 3,
+          "score": 100.0,
+          "rationale": "正确回答为四分之一，并说明整块平均分成四份、吃掉其中一份，体现了对分数含义的理解。",
+          "created_at": "2026-11-04T04:08:25.779294"
+        }
+      ],
+      "assessed_count": 1,
+      "total_count": 2,
+      "mastery_score": 100.0,
+      "metric_kind": "assessed_mean",
+      "assessment_coverage": 0.5
+    },
+    "view_state": {
+      "draft": "",
+      "reading_anchor": null,
+      "version": 0,
+      "updated_at": null
+    },
+    "pending_requests": []
+  },
+  "profile_detail": {
+    "profile": {
+      "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "user_id": 1,
+      "name": "Task11验收主题",
+      "scope_description": "真实隔离接口测试",
+      "kind": "normal",
+      "revision": 2,
+      "created_at": "2026-11-04T03:58:25.420308",
+      "updated_at": "2026-11-04T04:08:25.779294"
+    },
+    "profile_revision": 2,
+    "nodes": [
+      {
+        "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "title": "Task11验收主题",
+        "description": "",
+        "mastery": 100.0,
+        "last_practiced_at": 1793765305.4618444,
+        "practice_count": 1,
+        "rationale": "正确回答为四分之一，并说明整块平均分成四份、吃掉其中一份，体现了对分数含义的理解。",
+        "revision": 1,
+        "archived": false
+      },
+      {
+        "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "title": "第二知识点",
+        "description": "未评估节点",
+        "mastery": null,
+        "last_practiced_at": 0.0,
+        "practice_count": 0,
+        "rationale": "",
+        "revision": 0,
+        "archived": false
+      }
+    ],
+    "edges": []
+  },
+  "profile_summary": {
+    "profile_revision": 2,
+    "nodes": [
+      {
+        "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "title": "Task11验收主题",
+        "description": "",
+        "mastery": 100.0,
+        "last_practiced_at": 1793765305.4618444,
+        "practice_count": 1,
+        "rationale": "正确回答为四分之一，并说明整块平均分成四份、吃掉其中一份，体现了对分数含义的理解。",
+        "revision": 1,
+        "archived": false
+      },
+      {
+        "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "title": "第二知识点",
+        "description": "未评估节点",
+        "mastery": null,
+        "last_practiced_at": 0.0,
+        "practice_count": 0,
+        "rationale": "",
+        "revision": 0,
+        "archived": false
+      }
+    ],
+    "edges": [],
+    "recent_evidence": [
+      {
+        "id": "065d178e-b2a1-436f-a24f-a7b3201e17d7",
+        "node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+        "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+        "request_id": "b91db917-d9b2-4d99-807f-af9a62140f83",
+        "message_id": 3,
+        "score": 100.0,
+        "rationale": "正确回答为四分之一，并说明整块平均分成四份、吃掉其中一份，体现了对分数含义的理解。",
+        "created_at": "2026-11-04T04:08:25.779294"
+      }
+    ],
+    "assessed_count": 1,
+    "total_count": 2,
+    "mastery_score": 100.0,
+    "metric_kind": "assessed_mean",
+    "assessment_coverage": 0.5
+  }
+}

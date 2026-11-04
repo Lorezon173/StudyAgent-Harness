@@ -153,3 +153,9 @@ Task10独立计划审查最终v1.3 PASS（SHA0d7d3199）。沿用现有API，不
 主会话核实本地提交4fff6e1fb250112c9faaa05a914f84164f7f96e9及父6d582930、空index、README剩余162/asset34保留后，裁决Task10 DONE；记录见最终汇总与a-task10-local-commit-verification.md。清单排除4个生成pyc，不强制加入缓存，不删工作区成果。此为真实提交后的状态追记，不提前造SHA/DONE，不改此前VERIFIED_UNCOMMITTED与失败历史；另行明确文档提交，不amend产品交付提交。
 
 原验收边界、source支持入口不可达N/A、模型反问的教学质量限制及B候选状态不变。Task11规划进行中且尚未编码，Task12/13仍PENDING、SC-004仍IN_PROGRESS；不能据Task10有限验收勾完Task13。
+
+## ADJ-023：Task11 分层验收与有限验证裁决（2026-11-04）
+
+依据独立最终acceptance-audit，核心文本CRUD/隔离、真实评分与来源B画像→A会话已齐，Task11 VERIFIED_UNCOMMITTED仍IN_PROGRESS。非空edge仅受控DOM与真实empty，接受未做非空edge真实HTTP/浏览器的有限验证，不写N/A或非空实网通过，不新增接口/框架/SQL造评分。少量DOM失败/边界/交错、特定页面重载与长文/字号压力未逐项测，按分类汇总保留；不据此重跑已通过CRUD/source/第三轮模型。
+
+代理断连恢复包含HMR刷新、先核0再主动重填为1，不称跨刷新表单持久或无刷新retry。键盘字段/Escape还焦通过，BODY停留不足确认背景可操作漏洞，也不称完整focus-trap。视口采集/指标与主会话目视分别记录。保留原RED及失败审查；README原162/asset34、无关AGENTS、缓存/runtime/私有配置全排除提交。待精确本地提交再填真实SHA/DONE；Task10不改，Task12/13未做，B仍候选。

@@ -1,0 +1,12 @@
+Browser tab: 2, Title: "StudyAgent", URL: "http://127.0.0.1:50531/chat/540992e2-b031-4990-a8f9-46ddf86773f0".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 90-132
+~0 AXWebArea StudyAgent, URL: 127.0.0.1:50531/chat/540992e2-b031-4990-a8f9-46ddf86773f0
+~				33 text 我的书房  Task11验收主题
+~				36 link Description: 学习画像, Value: 127.0.0.1:50531/profile?profile_id=09db3ddf-3084-48df-8645-3983fba7a4ab&session_id=540992e2-b031-4990-a8f9-46ddf86773f0
+~			88 heading Task11验收会话A, Value: 1
+~				89 text Task11验收会话A
++			90 text 请用日常例子提出一个有关分数的简单问题，我会尝试回答。 一块披萨平均分成 4 份，你吃了其中 1 份。你吃了整块披萨的几分之几？ 吃了四分之一，因为把整块平均分成四份，吃掉其中一份。 如果另一块披萨平均分成 8 份，你吃了其中 3 份，你吃了整块披萨的几分之几？
++			91 text field (settable)
++			92 button 发送
+The focused UI element is 0 AXWebArea StudyAgent, URL: 127.0.0.1:50531/chat/540992e2-b031-4990-a8f9-46ddf86773f0

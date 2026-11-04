@@ -1,0 +1,978 @@
+{
+  "schema_version": 1,
+  "task": "Task11",
+  "phase": "VERIFIED_UNCOMMITTED",
+  "base_commit": "0bd2d742ac2c34fd24d6d097f4f37bcb5761cb50",
+  "commit": null,
+  "no_git_write_performed": true,
+  "source_files": 12,
+  "plan_files": 2,
+  "entries": [
+    {
+      "path": "web/src/pages/Knowledge.tsx",
+      "size_bytes": 3647,
+      "sha256": "a7e100a72dea8ce7fd15ab806d6f9885e480649f92c6c01d9b2c7a919055ea6c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/pages/Knowledge.test.tsx",
+      "size_bytes": 22651,
+      "sha256": "0c7c09b75acf78ad255ddc28b6d2dedce690373b522a0cdbdb8e3a67c213f6bb",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/pages/Profile.tsx",
+      "size_bytes": 7058,
+      "sha256": "d7989f4c444c05e6f075a03fd1f950072b6510806e657eb62c03ef5caade766a",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/pages/Profile.test.tsx",
+      "size_bytes": 18909,
+      "sha256": "7124df7c66077e92e5fa92b13829fc5e40f2803a4ea7021b5c0ff1e78fafd1fa",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/workspace/WorkspaceLayout.tsx",
+      "size_bytes": 11907,
+      "sha256": "089b0e7b58b805a5a5e359216a41f35239f7c20bca3ed4fa12065c86de4d6f2f",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/workspace/WorkspaceLayout.test.tsx",
+      "size_bytes": 9291,
+      "sha256": "9c1e20d2e800f126d6b493e25382e65e93f0c401d0477f4b3c1b6b3ccde5c78e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/index.css",
+      "size_bytes": 12000,
+      "sha256": "edb689d327cd6b6b141efabd2f89bf082c6e92c4cb6611d5a9461a07b21fd325",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/knowledge/KnowledgeLibrary.tsx",
+      "size_bytes": 2216,
+      "sha256": "4e1c364af24120801f875a4a291143f2ac34e5454d40b67a655a13e9f3f236bb",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/knowledge/ResourceDialog.tsx",
+      "size_bytes": 9996,
+      "sha256": "1d691ad0a025fdde0c22cf37da69dda60e453f6914760666f08a6036329e6af2",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/profile/ProfileDetail.tsx",
+      "size_bytes": 2146,
+      "sha256": "562b3290d8e98fbc32fd9c1c605ea2f6f55c0e67e347a328d61ca4298e5aba8b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/profile/ProfileSummaryCard.test.tsx",
+      "size_bytes": 1373,
+      "sha256": "ddc4ce8b8f3394ccdc34fcc353de23a517d13d2c2e653f7dfeebb2a57dd97a7e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "web/src/components/profile/ProfileSummaryCard.tsx",
+      "size_bytes": 1038,
+      "sha256": "8a4b90e6d96f6b0f2e72516706fdc607bea80572e0633da0c469d9ecd9c1f3e7",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "superpowers/frontend-ui/2026-11-04-task11-round1-raw.md",
+      "size_bytes": 14896,
+      "sha256": "92432d1711a1202342343b190b0331d3450881536958bdea4961a03d88ad7ed3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-task11-round1.md",
+      "size_bytes": 16492,
+      "sha256": "1f033df2f6549f42152dc7d9473d2fe2669c39bafaa337853a650894875bf525",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/progress.md",
+      "size_bytes": 62975,
+      "sha256": "527a1f588a8f28323b25334bd4c418097af7d2e4a3db281a0e944886500d986a",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/adjustments.md",
+      "size_bytes": 19226,
+      "sha256": "b8a2480889467a6d58819db322f5f52276e5dbc19ca5eeb069de6e1e8eac7c48",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/status.json",
+      "size_bytes": 15149,
+      "sha256": "832cc8ea6063c7eaba88687e1e300472051109154cc8dc2b7073a028592c1d59",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-audit.md",
+      "size_bytes": 19392,
+      "sha256": "531314b7ee616a4ab02dbd72e1a114da4d3cdf0a08e701b9cc56d765bd0a3c86",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md",
+      "size_bytes": 7019,
+      "sha256": "b20c701940aecbcc4c2388fcc9a47aa90239eb7a0fa9abb318097b0d7f39332e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-b-library.png",
+      "size_bytes": 28436,
+      "sha256": "8122062dae4572c885aa9110d80e5f10e06bc1ae90ffef2d5e073a17bd6d618e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-b-library.txt",
+      "size_bytes": 1409,
+      "sha256": "fd380debdf7f4af5654abb8eb70160744b86c48c2ca73895013a3c8613c86af4",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-b-profile-denied.png",
+      "size_bytes": 25714,
+      "sha256": "65734f2a7d831a0baf5b4aaa67d3009d095caad48a56b69c470274c0dbed3add",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-b-profile-denied.txt",
+      "size_bytes": 302,
+      "sha256": "4a3edc0e2187f4b040e135a923ab3ff8a1ff76b0328c88f314f9ce69adbca8da",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-isolation-keyboard.md",
+      "size_bytes": 1647,
+      "sha256": "ad7730af88563dffe3b5d892be22383c258e090b68d43b7e3d4d481baa37d636",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-keyboard.json",
+      "size_bytes": 1956,
+      "sha256": "13c149a6910673f66cdd22c37c0fd7f206b18dffb21743fdc6a26014a9856819",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-knowledge-crud.png",
+      "size_bytes": 37899,
+      "sha256": "0dfc4dd9975c619247628d1222150f44b8e0b79c6d0891d13b54b9074b85a6ba",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-knowledge-edit-readback.md",
+      "size_bytes": 1062,
+      "sha256": "a000d158353d153c1d0582c8b2485f1932fab558c41f1fc59de353b82f6789bb",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-knowledge-edited.png",
+      "size_bytes": 34442,
+      "sha256": "557d3db09461ddde929846991389a29aca6ca02e67f3d3d24d9d930aff77f146",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-list-network-failed.png",
+      "size_bytes": 40380,
+      "sha256": "17b6d9a81ae14795526e8514dfe2a572737201aaf4dc6163d6f74c813fe563db",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-network-recovered-saved.png",
+      "size_bytes": 34763,
+      "sha256": "6fb1702eeb2727a4d144c3ee7d1547ced7cabf0f9456122b7c6ec566088606d3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-network-recovery.md",
+      "size_bytes": 1783,
+      "sha256": "4ff6c696c3fa46a28f8e2f2c057f505c9ce199e7739a6304794031df4be7ae26",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-profile-empty.png",
+      "size_bytes": 49409,
+      "sha256": "8dd7547cbf69589f233d375aa230acb735dc9b59a905442024e7362b21968f1b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-profile-real.png",
+      "size_bytes": 53736,
+      "sha256": "e5eb674ef5c2d80385462c613cb815cec34b4726a91278cd1a382b2058d7c27b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-profile-scored.png",
+      "size_bytes": 55604,
+      "sha256": "e60a4e0111bcfafd3c99b4ab67c60bd1c1f70451fe6df49c6b936f968e76635b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-real-api-readback.json",
+      "size_bytes": 794,
+      "sha256": "9c2f9d33148a87cb344a2e5f3fcf50bd0e75ec6e06e78ea156f4bdff587a6d16",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-real-verification.md",
+      "size_bytes": 2331,
+      "sha256": "d12faff6ba0f88892adde84eef765f47433b55f9e13a69d2c612f4d248dbf0b5",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-save-network-failed.png",
+      "size_bytes": 37734,
+      "sha256": "712aa3960af1ab3a219da36ae523da204dea43ba25dcbf8242d68f6bb2e22058",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-scored-source-verification.md",
+      "size_bytes": 1531,
+      "sha256": "2e518e69ef072a9adecdaa8a5af4dfae6a5614c822362e111131aa04f149e153",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-source-jump.png",
+      "size_bytes": 47600,
+      "sha256": "430f4fb933be12054ae80b4e691252c5cafe5ee9006c52e8668d5bad09abfc05",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/browser-source-jump.txt",
+      "size_bytes": 1229,
+      "sha256": "20548a64ab52aefa5ffc5eac87dca1d4bec6ff713cce2530e352f6dbeca1f242",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/build.log",
+      "size_bytes": 411,
+      "sha256": "23af8ba18d7ce84d0b4e3ca546298e18e9fb67d8706023da0cc50d7cb5e6bbda",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/dialog-1440x450.jpg",
+      "size_bytes": 26231,
+      "sha256": "e74bcdd3321fdb21ab317095d56019b588095f92efb4a4a2ba874071557e83cf",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/dialog-1440x900.jpg",
+      "size_bytes": 36729,
+      "sha256": "9e2123b6989afd7cfddf90e6c8091b5321a87ca4fd3a1b892f813664f7c0105e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/dialog-390x844.jpg",
+      "size_bytes": 16267,
+      "sha256": "4b556764228f0eb07a6e2765f440f489846ad8468ab5d218f4a62a1313f61326",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/dialog-481x900.jpg",
+      "size_bytes": 21850,
+      "sha256": "8b241b886cf8e04b27ea27477d66c0b2950bcb7d767a1888d81619ecb5e8a453",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/freeze-after.txt",
+      "size_bytes": 2351,
+      "sha256": "5cf73f510cd5f11a2a009fee794097a27b87887cf77656df6ca7f6513a3c111f",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/freeze-before.txt",
+      "size_bytes": 2351,
+      "sha256": "5cf73f510cd5f11a2a009fee794097a27b87887cf77656df6ca7f6513a3c111f",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/full-test.log",
+      "size_bytes": 2465,
+      "sha256": "3a397a7c6f1247c00533bbdccaeb05b095ccdcd2729a9b5f0eb5ff71870e9e97",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/implementation-report.md",
+      "size_bytes": 4884,
+      "sha256": "a7d07a657cdc31f7cf5ed473e4171eb52cd1a52e8d5e4219ed483d585e80c439",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-1440x450.jpg",
+      "size_bytes": 32728,
+      "sha256": "ea00231adf7f070c5290888ff914e63522d5c4fafd537a3f6756c50f8367a316",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-1440x900.jpg",
+      "size_bytes": 41037,
+      "sha256": "8a5bcf725f5f87c2f95febe3c9b7baf4159e67fdac982ce1c527f7496ad0f1a8",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-390x844.jpg",
+      "size_bytes": 19756,
+      "sha256": "5c45a07143936a9ae44d77240f04539909880846f9c6f31085c114c94fe7c3ea",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-481x900.jpg",
+      "size_bytes": 34258,
+      "sha256": "4639e1ea26fbe8fc43fa09f3ab1a4398351e818270fb521a8cd5a9b41972f326",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-boundaries.log",
+      "size_bytes": 401,
+      "sha256": "49456d3dbec9736e501552203a17f431898e20842279de25213d4bf37aa49294",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-crud.log",
+      "size_bytes": 398,
+      "sha256": "617ba599a8fd09c9ef11af39fcfcc3a23143ac3d13e9d7b7e0503e69174f4ae3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-dedup-green.log",
+      "size_bytes": 491,
+      "sha256": "449fdf20095d08a7f80b777b851446e6096cd4ef9be7260e2ef64103d58baa1b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-dedup-red.log",
+      "size_bytes": 28607,
+      "sha256": "eb629f51d69ed162accfda15f2ffe5ca6b9b5ee042591ff5be1a6dce322c0950",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-dialog-metrics.json",
+      "size_bytes": 887,
+      "sha256": "197c0c0c8facabd6d93f1a1405d1c846167214ed73a8a65f286bac245ab1a090",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-dialog-races.log",
+      "size_bytes": 401,
+      "sha256": "06e4a3e426288ebdd2711ae2601fea36914ba128007eb926de03f532d3a91764",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-first-green.log",
+      "size_bytes": 397,
+      "sha256": "63cce584a2fcaf1fbeefeb54233aede55dc231861f535033f9ec71368b63b08b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-focus-green.log",
+      "size_bytes": 490,
+      "sha256": "79925f8e340d658bf880675f540cb35ddb24e28e84842e7646ae4e4ec23f99ab",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-focus.log",
+      "size_bytes": 1275,
+      "sha256": "58120ec66691a34ed251605d65f622b83b9b8966c0c01d8037a8a7bee7394973",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-races.log",
+      "size_bytes": 398,
+      "sha256": "9d591fd1bbecd67a22db02e31fb2c7b4a26787e3ada7cbc5d30cdc4fc0262922",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-recovery.log",
+      "size_bytes": 398,
+      "sha256": "b378ef61fc74a82df96f22f3b655b8e6cf4ce838466b3f7f6b8007ac30a8f1ca",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-refresh-green.log",
+      "size_bytes": 398,
+      "sha256": "7bfc1a2b3c27add7bd89d972be56d7119cb5f22bab23c2169d17245138a92a37",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-refresh-red.log",
+      "size_bytes": 12510,
+      "sha256": "83157384ce8d8f26ff47f41f9ffb55041589294f1f158ec115a3f73b65f997ce",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/knowledge-retry-pagination.log",
+      "size_bytes": 491,
+      "sha256": "36bf960608c02673fb38dad65f66c4dcc8318feb3e44da052351066c1bcfa5ed",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-build.log",
+      "size_bytes": 411,
+      "sha256": "901eeb2081df5cb4007aa9e59b95af62c82eaa664969ae4e4ce52ef3b4f86d71",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-business-red.log",
+      "size_bytes": 1432,
+      "sha256": "d59e578dbf90c4c1767cc230269881b2fb4d921bc2e30739a266383d6003ddb8",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-freeze-after.txt",
+      "size_bytes": 2351,
+      "sha256": "fc40b97a5f146e05e565e611961e363d3023b93da90cd29e3910dca1ec203b7c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-freeze-before.txt",
+      "size_bytes": 2351,
+      "sha256": "fc40b97a5f146e05e565e611961e363d3023b93da90cd29e3910dca1ec203b7c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-full-test.log",
+      "size_bytes": 2630,
+      "sha256": "236c0c1296426dc92d331aa6963f972d6d27e605edfe6d7a37808d3f5f8634db",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-green.log",
+      "size_bytes": 576,
+      "sha256": "111ca9f13a9cd6a84f1ef3f9820db4989167d7499e5a0a4cb0d70e18d57c6713",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/m1-red.log",
+      "size_bytes": 1432,
+      "sha256": "5dc3f70e3d401278c8dedff519ef969478bb56d539553588876c952fbb54240c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/navigation-green.log",
+      "size_bytes": 428,
+      "sha256": "0fca4976efb7b762f46df9176b20215fd9df8be63390ec6a4176cbb94f0437f8",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/navigation-red.log",
+      "size_bytes": 1636,
+      "sha256": "e1f83b2ad11869a557a66c5ab52958497d5845b0431ce3f581851f79f4ae0b07",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-checklist.csv",
+      "size_bytes": 760322,
+      "sha256": "f00e8c97cbee529d3df956911d2b23b09e8f3e3037b6fa0be25b2fff756d81a3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-file-rules.json",
+      "size_bytes": 505448,
+      "sha256": "bca50e990a56fe72796870a59ae74c52e694504353fe6c4a062fc1778103d3e6",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-preview-v2.json",
+      "size_bytes": 811935,
+      "sha256": "9dc622a94d80c9d75f3f679d326f9d736a6203d6f5eb65b1c4e539e9f51c547f",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-preview.json",
+      "size_bytes": 805308,
+      "sha256": "cc688f44e2a88e6677ecc62ad4daa2a738f70cbecd1c4234b9d2b44eca0e3d36",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-0.json",
+      "size_bytes": 12602,
+      "sha256": "7d756d665b59790f32cdedd0e59c194eb3df92a598d589dd45fd22ddb9f570cc",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1040.json",
+      "size_bytes": 9611,
+      "sha256": "fbdab4e9842add1eb6d27e2d8ee52cf47258c5ea63c04359a84de9d63e0b3c8b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1120.json",
+      "size_bytes": 9559,
+      "sha256": "572a30362543898ea0be0a442771c60bf598b929b648e73591ea60bfce52907a",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1200.json",
+      "size_bytes": 9531,
+      "sha256": "a93823f4d465550a84c9725ca63f6422392f3ad18a99de98501b984a6cc0f270",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1280.json",
+      "size_bytes": 9569,
+      "sha256": "4d09f2d92c6b802a91ca9a10d717b99ab44360d956c32d35a88223ade5b15e6d",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1360.json",
+      "size_bytes": 9531,
+      "sha256": "d49cf73068760013fc630a8faee83101d2fc8e579448ed602df3e4f89ed24484",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1440.json",
+      "size_bytes": 9560,
+      "sha256": "029a9a77060fd6fa44a42762d50f88d1cb36f3937edeb4511fd5af47cb467176",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1520.json",
+      "size_bytes": 9504,
+      "sha256": "eb0ae30f31483a3ce0da598e3238d7a4cd38db757b114a5da95da28d53c371e2",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-160.json",
+      "size_bytes": 8489,
+      "sha256": "015ce2084ee544f4e2c5a1bf30d71106234300b6bc7e2c4a9f772a8a832f156d",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-1600.json",
+      "size_bytes": 9207,
+      "sha256": "5e524f7546ce700c7a2720510d3c0e01e17f7750781d069be895be8c17d3c675",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-240.json",
+      "size_bytes": 8419,
+      "sha256": "3e337f8ab203fe49df53752e0eb3fea43d54d8e77dae1f1ada7160a0e3ac0467",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-320.json",
+      "size_bytes": 8251,
+      "sha256": "bde099373cb57810d16c4c850aee30f083c7051c205ac8e884019276f99d2213",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-400.json",
+      "size_bytes": 8525,
+      "sha256": "79b80892f63a9974a8a6ae1608e4f7f775bd10e2db4b48c17a4823472670b20b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-480.json",
+      "size_bytes": 9322,
+      "sha256": "7ecdc2cd13cb9721392d5db0da29705f74acb33e5655af210082fc636a972bff",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-560.json",
+      "size_bytes": 9318,
+      "sha256": "6f666e3ca4dcbc650e68b6a8f8eca1a4a36b7de8f299b09b978033b7596026c7",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-640.json",
+      "size_bytes": 9186,
+      "sha256": "29a96e44f26e550e05ad38c20ac68c78773ec3ad2e55ec911d3ee63592731d09",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-720.json",
+      "size_bytes": 8971,
+      "sha256": "65d1b2d8ed4144cc8237a26545f37a4b2060ca2155832915c8fcf7033a624378",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-80.json",
+      "size_bytes": 8491,
+      "sha256": "33db18fa51562eeb176f782168f74eca361bafe828edda7024ee87853ce5d5d4",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-800.json",
+      "size_bytes": 9214,
+      "sha256": "9be3b3171b7f85388a40acdf07d152eef96791305af6421b01f607c65fd023b5",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-880.json",
+      "size_bytes": 9369,
+      "sha256": "021e4cc18b8d43e796fed3c5d1276340066b702a2065fb2bc6419079c6fa90a0",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-rules-960.json",
+      "size_bytes": 9417,
+      "sha256": "8671c4fd7c13c30d952dd5afaaf8fcd16d54715007ecda9715034bec8caf2dc7",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-checklist.csv",
+      "size_bytes": 766902,
+      "sha256": "2d9df363fd781f54a911f65f0dfbd250135db7004c057a765c03fc43092f44b2",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-file-rules.json",
+      "size_bytes": 511647,
+      "sha256": "cf22d1ea1efec2b15d18e1bd219fd7f1d5a47225b34b8ec8e32e90ea581443b9",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-0.json",
+      "size_bytes": 12602,
+      "sha256": "7d756d665b59790f32cdedd0e59c194eb3df92a598d589dd45fd22ddb9f570cc",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1040.json",
+      "size_bytes": 9573,
+      "sha256": "79fe3f41baeaca57ef695e19b4c5c05e5deb767bac6d9b11a00fadb2a24c90f1",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1120.json",
+      "size_bytes": 9593,
+      "sha256": "57110ab1f57f7709ca79033e889f132e2cb2f359a060d70c0020e12e601dd40b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1200.json",
+      "size_bytes": 9531,
+      "sha256": "87674fd5659476c6bfc9cb1c232507d05e02e6ff717bb1d21e49165db52c81aa",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1280.json",
+      "size_bytes": 9569,
+      "sha256": "8c700f6a87599bc58f90ecfc25746381b9f5f65bc0f422f321a9523d9ea8871b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1360.json",
+      "size_bytes": 9531,
+      "sha256": "ea7000df260251aee5761b0595bc1e6ca2a7da59a33ea75b22b4f889e1ff1b31",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1440.json",
+      "size_bytes": 9535,
+      "sha256": "939f122546149dd20f5039e48f3abb80e1f8d7724743dc829c49e7ab3ac964df",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1520.json",
+      "size_bytes": 9507,
+      "sha256": "df538a26a7b2e7584550919aab4a8619d6280dcc7098e6974dd25f78e50dbc26",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-160.json",
+      "size_bytes": 8489,
+      "sha256": "015ce2084ee544f4e2c5a1bf30d71106234300b6bc7e2c4a9f772a8a832f156d",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-1600.json",
+      "size_bytes": 12115,
+      "sha256": "4ff77be26fd3d55f5107645a596d259c123e27e0c85401fb907bf0643f7dc796",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-240.json",
+      "size_bytes": 8419,
+      "sha256": "3e337f8ab203fe49df53752e0eb3fea43d54d8e77dae1f1ada7160a0e3ac0467",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-320.json",
+      "size_bytes": 8251,
+      "sha256": "bde099373cb57810d16c4c850aee30f083c7051c205ac8e884019276f99d2213",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-400.json",
+      "size_bytes": 8525,
+      "sha256": "79b80892f63a9974a8a6ae1608e4f7f775bd10e2db4b48c17a4823472670b20b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-480.json",
+      "size_bytes": 8501,
+      "sha256": "35c7c2647116af839927d65ed940169c80694ac8deb82d94647186c46c8d1038",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-560.json",
+      "size_bytes": 9427,
+      "sha256": "7af23a1714e62e15fa04271f5367a84f270276a794648344c2a644092f8e2ce3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-640.json",
+      "size_bytes": 9211,
+      "sha256": "147bb08af484778c450539b2b4e845395d510362bff2025f868e9da7b633c55d",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-720.json",
+      "size_bytes": 9019,
+      "sha256": "63bc9b77c48e8d8cd2b28b928d1b478d199d6f399495a68f2ac57b9b68645fb2",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-80.json",
+      "size_bytes": 8491,
+      "sha256": "33db18fa51562eeb176f782168f74eca361bafe828edda7024ee87853ce5d5d4",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-800.json",
+      "size_bytes": 9091,
+      "sha256": "ef6d40de1756e07cc6c5628fcdb4918e00ab299aed85a4111112160407c24607",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-880.json",
+      "size_bytes": 9369,
+      "sha256": "4079afab43810e841c8874e1a89d1df6b76b29e97fc80301bed07619996025e6",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/ocr-v2-rules-960.json",
+      "size_bytes": 9371,
+      "sha256": "0b2b727e0b915a4ac34392fbf9b2782f0594dcbe30bb1304ed680838a28bbd33",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-baseline-red.log",
+      "size_bytes": 47737,
+      "sha256": "2c3cbfe3b6d32ceb2d17d61b775ebe298d650df32666a861bfae25f1ec5a4f4c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-boundary-final.log",
+      "size_bytes": 1130,
+      "sha256": "061248fe5edc24c6b2c544efe58fa0fda166e65daa9f717a8b9f03021d48ebcf",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-boundary-initial.log",
+      "size_bytes": 1130,
+      "sha256": "eb04b6068083f0fcc069722adc10d45b0f14babc50b2c7430887d7cfd32f0ad3",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-boundary-types.log",
+      "size_bytes": 13,
+      "sha256": "a9f58776a09b5dac438049683f24bf85764e0ff8e7455952456165c68c158627",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-green.log",
+      "size_bytes": 1127,
+      "sha256": "ac77e56360d82cc046f553589c3e5f0736f3832f2791ae1559fb2efd4dce4bf1",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-interim.log",
+      "size_bytes": 1043,
+      "sha256": "a6c39b6cc012ec8acc6043fc8f445319588d45df9ef7e42556cb892a7032284b",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-types.log",
+      "size_bytes": 13,
+      "sha256": "a9f58776a09b5dac438049683f24bf85764e0ff8e7455952456165c68c158627",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-viewport-1440x450.jpg",
+      "size_bytes": 38644,
+      "sha256": "3d750427d73ba2e6ac2d3af1535fe7c6f61f5d4b5b0c0fe95bf03b726c5d8771",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-viewport-1440x900.jpg",
+      "size_bytes": 51828,
+      "sha256": "1d469c065a4f991e12f36765351ce75183af56bcd8b684020831bda58f5ddd90",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-viewport-390x844.jpg",
+      "size_bytes": 25332,
+      "sha256": "6f7dd0689370b2e1437be1792935e669d2098d3a8b3831171464ece4b77d85fc",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-viewport-481x900.jpg",
+      "size_bytes": 40451,
+      "sha256": "7ae91a279206ff97cb722944dcf2a8777f9dfe06247f0bb1e2d04f68c4a6e733",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/profile-viewport-metrics.json",
+      "size_bytes": 290,
+      "sha256": "f92864e783e63e7b4f4e944dccdab053cf46bf223c3c5077fd4c850c9b5446d4",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/readme-task11-only.patch",
+      "size_bytes": 3052,
+      "sha256": "297c6b6b5d7e904980cd22e430ef90db851404624ec091be7732c07538080334",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/real-http-responses.json",
+      "size_bytes": 20281,
+      "sha256": "78938dcb4f29574f9be77863ee9882dad5ad7f3ffd2937b0d037fd508c5e6ea1",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/real-http-verification.md",
+      "size_bytes": 2260,
+      "sha256": "fe00f80e569b07d8d17a3fa09497285231897d60ed5d224dad8aa03f83882ea6",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/real-source-teaching-verification.md",
+      "size_bytes": 1817,
+      "sha256": "fa6fec4706d71905d7fae7c4c10b5490fa29513d913da84125575360726a8b1c",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/real-source-turn1.json",
+      "size_bytes": 4046,
+      "sha256": "445dcaaa0e31fd259b9d1b72c34f0489f7f1da37b2d905a2e494db8b3810b3b8",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/real-source-turn2.json",
+      "size_bytes": 8311,
+      "sha256": "4de1802004c92b47be2a92f9a51ac98e83932f9461befdb6caa26124af5ff9fb",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-source-hashes-final.json",
+      "size_bytes": 2820,
+      "sha256": "9373fe6d3d086a42bda0db57fbf497fba152328f615c16d076c7a07185ef48ca",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-source-hashes.json",
+      "size_bytes": 2820,
+      "sha256": "9373fe6d3d086a42bda0db57fbf497fba152328f615c16d076c7a07185ef48ca",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-task11-tracked.diff",
+      "size_bytes": 27850,
+      "sha256": "f634cff5569f509e2ad84382a7f503400b513a95fcb3775f5bcb8442aacd1661",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-v2-source-hashes-final.json",
+      "size_bytes": 2820,
+      "sha256": "b4b07212e136600b5b65c3382d542ca1b3448266be00ae7bb70189eabe96c679",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-v2-source-hashes.json",
+      "size_bytes": 2820,
+      "sha256": "b4b07212e136600b5b65c3382d542ca1b3448266be00ae7bb70189eabe96c679",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/review-v2-task11-tracked.diff",
+      "size_bytes": 27937,
+      "sha256": "f5c55c4c6aaf8925a17c0354f1e8a74125b65e5cdcf6ab6fec5360075c50adee",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/round1-code-review-v2.md",
+      "size_bytes": 8962,
+      "sha256": "9c61d1e6db2fe4aba1cab79270bf0cc35df7ed73e4fa203a50ddc38087e3515f",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/round1-code-review.md",
+      "size_bytes": 11119,
+      "sha256": "f0e369206884d75483970a46532370a07fe38ff0744bae9def7233ea81e8e0ac",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/round1-plan-review.md",
+      "size_bytes": 5009,
+      "sha256": "2487fbcf4b69dc334d1582a8af1038d2d57b464c890d64ce3e682e73420f4bcd",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/round1-red.log",
+      "size_bytes": 11643,
+      "sha256": "bb9c572c1789a050a7d545356eb79012ec4913d321da6fd9f39846252498782e",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task11/targeted-final.log",
+      "size_bytes": 1387,
+      "sha256": "8237b39804cd15e6fd52921cc9736440360fa36f807ee5a0756d021f62aab35a",
+      "stage_mode": "whole_file"
+    },
+    {
+      "path": "README.md",
+      "stage_mode": "apply_cached_patch_only",
+      "patch": "docs/delivery/study-workspace-goal/evidence/Task11/readme-task11-only.patch",
+      "size_bytes": 57287,
+      "sha256": "b754ebd5189aa852db55fbba71d467b322c5d40c75854da132f99dd655e8e3df",
+      "workspace_size_bytes": 87386,
+      "workspace_sha256": "991b0460b6ffd25ec6fab2bdd14067129a290e82080d7ae65c8d6eb029e889b0",
+      "note": "hash/size describe projected committed content HEAD+Task11 append; never stage entire workspace README"
+    }
+  ],
+  "self": {
+    "path": "docs/delivery/study-workspace-goal/evidence/Task11/local-commit-manifest.json",
+    "stage_mode": "whole_file",
+    "sha256": null,
+    "reason": "self hash intentionally omitted; final independent reviewer may freeze externally"
+  },
+  "checks": {
+    "source_hashes_12_match_review_v2": true,
+    "all_paths_exist": true,
+    "sizes_sha256_calculated": true,
+    "markdown_local_links_missing": [],
+    "limited_secret_scan": {
+      "patterns": [
+        "bearer long token",
+        "JWT format",
+        "private-key header",
+        "sk-key format",
+        "database URI embedded password"
+      ],
+      "matched_paths": [],
+      "scope": "manifest text entries; path-only result, not exhaustive secret audit"
+    },
+    "failed_logs_retained": true,
+    "staged": false
+  },
+  "exclusions": [
+    "README workspace existing 162-line addition (use cached patch only)",
+    "docs/asset-inventory.md existing 34-line addition (entire file excluded)",
+    "Task10 already committed files",
+    "unrelated AGENTS.md and delivery/planning files",
+    "__pycache__, *.pyc, runtime, .env, private process/server logs, credentials"
+  ],
+  "handoff": [
+    "Independent fixed-manifest document review first; no new product work",
+    "Use explicit entries only, apply README patch to index; do not git add README.md or git add -A",
+    "Validate index includes projected README hash, original README162/asset34 remain unstaged; no cache or unrelated path",
+    "Local commit only; record actual SHA and inspect committed scope before DONE; no amend/push"
+  ]
+}

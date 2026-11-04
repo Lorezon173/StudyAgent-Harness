@@ -1,0 +1,372 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge Profile
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+stderr | src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ❯ src/pages/Knowledge.test.tsx (1 test | 1 failed) 144ms
+   × searches private text and opens its full content 142ms
+     → Unable to find an accessible element with the role "searchbox"
+
+Here are the accessible roles:
+
+  textbox:
+
+  Name "":
+  [36m<input[39m
+    [33mplaceholder[39m=[32m"名称"[39m
+    [33mvalue[39m=[32m""[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<input[39m
+    [33mplaceholder[39m=[32m"描述"[39m
+    [33mvalue[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "创建":
+  [36m<button[39m
+    [33mtype[39m=[32m"submit"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<form[39m
+        [33mstyle[39m=[32m"display: flex; gap: 8px; margin-bottom: 16px;"[39m
+      [36m>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"名称"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<input[39m
+          [33mplaceholder[39m=[32m"描述"[39m
+          [33mvalue[39m=[32m""[39m
+        [36m/>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"submit"[39m
+        [36m>[39m
+          [0m创建[0m
+        [36m</button>[39m
+      [36m</form>[39m
+      [36m<p[39m
+        [33mstyle[39m=[32m"color: rgb(136, 136, 136);"[39m
+      [36m>[39m
+        [0m暂无知识库[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ src/pages/Profile.test.tsx (1 test | 1 failed) 1086ms
+   × renders a verified profile and its real assessed summary 1085ms
+     → Unable to find an element with the text: 物理. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"container"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习进度[0m
+        [36m</h3>[39m
+        [36m<p>[39m
+          [0m会话数：[0m
+          [0m0[0m
+          [0m ｜ 平均掌握度：[0m
+          [0m0[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m掌握点图谱[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充（新栈当前用内存 EventStore，不写画像）[0m
+        [36m</p>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mstyle[39m=[32m"background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"[39m
+      [36m>[39m
+        [36m<h3>[39m
+          [0m学习偏好[0m
+        [36m</h3>[39m
+        [36m<p[39m
+          [33mstyle[39m=[32m"color: rgb(170, 170, 170); font-style: italic;"[39m
+        [36m>[39m
+          [0m待后端持久化后填充[0m
+        [36m</p>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Knowledge.test.tsx > searches private text and opens its full content
+TestingLibraryElementError: Unable to find an accessible element with the role "searchbox"
+
+Here are the accessible roles:
+
+  textbox:
+
+  Name "":
+  <input
+    placeholder="名称"
+    value=""
+  />
+
+  Name "":
+  <input
+    placeholder="描述"
+    value=""
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "创建":
+  <button
+    type="submit"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    style="color: rgb(136, 136, 136);"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <form
+        style="display: flex; gap: 8px; margin-bottom: 16px;"
+      >
+        <input
+          placeholder="名称"
+          value=""
+        />
+        <input
+          placeholder="描述"
+          value=""
+        />
+        <button
+          type="submit"
+        >
+          创建
+        </button>
+      </form>
+      <p
+        style="color: rgb(136, 136, 136);"
+      >
+        暂无知识库
+      </p>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/Knowledge.test.tsx:13:27
+     11|   vi.stubGlobal('fetch', vi.fn((url: RequestInfo | URL) => Promise.res…
+     12|   render(<AuthProvider><Knowledge /></AuthProvider>);
+     13|   fireEvent.change(screen.getByRole('searchbox'), { target: { value: '…
+       |                           ^
+     14|   fireEvent.click(screen.getByRole('button', { name: '搜索' }));
+     15|   await waitFor(() => expect(vi.mocked(fetch).mock.calls.some(([url]) …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+TestingLibraryElementError: Unable to find an element with the text: 物理. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="container"
+    >
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          学习进度
+        </h3>
+        <p>
+          会话数：
+          0
+           ｜ 平均掌握度：
+          0
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px; margin-bottom: 12px;"
+      >
+        <h3>
+          掌握点图谱
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充（新栈当前用内存 EventStore，不写画像）
+        </p>
+      </section>
+      <section
+        style="background: rgb(255, 255, 255); padding: 16px; border-radius: 8px;"
+      >
+        <h3>
+          学习偏好
+        </h3>
+        <p
+          style="color: rgb(170, 170, 170); font-style: italic;"
+        >
+          待后端持久化后填充
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/pages/Profile.test.tsx:15:23
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  2 failed (2)
+      Tests  2 failed (2)
+   Start at  11:28:03
+   Duration  5.09s (transform 237ms, setup 0ms, collect 1.77s, tests 1.23s, environment 3.77s, prepare 506ms)
+
+
+exit_code=1

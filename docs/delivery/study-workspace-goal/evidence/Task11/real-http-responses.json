@@ -1,0 +1,642 @@
+{
+  "observed_utc": "2026-11-04T03:58:25.273586+00:00",
+  "cases": {
+    "create_profile": {
+      "method": "POST",
+      "path": "/topic-profiles",
+      "status": 200,
+      "response": {
+        "profile": {
+          "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "user_id": 1,
+          "name": "Task11验收主题",
+          "scope_description": "真实隔离接口测试",
+          "kind": "normal",
+          "revision": 0,
+          "created_at": "2026-11-04T03:58:25.420308",
+          "updated_at": "2026-11-04T03:58:25.420308"
+        },
+        "profile_revision": 0,
+        "nodes": [
+          {
+            "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+            "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+            "title": "Task11验收主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": []
+      }
+    },
+    "create_node": {
+      "method": "POST",
+      "path": "/topic-profiles/09db3ddf-3084-48df-8645-3983fba7a4ab/nodes",
+      "status": 200,
+      "response": {
+        "node": {
+          "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "title": "第二知识点",
+          "description": "未评估节点",
+          "mastery": null,
+          "last_practiced_at": 0.0,
+          "practice_count": 0,
+          "rationale": "",
+          "revision": 0,
+          "archived": false
+        },
+        "profile_revision": 1
+      }
+    },
+    "create_session_a": {
+      "method": "POST",
+      "path": "/sessions",
+      "status": 200,
+      "response": {
+        "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+        "user_id": 1,
+        "title": "Task11验收会话A",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+        "state_version": 0,
+        "next_turn_index": 0,
+        "active_request_id": null,
+        "created_at": "2026-11-04T03:58:25.512473",
+        "updated_at": "2026-11-04T03:58:25.512473"
+      }
+    },
+    "create_session_b": {
+      "method": "POST",
+      "path": "/sessions",
+      "status": 200,
+      "response": {
+        "session_id": "565df716-fef4-4efb-8966-7158964f1b27",
+        "user_id": 1,
+        "title": "Task11验收会话B",
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "active_node_id": null,
+        "state_version": 0,
+        "next_turn_index": 0,
+        "active_request_id": null,
+        "created_at": "2026-11-04T03:58:25.536852",
+        "updated_at": "2026-11-04T03:58:25.536852"
+      }
+    },
+    "profile_detail": {
+      "method": "GET",
+      "path": "/topic-profiles/09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "status": 200,
+      "response": {
+        "profile": {
+          "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "user_id": 1,
+          "name": "Task11验收主题",
+          "scope_description": "真实隔离接口测试",
+          "kind": "normal",
+          "revision": 1,
+          "created_at": "2026-11-04T03:58:25.420308",
+          "updated_at": "2026-11-04T03:58:25.470628"
+        },
+        "profile_revision": 1,
+        "nodes": [
+          {
+            "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+            "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+            "title": "Task11验收主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          },
+          {
+            "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+            "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+            "title": "第二知识点",
+            "description": "未评估节点",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": []
+      }
+    },
+    "profile_summary": {
+      "method": "GET",
+      "path": "/topic-profiles/09db3ddf-3084-48df-8645-3983fba7a4ab/summary",
+      "status": 200,
+      "response": {
+        "profile_revision": 1,
+        "nodes": [
+          {
+            "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+            "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+            "title": "Task11验收主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          },
+          {
+            "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+            "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+            "title": "第二知识点",
+            "description": "未评估节点",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": [],
+        "recent_evidence": [],
+        "assessed_count": 0,
+        "total_count": 2,
+        "mastery_score": null,
+        "metric_kind": "assessed_mean",
+        "assessment_coverage": 0.0
+      }
+    },
+    "session_a_snapshot": {
+      "method": "GET",
+      "path": "/sessions/540992e2-b031-4990-a8f9-46ddf86773f0/snapshot",
+      "status": 200,
+      "response": {
+        "session": {
+          "session_id": "540992e2-b031-4990-a8f9-46ddf86773f0",
+          "user_id": 1,
+          "title": "Task11验收会话A",
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+          "state_version": 0,
+          "next_turn_index": 0,
+          "active_request_id": null,
+          "created_at": "2026-11-04T03:58:25.512473",
+          "updated_at": "2026-11-04T03:58:25.512473"
+        },
+        "teaching_state": {
+          "schema_version": 1,
+          "active_node_id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+          "teaching_mode": "Socratic",
+          "mode_history": [
+            "Socratic"
+          ],
+          "stage": "init",
+          "last_question": null,
+          "summary": "",
+          "summary_until_message_id": null,
+          "committed_turn_count": 0
+        },
+        "teaching_state_source": "stored",
+        "legacy_state": null,
+        "messages": {
+          "items": [],
+          "next_cursor": null
+        },
+        "profile": {
+          "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "user_id": 1,
+          "name": "Task11验收主题",
+          "scope_description": "真实隔离接口测试",
+          "kind": "normal",
+          "revision": 1,
+          "created_at": "2026-11-04T03:58:25.420308",
+          "updated_at": "2026-11-04T03:58:25.470628"
+        },
+        "profile_summary": {
+          "profile_revision": 1,
+          "nodes": [
+            {
+              "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+              "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+              "title": "Task11验收主题",
+              "description": "",
+              "mastery": null,
+              "last_practiced_at": 0.0,
+              "practice_count": 0,
+              "rationale": "",
+              "revision": 0,
+              "archived": false
+            },
+            {
+              "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+              "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+              "title": "第二知识点",
+              "description": "未评估节点",
+              "mastery": null,
+              "last_practiced_at": 0.0,
+              "practice_count": 0,
+              "rationale": "",
+              "revision": 0,
+              "archived": false
+            }
+          ],
+          "edges": [],
+          "recent_evidence": [],
+          "assessed_count": 0,
+          "total_count": 2,
+          "mastery_score": null,
+          "metric_kind": "assessed_mean",
+          "assessment_coverage": 0.0
+        },
+        "view_state": {
+          "draft": "",
+          "reading_anchor": null,
+          "version": 0,
+          "updated_at": null
+        },
+        "pending_requests": []
+      }
+    },
+    "session_b_snapshot": {
+      "method": "GET",
+      "path": "/sessions/565df716-fef4-4efb-8966-7158964f1b27/snapshot",
+      "status": 200,
+      "response": {
+        "session": {
+          "session_id": "565df716-fef4-4efb-8966-7158964f1b27",
+          "user_id": 1,
+          "title": "Task11验收会话B",
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "active_node_id": null,
+          "state_version": 0,
+          "next_turn_index": 0,
+          "active_request_id": null,
+          "created_at": "2026-11-04T03:58:25.536852",
+          "updated_at": "2026-11-04T03:58:25.536852"
+        },
+        "teaching_state": {
+          "schema_version": 1,
+          "active_node_id": null,
+          "teaching_mode": "Socratic",
+          "mode_history": [
+            "Socratic"
+          ],
+          "stage": "init",
+          "last_question": null,
+          "summary": "",
+          "summary_until_message_id": null,
+          "committed_turn_count": 0
+        },
+        "teaching_state_source": "stored",
+        "legacy_state": null,
+        "messages": {
+          "items": [],
+          "next_cursor": null
+        },
+        "profile": {
+          "id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "user_id": 1,
+          "name": "Task11验收主题",
+          "scope_description": "真实隔离接口测试",
+          "kind": "normal",
+          "revision": 1,
+          "created_at": "2026-11-04T03:58:25.420308",
+          "updated_at": "2026-11-04T03:58:25.470628"
+        },
+        "profile_summary": {
+          "profile_revision": 1,
+          "nodes": [
+            {
+              "id": "ab28edbc-5443-43e4-8c13-8359ccc336a7",
+              "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+              "title": "Task11验收主题",
+              "description": "",
+              "mastery": null,
+              "last_practiced_at": 0.0,
+              "practice_count": 0,
+              "rationale": "",
+              "revision": 0,
+              "archived": false
+            },
+            {
+              "id": "c73fc1c8-b5f6-4469-8d2e-6bec2e3ffae0",
+              "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+              "title": "第二知识点",
+              "description": "未评估节点",
+              "mastery": null,
+              "last_practiced_at": 0.0,
+              "practice_count": 0,
+              "rationale": "",
+              "revision": 0,
+              "archived": false
+            }
+          ],
+          "edges": [],
+          "recent_evidence": [],
+          "assessed_count": 0,
+          "total_count": 2,
+          "mastery_score": null,
+          "metric_kind": "assessed_mean",
+          "assessment_coverage": 0.0
+        },
+        "view_state": {
+          "draft": "",
+          "reading_anchor": null,
+          "version": 0,
+          "updated_at": null
+        },
+        "pending_requests": []
+      }
+    },
+    "create_empty_profile": {
+      "method": "POST",
+      "path": "/topic-profiles",
+      "status": 200,
+      "response": {
+        "profile": {
+          "id": "2dc7bf76-a743-4e0f-91c7-a7eb59892c38",
+          "user_id": 1,
+          "name": "Task11空主题",
+          "scope_description": "",
+          "kind": "normal",
+          "revision": 0,
+          "created_at": "2026-11-04T03:58:25.769202",
+          "updated_at": "2026-11-04T03:58:25.769202"
+        },
+        "profile_revision": 0,
+        "nodes": [
+          {
+            "id": "a7b6c416-e18c-4791-bba6-9f5b3f17253c",
+            "profile_id": "2dc7bf76-a743-4e0f-91c7-a7eb59892c38",
+            "title": "Task11空主题",
+            "description": "",
+            "mastery": null,
+            "last_practiced_at": 0.0,
+            "practice_count": 0,
+            "rationale": "",
+            "revision": 0,
+            "archived": false
+          }
+        ],
+        "edges": []
+      }
+    },
+    "archive_only_node": {
+      "method": "PATCH",
+      "path": "/topic-profiles/2dc7bf76-a743-4e0f-91c7-a7eb59892c38/nodes/a7b6c416-e18c-4791-bba6-9f5b3f17253c",
+      "status": 200,
+      "response": {
+        "node": {
+          "id": "a7b6c416-e18c-4791-bba6-9f5b3f17253c",
+          "profile_id": "2dc7bf76-a743-4e0f-91c7-a7eb59892c38",
+          "title": "Task11空主题",
+          "description": "",
+          "mastery": null,
+          "last_practiced_at": 0.0,
+          "practice_count": 0,
+          "rationale": "",
+          "revision": 1,
+          "archived": true
+        },
+        "profile_revision": 1
+      }
+    },
+    "empty_summary": {
+      "method": "GET",
+      "path": "/topic-profiles/2dc7bf76-a743-4e0f-91c7-a7eb59892c38/summary",
+      "status": 200,
+      "response": {
+        "profile_revision": 1,
+        "nodes": [],
+        "edges": [],
+        "recent_evidence": [],
+        "assessed_count": 0,
+        "total_count": 0,
+        "mastery_score": null,
+        "metric_kind": "assessed_mean",
+        "assessment_coverage": null
+      }
+    },
+    "resource_create": {
+      "method": "POST",
+      "path": "/knowledge",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "user_id": 1,
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387",
+        "description": "真实隔离资料",
+        "content_text": "初始正文\n第二行",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:25.855258",
+        "updated_at": "2026-11-04T03:58:25.855258"
+      }
+    },
+    "resource_search": {
+      "method": "GET",
+      "path": "/knowledge?q=task11_2a2955cdb8d04e1bb4ca5865922bf387&profile_id=09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "status": 200,
+      "response": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+          "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387",
+          "description": "真实隔离资料",
+          "content_text": "初始正文\n第二行",
+          "source_type": "manual",
+          "created_at": "2026-11-04T03:58:25.855258",
+          "updated_at": "2026-11-04T03:58:25.855258"
+        }
+      ]
+    },
+    "resource_get": {
+      "method": "GET",
+      "path": "/knowledge/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "user_id": 1,
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387",
+        "description": "真实隔离资料",
+        "content_text": "初始正文\n第二行",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:25.855258",
+        "updated_at": "2026-11-04T03:58:25.855258"
+      }
+    },
+    "other_read": {
+      "method": "GET",
+      "path": "/knowledge/1",
+      "status": 404,
+      "response": {
+        "detail": "知识库不存在"
+      }
+    },
+    "other_patch": {
+      "method": "PATCH",
+      "path": "/knowledge/1",
+      "status": 404,
+      "response": {
+        "detail": "知识库不存在"
+      }
+    },
+    "other_delete": {
+      "method": "DELETE",
+      "path": "/knowledge/1",
+      "status": 404,
+      "response": {
+        "detail": "知识库不存在"
+      }
+    },
+    "other_profile": {
+      "method": "GET",
+      "path": "/topic-profiles/09db3ddf-3084-48df-8645-3983fba7a4ab",
+      "status": 404,
+      "response": {
+        "detail": "画像不存在"
+      }
+    },
+    "other_list": {
+      "method": "GET",
+      "path": "/knowledge",
+      "status": 200,
+      "response": []
+    },
+    "owner_after_other": {
+      "method": "GET",
+      "path": "/knowledge/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "user_id": 1,
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387",
+        "description": "真实隔离资料",
+        "content_text": "初始正文\n第二行",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:25.855258",
+        "updated_at": "2026-11-04T03:58:25.855258"
+      }
+    },
+    "resource_patch": {
+      "method": "PATCH",
+      "path": "/knowledge/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "user_id": 1,
+        "profile_id": null,
+        "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387_edited",
+        "description": "",
+        "content_text": "修改后的正文",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:25.855258",
+        "updated_at": "2026-11-04T03:58:25.978473"
+      }
+    },
+    "resource_readback": {
+      "method": "GET",
+      "path": "/knowledge/1",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "user_id": 1,
+        "profile_id": null,
+        "name": "task11_2a2955cdb8d04e1bb4ca5865922bf387_edited",
+        "description": "",
+        "content_text": "修改后的正文",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:25.855258",
+        "updated_at": "2026-11-04T03:58:25.978473"
+      }
+    },
+    "invalid_empty_name": {
+      "method": "POST",
+      "path": "/knowledge",
+      "status": 422,
+      "response": {
+        "detail": [
+          {
+            "type": "string_too_short",
+            "loc": [
+              "body",
+              "name"
+            ],
+            "msg": "String should have at least 1 character",
+            "input": "   ",
+            "ctx": {
+              "min_length": 1
+            }
+          }
+        ]
+      }
+    },
+    "resource_delete": {
+      "method": "DELETE",
+      "path": "/knowledge/1",
+      "status": 200,
+      "response": {
+        "status": "ok"
+      }
+    },
+    "resource_deleted_404": {
+      "method": "GET",
+      "path": "/knowledge/1",
+      "status": 404,
+      "response": {
+        "detail": "知识库不存在"
+      }
+    },
+    "ui_seed_resource": {
+      "method": "POST",
+      "path": "/knowledge",
+      "status": 200,
+      "response": {
+        "id": 2,
+        "user_id": 1,
+        "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+        "name": "Task11浏览器验收资料",
+        "description": "用于页面操作",
+        "content_text": "浏览器验收正文",
+        "source_type": "manual",
+        "created_at": "2026-11-04T03:58:26.074191",
+        "updated_at": "2026-11-04T03:58:26.074191"
+      }
+    }
+  },
+  "checks": {
+    "profile_revision_pair": true,
+    "summary_unassessed": true,
+    "same_profile_sessions": true,
+    "empty_summary": true,
+    "resource_created_fields": true,
+    "search_and_get": true,
+    "other_no_effect": true,
+    "patch_readback": true,
+    "all_checks_true": true
+  },
+  "identifiers": {
+    "owner_user_id": 1,
+    "other_user_id": 2,
+    "profile_id": "09db3ddf-3084-48df-8645-3983fba7a4ab",
+    "empty_profile_id": "2dc7bf76-a743-4e0f-91c7-a7eb59892c38",
+    "session_a": "540992e2-b031-4990-a8f9-46ddf86773f0",
+    "session_b": "565df716-fef4-4efb-8966-7158964f1b27",
+    "ui_seed_resource_id": 2
+  },
+  "limitations": [
+    "nonempty edge and actual assessed evidence not produced",
+    "browser verification pending"
+  ]
+}

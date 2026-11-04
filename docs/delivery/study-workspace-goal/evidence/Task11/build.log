@@ -1,0 +1,15 @@
+
+> studyagent-web@0.1.0 build
+> tsc && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 220 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:   0.28 kB
+dist/assets/index-D5Rtpdgj.css   10.74 kB │ gzip:   3.04 kB
+dist/assets/index-CHAF80A_.js   425.79 kB │ gzip: 129.42 kB
+✓ built in 2.14s
+
+exit_code=0

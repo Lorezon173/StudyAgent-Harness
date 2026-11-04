@@ -1,0 +1,38 @@
+
+> studyagent-web@0.1.0 test
+> vitest run WorkspaceLayout
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx (13 tests | 1 failed) 2205ms
+   ✓ shares one navigation and keeps account below session groups on /chat 515ms
+   ✓ starts pinned, collapses manually, pins open and keeps selection open 460ms
+   × carries the verified current session and profile to the portrait link 75ms
+     → expected '/profile' to be '/profile?profile_id=p1&session_id=A' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/workspace/WorkspaceLayout.test.tsx > carries the verified current session and profile to the portrait link
+AssertionError: expected '/profile' to be '/profile?profile_id=p1&session_id=A' // Object.is equality
+
+Expected: "/profile?profile_id=p1&session_id=A"
+Received: "/profile"
+
+ ❯ src/components/workspace/WorkspaceLayout.test.tsx:97:37
+     95|   transport(); mount('/chat/A'); await screen.findByText('真实历史 A');
+     96|   const link = screen.getByRole('link', { name: '学习画像' });
+     97|   expect(link.getAttribute('href')).toBe('/profile?profile_id=p1&sessi…
+       |                                     ^
+     98| });
+     99| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  11:30:19
+   Duration  12.21s (transform 504ms, setup 0ms, collect 7.35s, tests 2.20s, environment 1.56s, prepare 224ms)
+
+
+exit_code=1

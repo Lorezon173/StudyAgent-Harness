@@ -1,0 +1,40 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Knowledge.test.tsx (17 tests | 1 failed) 1783ms
+   ✓ paginates by the lowest id and restarts at the first page for a new search 375ms
+   × keeps failed search retry intact until the new result can be paginated 191ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Knowledge.test.tsx > keeps failed search retry intact until the new result can be paginated
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/pages/Knowledge.test.tsx:323:25
+    321|   expect((await screen.findByRole('alert')).textContent).toContain('B …
+    322|   const more = screen.getByRole('button', { name: '加载更多' }) as HTM…
+    323|   expect(more.disabled).toBe(true);
+       |                         ^
+    324|   fireEvent.click(more);
+    325|   expect(screen.getByText('仍显示上次结果')).toBeTruthy();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  11:49:49
+   Duration  6.15s (transform 234ms, setup 0ms, collect 1.08s, tests 1.78s, environment 2.14s, prepare 273ms)
+
+
+exit_code=1

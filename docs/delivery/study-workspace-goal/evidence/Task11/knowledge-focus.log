@@ -1,0 +1,32 @@
+
+> studyagent-web@0.1.0 test
+> vitest run Knowledge
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ❯ src/pages/Knowledge.test.tsx (13 tests | 1 failed) 667ms
+   × opens an accessible dialog, focuses its name, and returns focus on Escape 15ms
+     → fireEvent.cancel is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/Knowledge.test.tsx > opens an accessible dialog, focuses its name, and returns focus on Escape
+TypeError: fireEvent.cancel is not a function
+ ❯ src/pages/Knowledge.test.tsx:232:13
+    230|   const dialog = screen.getByRole('dialog', { name: '新建文本资料' });
+    231|   expect(document.activeElement).toBe(screen.getByLabelText('名称'));
+    232|   fireEvent.cancel(dialog);
+       |             ^
+    233|   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    234|   expect(document.activeElement).toBe(trigger);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  11:36:21
+   Duration  3.00s (transform 143ms, setup 0ms, collect 614ms, tests 667ms, environment 995ms, prepare 154ms)
+
+
+exit_code=1

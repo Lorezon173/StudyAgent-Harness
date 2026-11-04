@@ -1,0 +1,70 @@
+[
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "INPUT",
+    "text": ""
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "TEXTAREA",
+    "text": ""
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "TEXTAREA",
+    "text": ""
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "SELECT",
+    "text": "未关联主题Task11空主题Task11验收主题"
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "BUTTON",
+    "text": "保存"
+  },
+  {
+    "direction": "Tab",
+    "inDialog": false,
+    "tag": "BODY",
+    "text": "\n    学StudyAgent慢慢理解，自有回响已固定收起 ‹开启一段新的探索 ＋我的学习主题 / TOPICS⌄Task11空主题已加载 0这个主题还没有会话⌄Task11验收主题已加载 2Task11验收会话A11月4日Task11验收会话B11月4日ttask11_ui_20261104我的学习书房···我的书房 / 知识库知识库学习画像YOUR PERSONAL LIBRARY把知识，留在手边。收藏自己的文本资料，为下一次探索留下一点线索。＋ 新建文本资料搜索资料搜索文Task11连接失败保留表单暂无说明文本资料 · manual阅读 ↗×ON YOUR SHELF新建文本资料名称说明正文关联主题未关联主题Task11空主题Task11验收主题保存\n    \n  \n\n"
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "DIALOG",
+    "text": "×ON YOUR SHELF新建文本资料名称说明正文关联主题未关联主题Task11空主题Task11验收主题保存"
+  },
+  {
+    "direction": "Tab",
+    "inDialog": true,
+    "tag": "BUTTON",
+    "text": "关闭"
+  },
+  {
+    "direction": "ShiftTab",
+    "inDialog": true,
+    "tag": "DIALOG"
+  },
+  {
+    "direction": "ShiftTab",
+    "inDialog": false,
+    "tag": "BODY"
+  },
+  {
+    "direction": "ShiftTab",
+    "inDialog": true,
+    "tag": "BUTTON"
+  },
+  {
+    "direction": "Escape",
+    "focused": "＋ 新建文本资料",
+    "open": 0
+  }
+]

@@ -1,0 +1,380 @@
+diff --git a/web/src/components/workspace/WorkspaceLayout.test.tsx b/web/src/components/workspace/WorkspaceLayout.test.tsx
+index a7858ec..1560eed 100644
+--- a/web/src/components/workspace/WorkspaceLayout.test.tsx
++++ b/web/src/components/workspace/WorkspaceLayout.test.tsx
+@@ -11,7 +11,7 @@ function Controls() { const auth = useAuth(); const navigate = useNavigate(); co
+ function mount(path = "/chat") { storeIdentity(); return render(<AuthProvider><MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><Controls /><App /></MemoryRouter></AuthProvider>); }
+ const workspace = { last_session_id: null, sidebar_pinned: true, sidebar_collapsed: false, progress_y_ratio: 0.5, version: 0, updated_at: null };
+ const snapshot = (id: string) => ({ session: session(id), profile: profile(), profile_summary: null, teaching_state: null, teaching_state_source: "stored", view_state: { draft: "", reading_anchor: null, version: 0, updated_at: null }, pending_requests: [], messages: { items: [{ id: id === "A" ? 1 : 2, role: "assistant", content: `真实历史 ${id}`, turn_index: 0, created_at: null }], next_cursor: null } });
+-function transport() { vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL, init?: RequestInit) => { const path = String(url); if (path === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...workspace, last_session_id: body.last_session_id, version: body.expected_version + 1 })); } if (path === "/api/workspace-state") return Promise.resolve(response(workspace)); if (path.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response(snapshot("A"))); if (path.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B"))); return Promise.resolve(response(path.startsWith("/api/sessions?") ? groups : path.startsWith("/api/profile") ? { user_id: 1, stats: { sessions: 2, avg_mastery: 30 } } : [])); })); }
++function transport() { vi.stubGlobal("fetch", vi.fn((url: RequestInfo | URL, init?: RequestInit) => { const path = String(url); if (path === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...workspace, last_session_id: body.last_session_id, version: body.expected_version + 1 })); } if (path === "/api/workspace-state") return Promise.resolve(response(workspace)); if (path.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response(snapshot("A"))); if (path.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B"))); return Promise.resolve(response(path.startsWith("/api/sessions?") ? groups : path.startsWith("/api/topic-profiles") ? { items: [], next_cursor: null } : [])); })); }
+ it.each(["/chat", "/chat/A", "/knowledge", "/profile"])("shares one navigation and keeps account below session groups on %s", async path => {
+   transport(); mount(path);
+   const sidebar = await screen.findByRole("complementary", { name: "会话导航" });
+@@ -90,3 +90,10 @@ it("loads selected URL histories independently from their real snapshots", async
+   expect(screen.queryByText("真实历史 A")).toBeNull();
+   expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes("/B/snapshot"))).toBe(true);
+ });
++
++it('carries the verified current session and profile to the portrait link', async () => {
++  transport(); mount('/chat/A'); await screen.findByText('真实历史 A');
++  const link = screen.getByRole('link', { name: '学习画像' });
++  expect(link.getAttribute('href')).toBe('/profile?profile_id=p1&session_id=A');
++});
++
+diff --git a/web/src/components/workspace/WorkspaceLayout.tsx b/web/src/components/workspace/WorkspaceLayout.tsx
+index 4544f38..d66752f 100644
+--- a/web/src/components/workspace/WorkspaceLayout.tsx
++++ b/web/src/components/workspace/WorkspaceLayout.tsx
+@@ -85,6 +85,12 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
+     if (latest.sequence !== result.sequence || latest.dirty || latest.conflict) return;
+     navigate(`/chat/${encodeURIComponent(result.id)}`, { replace: true });
+   }
++  const selectedId = selected?.params.sessionId;
++  const selectedBucket = selectedId ? state.buckets[selectedId] : null;
++  const selectedSession = selectedBucket?.session;
++  const selectedProfile = selectedBucket?.profile;
++  const validProfileTarget = selectedId && selectedSession?.session_id === selectedId && selectedSession.user_id === state.account.userId && selectedSession.profile_id && selectedProfile?.id === selectedSession.profile_id && selectedProfile.user_id === state.account.userId;
++  const profileTarget = validProfileTarget ? `/profile?${new URLSearchParams({ profile_id: selectedProfile!.id, session_id: selectedId })}` : location.pathname === "/profile" ? `/profile${location.search}` : "/profile";
+   const group = state.groups.find(item => item.sessions.some(session => session.session_id === state.activeSessionId));
+   const breadcrumb = location.pathname === "/knowledge" ? "知识库" : location.pathname === "/profile" ? "学习画像" : group?.profile?.name || (state.activeSessionId ? "学习会话" : "开始学习");
+   return <div className="workspace-shell">
+@@ -95,7 +101,7 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
+     <main className="workspace-main"><header className="workspace-topbar">
+       {(mobile || state.sidebar.collapsed) && <button type="button" className="sidebar-open" ref={openButton} aria-controls="session-sidebar" aria-expanded={visible} aria-label={mobile ? "打开会话导航" : "展开会话导航"} onClick={() => mobile ? workspaceStore.setMobileOpen(true) : workspaceStore.expandSidebar()}>☰<span>会话</span></button>}
+       <div className="workspace-breadcrumb">我的书房 <span aria-hidden="true">/</span> <b>{breadcrumb}</b></div>
+-      <nav className="workspace-actions" aria-label="工作区导航"><NavLink to="/knowledge">知识库</NavLink><NavLink to="/profile">学习画像</NavLink></nav>
++      <nav className="workspace-actions" aria-label="工作区导航"><NavLink to="/knowledge">知识库</NavLink><NavLink to={profileTarget}>学习画像</NavLink></nav>
+     </header>{state.workspace.recoveryError && <p role="alert">{state.workspace.recoveryError}</p>}
+     {state.workspace.error && !state.workspace.conflict && <section role="alert"><p>{state.workspace.errorSource === "load" ? "最近会话加载失败" : "最近会话未保存"}：{state.workspace.error}</p><button type="button" onClick={() => void retryWorkspace()}>{state.workspace.errorSource === "load" ? "重试加载最近会话" : "重试保存最近会话"}</button></section>}
+     {state.workspace.conflict && <section role="alert"><p>服务器最近会话：{state.workspace.lastSessionId ?? "无"}；本机最近会话：{state.workspace.desiredSessionId ?? "无"}</p><button type="button" onClick={workspaceController.useServerWorkspace}>使用服务器最近会话</button><button type="button" onClick={workspaceController.saveLocalWorkspace}>保存本机最近会话</button></section>}
+@@ -105,3 +111,4 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
+     {exitError && <div role="dialog" aria-label="退出登录"><p>部分内容未保存到服务器</p>{failedItems.map((item, index) => <p key={index}>{item.kind === "workspace" ? "最近会话未保存" : `会话 ${item.sessionId} 的${item.kind === "draft" ? "草稿" : item.kind === "prepared" ? "待发送内容" : "请求"}未保存`}{item.itemId ? ` / ${item.itemId}` : ""}</p>)}{backupError && <p role="alert">本机备份失败，请重试或留在页面</p>}<button type="button" onClick={() => void requestLogout()}>重试保存</button><button type="button" onClick={logoutWithBackup}>退出并保留本机草稿</button><button type="button" onClick={() => { setExitError(false); workspaceStore.setExitPending(false); }}>留在页面</button></div>}
+   </div>;
+ }
++
+diff --git a/web/src/index.css b/web/src/index.css
+index 77ff226..92819be 100644
+--- a/web/src/index.css
++++ b/web/src/index.css
+@@ -81,3 +81,39 @@ input,textarea,select { min-width:0; background:var(--white); border:1px solid v
+ .login-card form>.primary-button { width:100%; margin-top:24px; }
+ @media (min-width:481px) and (max-width:760px) { .workspace-shell { --sidebar-width:170px; } .workspace-sidebar { padding:22px 10px 0; } .study-brand { gap:7px; margin-left:2px; margin-right:2px; } .brand-name { font-size:16px; } .study-brand small { letter-spacing:0; } .brand-mark { width:28px; height:33px; font-size:18px; } .group-toggle { flex-wrap:wrap; } .group-toggle small { margin-left:18px; } .workspace-topbar { padding:0 20px; } .workspace-actions { gap:2px; } .workspace-actions a { padding:7px 8px; } .selected-session,.container { padding:28px 24px; } }
+ @media (max-width:480px) { .workspace-sidebar { position:fixed; z-index:40; inset:0 auto 0 0; width:min(264px,88vw); } .workspace-topbar { padding:0 14px; gap:9px; } .workspace-breadcrumb { flex:1; } .workspace-breadcrumb>span { margin:0 4px; } .workspace-actions { gap:0; } .workspace-actions a { font-size:11px; padding:8px 7px; } .sidebar-open { padding:6px 8px; } .sidebar-open span { display:none; } .selected-session,.container { padding:26px 20px; } .unavailable-card { padding:20px; } .login-card { padding:28px 24px; } .session-dialog { padding:24px; } }
++
++/* Task 11: private library and portrait */
++.paper-page, .profile-page { max-width: 1030px; margin: 0 auto; padding: 38px 48px 50px; color: #263d34; }
++.paper-page h1, .paper-page h2, .profile-page h1, .profile-page h2, .resource-dialog h2 { font-family: "Noto Serif SC", "Songti SC", SimSun, Georgia, serif; font-weight: 500; }
++.paper-heading, .profile-header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 28px; }
++.paper-heading h1, .profile-header h1 { margin: 0 0 8px; font-size: 30px; }
++.paper-heading p, .profile-header p { color: #808176; font-size: 12px; }
++.paper-primary { border: 1px solid #355b45; border-radius: 4px; background: #355b45; color: #fffdf7; padding: 9px 15px; }
++.paper-search { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
++.paper-search label { font-size: 12px; color: #71786c; }
++.paper-search input { width: min(310px, 100%); background: #fffdf7; border: 1px solid #deded1; border-radius: 4px; padding: 9px 12px; }
++.paper-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
++.paper-resource, .profile-panel, .profile-summary-card { min-width: 0; border: 1px solid #deded1; background: #fffdf7; border-radius: 5px; padding: 22px 23px; overflow-wrap: anywhere; }
++.paper-resource h2 { font-size: 18px; margin: 14px 0 8px; }
++.paper-resource p { color: #808176; min-height: 41px; font-size: 12px; }
++.paper-resource-icon { display: grid; place-items: center; width: 37px; height: 43px; border: 1px solid #d8decd; background: #f3f4e8; font-family: SimSun, serif; }
++.paper-card-footer { border-top: 1px solid #e9e9df; padding-top: 12px; display: flex; justify-content: space-between; gap: 10px; color: #808176; font-size: 11px; }
++.resource-dialog { width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; border: 1px solid #cbd2c1; border-radius: 6px; padding: 30px; background: #fffdf7; color: #263d34; }
++.resource-dialog::backdrop { background: #263d3480; }
++.resource-form { display: grid; gap: 14px; }
++.resource-form label { display: grid; gap: 5px; }
++.resource-form input, .resource-form textarea, .resource-form select { width: 100%; border: 1px solid #cbd2c1; background: #fffef9; padding: 9px; border-radius: 4px; }
++.resource-text { white-space: pre-wrap; overflow-wrap: anywhere; background: #f0f1e6; border-left: 2px solid #879978; padding: 16px; line-height: 1.9; }
++.resource-dialog .dialog-actions { display: flex; gap: 12px; margin-top: 18px; }
++.profile-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 24px; }
++.profile-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
++.profile-panel, .profile-summary-card { margin-bottom: 18px; }
++.profile-metric { border-block: 1px solid #deded1; padding: 16px 0; margin: 18px 0; }
++.profile-node-list, .profile-edge-list, .profile-evidence-list { list-style: none; margin: 0; padding: 0; }
++.profile-node, .profile-edge-list li, .profile-evidence-list li { border-bottom: 1px solid #e9e9df; padding: 12px 0; overflow-wrap: anywhere; }
++.profile-notice { color: #71786c; font-size: 12px; }
++@media (max-width: 760px) {
++  .paper-page, .profile-page { padding: 26px 20px 40px; }
++  .paper-heading, .profile-header { flex-direction: column; }
++  .paper-cards, .profile-grid { grid-template-columns: minmax(0, 1fr); }
++}
+diff --git a/web/src/pages/Knowledge.tsx b/web/src/pages/Knowledge.tsx
+index 321e83a..8a47b94 100644
+--- a/web/src/pages/Knowledge.tsx
++++ b/web/src/pages/Knowledge.tsx
+@@ -1,64 +1,86 @@
+-import { useState, useEffect, FormEvent, useCallback } from "react";
+-import { apiGet, apiPost, apiDelete, ApiError } from "../api/client";
++import { useEffect, useRef, useState, useSyncExternalStore } from "react";
++import { listKnowledge } from "../api/knowledge";
++import KnowledgeLibrary from "../components/knowledge/KnowledgeLibrary";
++import ResourceDialog from "../components/knowledge/ResourceDialog";
++import { workspaceStore } from "../store/workspace";
+ import { KnowledgeResponse } from "../types";
+ 
+ export default function Knowledge() {
++  const state = useSyncExternalStore(workspaceStore.subscribe, workspaceStore.getSnapshot, workspaceStore.getServerSnapshot);
++  return <KnowledgePage key={state.account.generation} />;
++}
++
++function KnowledgePage() {
+   const [items, setItems] = useState<KnowledgeResponse[]>([]);
+-  const [name, setName] = useState("");
+-  const [desc, setDesc] = useState("");
++  const [query, setQuery] = useState("");
++  const [applied, setApplied] = useState("");
++  const [loading, setLoading] = useState(false);
+   const [error, setError] = useState("");
++  const [stale, setStale] = useState(false);
++  const [hasMore, setHasMore] = useState(false);
++  const [dialog, setDialog] = useState<{ target: number | null; focus: HTMLButtonElement; epoch: number } | null>(null);
++  const sequence = useRef(0);
++  const epoch = useRef(0);
++  const mounted = useRef(false);
++  const requested = useRef("");
+ 
+-  const load = useCallback(async () => {
++  async function load(q: string, before?: number, confirmed?: "已保存" | "已删除") {
++    const ticket = workspaceStore.captureTicket();
++    const n = ++sequence.current;
++    requested.current = q;
++    setLoading(true);
+     setError("");
++    if (before === undefined && q !== applied) setStale(true);
++    const current = () => mounted.current && workspaceStore.isCurrent(ticket) && sequence.current === n;
+     try {
+-      setItems(await apiGet<KnowledgeResponse[]>("/api/knowledge"));
+-    } catch (err) {
+-      setError(err instanceof ApiError ? err.message : "加载失败");
++      const page = await listKnowledge({ q: q || undefined, limit: 50, before_id: before });
++      if (!current()) return;
++      setItems(old => {
++        const result = before === undefined ? [] : [...old];
++        const seen = new Set(result.map(x => x.id));
++        for (const item of page) {
++          if (!seen.has(item.id)) {
++            seen.add(item.id);
++            result.push(item);
++          }
++        }
++        return result;
++      });
++      setApplied(q);
++      setStale(false);
++      setHasMore(page.length === 50);
++    } catch (e) {
++      if (current()) setError(`${confirmed ? `${confirmed}，列表刷新失败：` : ""}${e instanceof Error ? e.message : "加载失败"}`);
++    } finally {
++      if (current()) setLoading(false);
+     }
+-  }, []);
++  }
+ 
+-  useEffect(() => { void load(); }, [load]);
++  useEffect(() => {
++    mounted.current = true;
++    void load("");
++    return () => { mounted.current = false; sequence.current++; };
++  }, []);
+ 
+-  async function create(e: FormEvent) {
+-    e.preventDefault();
+-    if (!name.trim()) return;
+-    try {
+-      await apiPost<KnowledgeResponse>("/api/knowledge", { name, description: desc });
+-      setName(""); setDesc("");
+-      await load();
+-    } catch (err) {
+-      setError(err instanceof ApiError ? err.message : "创建失败");
+-    }
++  function search() {
++    const q = query.trim();
++    if (q.length > 256) { setError("搜索词最多256字"); return; }
++    void load(q);
+   }
+-
+-  async function remove(id: number) {
+-    try {
+-      await apiDelete(`/api/knowledge/${id}`);
+-      await load();
+-    } catch (err) {
+-      setError(err instanceof ApiError ? err.message : "删除失败");
+-    }
++  function changed(deletedId?: number) {
++    if (deletedId !== undefined) setItems(old => old.filter(x => x.id !== deletedId));
++    void load(requested.current, undefined, deletedId === undefined ? "已保存" : "已删除");
+   }
+ 
+-  return (
+-    <div className="container">
+-      <form onSubmit={create} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+-        <input placeholder="名称" value={name} onChange={(e) => setName(e.target.value)} />
+-        <input placeholder="描述" value={desc} onChange={(e) => setDesc(e.target.value)} />
+-        <button type="submit">创建</button>
+-      </form>
+-      {error && <p style={{ color: "#c0392b" }}>{error}</p>}
+-      {items.length === 0 ? <p style={{ color: "#888" }}>暂无知识库</p> : (
+-        <ul style={{ listStyle: "none" }}>
+-          {items.map((k) => (
+-            <li key={k.id} style={{ display: "flex", gap: 8, padding: 8,
+-              background: "#fff", marginBottom: 4, borderRadius: 6 }}>
+-              <strong>{k.name}</strong><span style={{ color: "#888" }}>{k.description}</span>
+-              <button style={{ marginLeft: "auto" }} onClick={() => remove(k.id)}>删除</button>
+-            </li>
+-          ))}
+-        </ul>
+-      )}
+-    </div>
+-  );
++  return <>
++    <KnowledgeLibrary
++      items={items} query={query} onQuery={setQuery} onSearch={search}
++      onOpen={(target, focus) => setDialog({ target, focus, epoch: ++epoch.current })}
++      onCreate={focus => setDialog({ target: null, focus, epoch: ++epoch.current })}
++      onMore={() => { if (items.length) void load(applied, Math.min(...items.map(x => x.id))); }}
++      onRetry={() => void load(requested.current)}
++      loading={loading} error={error} hasMore={hasMore} stale={stale}
++    />
++    {dialog && <ResourceDialog key={dialog.epoch} target={dialog.target} returnFocus={dialog.focus} onClose={() => setDialog(null)} onChanged={changed} />}
++  </>;
+ }
+diff --git a/web/src/pages/Profile.tsx b/web/src/pages/Profile.tsx
+index b6e03e8..2a449b6 100644
+--- a/web/src/pages/Profile.tsx
++++ b/web/src/pages/Profile.tsx
+@@ -1,38 +1,105 @@
+-import { useState, useEffect } from "react";
+-import { apiGet } from "../api/client";
+-import { useAuth } from "../store/auth";
++import { useEffect, useRef, useState, useSyncExternalStore } from "react";
++import { Link, useSearchParams } from "react-router-dom";
++import { listProfiles, getProfile, getProfileSummary } from "../api/profiles";
++import { loadSnapshot } from "../api/sessions";
++import { getWorkspaceState } from "../api/workspace";
++import { workspaceStore } from "../store/workspace";
++import { ProfileDetail as ProfileDetailDTO, ProfileItem, ProfileSummary } from "../types";
++import ProfileDetail from "../components/profile/ProfileDetail";
++import ProfileSummaryCard from "../components/profile/ProfileSummaryCard";
+ 
+-interface ProfileResp {
+-  user_id: number;
+-  stats: { sessions: number; avg_mastery: number };
+-}
++type Pair = { profile: ProfileItem; summary: ProfileSummary; activeNodeId: string | null; sessionId: string | null; generation: number };
+ 
+ export default function Profile() {
+-  const { userId } = useAuth();
+-  const [stats, setStats] = useState<ProfileResp["stats"] | null>(null);
++  const [params, setParams] = useSearchParams();
++  const account = useSyncExternalStore(workspaceStore.subscribe, workspaceStore.getSnapshot, workspaceStore.getServerSnapshot).account;
++  const [options, setOptions] = useState<ProfileItem[]>([]);
++  const [cursor, setCursor] = useState<string | null>(null);
++  const [pair, setPair] = useState<Pair | null>(null);
++  const [target, setTarget] = useState<string | null>(null);
++  const [error, setError] = useState<string | null>(null);
++  const [listError, setListError] = useState<string | null>(null);
++  const [loading, setLoading] = useState(false);
++  const [listLoading, setListLoading] = useState(false);
++  const [retry, setRetry] = useState(0);
++  const operation = useRef(0);
++  const listOperation = useRef(0);
++  const query = params.toString();
++
++  useEffect(() => {
++    setPair(null); setTarget(null); setError(null); setOptions([]); setCursor(null); setListError(null);
++    return () => { operation.current++; listOperation.current++; };
++  }, [account.generation]);
+ 
+   useEffect(() => {
+-    if (userId === null) return;
+-    apiGet<ProfileResp>("/api/profile/")
+-      .then((r) => setStats(r.stats))
+-      .catch(() => setStats(null));
+-  }, [userId]);
++    const ticket = workspaceStore.captureTicket();
++    const seq = ++operation.current;
++    listOperation.current++;
++    let mounted = true;
++    const valid = () => mounted && operation.current === seq && workspaceStore.isCurrent(ticket);
++    if (ticket.userId === null) return () => { mounted = false; };
++    const run = async () => {
++      setLoading(true); setListLoading(false); setError(null);
++      let requested = params.get("profile_id");
++      let sessionId = params.get("session_id");
++      let activeNodeId: string | null = null;
++      try {
++        const page = await listProfiles({ limit: 50 });
++        if (!valid()) return;
++        setOptions(page.items); setCursor(page.next_cursor); setListError(null);
++        if (!requested && !sessionId) {
++          const workspace = await getWorkspaceState();
++          if (!valid()) return;
++          sessionId = workspace.last_session_id;
++        }
++        if (sessionId) {
++          const snapshot = await loadSnapshot(sessionId);
++          if (!valid()) return;
++          if (snapshot.session.session_id !== sessionId || snapshot.session.user_id !== ticket.userId || snapshot.profile?.user_id !== ticket.userId || snapshot.session.profile_id !== snapshot.profile?.id || (requested && snapshot.session.profile_id !== requested)) throw new Error("会话与画像链接不一致或不可访问");
++          requested = snapshot.session.profile_id;
++          activeNodeId = snapshot.session.active_node_id;
++        }
++        requested = requested || page.items[0]?.id || null;
++        setTarget(requested);
++        if (!requested) { setPair(null); return; }
++        for (let attempt = 0; attempt < 2; attempt++) {
++          const [detail, summary]: [ProfileDetailDTO, ProfileSummary] = await Promise.all([getProfile(requested), getProfileSummary(requested)]);
++          if (!valid()) return;
++          if (detail.profile.id !== requested || detail.profile.user_id !== ticket.userId) throw new Error("画像不可访问或身份不匹配");
++          if (detail.profile.revision === detail.profile_revision && detail.profile_revision === summary.profile_revision) {
++            setPair({ profile: detail.profile, summary, activeNodeId, sessionId, generation: ticket.generation }); return;
++          }
++        }
++        throw new Error("画像已更新，请重试");
++      } catch (err) {
++        if (valid()) { setTarget(requested); setError(err instanceof Error ? err.message : "读取画像失败"); }
++      } finally { if (valid()) setLoading(false); }
++    };
++    void run();
++    return () => { mounted = false; };
++  }, [account.generation, query, retry]);
+ 
+-  const placeholder = { color: "#aaa", fontStyle: "italic" as const };
+-  return (
+-    <div className="container">
+-      <section style={{ background: "#fff", padding: 16, borderRadius: 8, marginBottom: 12 }}>
+-        <h3>学习进度</h3>
+-        <p>会话数：{stats?.sessions ?? 0} ｜ 平均掌握度：{stats?.avg_mastery ?? 0}</p>
+-      </section>
+-      <section style={{ background: "#fff", padding: 16, borderRadius: 8, marginBottom: 12 }}>
+-        <h3>掌握点图谱</h3>
+-        <p style={placeholder}>待后端持久化后填充（新栈当前用内存 EventStore，不写画像）</p>
+-      </section>
+-      <section style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
+-        <h3>学习偏好</h3>
+-        <p style={placeholder}>待后端持久化后填充</p>
+-      </section>
+-    </div>
+-  );
++  async function more() {
++    if (!cursor || listLoading) return;
++    const ticket = workspaceStore.captureTicket(); const seq = ++listOperation.current;
++    setListLoading(true); setListError(null);
++    try {
++      const page = await listProfiles({ limit: 50, cursor });
++      if (!workspaceStore.isCurrent(ticket) || seq !== listOperation.current) return;
++      setOptions(old => [...old, ...page.items.filter(item => !old.some(existing => existing.id === item.id))]);
++      setCursor(page.next_cursor);
++    } catch (err) { if (workspaceStore.isCurrent(ticket) && seq === listOperation.current) setListError(err instanceof Error ? err.message : "读取主题失败"); }
++    finally { if (workspaceStore.isCurrent(ticket) && seq === listOperation.current) setListLoading(false); }
++  }
++  const shown = pair && pair.generation === account.generation && pair.profile.id === target ? pair : null;
++  return <main className="profile-page">
++    <header className="profile-header"><p>STUDY PROFILE</p><h1>学习画像</h1><p>从真实学习记录中，查看主题、知识关系与来源。</p></header>
++    <div className="profile-toolbar"><label htmlFor="profile-select">查看主题</label><select id="profile-select" value={target ?? ""} onChange={event => { setTarget(event.target.value); setParams({ profile_id: event.target.value }); }} disabled={!options.length && !shown}><option value="">选择主题</option>{shown && !options.some(item => item.id === shown.profile.id) && <option value={shown.profile.id}>{shown.profile.name}</option>}{options.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>{cursor && <button type="button" onClick={more} disabled={listLoading}>加载更多主题</button>}</div>
++    {listError && <p role="alert">{listError} <button type="button" onClick={more}>重试加载主题</button></p>}
++    {loading && <p role="status">正在读取画像…</p>}
++    {error && <p role="alert">{error} {shown && "（仍显示上次版本）"} <button type="button" onClick={() => setRetry(value => value + 1)}>重试</button></p>}
++    {!loading && !error && !target && <p className="profile-notice">暂无主题，请先<Link to="/chat">新建学习会话</Link>。</p>}
++    {shown && <div className="profile-grid"><ProfileDetail profile={shown.profile} summary={shown.summary} activeNodeId={shown.activeNodeId} sourceSessionId={shown.sessionId} /><ProfileSummaryCard profile={shown.profile} summary={shown.summary} activeNodeId={shown.activeNodeId} /></div>}
++  </main>;
+ }
++
