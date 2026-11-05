@@ -1,5 +1,5 @@
 import { apiGet, apiPost, apiPatch } from "./client";
-import { ProfileCreate, ProfileDetail, ProfilePage, ProfilePatch, ProfileSummary } from "../types";
+import { NodeCreate, NodeMutationResponse, ProfileCreate, ProfileDetail, ProfilePage, ProfilePatch, ProfileSummary } from "../types";
 export function listProfiles(params: { limit?: number; cursor?: string | null } = {}) {
   const query = new URLSearchParams();
   if (params.limit !== undefined) query.set("limit", String(params.limit));
@@ -10,3 +10,5 @@ export const createProfile = (input: ProfileCreate) => apiPost<ProfileDetail>("/
 export const getProfile = (id: string) => apiGet<ProfileDetail>(`/api/topic-profiles/${encodeURIComponent(id)}`);
 export const getProfileSummary = (id: string) => apiGet<ProfileSummary>(`/api/topic-profiles/${encodeURIComponent(id)}/summary`);
 export const patchProfile = (id: string, input: ProfilePatch) => apiPatch<ProfileDetail>(`/api/topic-profiles/${encodeURIComponent(id)}`, input);
+
+export const createProfileNode = (id: string, input: NodeCreate) => apiPost<NodeMutationResponse>(`/api/topic-profiles/${encodeURIComponent(id)}/nodes`, input);

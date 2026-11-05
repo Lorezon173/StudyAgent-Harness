@@ -277,7 +277,8 @@ def _history_layout(context, *, historical_note="", observations=None, current_m
     status = ("对应待答问题有效" if context.has_pending_question else "当前没有对应待答问题，尚无可评分回答证据")
     prefix = f"【历史上下文】\n模式={current_mode or context.state.teaching_mode};阶段={_clip(context.state.stage, 128)}\n模式历史={mode_text}\n{status}\n"
     question = context.state.last_question
-    duplicate = next((item for item in context.history if item.role == "assistant" and item.content == question), None)
+    duplicate = next((item for item in context.history if item.id == context.question_message_id
+        and item.role == "assistant" and item.content == question), None)
     if question:
         prefix += (f"上一问题引用={duplicate.id}\n" if duplicate else "上一问题=" + _clip(question, 1000) + "\n")
     if historical_note:

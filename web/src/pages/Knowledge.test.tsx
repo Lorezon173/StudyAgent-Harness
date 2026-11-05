@@ -334,3 +334,18 @@ it('keeps failed search retry intact until the new result can be paginated', asy
   expect(urls.some(path => path.includes('q=B') && path.includes('before_id=151'))).toBe(true);
 });
 
+
+it('blocks old-page search and creation when shared credentials change, preserving the form', async () => {
+  storeIdentity(); const fetcher = vi.fn((url: RequestInfo | URL) => Promise.resolve(response(String(url).includes('topic-profiles') ? { items: [], next_cursor: null } : []))); vi.stubGlobal('fetch', fetcher);
+  render(<AuthProvider><Knowledge /></AuthProvider>); await waitFor(() => expect(fetcher).toHaveBeenCalled());
+  localStorage.setItem('studyagent_user_id', '2'); localStorage.setItem('studyagent_username', '用户2'); localStorage.setItem('studyagent_token', 'B'); const before = fetcher.mock.calls.length;
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: '秘密' } }); fireEvent.click(screen.getByRole('button', { name: '搜索' })); await screen.findByText(/账号已在其他页面变更/);
+  fireEvent.click(screen.getByRole('button', { name: '＋ 新建文本资料' })); fireEvent.change(screen.getByLabelText('名称'), { target: { value: '未发送' } }); fireEvent.change(screen.getByLabelText('正文'), { target: { value: '保留内容' } }); fireEvent.click(screen.getByRole('button', { name: '保存' }));
+  const { within } = await import('@testing-library/react'); await waitFor(() => expect(within(screen.getByRole('dialog')).getAllByRole('alert').some(alert => !alert.querySelector('button') && alert.textContent === '账号已在其他页面变更，本次请求未发送，请重新登录')).toBe(true)); expect(screen.queryByText(/再次提交可能重复创建/)).toBeNull(); expect(fetcher.mock.calls.length).toBe(before); expect((screen.getByLabelText('名称') as HTMLInputElement).value).toBe('未发送'); expect((screen.getByLabelText('正文') as HTMLTextAreaElement).value).toBe('保留内容'); expect(localStorage.getItem('studyagent_token')).toBe('B');
+});
+
+it('allows a matching B account to read and create through the knowledge page', async () => {
+  storeIdentity(2, 'B'); const item = { id: 8, name: '乙的笔记', description: '', content_text: '正文', profile_id: null, user_id: 2, source_type: 'manual', created_at: '', updated_at: '' };
+  const fetcher = vi.fn((url: RequestInfo | URL, init?: RequestInit) => { expect(init?.headers).toMatchObject({ Authorization: 'Bearer B' }); if (init?.method === 'POST') return Promise.resolve(response(item)); return Promise.resolve(response(String(url).includes('topic-profiles') ? { items: [], next_cursor: null } : String(url).endsWith('/8') ? item : [item])); }); vi.stubGlobal('fetch', fetcher);
+  render(<AuthProvider><Knowledge /></AuthProvider>); await screen.findByRole('button', { name: '查看 乙的笔记' }); fireEvent.click(screen.getByRole('button', { name: '＋ 新建文本资料' })); fireEvent.change(screen.getByLabelText('名称'), { target: { value: '乙的笔记' } }); fireEvent.change(screen.getByLabelText('正文'), { target: { value: '正文' } }); fireEvent.click(screen.getByRole('button', { name: '保存' })); await screen.findByText('已保存'); expect(fetcher.mock.calls.filter(([, init]) => init?.method === 'POST')).toHaveLength(1);
+});

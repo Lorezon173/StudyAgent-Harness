@@ -1,0 +1,499 @@
+{
+  "state": "PREPARED_REVIEW_REQUIRED",
+  "base_head": "3c9fae413309731b181e72475cf71c980531e7e4",
+  "authorization": "准备材料；未经独立材料审查不暂存或提交",
+  "files": [
+    {
+      "path": "app/agents/critic.py",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "69300f96f40c7a93d3087e186df29fa5214ef0739ef7aaa753741e684dd65331",
+      "purpose": "产品或测试增量",
+      "source": "teaching-boundary-code-review.md"
+    },
+    {
+      "path": "app/harness/teaching_context.py",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "a7332c997f3490c0699bd6c9dc38892a4ae8e41c0efe3f70927d10c9fe632796",
+      "purpose": "产品或测试增量",
+      "source": "teaching-boundary-code-review.md"
+    },
+    {
+      "path": "tests/integration/test_retriever_integration.py",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "b6a8937167836de1c31c50cfd09670658fc63c3c03c9ed94e6d9481ac5028c4b",
+      "purpose": "产品或测试增量",
+      "source": "teaching-boundary-code-review.md"
+    },
+    {
+      "path": "tests/integration/test_workspace_resume.py",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "5b121dd86e867cf280fd5a40a578a6a3fd783c06bc1eb54213e20f2cbc1594a8",
+      "purpose": "产品或测试增量",
+      "source": "python-lint-code-review.md"
+    },
+    {
+      "path": "tests/integration/workspace_observer.py",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "116eef60c419ffe3aa4f44b9b9cf75f5441fb60bdff1ebb87612fd05ac178b35",
+      "purpose": "产品或测试增量",
+      "source": "python-lint-code-review.md"
+    },
+    {
+      "path": "tests/unit/orchestration/test_conversation_context.py",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "27c7045a12f37b3c3d9efbb78a3009288a3fd20d487928138cc16bb3b260f33c",
+      "purpose": "产品或测试增量",
+      "source": "teaching-boundary-code-review.md"
+    },
+    {
+      "path": "web/e2e/workspace-real.spec.ts",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "1a4349b5cdd91ffd8fb81a81bc18d18baa8d619e93165a140cf6db9a5d88ea99",
+      "purpose": "产品或测试增量",
+      "source": "real-browser-option-code-review.md"
+    },
+    {
+      "path": "web/src/api/client.test.ts",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "b67558f8955ae12b21ef0f4aa0ff895c21c901815cfc195bca4775bf1a0336a8",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "web/src/api/client.ts",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "1e75d9c7a4d825e376bf79c78bbc73b52bd015639e1d6067ff77a2dd6e606d32",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "web/src/api/profiles.ts",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "69860e6911ca98a36ed4f13077e04f28ef889757363f41ae1953a6355006da52",
+      "purpose": "产品或测试增量",
+      "source": "node-ui-code-review-v2.md"
+    },
+    {
+      "path": "web/src/components/knowledge/ResourceDialog.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "e9e9351ad9f00bc67d0b793044118bb63e44fba78cbaaab1d4b819c6f0e38b95",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "web/src/components/profile/ProfileNodeControls.tsx",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "f107543368a62d8e5c0d12ea1c40e7069c54e6d504084a16e28779ef75a7912b",
+      "purpose": "产品或测试增量",
+      "source": "node-ui-code-review-v2.md"
+    },
+    {
+      "path": "web/src/pages/Knowledge.test.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "7483cb2985dac3afcb5f50fc0b88e97e09424819f645f0f17d2a1d8843bf9463",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "web/src/pages/Profile.test.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "ff5655bf6430233afdfc866bcdc64e9be904744d7f0bf3918dcba58672c904a4",
+      "purpose": "产品或测试增量",
+      "source": "node-ui-code-review-v2.md"
+    },
+    {
+      "path": "web/src/pages/Profile.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "f0360b07a7157f1bc321fcf9c835674a7079a8f0a2a2600d8de413a5d32f1af5",
+      "purpose": "产品或测试增量",
+      "source": "node-ui-code-review-v2.md"
+    },
+    {
+      "path": "web/src/store/auth.test.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "075195be3720d6bdcdfaf8fb500e61d275e0c24cd5ae11a721a8858dafc14b9b",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "web/src/store/auth.tsx",
+      "status": "tracked-modified",
+      "stage": "full-path",
+      "sha256": "f9483af06b3d3660a73782195f53e070463616479357345793fa6fd6831d7a5f",
+      "purpose": "产品或测试增量",
+      "source": "account-isolation-code-review.md"
+    },
+    {
+      "path": "docs/delivery/2026-10-23-workspace-acceptance.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c4b51aba1ff52cbc1eba80b637feac31ecbee0a82b5a569f67079760f832b1a2",
+      "purpose": "交付文档或未提交账本",
+      "source": "Task13 收口计划"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/acceptance-audit.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "000ebe6fb98bf2e7a3f7f42463f19a63498b2e0c3f6afe6be3e710c06acedb8c",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/local-closeout-plan.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "700f059568aae1670d7f51e1f9dd04b49605923a70456dd98c8f630a23629021",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/local-closeout-plan-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "ed2b1782ab21ab669383e7a7c99f7feb806f0594c140de1a8196ce4b3f726e3f",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/implementation-plan.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "5c6d8d8aca79270ce913b5786da3b0da85ab31c1401d0130634cb903a0ebfb93",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/implementation-plan-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "2742f36fc9eeec255fc600db0724cb36332d216828fc3a9884b3f8274e8982a7",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/candidate-review-coverage.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "6dd7f3b76c3ad414043b8c5942bcb7bef763d06b7acd22a5c18d3dd05f6816cc",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/candidate-review-coverage.json",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c610ca0b97b3f10e008e1e7f0f7c1335da1514f81b1f32fb90e1b8e2235a5b11",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/branch-ocr-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "06220be89a0d33815a2c90bd8ce36c1db95678daf4b41027fc608ce63a3ac63a",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/branch-ocr-checklist.json",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c69821bc8e61445c34d96064f39df7c16d2c4726dd60c305b795678c0b8b3880",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/node-ui-code-review-v2.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "1a1e51ac8246dcd48f7df43311e681a7ac338337803cf2a4c59c6f9721036313",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/account-isolation-code-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "56c4e41da0d10f7aa4480b2410ed6a60a8389d3d8acd491e007b698806bfffcb",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/teaching-boundary-code-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "ed10967e638f4cd256b2e4e05c4b59c7e87d3fb064428afab469136a9af5bd37",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/python-lint-code-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "2782a5ac54bd0b825b79fae70d3565b93a5352e7d301e3afbb1e53f13d2500e4",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-browser-option-code-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "e78807249eb85d75349692c7bbd1cff4abb316562aa56028b4704c586e760841",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/two-tab-probe-code-review-v3.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "f71983aac2176c308943b00d4880fdd7b138ed489480675f7334ba9029bbdaa2",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/two-tab-probe-diagnostics-plan-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "f690e023c65d811652a19967b072880a3e52428c8be142121c22a2e37bf61729",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/final-backend-regression.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "81050453505d20daad42023a8322391a88a6bee8ceb2cf6b12d6c5b670b89284",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/final-backend-pytest.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "75156fe3fe3ab36218a11b84c130ef3bfb6533e38b9d2cfdfcbbc91e4e719784",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/final-backend-pg.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "d8b213f559974a879d3fade75763c7acc3536779efaa024066cd6b5d4e8e502a",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/account-final-web-regression.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "d6883affa4e278f9cdc0ee162279c9ed8cbd46a114bee8b62005d57cb4d6d313",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/account-final-web-test.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "2058dbd73f4d02d08bbc599f3af9dc2d9e440cdf4f8726c6d0466bb50aac1dce",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/account-final-web-build.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "39ea7655860faa244932592b2438aed1c6186ee9ee53548959b5bebfe277833e",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/account-final-web-hashes.json",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "d38ac4c12f08f37056b827587fc149f00e8a15113f3380091129dea1890a2087",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-browser-second-run-summary.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "5c335d30d7a8a6c8bfb8f57ea66dae204e6fc56d54764bbf029a1a5129e5bf08",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-browser-second-run.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "e24dcd07a6c50d98888c587f03de69d80bd334e61e9b0bbce7596bcfbfe366d9",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-baseline-round2.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "ce6e2c81eb9f78369ec88eead1240a558a6525167b7f0a6ed90a740ae9c25073",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-app-restart-round2.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c73c1186255763f7786f420cd42234392186c18cb00e2e7c229d7f2c924b5baf",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-pg-restart-round2.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "ab8cc1e8f2394a7f0a248c5d51d9909e22b16b959eab3796fc74d5f4690a1f30",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/pg-reconnect-plan-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "2cde314d8ba8c64706971c70a77bb119422227845d13989520343975232381b8",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/pg-reconnected-isolation-summary.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "a602965ce2bc75c3c3f12ffd6788f9d352a70fd56176a0e22815c530262daf87",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-pg-reconnected-round2.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "853d7571c2d747d4912164625cc95e0fb76aa7f8be65fce7b1b1ba531851242d",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-isolation-round2.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "5d3bc721e6a74aa08a7d87229187b3638ac1bd047bdc8dda40aeda1d7959f2e3",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-two-tab-round3.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "1a3fd2640fade740e87ae7194bbccabe018716d91452610e02134af2609be515",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-browser-first-run-summary.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "4dd2ac8a59343892baa8010085306c716384cdcdaf8f791cdb5fbdc607f8373f",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/real-browser-first-run.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "0d00ce0b28a01949caf688817512b040f5a5ee6c3cc9d9dfe7941c43ed2bd268",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/regression-summary.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c305bc1c3cc1187ecd34cd7157f5048b0b0a8ed2d39315bb2ad7d88651dca1b7",
+      "purpose": "脱敏验收或审阅证据",
+      "source": "Task13 独立审计及候选覆盖"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/final-backend-ruff.log",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "18ebd6d90b9c628c17f7492d6bfd297eb8f3f12bf9e0e9434bf954a9aa0f16d7",
+      "purpose": "固定 Ruff 0.17.1 全仓 599 项结果与逐项对照的必要原始脱敏证据",
+      "source": "local-closeout-material-review.md 对当前证据缺口的复审要求"
+    },
+    {
+      "path": "docs/delivery/study-workspace-goal/evidence/Task13/teaching-and-evaluator-boundary-plan-review.md",
+      "status": "untracked",
+      "stage": "full-path",
+      "sha256": "c26f1b6ff7f092f7a02ffd6ed1500054c7ddd4719da85267bc52ca0c5df31313",
+      "purpose": "教学和评价边界修订计划独立审查",
+      "source": "local-closeout-material-review.md 对当前证据缺口的复审要求"
+    }
+  ],
+  "mixed_files": [
+    {
+      "path": "README.md",
+      "stage": "cached-patch-only",
+      "patch_private": ".superpowers/runtime/task13/closeout-private/readme-cached.patch",
+      "purpose": "知识库鉴权一处修正及 Task13 段",
+      "original_sha256": "d47d3713c1dc4beace439e9e502f6af852088186b99775caab992697f27ad6f7"
+    },
+    {
+      "path": "docs/asset-inventory.md",
+      "stage": "cached-patch-only",
+      "patch_private": ".superpowers/runtime/task13/closeout-private/asset-cached.patch",
+      "purpose": "仅追加 Task13 条目",
+      "original_sha256": "41462288eb1a53ebf320126a3a77047b9e2242fa497ec951ac8d29701248de1b"
+    }
+  ],
+  "manifest_self": {
+    "path": "docs/delivery/study-workspace-goal/evidence/Task13/local-closeout-commit-manifest.json",
+    "stage": "full-path",
+    "sha256": "自引用不预写；审查后另行核验"
+  },
+  "baseline_in_head": [
+    "docs/superpowers/plans/2026-10-23-study-workspace-core.md",
+    "superpowers/frontend-ui/2026-10-23-final-implementation-raw.md"
+  ],
+  "exclusions": [
+    "README 用户原 162 行和 asset 用户原 34 行差异",
+    "私有运行目录、私有快照/补丁、原始凭据、原始模型提示及见证、私有探针",
+    "任务外改动、缓存、截图及未列文件",
+    "其他未明确列入的大体量原始诊断和日志，例如 OCR preview/rule；保留工作树，不提交",
+    "status.json 和 progress.md 为首笔排除的工作树草稿；首笔实核后按第二笔范围更新及独立审查"
+  ],
+  "links_boundary": "交付记录及本轮验收审计、后端回归和候选覆盖的关键证据链接须在 HEAD 或首笔白名单；历史审阅及其他诊断材料的递归链接仅作为本地外部证据，不保证提交内自包含。",
+  "sensitive_scan": {
+    "scope": "所列文本文件的有限私钥、Bearer、JWT 和含口令 PostgreSQL URI 模式",
+    "matched_filenames": [],
+    "limitation": "有限模式扫描不能代替全面脱敏审计",
+    "added_evidence_rescan": {
+      "scope": "新增两项文件的有限私钥、Bearer、JWT、常见令牌和含口令 PostgreSQL URI 模式",
+      "matched_filenames": [],
+      "limitation": "有限模式扫描不能代替全面脱敏审计"
+    }
+  },
+  "future_review": "独立材料审查报告尚不存在；产生后按实际审查并明确增补白名单，重新核验文件与脱敏；不得用目录通配符。"
+}

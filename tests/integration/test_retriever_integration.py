@@ -176,8 +176,38 @@ def test_retrieval_event_source_is_retriever():
 
 # ── evaluate 可跑验证 ──
 
-def test_evaluate_produces_valid_metrics():
+def test_evaluate_produces_valid_metrics(monkeypatch):
     """evaluate() 输出应为合法数值（供 Plan E 调用）。"""
+    import sys
+    from types import ModuleType, SimpleNamespace
+
+    monkeypatch.setattr("app.core.config.settings.rag_backend", "fake")
+    llm, embeddings = object(), object()
+    judge_calls, eval_calls = [], []
+    metric_faithfulness, metric_relevancy, metric_precision = object(), object(), object()
+    ragas = ModuleType("ragas")
+    ragas.__path__ = []
+    def evaluate(**kwargs):
+        eval_calls.append(kwargs)
+        return SimpleNamespace(_scores_dict={"faithfulness": [0.71], "answer_relevancy": [0.82], "context_precision": [0.93]})
+    ragas.evaluate = evaluate
+    ragas_metrics = ModuleType("ragas.metrics")
+    ragas_metrics.faithfulness = metric_faithfulness
+    ragas_metrics.answer_relevancy = metric_relevancy
+    ragas_metrics.context_precision = metric_precision
+    datasets = ModuleType("datasets")
+    class Dataset:
+        @staticmethod
+        def from_dict(values):
+            return values
+    datasets.Dataset = Dataset
+    monkeypatch.setitem(sys.modules, "ragas", ragas)
+    monkeypatch.setitem(sys.modules, "ragas.metrics", ragas_metrics)
+    monkeypatch.setitem(sys.modules, "datasets", datasets)
+    def judge(**kwargs):
+        judge_calls.append(kwargs)
+        return {"llm": llm, "embeddings": embeddings}
+    monkeypatch.setattr("app.eval.judge.build_judge", judge)
     retriever = RetrieverAgent()
     retriever._coordinator.index_documents([
         {"content": "BERT 使用双向 Transformer 编码器"},
@@ -197,6 +227,24 @@ def test_evaluate_produces_valid_metrics():
     assert 0.0 <= metrics["answer_relevancy"] <= 1.0
     assert 0.0 <= metrics["redundancy"] <= 1.0
     assert metrics["latency_ms"] >= 0
+    assert metrics["faithfulness"] == 0.71
+    assert metrics["answer_relevancy"] == 0.82
+    assert metrics["context_precision"] == 0.93
+    assert judge_calls == [{"target_agent_family": "anthropic"}]
+    assert len(eval_calls) == 1
+    call = eval_calls[0]
+    assert call["llm"] is llm and call["embeddings"] is embeddings
+    assert call["metrics"] == [metric_faithfulness, metric_relevancy, metric_precision]
+    assert call["raise_exceptions"] is False
+    assert call["dataset"]["user_input"] == ["Transformer 架构"]
+    assert call["dataset"]["response"] == ["BERT 双向，GPT 单向"]
+    assert call["dataset"]["reference"] == ["BERT 双向，GPT 单向"]
+    assert call["dataset"]["retrieved_contexts"] == [[
+        "BERT 使用双向 Transformer 编码器", "GPT 使用单向 Transformer 解码器"
+    ]]
+    assert metrics["recall_at_k"] == 1.0
+    assert metrics["redundancy"] == 0.0
+    assert all(item["available"] for item in metrics["judge_scores"].values())
 
 
 # ── 多源聚合集成 ──

@@ -44,10 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = useCallback(() => {
+    const ticket = workspaceStore.captureTicket();
     workspaceStore.clearAccount();
-    localStorage.removeItem(KEY_ID);
-    localStorage.removeItem(KEY_NAME);
-    localStorage.removeItem(KEY_TOKEN);
+    if (localStorage.getItem(KEY_ID) === (ticket.userId === null ? null : String(ticket.userId)) && localStorage.getItem(KEY_TOKEN) === ticket.token) {
+      localStorage.removeItem(KEY_ID);
+      localStorage.removeItem(KEY_NAME);
+      localStorage.removeItem(KEY_TOKEN);
+    }
     setAuth({ userId: null, username: null, token: null });
   }, []);
 

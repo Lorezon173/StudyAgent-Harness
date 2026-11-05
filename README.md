@@ -404,7 +404,7 @@ curl http://localhost:8000/health          # 健康检查
 ## 已知限制（诚实清单）
 
 - `/api/chat/multi`、`/api/eval/{id}/rerun` 是桩，未实现真实逻辑。
-- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点无 user_id 绑定不加鉴权。
+- `/api/auth/login` 已实现 bcrypt 密码验证 + JWT 签发（Task 10）。**端点鉴权（Task 11）已完成**：chat / chat_stream / chat_multi / profile / sessions / eval 均需 JWT，sessions / eval 额外做所有权校验（403）。**前端适配（Task 12）已完成**：auth.tsx 存 token、client.ts 自动注入 Authorization header + 401 自动跳登录。**测试 fixture（Task 13）已完成**：conftest.py 提供 auth_headers fixture，受保护端点测试自动鉴权。全链路鉴权可用，knowledge 端点需 JWT，私有资料按账号归属隔离。
 - `ui/`（Chainlit）、`worker/`（Celery）为可选桩。
 - 评估 benches 已实现但未接在线 API/CLI，仅测试驱动。
 
@@ -523,3 +523,9 @@ React工作区采用已确认的纸感书房配色：左栏按本人画像主题
 [验收摘要](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-summary.md)与[独立审计](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-audit.md)记录最新 25 项浏览器场景通过（24 项受控 API、1 项真实 HTTP 账号组），428 项前端测试及构建按冻结版本关联沿用；历史失败和 L1–L4 覆盖限制保留。独立 E2E TypeScript 检查和联网安全审计未通过。
 
 Task12 已完成，产品提交为 `4e1d15b0ba0a065af4d6246bcd5e7e4b21679791`；Task11 已完成，Task13 进入规划，真实教学模型及隔离 PostgreSQL 重启持久化等验收待完成。DEC-SESSION-001 的 B 扩展为独立候选，与真实账号 B 不同。未推送或部署。
+
+### Task13：跨层真实验收（验收通过，待本地提交）
+
+正式本机 HTTP 工作区支持登录后恢复会话、继续真实模型教学、查看同主题共享画像与管理私有文本资料；认证入口为 `/api/auth`，工作区通过 `/api/chat`、`/api/sessions`、`/api/topic-profiles` 和 `/api/knowledge` 访问，私有资源按账号隔离。既有启动、Alembic 迁移与恢复方式见上文及[验收交付记录](docs/delivery/2026-10-23-workspace-acceptance.md)；PostgreSQL 端口变化后本次通过重新接入读回，未验证自动无感恢复。
+
+[独立证据审计](docs/delivery/study-workspace-goal/evidence/Task13/acceptance-audit.md)记录 26 项浏览器测试（24 受控、2 真实 HTTP）、真实模型续答、同卷 PG 重启与五类资源隔离、双标签及分层回归。默认后端 1362 项、指定数据库混合回归 67 项（42 PG、25 SQLite）、前端 452 项及构建通过；固定 Ruff 全仓仍有 599 条既有诊断，检查未通过。Task13 为 VERIFIED_UNCOMMITTED、commit=null；本地提交及实核尚待完成。第二阶段文件/网络知识能力及 DEC-SESSION-001 B 扩展仍属独立范围，不推送或部署。

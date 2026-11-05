@@ -1,0 +1,76 @@
+EE                                                                       [100%]
+=================================== ERRORS ====================================
+___________ ERROR at setup of test_real_readback_and_model_witness ____________
+
+    @pytest.fixture
+    def run():
+        manifest = json.loads(runtime_file("TASK13_MANIFEST_PATH").read_text(encoding="utf-8"))
+        assert manifest["format_version"] == 1
+        assert manifest["run_id"] == required("TASK13_RUN_ID")
+        assert manifest["candidate_commit"] == required("TASK13_CANDIDATE_COMMIT")
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        assert head == manifest["candidate_commit"]
+        assert manifest["users"]["a"]["id"] != manifest["users"]["b"]["id"]
+        url = make_url(required("TASK13_DATABASE_URL"))
+        assert url.get_backend_name() == "postgresql"
+        assert url.host in {"localhost", "127.0.0.1"} and url.database.startswith("task13_acceptance_")
+        assert url.database == required("TASK13_DATABASE_NAME")
+        api = urlsplit(required("TASK13_API_URL"))
+        assert api.scheme == "http" and api.hostname in {"localhost", "127.0.0.1"} and api.port and api.path in {"", "/"} and not api.query
+        for key in ("initial", "s2", "s3", "resume", "draft"):
+            assert manifest["markers"][key + "_sha256"] == digest(required("TASK13_MARKER_" + key.upper()))
+        phase = required("TASK13_PHASE")
+        assert phase in {"baseline", "app_restarted", "pg_restarted", "isolation"}
+        engine = sa.create_engine(url.set(drivername="postgresql+psycopg"))
+        clients = {}
+        try:
+            for user in ("a", "b"):
+                client = httpx.Client(base_url=required("TASK13_API_URL"), timeout=30, trust_env=False)
+                response = client.post("/api/auth/login", json={
+                    "username": required("TASK13_" + user.upper() + "_USERNAME"),
+                    "password": required("TASK13_" + user.upper() + "_PASSWORD"),
+                })
+>               assert response.status_code == 200
+E               assert 500 == 200
+E                +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests\integration\test_workspace_resume.py:70: AssertionError
+_______________ ERROR at setup of test_cross_account_isolation ________________
+
+    @pytest.fixture
+    def run():
+        manifest = json.loads(runtime_file("TASK13_MANIFEST_PATH").read_text(encoding="utf-8"))
+        assert manifest["format_version"] == 1
+        assert manifest["run_id"] == required("TASK13_RUN_ID")
+        assert manifest["candidate_commit"] == required("TASK13_CANDIDATE_COMMIT")
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        assert head == manifest["candidate_commit"]
+        assert manifest["users"]["a"]["id"] != manifest["users"]["b"]["id"]
+        url = make_url(required("TASK13_DATABASE_URL"))
+        assert url.get_backend_name() == "postgresql"
+        assert url.host in {"localhost", "127.0.0.1"} and url.database.startswith("task13_acceptance_")
+        assert url.database == required("TASK13_DATABASE_NAME")
+        api = urlsplit(required("TASK13_API_URL"))
+        assert api.scheme == "http" and api.hostname in {"localhost", "127.0.0.1"} and api.port and api.path in {"", "/"} and not api.query
+        for key in ("initial", "s2", "s3", "resume", "draft"):
+            assert manifest["markers"][key + "_sha256"] == digest(required("TASK13_MARKER_" + key.upper()))
+        phase = required("TASK13_PHASE")
+        assert phase in {"baseline", "app_restarted", "pg_restarted", "isolation"}
+        engine = sa.create_engine(url.set(drivername="postgresql+psycopg"))
+        clients = {}
+        try:
+            for user in ("a", "b"):
+                client = httpx.Client(base_url=required("TASK13_API_URL"), timeout=30, trust_env=False)
+                response = client.post("/api/auth/login", json={
+                    "username": required("TASK13_" + user.upper() + "_USERNAME"),
+                    "password": required("TASK13_" + user.upper() + "_PASSWORD"),
+                })
+>               assert response.status_code == 200
+E               assert 500 == 200
+E                +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+tests\integration\test_workspace_resume.py:70: AssertionError
+=========================== short test summary info ===========================
+ERROR tests/integration/test_workspace_resume.py::test_real_readback_and_model_witness
+ERROR tests/integration/test_workspace_resume.py::test_cross_account_isolation
+2 errors in 7.05s

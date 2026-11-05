@@ -13,6 +13,7 @@ function browserStorage() {
 beforeEach(() => {
   vi.restoreAllMocks();
   browserStorage();
+  workspaceStore.clearAccount();
 });
 
 describe("workspace HTTP contracts", () => {
@@ -40,7 +41,7 @@ describe("workspace HTTP contracts", () => {
     await expect(apiGet("/broken")).rejects.toMatchObject({ status: 200, code: "invalid_json" });
   });
   it("sends PATCH JSON and lets FormData supply its own boundary", async () => {
-    localStorage.setItem("studyagent_token", "test-token");
+    workspaceStore.startAccount(1, "test-token"); localStorage.setItem("studyagent_user_id", "1"); localStorage.setItem("studyagent_token", "test-token");
     const transport = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ version: 1 }) });
     vi.stubGlobal("fetch", transport);
     await client.apiPatch("/api/workspace-state", { expected_version: 0, sidebar_pinned: false });
@@ -124,4 +125,35 @@ describe("apiGet", () => {
     }));
     await expect(apiGet("/api/profile/1")).rejects.toBeInstanceOf(ApiError);
   });
+});
+
+it.each([{ id: '2', token: 'A' }, { id: '1', token: 'B' }, { id: null, token: 'A' }, { id: '1', token: '' }])('blocks mismatched shared credentials before fetch: $id / $token', async ({ id, token }) => {
+  workspaceStore.startAccount(1, 'A'); if (id !== null) localStorage.setItem('studyagent_user_id', id); if (token !== null) localStorage.setItem('studyagent_token', token);
+  const fetcher = vi.fn(); const invalidated = vi.fn(); const remove = client.registerAuthInvalidation(invalidated); vi.stubGlobal('fetch', fetcher);
+  await expect(apiGet('/api/knowledge')).rejects.toMatchObject({ status: 0, code: 'account_changed', message: '账号已在其他页面变更，本次请求未发送，请重新登录' });
+  expect(fetcher).not.toHaveBeenCalled(); expect(invalidated).not.toHaveBeenCalled(); expect(workspaceStore.captureTicket()).toMatchObject({ userId: 1, token: 'A' }); expect(localStorage.getItem('studyagent_user_id')).toBe(id); expect(localStorage.getItem('studyagent_token')).toBe(token); remove();
+});
+it('keeps public credential POSTs free of shared authorization even on mismatch', async () => {
+  workspaceStore.startAccount(1, 'A'); localStorage.setItem('studyagent_user_id', '2'); localStorage.setItem('studyagent_token', 'B');
+  const fetcher = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({}) }); vi.stubGlobal('fetch', fetcher);
+  await apiPost('/api/auth/login', {}); await apiPost('/api/auth/register', {});
+  expect(fetcher.mock.calls.map(([, init]) => init.headers.Authorization)).toEqual([undefined, undefined]);
+});
+it('keeps shared B credentials when a dispatched A request later returns 401', async () => {
+  workspaceStore.startAccount(1, 'A'); localStorage.setItem('studyagent_user_id', '1'); localStorage.setItem('studyagent_token', 'A'); let resolve!: (r: Response) => void;
+  const fetcher = vi.fn((_url: string, _init: RequestInit) => new Promise<Response>(r => { resolve = r; })); vi.stubGlobal('fetch', fetcher); const pending = apiGet('/api/knowledge');
+  localStorage.setItem('studyagent_user_id', '2'); localStorage.setItem('studyagent_token', 'B'); resolve({ ok: false, status: 401, json: async () => ({}) } as Response);
+  await expect(pending).rejects.toMatchObject({ status: 401 }); expect(fetcher.mock.calls[0][1].headers).toMatchObject({ Authorization: 'Bearer A' }); expect(workspaceStore.captureTicket()).toMatchObject({ userId: 1, token: 'A' }); expect(localStorage.getItem('studyagent_token')).toBe('B');
+});
+
+it.each([{ id: 1, token: 'A' }, { id: 2, token: 'B' }])('uses the matching page ticket for user $id', async ({ id, token }) => {
+  workspaceStore.startAccount(id, token); localStorage.setItem('studyagent_user_id', String(id)); localStorage.setItem('studyagent_token', token);
+  const fetcher = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({}) }); vi.stubGlobal('fetch', fetcher);
+  await apiGet('/api/knowledge'); await apiPost('/api/knowledge', { name: 'x' }); expect(fetcher.mock.calls.map(([, init]) => init.headers.Authorization)).toEqual([`Bearer ${token}`, `Bearer ${token}`]);
+});
+it('allows fully anonymous requests but blocks incomplete shared credentials', async () => {
+  const fetcher = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({}) }); vi.stubGlobal('fetch', fetcher);
+  await apiGet('/anonymous'); expect(fetcher.mock.calls[0][1].headers.Authorization).toBeUndefined();
+  localStorage.setItem('studyagent_user_id', '1'); await expect(apiGet('/api/knowledge')).rejects.toMatchObject({ code: 'account_changed' }); expect(fetcher).toHaveBeenCalledTimes(1);
+  localStorage.removeItem('studyagent_user_id'); localStorage.setItem('studyagent_token', 'A'); await expect(apiPost('/api/knowledge', {})).rejects.toMatchObject({ code: 'account_changed' }); expect(fetcher).toHaveBeenCalledTimes(1);
 });

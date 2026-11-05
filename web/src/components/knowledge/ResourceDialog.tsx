@@ -132,7 +132,7 @@ export default function ResourceDialog({ target, returnFocus, onClose, onChanged
         }
         catch (e) {
             if (current(ticket, n))
-                setError(mode === "create" && e instanceof ApiError && e.status === 0 ? "创建结果不确定，请先刷新核对；再次提交可能重复创建。" : `保存未确认：${e instanceof Error ? e.message : "请重试"}`);
+                setError(e instanceof ApiError && e.code === "account_changed" ? e.message : mode === "create" && e instanceof ApiError && e.status === 0 ? "创建结果不确定，请先刷新核对；再次提交可能重复创建。" : `保存未确认：${e instanceof Error ? e.message : "请重试"}`);
         }
         finally {
             if (current(ticket, n)) {

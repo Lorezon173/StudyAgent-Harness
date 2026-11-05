@@ -1,0 +1,52 @@
+
+> studyagent-web@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/backup/basic_file/Program/LearningAgent/StudyAgent-Harness/web
+
+ ✓ src/store/workspace.test.ts (11 tests) 30ms
+ ✓ src/api/client.test.ts (21 tests) 47ms
+ ✓ src/hooks/useFloatingProfile.test.ts (2 tests) 8ms
+ ✓ src/api/workspace.test.ts (6 tests) 295ms
+ ✓ src/store/localRecovery.test.ts (13 tests) 33ms
+ ✓ src/components/profile/ProfileSummaryCard.test.tsx (2 tests) 103ms
+ ✓ src/store/auth.test.tsx (13 tests) 225ms
+ ✓ src/components/profile/FloatingProfile.test.tsx (11 tests) 528ms
+ ✓ src/hooks/useDraftPersistence.test.tsx (1 test) 51ms
+stderr | src/pages/Profile.test.tsx > renders a verified profile and its real assessed summary
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/Login.test.tsx (14 tests) 1079ms
+ ✓ src/components/workspace/SessionSidebar.test.tsx (3 tests) 743ms
+   ✓ keeps same-name groups and their concurrent pages independent, deduplicates sessions and preserves root pagination 544ms
+ ✓ src/pages/Profile.test.tsx (26 tests) 1809ms
+ ✓ src/components/workspace/NewSessionDialog.test.tsx (7 tests) 1339ms
+   ✓ loads real profile pages and rejects a forged option before POST 480ms
+stderr | src/components/workspace/WorkspaceLayout.test.tsx > does not apply an old account's delayed success after switching accounts
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/workspace/WorkspaceLayout.test.tsx (20 tests) 2118ms
+   ✓ starts pinned, collapses manually, pins open and keeps selection open 365ms
+ ✓ src/pages/Knowledge.test.tsx (19 tests) 3545ms
+   ✓ searches private text and opens its full content 352ms
+   ✓ paginates by the lowest id and restarts at the first page for a new search 661ms
+   ✓ deduplicates overlapping records when a later page contains repeated ids 405ms
+   ✓ keeps failed search retry intact until the new result can be paginated 842ms
+ ✓ src/pages/Chat.test.tsx (283 tests) 31397ms
+   ✓ persists an edited draft against the selected session's view version 548ms
+   ✓ offers to retry a draft save after a server failure 599ms
+   ✓ persists only an owned visible message as the reading anchor 1035ms
+   ✓ records the message actually visible when the reader scrolls 1043ms
+   ✓ retains both drafts after a view-state conflict and asks the reader to choose 576ms
+   ✓ polls a running request recovered in a session snapshot 3077ms
+   ✓ does not let an older valid association erase a newer verified conflict: backed up 343ms
+   ✓ does not let an older valid association erase a newer verified conflict: backup unavailable 339ms
+
+ Test Files  16 passed (16)
+      Tests  452 passed (452)
+   Start at  01:23:39
+   Duration  36.69s (transform 4.18s, setup 0ms, collect 18.71s, tests 43.35s, environment 24.44s, prepare 5.79s)
+

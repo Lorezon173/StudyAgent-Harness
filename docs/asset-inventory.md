@@ -161,3 +161,12 @@
 | `ci.yml` | CI | push main / 任意 PR → `uvx ruff check` + `uv run pytest`（默认排除 integration） | git push / PR | `.github/workflows/ci.yml` | 🔴 新建 |
 | `release.yml` | CD | push main / `v*` tag → 多阶段构建 → 推 ghcr.io（tag `latest`+sha），用仓库自带 `GITHUB_TOKEN` | git push main / 打 tag | `.github/workflows/release.yml` | 🔴 新建 |
 | `psycopg[binary]` | 迁移驱动 | alembic 同步引擎迁移所需（async→sync，见 env.py:22）；原仅有 asyncpg | `uv sync` / 镜像内 `alembic upgrade` | `pyproject.toml` 主依赖 | 🟡 新增 |
+
+
+## Task13 跨层真实验收（待本地提交）
+
+| 交付 / 证据 | 作用 | 位置 |
+|---|---|---|
+| 第一阶段验收记录 | 需求追踪、真实运行、重启与隔离边界 | `docs/delivery/2026-10-23-workspace-acceptance.md` |
+| Task13 独立证据审计 | 核对真实模型、持久化、跨账号和分层回归 | `docs/delivery/study-workspace-goal/evidence/Task13/acceptance-audit.md` |
+| 候选审阅映射 | 17 项增量与继承的分支审查证据 | `docs/delivery/study-workspace-goal/evidence/Task13/candidate-review-coverage.md` |

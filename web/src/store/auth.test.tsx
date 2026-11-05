@@ -39,7 +39,7 @@ it("current 401 clears React auth, storage and workspace together", async () => 
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({ detail: "expired" }, 401)));
   await act(async () => { await apiGet("/api/sessions").catch(() => {}); });
   expect(screen.getByText("anonymous:none")).toBeTruthy();
-  expect(localStorage.getItem("studyagent_token")).toBeNull();
+  expect(localStorage.getItem("studyagent_token")).toBeNull(); expect(localStorage.getItem("studyagent_user_id")).toBeNull(); expect(localStorage.getItem("studyagent_username")).toBeNull();
   expect(workspaceStore.getSnapshot().account.generation).toBe(generation + 1);
   fireEvent.click(screen.getByText("登录A")); const next = workspaceStore.getSnapshot().account.generation;
   fireEvent.click(screen.getByText("退出"));
@@ -95,4 +95,12 @@ it("refuses to claim existing recovery candidates are safe when they cannot be r
   const report = workspaceStore.prepareAccountTransition(ticket);
   expect(report.ok).toBe(false);
   expect(report.items).toEqual(expect.arrayContaining([expect.objectContaining({ kind: "prepared", sessionId: "old", ok: false })]));
+});
+
+it.each([{ id: '2', name: '用户2', token: 'B' }, { id: '1', name: '新用户1', token: 'A2' }])('logout preserves changed shared credentials and backs up the old page draft', ({ id, name, token }) => {
+  storeIdentity(); render(<AuthProvider><Probe /></AuthProvider>); workspaceStore.ensureSessionBucket('old'); const ticket = workspaceStore.captureTicket();
+  workspaceStore.patchBucket(ticket, 'old', value => ({ ...value, draft: '旧页草稿', draftRevision: 1, save: { ...value.save, status: 'dirty', viewVersion: 0 } }));
+  localStorage.setItem('studyagent_user_id', id); localStorage.setItem('studyagent_username', name); localStorage.setItem('studyagent_token', token); fireEvent.click(screen.getByText('退出'));
+  expect(screen.getByText('anonymous:none')).toBeTruthy(); expect(workspaceStore.captureTicket().userId).toBeNull(); expect(getLocalRecovery().list(1, 'old', 'draft').some(item => item.draft === '旧页草稿')).toBe(true);
+  expect(localStorage.getItem('studyagent_user_id')).toBe(id); expect(localStorage.getItem('studyagent_username')).toBe(name); expect(localStorage.getItem('studyagent_token')).toBe(token);
 });

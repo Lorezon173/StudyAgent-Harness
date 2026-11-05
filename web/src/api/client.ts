@@ -31,23 +31,24 @@ export function registerAuthInvalidation(listener: (ticket: AuthTicket) => void)
 
 const TIMEOUT_MS = 120_000;   // 对话是长耗时操作（协作环多次 LLM），见 spec §3.1
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem("studyagent_token");
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
-}
-
 async function request<T>(url: string, init: RequestInit): Promise<T> {
   const ticket = workspaceStore.captureTicket();
   const storedToken = localStorage.getItem("studyagent_token");
   const storedId = localStorage.getItem("studyagent_user_id");
+  const credentialRequest = init.method === "POST" && (url === "/api/auth/login" || url === "/api/auth/register");
+  const anonymous = ticket.userId === null && ticket.token === null && storedId === null && storedToken === null;
+  const matching = ticket.userId !== null && !!ticket.token?.trim() && storedId === String(ticket.userId) && storedToken === ticket.token;
+  if (!credentialRequest && !anonymous && !matching) {
+    throw new ApiError(0, "账号已在其他页面变更，本次请求未发送，请重新登录", "account_changed");
+  }
+  const headers: Record<string, string> = !credentialRequest && matching ? { Authorization: `Bearer ${ticket.token}` } : {};
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   let resp: Response;
   try {
     resp = await fetch(url, {
       ...init,
-      headers: { ...getAuthHeaders(), ...init.headers },
+      headers: { ...headers, ...init.headers },
       signal: controller.signal,
     });
   } catch (e) {
@@ -60,7 +61,6 @@ async function request<T>(url: string, init: RequestInit): Promise<T> {
   clearTimeout(timer);
 
   // 凭证端点的 401 是本次登录失败，不使当前 Login.submit 的票据失效。
-  const credentialRequest = url === "/api/auth/login" || url === "/api/auth/register";
   if (resp.status === 401 && !credentialRequest && workspaceStore.isCurrent(ticket) && storedToken === localStorage.getItem("studyagent_token") && storedId === localStorage.getItem("studyagent_user_id")) {
     if (invalidationListeners.size) invalidationListeners.forEach(listener => listener(ticket));
     else {

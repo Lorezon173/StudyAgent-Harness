@@ -407,6 +407,54 @@ def test_uuid_node_reused_and_unknown_never_scored(controlled, score):
         assert result.mastery_score is None and result.assessment_deltas == []
 
 
+@pytest.mark.parametrize("level", [[], {}, "invalid", "partial"])
+def test_pending_answer_invalid_level_preserves_teaching_and_other_observations(controlled, level):
+    from app.harness.mastery_graph import MasteryGraph
+    ctx = api().build_teaching_context(
+        snapshot(changed(stage="awaiting_response", last_question="问题1")), messages(), "回答", profile())
+    graph = MasteryGraph(1, None)
+    graph.add_node(NODE, "节点", mastery=None)
+    controlled.responses["critic_assess"] = {
+        "mastery_level": level, "mastery_score": 60,
+        "confusion": {"concept_a": "概念甲", "concept_b": "概念乙"},
+    }
+    result = run_context(ctx, graph)
+    assert result.reply
+    assert any(ev.type == "ConfusionDetected" for ev in result.events)
+    assessed = [ev for ev in result.events if ev.type == "MasteryAssessed"]
+    if level == "partial":
+        assert len(assessed) == 1 and len(result.assessment_deltas) == 1
+        assert result.assessment_deltas[0].node_id == NODE
+        assert result.assessment_deltas[0].question_message_id == 2
+    else:
+        assert not assessed and result.assessment_deltas == []
+        assert graph.get_node(NODE).practice_count == 0
+
+
+def test_repeated_question_references_verified_latest_message():
+    history = [{"id": 1, "turn_index": 0, "role": "user", "content": "第一答"},
+               {"id": 2, "turn_index": 0, "role": "assistant", "content": "同一问题"},
+               {"id": 3, "turn_index": 1, "role": "user", "content": "第二答"},
+               {"id": 4, "turn_index": 1, "role": "assistant", "content": "同一问题"}]
+    ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="同一问题")), history, "回答", profile())
+    prompt = api().render_teaching_context(ctx, "critic")
+    assert ctx.question_message_id == 4
+    assert "消息引用=2;角色=assistant\n同一问题" in prompt
+    assert "消息引用=4;角色=assistant\n同一问题" in prompt
+    assert "上一问题引用=4\n" in prompt and "上一问题引用=2\n" not in prompt
+    assert len(prompt.split("【当前输入】\n")[0]) <= 12000
+
+
+def test_unverified_earlier_question_uses_text_fallback():
+    history = [{"id": 1, "turn_index": 0, "role": "assistant", "content": "旧问题"},
+               {"id": 2, "turn_index": 1, "role": "assistant", "content": "另一问题"}]
+    ctx = api().build_teaching_context(snapshot(changed(stage="awaiting_response", last_question="旧问题")), history, "回答", profile())
+    prompt = api().render_teaching_context(ctx, "critic")
+    assert ctx.question_message_id is None
+    assert "上一问题=旧问题\n" in prompt and "上一问题引用=" not in prompt
+    assert len(prompt.split("【当前输入】\n")[0]) <= 12000
+
+
 @pytest.mark.parametrize("case", ["no_node", "unknown", "archived", "no_question", "old_stage"])
 def test_invalid_node_or_pending_question_never_scores(controlled, case):
     from app.harness.mastery_graph import MasteryGraph

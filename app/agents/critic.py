@@ -51,9 +51,10 @@ class CriticAgent(AgentBase):
             session_id=ws.session_id, node="critic", intent="critic_assess",
         )
         events: list[Event] = []
+        mastery_level = result.get("mastery_level")
         can_score = context is None or (context.has_pending_question and ws.active_node_id is not None
             and ws.active_node_id == context.active_node_id and valid_score(result.get("mastery_score"))
-            and result.get("mastery_level") in {str(level) for level in MasteryLevel})
+            and isinstance(mastery_level, str) and mastery_level in {str(level) for level in MasteryLevel})
         if "mastery_level" in result and can_score:
             events.append(self.emit(
                 EventType.MASTERY_ASSESSED, ws,

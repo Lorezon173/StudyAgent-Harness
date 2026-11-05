@@ -1,0 +1,43 @@
+
+> studyagent-web@0.1.0 e2e
+> playwright test --config=playwright.config.ts
+
+[WebServer] (node:77468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:33796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:47316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 (1.6s)
+  ok  2 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 (1.4s)
+  ok  3 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 (1.5s)
+  ok  4 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 (1.2s)
+  ok  5 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 (1.3s)
+  ok  6 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 (1.2s)
+  ok  7 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 (1.3s)
+  ok  8 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 (1.1s)
+  ok  9 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 (1.1s)
+  ok 10 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 (1.1s)
+  ok 11 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 (1.1s)
+  ok 12 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 (1.0s)
+  ok 13 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 (998ms)
+  ok 14 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 (1.0s)
+  ok 15 e2e\workspace-layout.spec.ts:157:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 (820ms)
+  ok 16 e2e\workspace-layout.spec.ts:163:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 (2.1s)
+  ok 17 e2e\workspace-layout.spec.ts:197:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 (752ms)
+  ok 18 e2e\workspace-layout.spec.ts:201:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 (992ms)
+  ok 19 e2e\workspace-layout.spec.ts:215:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 (11.6s)
+  ok 20 e2e\workspace-layout.spec.ts:303:1 › 受控 API · 触屏手柄拖动不滚动页面 (1.1s)
+  ok 21 e2e\workspace-layout.spec.ts:324:1 › 受控 API · 展开后调整短高仍遵守边界 (877ms)
+  ok 22 e2e\workspace-layout.spec.ts:330:1 › 受控 API · 同账号切会话保留比例草稿与阅读位置，浮卡交互不重取消息 (2.9s)
+  ok 23 e2e\workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情 (1.4s)
+  ok 24 e2e\workspace-layout.spec.ts:413:1 › 受控 API · 代表性短高长内容与两倍实际字号 (4.7s)
+  ok 25 e2e\workspace-layout.spec.ts:487:1 › 受控 API · 代表性移动抽屉菜单与退出提示 (2.7s)
+(node:85940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 26 e2e\workspace-real.spec.ts:165:1 › Task13 同一真实运行：恢复、续答与画像 (44.5s)
+
+  26 passed (1.7m)
