@@ -405,3 +405,60 @@ status的Task10与current_round现为DONE，记录实际提交与最终证据。
 - 主会话裁决Task11 DONE，实际提交bd3df180f6ef37b922674bc0e16d30d946eb9a54、父0bd2d742，共155文件；空index，README原162行/asset34行未提交差异仍保留。本次只读复核一致，无产品改动。
 - 产品12/12独立OCR v2审查、399项/build及分层真实验收结论和限制继续有效；[分类汇总](evidence/Task11/acceptance-summary.md)追记完成，先前待提交/RED/失败记录不改。
 - 下一步Task12三层规划，尚未编码；Task13未完成，B仍候选，SC-004 IN_PROGRESS，不推送/部署。
+
+## 2026-11-04 Task12：静态代码审查通过，首轮浏览器验收失败
+
+- Task12 现为 IN_PROGRESS / CODE_REVIEW_PASSED_BROWSER_FAILED，commit=null；Task11 DONE及实际提交保留，Task13 PENDING，SC-004整体仍IN_PROGRESS，B仍独立候选。
+- [原始三层设计](../../../superpowers/frontend-ui/2026-11-04-task12-round1-raw.md)、[实施计划](../../superpowers/plans/2026-11-04-task12-round1.md)及[实施交接](evidence/Task12/round1-implementation-handoff.md)记录真实摘要浮卡、局部拖动/收展、账号偏好与单版本保存、工作区深链恢复的实现范围；未新增后端API。
+- [独立代码审查](evidence/Task12/round1-code-review.md)确认冻结Task12范围19/19、0跳过、100%覆盖静态PASS；完整工作区1648项仅审11项、跳过1637项，不冒称全工作区PASS。冻结[423项单测](evidence/Task12/final-full-test.log)及[构建](evidence/Task12/final-build2.log)均exit 0；这些不替代浏览器功能验收。
+- 原21项已实际执行到终态：0 passed / 21 failed / 0 skipped，exit 1；20项受控API及1项真实HTTP均执行，见[首轮汇总](evidence/Task12/original-run-summary.md)、[完整run](evidence/Task12/playwright-original-round1/run.log)及[退出码](evidence/Task12/playwright-original-round1/exit-code.txt)。受控首项输入框缺失/白屏；真实组最早失败为拖动后ratio仍0.5，其后重登/A-B/深链断言未完成，不能宣称真实闭环已通过。
+- 诊断阶段已确认受控route通配符误拦Vite的`/src/api/client.ts`模块为未知API并404；真实drag原因仍待独立只读调查，不能将两类观测合并归因。根因证据齐备后先写最小修复计划并独审，通过后才改测试/产品，不靠删除断言凑绿；本检查点未进行新编码。
+- [补验三层计划](evidence/Task12/acceptance-supplement-plan.md)经[独立复审v2](evidence/Task12/acceptance-supplement-plan-review-v2.md)PASS（仅计划），SHA256 `17EAC1F1AA58102D7AAA15A529EDCD557D445EB888B56961CD47876133DF5DE7`；补真实A新尺寸重登、B写后回A、两页reload、受控双会话草稿/锚点与交互GET计数，未编码/执行。原M1报告保留，原21项失败证据不改。
+- 下一步先完成分类诊断/最小修复计划独审，再实施并复验原场景和批准补验；真实模型连续教学、真实PG重启及Task13完整验收仍未完成。README仅末尾追加本轮实际范围和未通过边界，原README162行及asset34行差异保留；本轮无stage/commit、推送或部署。
+## 2026-11-04 Task12：修订22项19通过3失败，第二轮计划待审
+
+- 首轮夹具/手势修复与批准补验合并到单E2E文件，经[OCR增量独审PASS](evidence/Task12/e2e-revision-code-review.md)后实际运行22项：19 passed / 3 failed / 0 skipped，exit1；[运行汇总](evidence/Task12/fix-round1-run-summary.md)及原始目录保留。原14尺寸与受控双会话草稿/阅读位置通过，受控结论不代替真实持久化。
+- [只读诊断](evidence/Task12/browser-fix-round1-diagnosis.md)确认hover后BODY Escape不到容器是产品事件覆盖缺口；同序受控键盘失败已在下边界，Down不动正确，Up实移12px并PATCH。原真实组到达深链reload读body失败，后续B未执行；旧GET误捕或响应过期只是可能，第三底层原因未确证。
+- [第二轮最小三层计划](evidence/Task12/browser-fix-round2-plan.md)仅hook Escape与必要测试、E2E键盘合法前提及新文档GET观察；保留dialog/输入优先、Down12px及GET200/三prefs/URL/DOM/零PATCH断言，不改几何、prefs队列或后端。计划待独审、未编码，代码独立增量审后再功能复验，既有失败报告不改。
+- Task12仍IN_PROGRESS，Task11 DONE保留，Task13 PENDING，B仍独立候选。README仅追加检查点，原170行差异作为前缀保留，asset原34行未动；无stage/commit、推送或部署。
+## 2026-11-04 Task12：core第二轮22全通过，代表性补证实施中
+
+- [core第二轮代码OCR](evidence/Task12/browser-fix-round2-code-review.md)三文件增量PASS；[426项前端测试](evidence/Task12/browser-fix-round2-web-test.log)及[build](evidence/Task12/browser-fix-round2-build.log)通过。随后[完整浏览器run](evidence/Task12/playwright-fix-round2/run.log)实际22 passed（29.4s）、0 failed、0 skipped，[exit-code](evidence/Task12/playwright-fix-round2/exit-code.txt)=0；[结果汇总](evidence/Task12/fix-round2-run-summary.md)分层记录，原21全失败及19/3失败证据保留。
+- 21项受控API场景与1项真实HTTP组分别表述。真实组现有spec断言已执行通过：A实际拖动保存/侧栏偏好/正常退出/新尺寸重登、profile及knowledge reload新文档GET三偏好/URL/零PATCH/回Chat比例、B默认/独立保存/跨账号403及回A原偏好。未据此推断原raw所有压力组合或Task13已验；本轮成功截图/矩形附件未出现在最终artifacts，不能宣称已归档这些附件。
+- [代表性补证计划](evidence/Task12/representative-acceptance-plan.md)经[独立计划审阅PASS](evidence/Task12/representative-acceptance-plan-review.md)，core门禁现已满足。实施者正串行仅改E2E补最多3条M2/M3/M4代表性链；尚未collect、OCR增量审查或执行这些补证，不能提前记通过。L1–L4接受的有限覆盖继续保留。
+- Task12仍IN_PROGRESS、commit=null；待补证代码审查/功能及最终需求证据审计再收口。Task11 DONE、Task13 PENDING、B独立候选，SC-004仍IN_PROGRESS；README仅追加当前检查点，原171行前缀和asset34行差异保留，无stage/commit、推送或部署。
+## 2026-11-04 Task12：代表性25项22通过3失败，局部修复规划中
+
+- [单文件静态增量复审v2](evidence/Task12/representative-code-review-v2.md)PASS只代表静态审查；[25项实际汇总](evidence/Task12/representative-round1-run-summary.md)、[run](evidence/Task12/playwright-representative-round1/run.log)及[退出码](evidence/Task12/playwright-representative-round1/exit-code.txt)记录22 passed / 3 failed / 0 skipped、58.4s、exit1。原core22含真实HTTP A/B与两深链组本轮仍全部通过，新增M2/M3/M4三项失败，不能据原core全绿收口。
+- [只读诊断](evidence/Task12/representative-round1-diagnosis.md)：M2反向Shift+Tab重新进入手柄时inDetails=false、expanded=true，符合raw离开后重新focus可开；失败为closed helper过强前提，不是关闭详情被Tab进入。M4关闭导航非exact定位同时命中遮罩/关闭按钮，未执行后续受控503与role退出提示，不是已证实产品层级故障。两项需保留原合同并最小校正测试。
+- M3为受控长内容、600×450、人工计算实际字号乘二的压力实测，不称浏览器原生缩放：标题高761.5px而主区375px；fill后发送按钮中心y506.41超出450视口，侧栏列表高0、账号越界，消息长URL横溢。原附件输入前composer.y898与fill后状态分别记录；额外scrollIntoView可使命中，却不能证明composer锚定合同。M3后续滚动/链接等未跑，不能标通过。
+- 三处布局局部修复属于本次原hard合同必要范围，先撰写新三层计划并独审，再编码/独立代码审查/功能复验；计划尚未完成，不提前加入evidence。禁止通过scrollIntoView、缩短fixture、减字号或隐藏控件过测；不新增状态框架、保存队列或后端改动。
+- Task12仍IN_PROGRESS、commit=null；Task11 DONE、Task13 PENDING、SC-004 IN_PROGRESS，B扩展恢复DEC-SESSION-001为独立候选、不属于本goal，L1–L4有限边界保留。README仅追加，原172行差异的全部字节前缀及asset34行保留；本次只维护README/progress/status，无stage/commit、推送或部署。
+
+## 2026-11-04 Task12：局部布局修复已交接，独立代码审查待完成
+
+- [修复三层计划](evidence/Task12/representative-round1-fix-plan.md) SHA256 F55DEC17511648F07E956166ECA8954D614AC148744E3C05648E0A891185460C 经[独立计划审阅PASS](evidence/Task12/representative-round1-fix-plan-review.md)后实施，[交接](evidence/Task12/representative-round1-fix-implementation.md)冻结20项：4项变化、16项未变。产品变化仅CSS、Chat静态class/标题tabIndex及SessionSidebar顶部滚动wrapper；E2E修订M2阶段期待、M4精确定位并保留M3压力样本和新增实际区域断言，无新状态框架/保存队列/后端。
+- [定向301项](evidence/Task12/representative-round1-fix-target.log)、[全量426项](evidence/Task12/representative-round1-fix-web-test.log)和[最终build](evidence/Task12/representative-round1-fix-build-final.log)均exit0；[collect25](evidence/Task12/representative-round1-fix-collect.log)只证明可收集，未执行本轮浏览器功能。独立OCR preview句柄3408已exit0、规则覆盖已完成；正式审查报告仍在收尾，当前CODE_REVIEW_PENDING_LAYOUT_FIX，不提前写代码审查PASS或引用未落盘报告。
+- 下一步正式独立增量审查通过后，在隔离环境运行25项到终态，再按实际功能结果裁决。原25项22 passed/3 failed/0 skipped、exit1继续保留为最近功能结果；本轮不继承前轮core22的通过，也不将M3后续或尚未到达的role退出提示称通过或产品故障。
+- Task12仍IN_PROGRESS、commit=null，Task11 DONE、Task13 PENDING、SC-004 IN_PROGRESS；B扩展DEC-SESSION-001独立候选不属本goal、L1–L4有限边界保留，按原授权不推送/部署或执行发布。README只追加1段，保留原173行差异全部字节前缀；asset34行及原用户README162行不触碰，不stage/commit。
+
+## 2026-11-04 Task12：25项23通过2失败，剩余标题输入与退出层计划待审
+
+- [局部布局代码OCR](evidence/Task12/representative-round1-fix-code-review.md)通过后，[最新25项](evidence/Task12/representative-fix-round1-run-summary.md)实际23 passed / 2 failed / 0 skipped、exit1；原core22及M2通过。M3 afterFill发送/账号已在450可视底部、列表高64、消息无横溢，成果保留；M3后段与M4 Escape/留页仍未到达，历史报告不改。
+- [诊断](evidence/Task12/representative-fix-round1-diagnosis.md)确认标题中心被展开卡拦截但实际未遮点可自然mouse.move离卡后wheel读回开头；M3只修真实输入准备，不force或宣称持续展开时wheel已验。M4受控503提示static参与flex，将main390挤至74且留页点被z30遮罩命中，是原退出提示可操作合同的实际缺口，不是真实后端故障。
+- 主裁决保留已过23行为、不增场景矩阵；[新最小三层计划](evidence/Task12/representative-fix-round2-plan.md)仅现exitError静态fixed overlay/CSS及留页autoFocus、必要语义测试和M3未遮点输入。20项冻结中相关文件已存在；Sidebar/Chat/hook/队列/后端不改。当前PLAN_REVIEW_PENDING_EXIT_OVERLAY_FIX，待计划独审→实施→前端/build及OCR增量审→25项功能，未编码。
+- Task12仍IN_PROGRESS/commit=null，Task11 DONE、Task13 PENDING、B独立候选和L1–L4有限边界保留；本轮只新计划与status/progress，README已检查留待最终整合、不追加，asset不动，无stage/commit。
+## 2026-11-04 Task12：退出overlay局部修复已实施，正式代码审查待完成
+
+- [最小计划独审PASS](evidence/Task12/representative-fix-round2-plan-review.md)后，[实施交接](evidence/Task12/representative-fix-round2-implementation.md)记录20项冻结4变16同；仅退出静态overlay/留页初始焦点、M3真实未遮点输入及必要测试。定向19项、全量427项、build均exit0，collect25仅收集；Sol正作独立OCR增量审查，正式报告未出，当前CODE_REVIEW_PENDING_EXIT_OVERLAY_FIX，不提前记PASS或引用未落盘报告。
+- 最新功能仍[前轮25项23通过2失败0跳过](evidence/Task12/representative-fix-round1-run-summary.md)、exit1；新冻结未执行浏览器，旧23不继承。M3后段、M4 Escape/留页仍未验；既有mobile Escape只查原生dialog，对非原生role时实际焦点影响由独审核查，未据静态路径定产品故障或承诺修复。下一步正式报告通过后跑全25，未过按证据裁最小处理。
+- Task12 IN_PROGRESS/commit=null、Task11 DONE、Task13 PENDING、B独立候选和L1–L4有限边界保留。本轮仅status/progress检查点；README/asset/计划/源未动，无stage/commit。
+## 2026-11-04 Task12：25项24通过1失败，M3测量前提修订实施中
+
+- [退出Escape代码OCR增量PASS](evidence/Task12/exit-escape-priority-code-review.md)后，[最新运行](evidence/Task12/exit-escape-round1-run-summary.md)实际25项24 passed / 1 failed / 0 skipped、exit1；原core22、M2及M4整链通过，包含真实HTTP及受控M4初始stay焦点、Escape后stay/drawer保持、真实留页/草稿。原Needs changes和全部失败证据保留，不混淆受控503与真实后端故障。
+- 唯一M3在spec466 baseline的regions读取已自然收起的详情超时；当前源码该phase无重开，属于测量状态前提缺口，不新定产品故障。titleScroll/menuFonts/code已记录，后续滚动/锚定/链接等仍未执行。[BF88最小计划](evidence/Task12/m3-baseline-state-plan.md)经[独审PASS](evidence/Task12/m3-baseline-state-plan-review.md)，仅单E2E实施中补真实hover重开/可见/原scale核2倍；待collect、OCR增量审及全部25功能，不能提前继承旧24。
+- 产品/单元源不变时按冻结hash复核沿用428项/build退出0，不因测试测量语句重复完整前端回归；独立E2E Node类型限制不改依赖、不冒tsc通过。Task12仍IN_PROGRESS/null，Task11 DONE、Task13 PENDING、B独立候选与L1–L4保留；本轮仅status/progress检查点，README/asset/源/原计划不改，无stage/commit。
+## 2026-11-04 Task12：功能验收通过，待本地收口
+
+- Task12 VERIFIED_UNCOMMITTED、commit=null；[验收摘要](evidence/Task12/acceptance-summary.md)与[独立审计](evidence/Task12/acceptance-audit.md)记录最新 25/0/0：24 项受控 API、1 项真实 HTTP 账号组；428 项前端测试与构建依冻结关联沿用。原失败检查点不改，L1–L4 及独立 E2E 类型检查、联网审计限制保留。
+- Task11 DONE，Task13 PENDING；真实模型及隔离 PostgreSQL 重启持久化属 Task13。DEC-SESSION-001 的 B 扩展是独立候选，与真实账号 B 不同。清单待独审，两笔提交及实核前不得标 DONE。

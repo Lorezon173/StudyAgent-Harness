@@ -1,0 +1,722 @@
+
+> studyagent-web@0.1.0 e2e
+> playwright test --config=playwright.config.ts --output D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts
+
+[WebServer] (node:66148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:13320) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:52744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   1 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 (5.6s)
+(node:55372) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   2 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 (5.7s)
+(node:76296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   3 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 (5.6s)
+(node:50532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   4 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 (5.5s)
+(node:82176) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   5 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 (5.4s)
+(node:66044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   6 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 (5.5s)
+(node:49344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   7 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 (5.5s)
+(node:23800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   8 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 (5.6s)
+(node:82872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   9 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 (5.6s)
+(node:72276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  10 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 (5.4s)
+(node:78532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  11 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 (5.5s)
+(node:82296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  12 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 (5.5s)
+(node:79040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  13 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 (5.5s)
+(node:47324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  14 e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 (5.5s)
+(node:34836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  15 e2e\workspace-layout.spec.ts:65:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 (6.1s)
+(node:41808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  16 e2e\workspace-layout.spec.ts:71:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 (5.6s)
+(node:83268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  17 e2e\workspace-layout.spec.ts:90:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 (5.5s)
+(node:83488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  18 e2e\workspace-layout.spec.ts:94:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 (5.6s)
+(node:82252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  19 e2e\workspace-layout.spec.ts:107:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 (5.8s)
+(node:64484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  20 e2e\workspace-layout.spec.ts:141:1 › 受控 API · 触屏手柄拖动不滚动页面 (5.5s)
+(node:21880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  21 e2e\workspace-layout.spec.ts:154:1 › 受控 API · 展开后调整短高仍遵守边界 (5.5s)
+
+
+  1) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--76228-P-页面-视口-1440×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--76228-P-页面-视口-1440×900：导航、输入与浮卡边界\error-context.md
+
+  2) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--a85c2-P-页面-视口-1440×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--a85c2-P-页面-视口-1440×450：导航、输入与浮卡边界\error-context.md
+
+  3) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--6ba09-P-页面-视口-1024×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--6ba09-P-页面-视口-1024×900：导航、输入与浮卡边界\error-context.md
+
+  4) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--17be7-P-页面-视口-1024×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--17be7-P-页面-视口-1024×450：导航、输入与浮卡边界\error-context.md
+
+  5) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 ─────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--000e6-TP-页面-视口-760×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--000e6-TP-页面-视口-760×900：导航、输入与浮卡边界\error-context.md
+
+  6) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 ─────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--3e6fb-TP-页面-视口-760×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--3e6fb-TP-页面-视口-760×450：导航、输入与浮卡边界\error-context.md
+
+  7) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 ─────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--5fe48-TP-页面-视口-600×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--5fe48-TP-页面-视口-600×900：导航、输入与浮卡边界\error-context.md
+
+  8) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 ─────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--ad96f-TP-页面-视口-600×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--ad96f-TP-页面-视口-600×450：导航、输入与浮卡边界\error-context.md
+
+  9) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 ─────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9b0d1-TP-页面-视口-481×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9b0d1-TP-页面-视口-481×900：导航、输入与浮卡边界\error-context.md
+
+  10) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--b7a17-TP-页面-视口-481×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--b7a17-TP-页面-视口-481×450：导航、输入与浮卡边界\error-context.md
+
+  11) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9b251-TP-页面-视口-480×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9b251-TP-页面-视口-480×900：导航、输入与浮卡边界\error-context.md
+
+  12) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--47fd6-TP-页面-视口-480×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--47fd6-TP-页面-视口-480×450：导航、输入与浮卡边界\error-context.md
+
+  13) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9dfb9-TP-页面-视口-390×900：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--9dfb9-TP-页面-视口-390×900：导航、输入与浮卡边界\error-context.md
+
+  14) e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 ────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:47:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--75d0e-TP-页面-视口-390×450：导航、输入与浮卡边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--75d0e-TP-页面-视口-390×450：导航、输入与浮卡边界\error-context.md
+
+  15) e2e\workspace-layout.spec.ts:65:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 ───
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:66:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--93147--鼠标连续进入卡片、Escape-后保持关闭并重新进入\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--93147--鼠标连续进入卡片、Escape-后保持关闭并重新进入\error-context.md
+
+  16) e2e\workspace-layout.spec.ts:71:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 ───────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:72:17
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--629d9--HTTP-页面-指针阈值、捕获、取消、键盘及请求计数\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·--629d9--HTTP-页面-指针阈值、捕获、取消、键盘及请求计数\error-context.md
+
+  17) e2e\workspace-layout.spec.ts:90:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 ───────────────────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:92:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-正式-React-HTTP-页面-触屏显式开关\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-正式-React-HTTP-页面-触屏显式开关\error-context.md
+
+  18) e2e\workspace-layout.spec.ts:94:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 ───────────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:95:116
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-正式-React-HTTP-页面-短高内容滚动、缩放与弹窗层级\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-正式-React-HTTP-页面-短高内容滚动、缩放与弹窗层级\error-context.md
+
+  19) e2e\workspace-layout.spec.ts:107:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 ─────────────────
+
+    Error: expect(received).not.toBe(expected) // Object.is equality
+
+    Expected: not 0.5
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      121 |     await login(a.username); await page.goto(`/chat/${encodeURIComponent(a.session.session_id)}`); await expect(trigger(page)).toBeVisible();
+      122 |     const h = await handle(page).boundingBox(); expect(h).not.toBeNull(); await page.mouse.move(h!.x + h!.width / 2, h!.y + h!.height / 2); await page.mouse.down(); await page.mouse.move(h!.x + h!.width / 2, h!.y + h!.height / 2 + 60); await page.mouse.up();
+    > 123 |     await expect.poll(async () => (await (await request.get('/api/workspace-state', { headers: a.headers })).json()).progress_y_ratio).not.toBe(.5);
+          |                                                                                                                                            ^
+      124 |     const saved = await (await request.get('/api/workspace-state', { headers: a.headers })).json();
+      125 |     await page.getByRole('button', { name: '收起会话导航' }).click();
+      126 |     await expect.poll(async () => (await (await request.get('/api/workspace-state', { headers: a.headers })).json()).sidebar_collapsed).toBe(true);
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:123:140
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-真实-HTTP-·-显式配置的隔离后端-A-保存并重登、B-隔离和深链恢复\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-真实-HTTP-·-显式配置的隔离后端-A-保存并重登、B-隔离和深链恢复\error-context.md
+
+  20) e2e\workspace-layout.spec.ts:141:1 › 受控 API · 触屏手柄拖动不滚动页面 ────────────────────────────────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:144:17
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-触屏手柄拖动不滚动页面\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-触屏手柄拖动不滚动页面\error-context.md
+
+  21) e2e\workspace-layout.spec.ts:154:1 › 受控 API · 展开后调整短高仍遵守边界 ───────────────────────────────────
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator: getByPlaceholder('输入学习问题…')
+    Expected: "保留草稿"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveValue" getByPlaceholder('输入学习问题…') with timeout 5000ms
+      - waiting for getByPlaceholder('输入学习问题…')
+
+
+      31 |   return { calls, getState: () => state };
+      32 | }
+    > 33 | async function openControlled(page: Page) { const api = await controlled(page); await page.goto('/chat/s1'); await expect(page.getByPlaceholder('输入学习问题…')).toHaveValue('保留草稿'); return api; }
+         |                                                                                                                                                             ^
+      34 | const trigger = (page: Page) => page.getByRole('button', { name: '学习画像' });
+      35 | const handle = (page: Page) => page.getByRole('button', { name: '调整画像位置' });
+      36 | async function rect(page: Page, selector: string) { const value = await page.locator(selector).boundingBox(); expect(value, selector).not.toBeNull(); return value!; }
+        at openControlled (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:33:157)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:155:72
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-展开后调整短高仍遵守边界\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-original-round1\artifacts\workspace-layout-受控-API-·-展开后调整短高仍遵守边界\error-context.md
+
+  21 failed
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 ─────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 ─────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 ─────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 ─────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:46:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 ──────────
+    e2e\workspace-layout.spec.ts:65:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 ─────
+    e2e\workspace-layout.spec.ts:71:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 ─────────────
+    e2e\workspace-layout.spec.ts:90:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 ─────────────────────────
+    e2e\workspace-layout.spec.ts:94:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 ─────────────────
+    e2e\workspace-layout.spec.ts:107:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 ───────────────────
+    e2e\workspace-layout.spec.ts:141:1 › 受控 API · 触屏手柄拖动不滚动页面 ──────────────────────────────────────
+    e2e\workspace-layout.spec.ts:154:1 › 受控 API · 展开后调整短高仍遵守边界 ─────────────────────────────────────

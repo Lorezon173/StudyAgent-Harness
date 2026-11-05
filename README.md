@@ -515,3 +515,11 @@ React工作区采用已确认的纸感书房配色：左栏按本人画像主题
 [Task11分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)：399项前端回归及构建通过，真实HTTP文本CRUD/读回/跨账号拒绝、真实浏览器操作、两轮真实模型持久化后100%与1/2及从B会话画像来源回A均有证据。非空关系仅受控DOM、实网为空；代理断连恢复含HMR刷新后主动重填，未证明跨刷新表单持久。四组视口采集/所列目视、键盘字段可达/Escape还焦已核，BODY停留及少量分支/压力测试未覆盖的边界保留。Task11当前验收通过待明确本地提交，仍IN_PROGRESS；Task10已DONE，Task12/13未完成、B仍独立候选。未新增API、依赖或启动步骤，未推送/部署。
 
 2026-11-04 Task11已完成：真实本地提交 `bd3df180f6ef37b922674bc0e16d30d946eb9a54`，155个明确文件及空index已核，原README162行/asset34行差异保留。[分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)已追记DONE；此前待提交段及全部验收限制保留为历史。下一步Task12三层规划，尚未编码；Task13未完成、B仍独立候选，未推送/部署。
+
+### Task12：画像浮卡与账号界面偏好（2026-11-04，验收通过待提交）
+
+问答页显示当前画像摘要，支持浮卡收展、纵向拖动和键盘调整；账号级位置及侧栏偏好沿用既有工作区保存与深链恢复，不新增后端 API。新增固定 Playwright 开发依赖，使用 `npm --prefix web run e2e` 执行浏览器验收。
+
+[验收摘要](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-summary.md)与[独立审计](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-audit.md)记录最新 25 项浏览器场景通过（24 项受控 API、1 项真实 HTTP 账号组），428 项前端测试及构建按冻结版本关联沿用；历史失败和 L1–L4 覆盖限制保留。独立 E2E TypeScript 检查和联网安全审计未通过。
+
+Task12 为 VERIFIED_UNCOMMITTED、尚未提交；Task11 已完成，Task13 的真实教学模型及隔离 PostgreSQL 重启持久化等验收待完成。DEC-SESSION-001 的 B 扩展为独立候选，与真实账号 B 不同。未推送或部署。

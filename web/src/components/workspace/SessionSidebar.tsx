@@ -26,10 +26,12 @@ export default function SessionSidebar(props: Props) {
   const { state } = props; const [accountOpen, setAccountOpen] = useState(false);
   const name = props.username || (props.userId === null ? "未登录" : `账号 ${props.userId}`);
   return <>
+    <div className="sidebar-top-controls" tabIndex={0} role="region" aria-label="会话导航操作">
     <div className="study-brand"><span className="brand-mark" aria-hidden="true">学</span><div><span className="brand-name">StudyAgent</span><small>慢慢理解，自有回响</small></div></div>
     <div className="sidebar-controls"><button type="button" onClick={props.onPin} aria-controls="session-sidebar" aria-pressed={state.sidebar.pinned} aria-label={state.sidebar.pinned ? "取消固定侧栏，保持当前展示" : "固定侧栏，保持展开"}>{state.sidebar.pinned ? "已固定" : "固定侧栏"}</button><button type="button" onClick={props.onCollapse} aria-controls="session-sidebar" aria-expanded="true" aria-label={props.mobile ? "关闭会话导航" : "收起会话导航"}>收起 ‹</button></div>
     <button type="button" className="new-session" ref={props.newButtonRef} onClick={props.onNew} aria-label="开启一段新的探索">开启一段新的探索 <span aria-hidden="true">＋</span></button>
     <div className="sidebar-label">我的学习主题 / TOPICS</div>
+    </div>
     <div className="sidebar-groups">
       {(state.groupsLoad.status === "idle" || state.groupsLoad.status === "loading") && <p className="sidebar-note" role="status">正在加载学习主题…</p>}
       {state.groupsLoad.status === "error" && <div className="sidebar-error"><p role="alert">{state.groupsLoad.error}</p><button type="button" onClick={props.onRetryGroups}>重试加载主题</button></div>}

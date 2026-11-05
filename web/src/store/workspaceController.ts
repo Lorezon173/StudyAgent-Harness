@@ -1,9 +1,13 @@
 import { apiPost, ApiError } from "../api/client";
 import { getRequest, loadMessages, loadSnapshot, patchViewState, retryRequest } from "../api/sessions";
 import { getWorkspaceState, patchWorkspaceState } from "../api/workspace";
-import { AuthTicket, BackupItem, RequestTurnBaseline, SessionClientState, hasBlockingRecovery, isMatchedLinked, isMatchedLocalCopy, snapshotIdentityValid, sortHistoryMessages, workspaceStore } from "./workspace";
+import { AuthTicket, BackupItem, RequestTurnBaseline, SessionClientState, WorkspacePreferences, hasBlockingRecovery, isMatchedLinked, isMatchedLocalCopy, snapshotIdentityValid, sortHistoryMessages, workspaceStore } from "./workspace";
 import { getLocalRecovery, RecoveryCandidate } from "./localRecovery";
-import { ChatResponse, ReadingAnchor, SessionSnapshot, WorkspaceMessage } from "../types";
+import { ChatResponse, ReadingAnchor, SessionSnapshot, WorkspaceMessage, WorkspaceState, WorkspacePatch } from "../types";
+
+function preferencesFromServer(result: WorkspaceState): WorkspacePreferences {
+  return { pinned: typeof result.sidebar_pinned === "boolean" ? result.sidebar_pinned : true, collapsed: typeof result.sidebar_collapsed === "boolean" ? result.sidebar_collapsed : false, progressYRatio: typeof result.progress_y_ratio === "number" && Number.isFinite(result.progress_y_ratio) ? Math.max(0, Math.min(1, result.progress_y_ratio)) : 0.5 };
+}
 
 function current(ticket: AuthTicket) {
   return workspaceStore.isCurrent(ticket) && localStorage.getItem("studyagent_token") === ticket.token && localStorage.getItem("studyagent_user_id") === String(ticket.userId);
@@ -224,8 +228,9 @@ async function recoverSupersededSend(ticket: AuthTicket, id: string, requestId: 
   }
 }
 async function loadWorkspace(ticket: AuthTicket, forceFresh = false) {
+  void forceFresh;
   if (!current(ticket)) return false;
-  const existing = workspaceLoads.get(ticket.generation); if (existing && !forceFresh) return existing;
+  const existing = workspaceLoads.get(ticket.generation); if (existing) return existing;
   const readSequence = workspaceStore.getSnapshot().workspace.readSequence + 1;
   workspaceStore.patchWorkspace(ticket, value => ({ ...value, readSequence }));
   const work = (async () => {
@@ -241,8 +246,9 @@ async function loadWorkspace(ticket: AuthTicket, forceFresh = false) {
         try { const recovered = getLocalRecovery().listResult(ticket.userId, "workspace", "workspace"); candidates = recovered.candidates; if (!recovered.ok) recoveryError = "本机最近会话读取失败或包含损坏记录"; }
         catch { recoveryError = "本机最近会话读取失败或包含损坏记录"; }
       }
-      workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: result.version, lastSessionId: result.last_session_id, desiredSessionId: value.dirty ? value.desiredSessionId : result.last_session_id, error: value.sequence === start.sequence ? null : value.error, errorSource: value.sequence === start.sequence ? null : value.errorSource, candidates: value.candidatesLoaded ? value.candidates : candidates, candidatesLoaded: true, recoveryError })); return true;
-    } catch (error) { if (current(ticket)) workspaceStore.patchWorkspace(ticket, value => value.readSequence === readSequence && value.sequence === start.sequence && value.version === start.version ? { ...value, error: message(error), errorSource: "load" } : value); return false; }
+      workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: result.version, lastSessionId: result.last_session_id, desiredSessionId: value.dirty ? value.desiredSessionId : result.last_session_id, error: value.sequence === start.sequence ? null : value.error, errorSource: value.sequence === start.sequence ? null : value.errorSource, candidates: value.candidatesLoaded ? value.candidates : candidates, candidatesLoaded: true, recoveryError }));
+      workspaceStore.applyWorkspacePreferences(ticket, preferencesFromServer(result)); return true;
+    } catch (error) { if (current(ticket)) workspaceStore.patchWorkspace(ticket, value => value.readSequence === readSequence && value.sequence === start.sequence && value.version === start.version ? { ...value, error: message(error), errorSource: "load", prefs: { ...value.prefs, error: value.prefs.loaded ? value.prefs.error : message(error) } } : value); return false; }
   })();
   workspaceLoads.set(ticket.generation, work); const ok = await work; if (workspaceLoads.get(ticket.generation) === work) workspaceLoads.delete(ticket.generation); return ok;
 }
@@ -253,7 +259,7 @@ async function flushWorkspace(ticket: AuthTicket): Promise<boolean> {
     while (current(ticket)) {
       let ws = workspaceStore.getSnapshot().workspace;
       if (ws.conflict) return false;
-      if (!ws.dirty) return !ws.error;
+      if (!ws.dirty && !ws.prefs.dirtyFields.length) return !ws.error && !ws.prefs.error;
       if (ws.version === null) {
         const observedRead = ws.readSequence; const reusedRead = workspaceLoads.has(ticket.generation);
         if (!await loadWorkspace(ticket) || !current(ticket)) {
@@ -265,14 +271,20 @@ async function flushWorkspace(ticket: AuthTicket): Promise<boolean> {
       }
       if (ws.version === null) return false;
       const version = ws.version; const sequence = ws.sequence; const target = ws.desiredSessionId; const copy = workspaceCopies.get(ticket.generation);
-      workspaceStore.patchWorkspace(ticket, value => ({ ...value, saving: true, error: null, errorSource: null }));
+      const recentDirty = ws.dirty; const captured = ws.prefs; const fields = captured.dirtyFields;
+      const patch: WorkspacePatch = { expected_version: version };
+      if (recentDirty) patch.last_session_id = target;
+      if (fields.includes("pinned")) patch.sidebar_pinned = captured.localValues.pinned;
+      if (fields.includes("collapsed")) patch.sidebar_collapsed = captured.localValues.collapsed;
+      if (fields.includes("progressYRatio")) patch.progress_y_ratio = captured.localValues.progressYRatio;
+      workspaceStore.patchWorkspace(ticket, value => ({ ...value, saving: true, error: null, errorSource: null, prefs: { ...value.prefs, saving: fields.length > 0, error: null } }));
       try {
         if (!current(ticket)) return false;
-        const result = await patchWorkspaceState({ expected_version: version, last_session_id: target });
+        const result = await patchWorkspaceState(patch);
         if (!current(ticket)) return false;
-        if (result.version !== version + 1 || result.last_session_id !== target) throw new Error("invalid workspace response");
-        const latest = workspaceStore.getSnapshot().workspace; const unchanged = latest.sequence === sequence && latest.desiredSessionId === target;
-        workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: result.version, lastSessionId: result.last_session_id, dirty: !unchanged, saving: false, error: null, errorSource: null }));
+        if (result.version !== version + 1 || (recentDirty && result.last_session_id !== target) || (patch.sidebar_pinned !== undefined && result.sidebar_pinned !== patch.sidebar_pinned) || (patch.sidebar_collapsed !== undefined && result.sidebar_collapsed !== patch.sidebar_collapsed) || (patch.progress_y_ratio !== undefined && result.progress_y_ratio !== patch.progress_y_ratio)) throw new Error("invalid workspace response");
+        const latest = workspaceStore.getSnapshot().workspace; const unchanged = recentDirty && latest.sequence === sequence && latest.desiredSessionId === target;
+        workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: result.version, lastSessionId: recentDirty ? result.last_session_id : value.lastSessionId, dirty: recentDirty ? !unchanged : value.dirty, saving: false, error: null, errorSource: null, prefs: { ...value.prefs, serverValues: preferencesFromServer(result), dirtyFields: value.prefs.dirtyFields.filter(field => !fields.includes(field) || value.prefs.localValues[field] !== captured.localValues[field]), saving: false, error: null } }));
         if (unchanged && copy && getLocalRecovery().remove(copy)) {
           workspaceStore.patchWorkspace(ticket, value => ({ ...value, candidates: value.candidates.filter(item => item.writeId !== copy.writeId) }));
           workspaceCopies.delete(ticket.generation);
@@ -282,11 +294,11 @@ async function flushWorkspace(ticket: AuthTicket): Promise<boolean> {
           try {
             const latest = await getWorkspaceState(); if (!current(ticket)) return false;
             if (!Number.isSafeInteger(latest.version) || latest.version < 0 || !(typeof latest.last_session_id === "string" || latest.last_session_id === null)) throw new Error("invalid workspace state");
-            workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: latest.version, lastSessionId: latest.last_session_id, conflict: true, saving: false, error: "最近会话与其他设备冲突，请选择", errorSource: "save" }));
+            workspaceStore.patchWorkspace(ticket, value => ({ ...value, version: latest.version, lastSessionId: latest.last_session_id, conflict: value.dirty, saving: false, error: value.dirty ? "最近会话与其他设备冲突，请选择" : null, errorSource: value.dirty ? "save" : null, prefs: { ...value.prefs, saving: false, error: fields.length ? "界面偏好与其他设备冲突，请重试" : value.prefs.error } }));
             return false;
           } catch { /* retain the unsaved candidate and report the original conflict */ }
         }
-        if (current(ticket)) workspaceStore.patchWorkspace(ticket, value => ({ ...value, saving: false, error: message(error), errorSource: "save", conflict: error instanceof ApiError && error.status === 409 })); return false;
+        if (current(ticket)) workspaceStore.patchWorkspace(ticket, value => ({ ...value, saving: false, error: value.dirty ? message(error) : value.error, errorSource: value.dirty ? "save" : value.errorSource, conflict: value.dirty && error instanceof ApiError && error.status === 409, prefs: { ...value.prefs, saving: false, error: fields.length ? message(error) : value.prefs.error } })); return false;
       }
     }
     return false;
@@ -402,8 +414,27 @@ export const workspaceController = {
     }
   },
   async lastSession(ticket: AuthTicket) {
+    const initial = workspaceStore.getSnapshot().workspace;
     if (!await loadWorkspace(ticket, true) || !current(ticket)) return null;
-    return workspaceStore.getSnapshot().workspace.lastSessionId;
+    const latest = workspaceStore.getSnapshot().workspace;
+    if (initial.conflict || latest.conflict || latest.sequence !== initial.sequence || (latest.dirty && latest.desiredSessionId !== latest.lastSessionId)) return null;
+    return latest.lastSessionId;
+  },
+  async ensureWorkspacePreferences(ticket: AuthTicket) {
+    if (!current(ticket) || ticket.userId === null || !ticket.token) return false;
+    if (workspaceStore.getSnapshot().workspace.prefs.loaded) return true;
+    return loadWorkspace(ticket);
+  },
+  async savePreference(ratio: number) {
+    const ticket = workspaceStore.captureTicket();
+    if (!workspaceStore.setWorkspacePreferences(ticket, { progressYRatio: ratio })) return false;
+    return flushWorkspace(ticket);
+  },
+  async retryPreferences() {
+    const ticket = workspaceStore.captureTicket();
+    if (!current(ticket) || workspaceStore.getSnapshot().workspace.conflict) return false;
+    if (!workspaceStore.getSnapshot().workspace.prefs.loaded && !await loadWorkspace(ticket)) return false;
+    return flushWorkspace(ticket);
   },
   async validateWorkspaceCandidate(candidate: RecoveryCandidate) {
     const ticket = workspaceStore.captureTicket(); const id = candidate.lastSessionId;
@@ -665,7 +696,9 @@ export const workspaceController = {
     const ids = Object.keys(workspaceStore.getSnapshot().buckets);
     const results = await Promise.all([...ids.map(id => flushView(id, ticket, true)), flushWorkspace(ticket)]);
     ids.forEach((id, index) => items.push({ kind: "draft", sessionId: id, ok: results[index] }));
-    items.push({ kind: "workspace", sessionId: null, ok: results[ids.length] });
+    const ws = workspaceStore.getSnapshot().workspace;
+    items.push({ kind: "workspace", sessionId: null, ok: results[ids.length] || (!ws.dirty && !ws.conflict && !ws.error) });
+    items.push({ kind: "preferences", sessionId: null, ok: results[ids.length] || (!ws.prefs.dirtyFields.length && !ws.prefs.error) });
     if (!current(ticket)) return { ok: false, stale: true, items };
     for (const [id, bucket] of Object.entries(workspaceStore.getSnapshot().buckets)) {
       const unresolved = new Set([...Object.keys(bucket.prepared), ...Object.keys(bucket.localRequests), ...bucket.requestCandidates.filter(item => !isMatchedLocalCopy(bucket, item, getLocalRecovery().writerId)).map(item => item.itemId), ...bucket.pendingRequests.filter(item => item.status === "running").map(item => item.request_id)]);

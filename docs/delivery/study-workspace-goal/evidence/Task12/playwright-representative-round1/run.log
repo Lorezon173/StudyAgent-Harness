@@ -1,0 +1,138 @@
+
+> studyagent-web@0.1.0 e2e
+> playwright test --config=playwright.config.ts --output D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts
+
+[WebServer] (node:36644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:66184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 25 tests using 1 worker
+
+(node:43756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 (1.7s)
+  ok  2 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 (1.2s)
+  ok  3 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 (1.2s)
+  ok  4 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 (1.2s)
+  ok  5 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 (1.5s)
+  ok  6 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 (1.5s)
+  ok  7 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 (1.4s)
+  ok  8 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 (1.3s)
+  ok  9 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 (1.2s)
+  ok 10 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 (1.1s)
+  ok 11 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 (1.1s)
+  ok 12 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 (1.0s)
+  ok 13 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 (1.3s)
+  ok 14 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 (1.1s)
+  ok 15 e2e\workspace-layout.spec.ts:157:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 (930ms)
+  ok 16 e2e\workspace-layout.spec.ts:163:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 (2.1s)
+  ok 17 e2e\workspace-layout.spec.ts:197:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 (983ms)
+  ok 18 e2e\workspace-layout.spec.ts:201:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 (1.2s)
+  ok 19 e2e\workspace-layout.spec.ts:215:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 (10.9s)
+  ok 20 e2e\workspace-layout.spec.ts:303:1 › 受控 API · 触屏手柄拖动不滚动页面 (987ms)
+  ok 21 e2e\workspace-layout.spec.ts:324:1 › 受控 API · 展开后调整短高仍遵守边界 (831ms)
+  ok 22 e2e\workspace-layout.spec.ts:330:1 › 受控 API · 同账号切会话保留比例草稿与阅读位置，浮卡交互不重取消息 (2.7s)
+  x  23 e2e\workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情 (1.2s)
+(node:2420) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  24 e2e\workspace-layout.spec.ts:412:1 › 受控 API · 代表性短高长内容与两倍实际字号 (3.1s)
+(node:63168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  25 e2e\workspace-layout.spec.ts:457:1 › 受控 API · 代表性移动抽屉菜单与退出提示 (1.6s)
+
+
+  1) e2e\workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情 ────────────────────────────────────
+
+    Error: [{"key":"Tab","tag":"BUTTON","label":"取消固定侧栏，保持当前展示","text":"已固定","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"取消固定侧栏，保持当前展示","text":"已固定","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"收起会话导航","text":"收起 ‹","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"收起会话导航","text":"收起 ‹","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"开启一段新的探索","text":"开启一段新的探索 ＋","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"开启一段新的探索","text":"开启一段新的探索 ＋","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"切换主题：概率论与极长中文主题名称用于检查换行","text":"⌄概率论与极长中文主题名称用于检查换行已加载 1","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"切换主题：概率论与极长中文主题名称用于检查换行","text":"⌄概率论与极长中文主题名称用于检查换行已加载 1","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"中文学习会话","text":"中文学习会话","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"中文学习会话","text":"中文学习会话","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"账号：测试账号","text":"测测试账号我的学习书房···","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"账号：测试账号","text":"测测试账号我的学习书房···","expanded":"false","inDetails":false},{"key":"Tab","tag":"A","label":null,"text":"知识库","expanded":"false"},{"key":"Tab","tag":"A","label":null,"text":"知识库","expanded":"false","inDetails":false},{"key":"Tab","tag":"A","label":null,"text":"学习画像","expanded":"false"},{"key":"Tab","tag":"A","label":null,"text":"学习画像","expanded":"false","inDetails":false},{"key":"Tab","tag":"DIV","label":null,"text":"长链接 https://example.com/unbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbr","expanded":"false"},{"key":"Tab","tag":"DIV","label":null,"text":"长链接 https://example.com/unbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbrokenunbr","expanded":"false","inDetails":false},{"key":"Tab","tag":"INPUT","label":null,"text":"","expanded":"false"},{"key":"Tab","tag":"INPUT","label":null,"text":"","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":null,"text":"发送","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":null,"text":"发送","expanded":"false","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"学习画像","text":"0%","expanded":"true"},{"key":"Tab","tag":"BUTTON","label":"学习画像","text":"0%","expanded":"true","inDetails":false},{"key":"Tab","tag":"BUTTON","label":"调整画像位置","text":"⋮","expanded":"true"},{"key":"Tab","tag":"A","label":null,"text":"查看完整画像","expanded":"true"},{"key":"Shift+Tab","tag":"BUTTON","label":"调整画像位置","text":"⋮","expanded":"true"},{"key":"Shift+Tab","tag":"BUTTON","label":"学习画像","text":"0%","expanded":"true"},{"key":"Shift+Tab","tag":"BUTTON","label":null,"text":"发送","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"学习画像","text":"0%","expanded":"true"},{"key":"Escape","tag":"BUTTON","label":"学习画像","text":"0%","expanded":"false"},{"key":"Tab","tag":"BUTTON","label":"调整画像位置","text":"⋮","expanded":"false"},{"key":"Tab","tag":"BODY","label":null,"text":"学StudyAgent慢慢理解，自有回响已固定收起 ‹开启一段新的探索 ＋我的学习主题 / TOPICS⌄概率论与极长中文主题名称用于检查换行已加载 1中文学习会话测测试账号我的学习书房···我的书房","expanded":"false"},{"key":"Shift+Tab","tag":"BUTTON","label":"调整画像位置","text":"⋮","expanded":"true"},{"key":"Shift+Tab","tag":"BUTTON","label":"调整画像位置","text":"⋮","expanded":"true","inDetails":false}]
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "false"
+    Received: "true"
+
+      382 |       const state = await page.evaluate(() => ({ tag: document.activeElement?.tagName, label: document.activeElement?.getAttribute('aria-label'), text: document.activeElement?.textContent?.trim().slice(0, 100), expanded: document.querySelector('.floating-profile-trigger')?.getAttribute('aria-expanded'), inDetails: !!document.activeElement?.closest('.floating-profile-content') }));
+      383 |       trace.push({ key, ...state });
+    > 384 |       if (closed) { expect(state.inDetails, JSON.stringify(trace)).toBe(false); expect(state.expanded, JSON.stringify(trace)).toBe('false'); }
+          |                                                                                                                               ^
+      385 |       if (await target.evaluate(el => el === document.activeElement)) return;
+      386 |     }
+      387 |     throw new Error(`焦点在40步内未到达目标：${JSON.stringify(trace)}`);
+        at step (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:384:127)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:404:5
+
+    attachment #1: keyboard-focus.png (image/png) ──────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性键盘焦点与关闭详情\attachments\keyboard-focus-png-6546708e03fbc64f1786bf71cd80654333b08fd4.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: keyboard-trace.json (application/json) ──────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性键盘焦点与关闭详情\attachments\keyboard-trace-json-7a10f087b0a05fdb26454f3fd36d1d7b4fbc8fc0.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性键盘焦点与关闭详情\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性键盘焦点与关闭详情\error-context.md
+
+  2) e2e\workspace-layout.spec.ts:412:1 › 受控 API · 代表性短高长内容与两倍实际字号 ─────────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      434 |     const draft = page.getByPlaceholder('输入学习问题…'); await draft.fill('短高字号压力草稿'); await expect(draft).toHaveValue('短高字号压力草稿'); await expect.poll(() => api.getViewState('s1').draft).toBe('短高字号压力草稿');
+      435 |     const send = page.locator('.legacy-chat form button[type="submit"]'); await expect(send).toBeEnabled();
+    > 436 |     const hit = async (locator: ReturnType<Page['locator']>) => { const box = await locator.boundingBox(); expect(box).not.toBeNull(); const point = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 }; expect(await locator.evaluate((el, p) => { const hit = document.elementFromPoint(p.x, p.y); return hit === el || el.contains(hit); }, point)).toBe(true); };
+          |                                                                                                                                                                                                                                                                                                                                                                 ^
+      437 |     await hit(send); await page.getByRole('button', { name: '收起会话导航' }).click(); await checkBounds(page); await page.getByRole('button', { name: '展开会话导航' }).click(); await checkBounds(page);
+      438 |     await page.getByRole('button', { name: /账号：/ }).click(); observations.menuFonts = await scale(); for (const sample of observations.menuFonts as { baseline: number; actual: number }[]) expect(Math.abs(sample.actual - sample.baseline * 2)).toBeLessThanOrEqual(1); await expect(page.getByRole('button', { name: '退出登录' })).toBeVisible(); await page.getByRole('button', { name: /账号：/ }).click();
+      439 |     const priorMessage = await messages.evaluate(el => el.scrollTop); await sidebar.hover(); await page.mouse.wheel(0, 500); await expect.poll(() => sidebar.evaluate(el => el.scrollTop)).toBeGreaterThan(0); expect(await messages.evaluate(el => el.scrollTop)).toBe(priorMessage);
+        at hit (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:436:353)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:437:5
+
+    attachment #1: long-observations.json (application/json) ───────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\attachments\long-observations-json-93870047cecb117896f5b74753d5e42c90e8e765.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\error-context.md
+
+  3) e2e\workspace-layout.spec.ts:457:1 › 受控 API · 代表性移动抽屉菜单与退出提示 ──────────────────────────────────
+
+    Error: locator.tap: Error: strict mode violation: getByRole('button', { name: '关闭会话导航' }) resolved to 2 elements:
+        1) <button type="button" aria-label="关闭会话导航遮罩" class="sidebar-backdrop"></button> aka getByRole('button', { name: '关闭会话导航遮罩' })
+        2) <button type="button" aria-label="关闭会话导航" aria-expanded="true" aria-controls="session-sidebar">收起 ‹</button> aka getByRole('button', { name: '关闭会话导航', exact: true })
+
+    Call log:
+      - waiting for getByRole('button', { name: '关闭会话导航' })
+
+
+      475 |     const account = page.getByRole('button', { name: /账号：/ }); await tapHit(account); await phase('menu open');
+      476 |     const logout = page.getByRole('button', { name: '退出登录' }); await hit(logout); await expect(logout).toBeVisible(); await account.tap(); await expect(logout).not.toBeVisible(); await phase('menu closed'); await account.tap(); await expect(logout).toBeVisible(); await phase('menu reopened');
+    > 477 |     await page.getByRole('button', { name: '关闭会话导航' }).tap(); await expect(page.getByRole('complementary', { name: '会话导航' })).not.toBeVisible(); await phase('drawer closed');
+          |                                                        ^
+      478 |     const draft = page.getByPlaceholder('输入学习问题…'); await draft.fill('受控503仍保留的草稿');
+      479 |     await expect.poll(() => api!.calls.filter(c => c.method === 'PATCH' && c.url === '/api/sessions/s1/view-state').length).toBeGreaterThan(0);
+      480 |     await page.getByRole('button', { name: '打开会话导航' }).tap(); await expect(logout).toBeVisible(); await phase('drawer reopened before logout'); await tapHit(logout);
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:477:56
+
+    attachment #1: overlay-observations.json (application/json) ────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性移动抽屉菜单与退出提示\attachments\overlay-observations-json-a64514089db8097ec6150c8a392def11f51f19cf.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性移动抽屉菜单与退出提示\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-representative-round1\artifacts\workspace-layout-受控-API-·-代表性移动抽屉菜单与退出提示\error-context.md
+
+  3 failed
+    e2e\workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情 ─────────────────────────────────────
+    e2e\workspace-layout.spec.ts:412:1 › 受控 API · 代表性短高长内容与两倍实际字号 ──────────────────────────────────
+    e2e\workspace-layout.spec.ts:457:1 › 受控 API · 代表性移动抽屉菜单与退出提示 ───────────────────────────────────
+  22 passed (58.4s)

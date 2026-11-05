@@ -57,6 +57,7 @@ it("uses only <=480 as a drawer, retains it on selection and closes it with Esca
   expect(workspaceStore.getSnapshot().sidebar.mobileOpen).toBe(true);
   fireEvent.keyDown(window, { key: "Escape" });
   expect(screen.queryByRole("complementary", { name: "会话导航" })).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "打开会话导航" }));
   expect(workspaceStore.getSnapshot().sidebar.pinned).toBe(true);
   fireEvent.click(screen.getByRole("button", { name: "打开会话导航" }));
   fireEvent.click(screen.getByRole("button", { name: "关闭会话导航遮罩" }));
@@ -97,3 +98,90 @@ it('carries the verified current session and profile to the portrait link', asyn
   expect(link.getAttribute('href')).toBe('/profile?profile_id=p1&session_id=A');
 });
 
+it.each(["/profile", "/knowledge"])("restores workspace preferences on a direct %s visit without writing recent session", async path => {
+  const fetcher = vi.fn((url: RequestInfo | URL, _init?: RequestInit) => {
+    if (String(url) === "/api/workspace-state") return Promise.resolve(response({ ...workspace, sidebar_pinned: false, sidebar_collapsed: true, progress_y_ratio: 0.8 }));
+    return Promise.resolve(response(String(url).startsWith("/api/sessions?") ? groups : String(url).startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  });
+  vi.stubGlobal("fetch", fetcher); mount(path);
+  await waitFor(() => expect(workspaceStore.getSnapshot().sidebar).toMatchObject({ pinned: false, collapsed: true }));
+  expect(screen.getByTestId("location").textContent).toBe(path);
+  expect(fetcher.mock.calls.some(([url, init]) => String(url) === "/api/workspace-state" && init?.method === "PATCH")).toBe(false);
+});
+it("persists a collapsed sidebar without changing the recent session", async () => {
+  let server = { ...workspace, last_session_id: "A" };
+  const fetcher = vi.fn((url: RequestInfo | URL, init?: RequestInit) => {
+    if (String(url) === "/api/workspace-state" && init?.method === "PATCH") {
+      const body = JSON.parse(String(init.body));
+      server = { ...server, ...body, version: body.expected_version + 1 };
+      return Promise.resolve(response(server));
+    }
+    if (String(url) === "/api/workspace-state") return Promise.resolve(response(server));
+    return Promise.resolve(response(String(url).startsWith("/api/sessions?") ? groups : String(url).startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  });
+  vi.stubGlobal("fetch", fetcher); mount("/knowledge");
+  await waitFor(() => expect(fetcher.mock.calls.some(([url]) => String(url) === "/api/workspace-state")).toBe(true));
+  fireEvent.click(screen.getByRole("button", { name: "收起会话导航" }));
+  await waitFor(() => expect(fetcher.mock.calls.some(([url, init]) => String(url) === "/api/workspace-state" && init?.method === "PATCH")).toBe(true));
+  const write = fetcher.mock.calls.find(([url, init]) => String(url) === "/api/workspace-state" && init?.method === "PATCH")!;
+  expect(JSON.parse(String(write[1]?.body))).toEqual({ expected_version: 0, sidebar_pinned: false, sidebar_collapsed: true });
+  expect(server.last_session_id).toBe("A");
+});
+it.each(["success", "error"])("does not apply an old account's delayed %s after switching accounts", async outcome => {
+  const old = deferred<Response>(); let reads = 0;
+  vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url === "/api/workspace-state") return ++reads === 1 ? old.promise : Promise.resolve(response({ ...workspace, sidebar_pinned: false, sidebar_collapsed: true, progress_y_ratio: 0.2 }));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? groups : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  }));
+  function Switch() { const auth = useAuth(); return <button onClick={() => auth.login(2, "B", "B")}>切换账号</button>; }
+  storeIdentity(); render(<AuthProvider><MemoryRouter initialEntries={["/knowledge"]}><Switch /><App /></MemoryRouter></AuthProvider>);
+  await waitFor(() => expect(reads).toBe(1)); fireEvent.click(screen.getByRole("button", { name: "切换账号" }));
+  await waitFor(() => expect(workspaceStore.getSnapshot().sidebar.collapsed).toBe(true));
+  await act(async () => { old.resolve(outcome === "success" ? response({ ...workspace, progress_y_ratio: 0.9 }) : response({}, 503)); });
+  expect(workspaceStore.getSnapshot().account.userId).toBe(2);
+  expect(workspaceStore.getSnapshot().workspace.prefs.localValues.progressYRatio).toBe(0.2);
+});
+
+it("focuses staying on a failed logout and preserves the draft", async () => {
+  transport();
+  const previousFetch = vi.mocked(fetch).getMockImplementation()!;
+  vi.mocked(fetch).mockImplementation((url, init) => String(url) === "/api/sessions/A/view-state" && init?.method === "PATCH" ? Promise.resolve(response({}, 503)) : previousFetch(url, init));
+  mount("/chat/A"); await screen.findByText("真实历史 A");
+  const draft = screen.getByPlaceholderText("输入学习问题…");
+  fireEvent.change(draft, { target: { value: "退出前草稿" } });
+  fireEvent.click(screen.getByRole("button", { name: "账号：用户1" }));
+  fireEvent.click(screen.getByRole("button", { name: "退出登录" }));
+  const dialog = await screen.findByRole("dialog", { name: "退出登录" });
+  const stay = within(dialog).getByRole("button", { name: "留在页面" });
+  expect(document.activeElement).toBe(stay);
+  fireEvent.click(stay);
+  expect(screen.queryByRole("dialog", { name: "退出登录" })).toBeNull();
+  expect(localStorage.getItem("studyagent_token")).toBe("A");
+  expect((draft as HTMLTextAreaElement).value).toBe("退出前草稿");
+});
+
+it("keeps focus and the mobile drawer when Escape is pressed over a failed logout", async () => {
+  mockViewport(480); transport();
+  const previousFetch = vi.mocked(fetch).getMockImplementation()!;
+  vi.mocked(fetch).mockImplementation((url, init) => String(url) === "/api/sessions/A/view-state" && init?.method === "PATCH" ? Promise.resolve(response({}, 503)) : previousFetch(url, init));
+  mount("/chat/A"); await screen.findByText("真实历史 A");
+  const draft = screen.getByPlaceholderText("输入学习问题…");
+  fireEvent.change(draft, { target: { value: "移动退出草稿" } });
+  fireEvent.click(screen.getByRole("button", { name: "打开会话导航" }));
+  fireEvent.click(screen.getByRole("button", { name: "账号：用户1" }));
+  fireEvent.click(screen.getByRole("button", { name: "退出登录" }));
+  const dialog = await screen.findByRole("dialog", { name: "退出登录" });
+  const stay = within(dialog).getByRole("button", { name: "留在页面" });
+  expect(document.activeElement).toBe(stay);
+  expect(workspaceStore.getSnapshot().sidebar.mobileOpen).toBe(true);
+  fireEvent.keyDown(window, { key: "Escape" });
+  expect(document.activeElement).toBe(stay);
+  expect(screen.getByRole("dialog", { name: "退出登录" })).toBe(dialog);
+  expect(workspaceStore.getSnapshot().sidebar.mobileOpen).toBe(true);
+  fireEvent.click(stay);
+  expect(screen.queryByRole("dialog", { name: "退出登录" })).toBeNull();
+  expect(screen.getByTestId("location").textContent).toBe("/chat/A");
+  expect(localStorage.getItem("studyagent_token")).toBe("A");
+  expect((draft as HTMLInputElement).value).toBe("移动退出草稿");
+});

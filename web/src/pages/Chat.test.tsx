@@ -97,14 +97,14 @@ it("does not let a delayed workspace retry override a newer chosen session", asy
   await act(async () => { pending.resolve(response(ws)); });
   await waitFor(() => expect(fetcher.mock.calls.some(([url, init]) => url === "/api/workspace-state" && init?.method === "PATCH" && JSON.parse(String(init.body)).last_session_id === "B")).toBe(true));
   expect(screen.getByText("历史B")).toBeTruthy();
-  expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B");
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B"));
 });
 it("does not reuse an old retry when returning to the default route", async () => {
-  const old = deferred<Response>(); const fresh = deferred<Response>(); let reads = 0;
+  const old = deferred<Response>(); let reads = 0;
   const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     if (url === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...ws, last_session_id: body.last_session_id, version: body.expected_version + 1 })); }
-    if (url === "/api/workspace-state") { reads++; return reads === 1 ? Promise.resolve(response({}, 503)) : reads === 2 ? old.promise : fresh.promise; }
+    if (url === "/api/workspace-state") { reads++; return reads === 1 ? Promise.resolve(response({}, 503)) : old.promise; }
     if (url.startsWith("/api/sessions?")) return Promise.resolve(response(group));
     if (url.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response(snapshot("A")));
     if (url.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B")));
@@ -117,19 +117,19 @@ it("does not reuse an old retry when returning to the default route", async () =
   await waitFor(() => expect(reads).toBe(2));
   fireEvent.click(screen.getByRole("link", { name: "知识库" }));
   fireEvent.click(screen.getByRole("button", { name: "测试返回" }));
-  await waitFor(() => expect(reads).toBe(3));
-  await act(async () => { fresh.resolve(response({ ...ws, last_session_id: "B", version: 2 })); });
+  expect(reads).toBe(2);
+  await act(async () => { old.resolve(response({ ...ws, last_session_id: "B", version: 2 })); });
   await screen.findByText("历史B");
-  await act(async () => { old.resolve(response(ws)); });
   expect(screen.getByText("历史B")).toBeTruthy();
-  expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B");
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B"));
+  expect(fetcher.mock.calls.some(([url]) => String(url).startsWith("/api/sessions/A/snapshot"))).toBe(false);
 });
 it("finishes a selected session save after its shared workspace read is superseded", async () => {
-  const old = deferred<Response>(); const fresh = deferred<Response>(); let reads = 0;
+  const old = deferred<Response>(); let reads = 0;
   const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     if (url === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...ws, last_session_id: body.last_session_id, version: body.expected_version + 1 })); }
-    if (url === "/api/workspace-state") { reads++; return reads === 1 ? Promise.resolve(response({}, 503)) : reads === 2 ? old.promise : fresh.promise; }
+    if (url === "/api/workspace-state") { reads++; return reads === 1 ? Promise.resolve(response({}, 503)) : old.promise; }
     if (url.startsWith("/api/sessions?")) return Promise.resolve(response(group));
     if (url.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B")));
     return Promise.resolve(response({}, 404));
@@ -139,11 +139,11 @@ it("finishes a selected session save after its shared workspace read is supersed
   render(<AuthProvider><MemoryRouter initialEntries={["/chat"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><DefaultChat /><App /></MemoryRouter></AuthProvider>);
   fireEvent.click(await screen.findByRole("button", { name: /重试.*最近会话/ })); await waitFor(() => expect(reads).toBe(2));
   fireEvent.click(await screen.findByRole("button", { name: "会话 B" })); await screen.findByText("历史B");
-  fireEvent.click(screen.getByRole("button", { name: "测试默认入口" })); await waitFor(() => expect(reads).toBe(3));
-  await act(async () => { fresh.resolve(response({ ...ws, last_session_id: null })); });
+  fireEvent.click(screen.getByRole("button", { name: "测试默认入口" })); expect(reads).toBe(2);
   await act(async () => { old.resolve(response(ws)); });
   await waitFor(() => expect(fetcher.mock.calls.some(([url, init]) => url === "/api/workspace-state" && init?.method === "PATCH" && JSON.parse(String(init.body)).last_session_id === "B")).toBe(true));
-  expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B");
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B"));
+  expect(fetcher.mock.calls.some(([url]) => String(url).startsWith("/api/sessions/A/snapshot"))).toBe(false);
 });
 it.each(["知识库", "学习画像"])("does not navigate over %s after a workspace retry finishes", async target => {
   const pending = deferred<Response>(); let reads = 0;
@@ -3888,4 +3888,150 @@ it.each(["conflict", "network", "cursor loop"])("handles a newer %s when two rec
     fireEvent.click(screen.getByRole("button", { name: "重新查询" })); await screen.findByText("正确回答");
   } else await screen.findByText("正确回答");
   expect(workspaceStore.getSnapshot().buckets.A.requests[requestId].association).toBe("matched"); expect(fetcher.mock.calls.filter(([url]) => url === "/api/chat")).toHaveLength(1);
+});
+it("shows the current session's real profile summary without extra reads on expansion", async () => {
+  const summary = { profile_revision: 0, nodes: [], edges: [], recent_evidence: [], assessed_count: 1, total_count: 2, mastery_score: 42, metric_kind: "assessed_mean", assessment_coverage: 0.5 };
+  const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") { const body = JSON.parse(String(init.body)); return Promise.resolve(response({ ...ws, ...body, version: body.expected_version + 1 })); }
+    if (url === "/api/workspace-state") return Promise.resolve(response(ws));
+    if (url.startsWith("/api/sessions?")) return Promise.resolve(response(group));
+    if (url.startsWith("/api/sessions/A/snapshot")) return Promise.resolve(response({ ...snapshot("A"), profile_summary: summary }));
+    return Promise.resolve(response({}, 404));
+  });
+  vi.stubGlobal("fetch", fetcher); mount("/chat/A");
+  await screen.findByText("历史A");
+  const trigger = screen.getByRole("button", { name: "学习画像" });
+  expect(trigger.textContent).toContain("42%");
+  const reads = fetcher.mock.calls.filter(([url]) => String(url).includes("snapshot") || String(url).includes("messages") || String(url).includes("summary")).length;
+  fireEvent.click(trigger);
+  expect(screen.getByRole("link", { name: "查看完整画像" }).getAttribute("href")).toContain("session_id=A");
+  expect(fetcher.mock.calls.filter(([url]) => String(url).includes("snapshot") || String(url).includes("messages") || String(url).includes("summary"))).toHaveLength(reads);
+});
+it("serializes preference and recent-session edits with consecutive versions", async () => {
+  const first = deferred<Response>(); const writes: Record<string, unknown>[] = [];
+  let server = { ...ws, last_session_id: null };
+  const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") {
+      const body = JSON.parse(String(init.body)); writes.push(body);
+      if (writes.length === 1) return first.promise;
+      server = { ...server, ...body, version: body.expected_version + 1 }; return Promise.resolve(response(server));
+    }
+    if (url === "/api/workspace-state") return Promise.resolve(response(server));
+    if (url.startsWith("/api/sessions?")) return Promise.resolve(response(group));
+    if (url.startsWith("/api/sessions/B/snapshot")) return Promise.resolve(response(snapshot("B")));
+    return Promise.resolve(response({}, 404));
+  });
+  vi.stubGlobal("fetch", fetcher); mount("/knowledge");
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.version).toBe(0));
+  void workspaceController.savePreference(0.7);
+  await waitFor(() => expect(writes).toHaveLength(1));
+  workspaceController.selectSession("B"); void workspaceController.savePreference(0.9);
+  expect(writes[0]).toEqual({ expected_version: 0, progress_y_ratio: 0.7 });
+  server = { ...server, progress_y_ratio: 0.7, version: 1 };
+  await act(async () => { first.resolve(response(server)); });
+  await waitFor(() => expect(writes).toHaveLength(2));
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.prefs.dirtyFields).toEqual([]));
+  expect(writes[1]).toEqual({ expected_version: 1, last_session_id: "B", progress_y_ratio: 0.9 });
+  expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B");
+});
+it("keeps a local sidebar gesture when the initial preference read is late", async () => {
+  const pending = deferred<Response>();
+  vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method !== "PATCH") return pending.promise;
+    if (url === "/api/workspace-state") { const body = JSON.parse(String(init?.body)); return Promise.resolve(response({ ...ws, ...body, version: body.expected_version + 1 })); }
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  }));
+  mount("/knowledge"); fireEvent.click(await screen.findByRole("button", { name: "收起会话导航" }));
+  await act(async () => { pending.resolve(response(ws)); });
+  await waitFor(() => expect(workspaceStore.getSnapshot().sidebar).toMatchObject({ pinned: false, collapsed: true }));
+});
+it("keeps a preference after a conflict until explicit retry without changing recent session", async () => {
+  let patches = 0; let server = { ...ws, version: 0 };
+  const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") {
+      const body = JSON.parse(String(init.body)); patches++;
+      if (patches === 1) { server = { ...server, version: 1 }; return Promise.resolve(response({ detail: "conflict" }, 409)); }
+      server = { ...server, ...body, version: body.expected_version + 1 }; return Promise.resolve(response(server));
+    }
+    if (url === "/api/workspace-state") return Promise.resolve(response(server));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  });
+  vi.stubGlobal("fetch", fetcher); mount("/knowledge");
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.version).toBe(0));
+  fireEvent.click(screen.getByRole("button", { name: "收起会话导航" }));
+  const retry = await screen.findByRole("button", { name: "重试保存界面偏好" });
+  expect(workspaceStore.getSnapshot().sidebar.collapsed).toBe(true); expect(patches).toBe(1);
+  fireEvent.click(retry); await waitFor(() => expect(workspaceStore.getSnapshot().workspace.prefs.dirtyFields).toEqual([]));
+  expect(patches).toBe(2); expect(server.last_session_id).toBe("A");
+});
+it("waits for an unconfirmed preference on logout and reports it separately on failure", async () => {
+  const pending = deferred<Response>();
+  vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") return pending.promise;
+    if (url === "/api/workspace-state") return Promise.resolve(response(ws));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  }));
+  mount("/knowledge"); await waitFor(() => expect(workspaceStore.getSnapshot().workspace.version).toBe(0));
+  void workspaceController.savePreference(0.8); const ticket = workspaceStore.captureTicket();
+  let settled = false; const result = workspaceController.flushAll(ticket).then(value => { settled = true; return value; });
+  await act(async () => { await Promise.resolve(); }); expect(settled).toBe(false);
+  await act(async () => { pending.resolve(response({}, 503)); });
+  const report = await result; expect(report.ok).toBe(false);
+  expect(report.items).toContainEqual({ kind: "preferences", sessionId: null, ok: false });
+  expect(workspaceStore.getSnapshot().workspace.prefs.localValues.progressYRatio).toBe(0.8);
+});
+it("retries a failed preference initialization without navigating or writing a recent session", async () => {
+  let reads = 0;
+  const fetcher = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method !== "PATCH") return Promise.resolve(++reads === 1 ? response({}, 503) : response({ ...ws, sidebar_pinned: false, sidebar_collapsed: true }));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  });
+  vi.stubGlobal("fetch", fetcher); mount("/knowledge");
+  fireEvent.click(await screen.findByRole("button", { name: "重试加载界面偏好" }));
+  await waitFor(() => expect(workspaceStore.getSnapshot().sidebar.collapsed).toBe(true));
+  expect(fetcher.mock.calls.some(([url, init]) => String(url) === "/api/workspace-state" && init?.method === "PATCH")).toBe(false);
+});
+it("queues a new preference behind an in-flight recent-session save", async () => {
+  const first = deferred<Response>(); const writes: Record<string, unknown>[] = []; let server = { ...ws };
+  vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") {
+      const body = JSON.parse(String(init.body)); writes.push(body);
+      if (writes.length === 1) return first.promise;
+      server = { ...server, ...body, version: body.expected_version + 1 }; return Promise.resolve(response(server));
+    }
+    if (url === "/api/workspace-state") return Promise.resolve(response(server));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  }));
+  mount("/knowledge"); await waitFor(() => expect(workspaceStore.getSnapshot().workspace.version).toBe(0));
+  workspaceController.selectSession("B"); await waitFor(() => expect(writes).toHaveLength(1));
+  void workspaceController.savePreference(0.25);
+  server = { ...server, last_session_id: "B", version: 1 };
+  await act(async () => { first.resolve(response(server)); });
+  await waitFor(() => expect(writes).toHaveLength(2));
+  await waitFor(() => expect(workspaceStore.getSnapshot().workspace.prefs.dirtyFields).toEqual([]));
+  expect(writes).toEqual([{ expected_version: 0, last_session_id: "B" }, { expected_version: 1, progress_y_ratio: 0.25 }]);
+  expect(workspaceStore.getSnapshot().workspace.lastSessionId).toBe("B");
+});
+it("waits for a successful preference save before normal logout completes", async () => {
+  const pending = deferred<Response>();
+  vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url === "/api/workspace-state" && init?.method === "PATCH") return pending.promise;
+    if (url === "/api/workspace-state") return Promise.resolve(response(ws));
+    return Promise.resolve(response(url.startsWith("/api/sessions?") ? group : url.startsWith("/api/knowledge") ? [] : { items: [], next_cursor: null }));
+  }));
+  mount("/knowledge"); await waitFor(() => expect(workspaceStore.getSnapshot().workspace.version).toBe(0));
+  void workspaceController.savePreference(0.8); const ticket = workspaceStore.captureTicket();
+  let settled = false; const result = workspaceController.flushAll(ticket).then(value => { settled = true; return value; });
+  await act(async () => { await Promise.resolve(); }); expect(settled).toBe(false);
+  await act(async () => { pending.resolve(response({ ...ws, progress_y_ratio: 0.8, version: 1 })); });
+  expect((await result).ok).toBe(true);
+  expect(workspaceStore.getSnapshot().workspace.prefs.dirtyFields).toEqual([]);
 });

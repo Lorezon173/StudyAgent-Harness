@@ -14,6 +14,9 @@ input,textarea,select { min-width:0; background:var(--white); border:1px solid v
 .workspace-shell { --sidebar-width:264px; display:flex; height:100dvh; overflow:hidden; }
 .workspace-sidebar { width:var(--sidebar-width); flex:0 0 var(--sidebar-width); min-height:0; display:flex; flex-direction:column; background:var(--panel); border-right:1px solid var(--line); padding:28px 20px 0; }
 .workspace-sidebar[hidden] { display:none; }
+.workspace-exit-overlay { position:fixed; inset:0; z-index:60; display:grid; place-items:center; padding:16px; overflow:auto; background:#263d3450; }
+.workspace-exit-dialog { width:min(520px,100%); min-width:0; max-height:calc(100dvh - 32px); overflow-y:auto; overflow-wrap:anywhere; padding:24px; background:var(--white); border:1px solid var(--line); }
+.workspace-exit-dialog button { max-width:100%; white-space:normal; overflow-wrap:anywhere; margin:4px; }
 .study-brand { display:flex; align-items:center; gap:11px; margin:0 8px 20px; }
 .brand-mark { width:35px; height:39px; flex-shrink:0; border:1px solid #73856e; border-radius:2px 12px 2px 2px; display:grid; place-items:center; font:22px SimSun,serif; }
 .brand-name { font-size:21px; letter-spacing:.2px; }
@@ -117,3 +120,33 @@ input,textarea,select { min-width:0; background:var(--white); border:1px solid v
   .paper-heading, .profile-header { flex-direction: column; }
   .paper-cards, .profile-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Task 12: floating portrait uses the same paper palette as the workspace. */
+.legacy-chat { position:relative; min-width:0; min-height:0; }
+.floating-profile { position:absolute; right:8px; z-index:5; display:flex; align-items:flex-start; width:auto; max-width:calc(100% - 16px); overflow:hidden; background:var(--white); border:1px solid #cdd5c7; border-radius:12px; box-shadow:0 8px 26px #263d341c; }
+.floating-profile-trigger { flex:none; border:0; padding:8px; }
+.floating-profile-ring { display:grid; place-items:center; width:58px; height:58px; border-radius:50%; padding:7px; text-align:center; font-size:11px; line-height:1.25; background:radial-gradient(circle, var(--white) 62%, transparent 64%), conic-gradient(var(--green) var(--progress), #e1e5da 0); }
+.floating-profile-ring.is-unassessed { background:radial-gradient(circle, var(--white) 62%, transparent 64%), #e1e5da; }
+.floating-profile-handle { flex:none; align-self:stretch; border:0; border-left:1px solid var(--line); border-radius:0; padding:4px; color:var(--muted); cursor:grab; touch-action:none; }
+.floating-profile.is-dragging .floating-profile-handle { cursor:grabbing; }
+.floating-profile-content { min-width:0; min-height:0; max-height:inherit; width:min(280px, calc(100vw - 120px)); overflow-y:auto; overflow-wrap:anywhere; padding:14px; border-left:1px solid var(--line); }
+.floating-profile-content p { margin-bottom:8px; }
+.floating-profile-content a { overflow-wrap:anywhere; }
+.workspace-actions { flex-wrap:wrap; justify-content:flex-end; white-space:normal; }
+.workspace-actions a { overflow-wrap:anywhere; }
+@media (prefers-reduced-motion:reduce) { .floating-profile, .floating-profile * { animation:none !important; transition:none !important; } }
+
+/* Bounded scrolling regions keep the composer and account reachable at short heights. */
+.sidebar-top-controls { flex:0 1 auto; min-height:0; max-height:35%; overflow-y:auto; }
+.sidebar-groups { min-height:48px; }
+.account-actions { z-index:45; }
+.chat-session-title { flex-shrink:0; max-height:min(25%, 96px); margin-bottom:8px; overflow-y:auto; overflow-wrap:anywhere; }
+.chat-session-title:focus-visible,.sidebar-top-controls:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
+.chat-messages { min-width:0; min-height:0; }
+.chat-composer-area { flex-shrink:0; }
+.chat-composer-area form { display:flex; gap:8px; }
+.chat-composer-area input { flex:1; min-width:0; }
+.chat-composer-area button { flex-shrink:0; }
+.legacy-chat [data-message-id],.legacy-chat [data-message-id] > div,.legacy-chat [data-message-id] > div > div { min-width:0; overflow-wrap:anywhere; }
+.legacy-chat [data-message-id] pre { max-width:100%; overflow-x:auto; white-space:pre; overflow-wrap:normal; }
+.legacy-chat [data-message-id] pre code { white-space:pre; overflow-wrap:normal; }

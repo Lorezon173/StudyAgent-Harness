@@ -1,0 +1,33 @@
+
+> studyagent-web@0.1.0 e2e
+> playwright test --config=playwright.config.ts --list
+
+Listing tests:
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界
+  workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界
+  workspace-layout.spec.ts:157:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入
+  workspace-layout.spec.ts:163:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数
+  workspace-layout.spec.ts:197:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关
+  workspace-layout.spec.ts:201:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级
+  workspace-layout.spec.ts:215:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复
+  workspace-layout.spec.ts:303:1 › 受控 API · 触屏手柄拖动不滚动页面
+  workspace-layout.spec.ts:324:1 › 受控 API · 展开后调整短高仍遵守边界
+  workspace-layout.spec.ts:330:1 › 受控 API · 同账号切会话保留比例草稿与阅读位置，浮卡交互不重取消息
+  workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情
+  workspace-layout.spec.ts:413:1 › 受控 API · 代表性短高长内容与两倍实际字号
+  workspace-layout.spec.ts:471:1 › 受控 API · 代表性移动抽屉菜单与退出提示
+Total: 25 tests in 1 file
+
+EXIT_CODE=0

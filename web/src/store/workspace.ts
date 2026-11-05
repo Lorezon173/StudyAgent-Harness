@@ -3,7 +3,7 @@ import { getLocalRecovery, RecoveryCandidate } from "./localRecovery";
 
 export interface AccountIdentity { userId: number | null; token: string | null; generation: number }
 export interface AuthTicket extends AccountIdentity {}
-export interface BackupItem { kind: "draft" | "prepared" | "request" | "workspace"; sessionId: string | null; itemId?: string; ok: boolean }
+export interface BackupItem { kind: "draft" | "prepared" | "request" | "workspace" | "preferences"; sessionId: string | null; itemId?: string; ok: boolean }
 type Status = "idle" | "loading" | "ready" | "error";
 type TicketKind = "account" | "load" | "request" | "groups" | "group";
 export interface AsyncTicket extends AuthTicket { kind: TicketKind; sessionId?: string; requestId?: string | null; groupKey?: string; sequence: number; requestCursor: string | null; activityEpoch?: number; activityObservationSequence?: number }
@@ -108,11 +108,14 @@ export interface WorkspaceClientState {
   buckets: Record<string, SessionClientState>;
   sidebar: { pinned: boolean; collapsed: boolean; mobileOpen: boolean; expandedGroups: Set<string> };
   exitPending: boolean;
-  workspace: { version: number | null; lastSessionId: string | null; desiredSessionId: string | null; dirty: boolean; saving: boolean; conflict: boolean; error: string | null; errorSource: "load" | "save" | null; sequence: number; readSequence: number; candidates: RecoveryCandidate[]; candidatesLoaded: boolean; recoveryError: string | null };
+  workspace: { version: number | null; lastSessionId: string | null; desiredSessionId: string | null; dirty: boolean; saving: boolean; conflict: boolean; error: string | null; errorSource: "load" | "save" | null; sequence: number; readSequence: number; candidates: RecoveryCandidate[]; candidatesLoaded: boolean; recoveryError: string | null; prefs: WorkspacePreferencesState };
 }
+export interface WorkspacePreferences { pinned: boolean; collapsed: boolean; progressYRatio: number }
+export interface WorkspacePreferencesState { localValues: WorkspacePreferences; serverValues: WorkspacePreferences; dirtyFields: (keyof WorkspacePreferences)[]; sequence: number; loaded: boolean; saving: boolean; error: string | null }
+const defaultPreferences = (): WorkspacePreferences => ({ pinned: true, collapsed: false, progressYRatio: 0.5 });
 const idlePage = (): PageLoad => ({ status: "idle", error: null, sequence: 0, requestedCursor: null });
 function emptyState(account: AccountIdentity): WorkspaceClientState {
-  return { account, activeSessionId: null, activeSessionEpoch: 0, groups: [], nextGroupCursor: null, groupsLoad: idlePage(), groupPages: {}, buckets: {}, sidebar: { pinned: true, collapsed: false, mobileOpen: false, expandedGroups: new Set() }, exitPending: false, workspace: { version: null, lastSessionId: null, desiredSessionId: null, dirty: false, saving: false, conflict: false, error: null, errorSource: null, sequence: 0, readSequence: 0, candidates: [], candidatesLoaded: false, recoveryError: null } };
+  return { account, activeSessionId: null, activeSessionEpoch: 0, groups: [], nextGroupCursor: null, groupsLoad: idlePage(), groupPages: {}, buckets: {}, sidebar: { pinned: true, collapsed: false, mobileOpen: false, expandedGroups: new Set() }, exitPending: false, workspace: { version: null, lastSessionId: null, desiredSessionId: null, dirty: false, saving: false, conflict: false, error: null, errorSource: null, sequence: 0, readSequence: 0, candidates: [], candidatesLoaded: false, recoveryError: null, prefs: { localValues: defaultPreferences(), serverValues: defaultPreferences(), dirtyFields: [], sequence: 0, loaded: false, saving: false, error: null } } };
 }
 const emptyBucket = (): SessionClientState => ({ messages: [], draft: "", request: { id: null, status: null, attempt: null, error: null, sequence: 0 }, save: { status: "idle", error: null, viewVersion: null }, load: { status: "idle", error: null, sequence: 0 }, messageEpoch: 0, historyLoaded: false, historyIds: [], historySyncError: null, activityEpoch: 0, activityGate: "clear", activityError: null, activityObservationSequence: 0, teachingStateVersion: null, profileRevision: null, teachingStateSource: null, nextMessageCursor: null, messagePageError: null, visitedMessageCursors: [], anchorRestoreSequence: 0, session: null, profile: null, profileSummary: null, teachingState: null, pendingRequests: [], readingAnchor: null, draftRevision: 0, recoveryCandidates: [], preparedCandidates: [], cancelledPreparations: [], acknowledgedPreparations: [], requestCandidates: [], resendableRequests: [], conflictedRequests: [], continuedUnassociated: {}, uncertainMatched: [], uncertainPrepared: {}, staleRequestId: null, staleDraftRevision: null, recoveryError: null, conflictView: null, requests: {}, prepared: {}, localRequests: {} });
 function mergeRequestValue(previous: RequestRecord | undefined, incoming: RequestSnapshot): RequestRecord | null {
@@ -379,18 +382,39 @@ export function createWorkspaceStore() {
     publish({ ...state, groups, buckets: { ...state.buckets, [session.session_id]: bucketFor(session.session_id) ?? emptyBucket() }, sidebar: { ...state.sidebar, expandedGroups } }); return true;
   }
   function sidebarPatch(patch: Partial<WorkspaceClientState["sidebar"]>) { publish({ ...state, sidebar: { ...state.sidebar, ...patch } }); }
+  function setWorkspacePreferences(ticket: AuthTicket, patch: Partial<WorkspacePreferences>) {
+    if (!isCurrent(ticket) || ticket.userId === null) return false;
+    const valid: Partial<WorkspacePreferences> = {};
+    if (typeof patch.pinned === "boolean") valid.pinned = patch.pinned;
+    if (typeof patch.collapsed === "boolean") valid.collapsed = patch.collapsed;
+    if (typeof patch.progressYRatio === "number") valid.progressYRatio = Number.isFinite(patch.progressYRatio) ? Math.max(0, Math.min(1, patch.progressYRatio)) : 0.5;
+    if (valid.pinned === true) valid.collapsed = false;
+    if (valid.collapsed === true) valid.pinned = false;
+    const prefs = state.workspace.prefs; const localValues = { ...prefs.localValues, ...valid };
+    const changed = (Object.keys(valid) as (keyof WorkspacePreferences)[]).filter(key => localValues[key] !== prefs.localValues[key]);
+    if (!changed.length) return true;
+    publish({ ...state, sidebar: { ...state.sidebar, pinned: localValues.pinned, collapsed: localValues.collapsed }, workspace: { ...state.workspace, prefs: { ...prefs, localValues, sequence: prefs.sequence + 1, dirtyFields: [...new Set([...prefs.dirtyFields, ...changed])], error: null } } });
+    return true;
+  }
+  function applyWorkspacePreferences(ticket: AuthTicket, serverValues: WorkspacePreferences) {
+    if (!isCurrent(ticket)) return false;
+    const prefs = state.workspace.prefs; const localValues = { ...serverValues };
+    for (const key of prefs.dirtyFields) Object.assign(localValues, { [key]: prefs.localValues[key] });
+    publish({ ...state, sidebar: { ...state.sidebar, pinned: localValues.pinned, collapsed: localValues.collapsed }, workspace: { ...state.workspace, prefs: { ...prefs, localValues, serverValues, loaded: true, error: null } } });
+    return true;
+  }
   return {
     getSnapshot: () => state,
     getServerSnapshot: () => state,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     startAccount, clearAccount: (force = true) => startAccount(null, null, force), prepareAccountTransition, recoveryWarning: () => failedRecovery,
     bootstrapAccount(userId: number | null, token: string | null) { if (!initialized || userId !== state.account.userId || token !== state.account.token) startAccount(userId, token); },
-    captureTicket, isCurrent, ensureSessionBucket, setActiveSession, syncRouteSelection: setActiveSession, beginSessionLoad, beginSessionRequest, applySessionResult, applySnapshot, patchBucket, patchWorkspace, mergeRequest,
+    captureTicket, isCurrent, ensureSessionBucket, setActiveSession, syncRouteSelection: setActiveSession, beginSessionLoad, beginSessionRequest, applySessionResult, applySnapshot, patchBucket, patchWorkspace, mergeRequest, setWorkspacePreferences, applyWorkspacePreferences,
     beginGroups, appendGroups, setGroups: appendGroups, failGroups, beginGroupPage, appendGroupSessions, failGroupPage, upsertSession,
-    collapseSidebar: () => sidebarPatch({ pinned: false, collapsed: true }),
-    expandSidebar: () => sidebarPatch({ collapsed: false }),
-    pinSidebar: () => sidebarPatch({ pinned: true, collapsed: false }),
-    toggleSidebarPin: () => sidebarPatch(state.sidebar.pinned ? { pinned: false } : { pinned: true, collapsed: false }),
+    collapseSidebar: () => setWorkspacePreferences(captureTicket(), { pinned: false, collapsed: true }),
+    expandSidebar: () => setWorkspacePreferences(captureTicket(), { collapsed: false }),
+    pinSidebar: () => setWorkspacePreferences(captureTicket(), { pinned: true, collapsed: false }),
+    toggleSidebarPin: () => setWorkspacePreferences(captureTicket(), state.sidebar.pinned ? { pinned: false } : { pinned: true, collapsed: false }),
     setMobileOpen: (mobileOpen: boolean) => sidebarPatch({ mobileOpen }),
     setExitPending(value: boolean) { publish({ ...state, exitPending: value }); },
     toggleGroup(key: string) { const expandedGroups = new Set(state.sidebar.expandedGroups); if (expandedGroups.has(key)) expandedGroups.delete(key); else expandedGroups.add(key); sidebarPatch({ expandedGroups }); },

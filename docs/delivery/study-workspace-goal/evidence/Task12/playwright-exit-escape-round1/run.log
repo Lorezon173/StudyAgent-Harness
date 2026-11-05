@@ -1,0 +1,75 @@
+
+> studyagent-web@0.1.0 e2e
+> playwright test --config=playwright.config.ts --output D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\docs\delivery\study-workspace-goal\evidence\Task12\playwright-exit-escape-round1\artifacts
+
+[WebServer] (node:47116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 25 tests using 1 worker
+
+(node:81996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×900：导航、输入与浮卡边界 (3.8s)
+  ok  2 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1440×450：导航、输入与浮卡边界 (892ms)
+  ok  3 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×900：导航、输入与浮卡边界 (1.1s)
+  ok  4 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 1024×450：导航、输入与浮卡边界 (1.2s)
+  ok  5 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×900：导航、输入与浮卡边界 (1.1s)
+  ok  6 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 760×450：导航、输入与浮卡边界 (1.0s)
+  ok  7 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×900：导航、输入与浮卡边界 (1.0s)
+  ok  8 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 600×450：导航、输入与浮卡边界 (887ms)
+  ok  9 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×900：导航、输入与浮卡边界 (974ms)
+  ok 10 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 481×450：导航、输入与浮卡边界 (930ms)
+  ok 11 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×900：导航、输入与浮卡边界 (938ms)
+  ok 12 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 480×450：导航、输入与浮卡边界 (886ms)
+  ok 13 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×900：导航、输入与浮卡边界 (883ms)
+  ok 14 e2e\workspace-layout.spec.ts:138:5 › 受控 API · 正式 React HTTP 页面 › 视口 390×450：导航、输入与浮卡边界 (838ms)
+  ok 15 e2e\workspace-layout.spec.ts:157:3 › 受控 API · 正式 React HTTP 页面 › 鼠标连续进入卡片、Escape 后保持关闭并重新进入 (707ms)
+  ok 16 e2e\workspace-layout.spec.ts:163:3 › 受控 API · 正式 React HTTP 页面 › 指针阈值、捕获、取消、键盘及请求计数 (1.8s)
+  ok 17 e2e\workspace-layout.spec.ts:197:3 › 受控 API · 正式 React HTTP 页面 › 触屏显式开关 (604ms)
+  ok 18 e2e\workspace-layout.spec.ts:201:3 › 受控 API · 正式 React HTTP 页面 › 短高内容滚动、缩放与弹窗层级 (787ms)
+  ok 19 e2e\workspace-layout.spec.ts:215:3 › 真实 HTTP · 显式配置的隔离后端 › A 保存并重登、B 隔离和深链恢复 (7.0s)
+  ok 20 e2e\workspace-layout.spec.ts:303:1 › 受控 API · 触屏手柄拖动不滚动页面 (891ms)
+  ok 21 e2e\workspace-layout.spec.ts:324:1 › 受控 API · 展开后调整短高仍遵守边界 (758ms)
+  ok 22 e2e\workspace-layout.spec.ts:330:1 › 受控 API · 同账号切会话保留比例草稿与阅读位置，浮卡交互不重取消息 (2.9s)
+  ok 23 e2e\workspace-layout.spec.ts:375:1 › 受控 API · 代表性键盘焦点与关闭详情 (1.3s)
+  x  24 e2e\workspace-layout.spec.ts:413:1 › 受控 API · 代表性短高长内容与两倍实际字号 (30.1s)
+(node:76216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 25 e2e\workspace-layout.spec.ts:485:1 › 受控 API · 代表性移动抽屉菜单与退出提示 (2.6s)
+
+
+  1) e2e\workspace-layout.spec.ts:413:1 › 受控 API · 代表性短高长内容与两倍实际字号 ─────────────────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.evaluate: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('.floating-profile-content')
+
+
+      427 |     for (const sample of observations.fonts as { baseline: number; actual: number }[]) expect(Math.abs(sample.actual - sample.baseline * 2)).toBeLessThanOrEqual(1);
+      428 |     const details = page.locator('.floating-profile-content'), sidebar = page.locator('.sidebar-groups'), messages = page.locator('[data-message-id]').first().locator('..');
+    > 429 |     const read = (selector: string) => page.locator(selector).evaluate(el => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height, top: el.scrollTop, sw: el.scrollWidth, cw: el.clientWidth, sh: el.scrollHeight, ch: el.clientHeight }; });
+          |                                                               ^
+      430 |     const regions = async () => ({ document: await read('html'), main: await read('.workspace-main'), sidebar: await read('.sidebar-groups'), messages: await messages.evaluate(el => ({ top: el.scrollTop, sw: el.scrollWidth, cw: el.clientWidth, sh: el.scrollHeight, ch: el.clientHeight })), details: await read('.floating-profile-content'), footer: await read('.sidebar-account'), composer: await read('.legacy-chat > div:has(> form)') });
+      431 |     observations.before = await regions(); const before = observations.before as Awaited<ReturnType<typeof regions>>;
+      432 |     expect(before.details.sh).toBeGreaterThan(before.details.ch); expect(before.sidebar.sh).toBeGreaterThan(before.sidebar.ch); expect(before.messages.sh).toBeGreaterThan(before.messages.ch);
+        at read (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:429:63)
+        at regions (D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:430:306)
+        at D:\backup\basic_file\Program\LearningAgent\StudyAgent-Harness\web\e2e\workspace-layout.spec.ts:466:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-exit-escape-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-exit-escape-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\error-context.md
+
+    attachment #3: long-observations.json (application/json) ───────────────────────────────────────
+    ..\docs\delivery\study-workspace-goal\evidence\Task12\playwright-exit-escape-round1\artifacts\workspace-layout-受控-API-·-代表性短高长内容与两倍实际字号\attachments\long-observations-json-b7547d6d34d8984c471a0187572b55b4a39f91ba.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    e2e\workspace-layout.spec.ts:413:1 › 受控 API · 代表性短高长内容与两倍实际字号 ──────────────────────────────────
+  24 passed (1.3m)

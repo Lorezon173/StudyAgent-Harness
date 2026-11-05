@@ -7,16 +7,16 @@
 >
 > **状态图例**：✅ 已完成 | 🚧 进行中 | ⏳ 未启动 | 💬 待讨论
 >
-> 创建：2026-07-08 ｜ 最近更新：2026-11-03
+> 创建：2026-07-08 ｜ 最近更新：2026-11-04
 
 ---
 
 ## 总揽清单
 
-### 当前工作 — Task10 先完成 A，再按原顺序推进
+### 当前工作 — A 与 Task11 已完成，按持久账本推进
 
-- [ ] **Task10 / A** 最小冲突修复与真实验收：2026-11-03 用户已批准先 A，独立计划复审通过后才实施；当前仍未完成，不将方案确认当作代码或验收完成。[A 三层 raw](superpowers/frontend-ui/2026-11-02-task10-goal-recovery-minimal-raw.md) · [A 实施计划](docs/superpowers/plans/2026-11-02-task10-goal-recovery-minimal.md)
-- [ ] **Task11 → Task12 → Task13** 按既有顺序和依赖推进，目前均 PENDING；Task11/12 页面与浮卡、Task13 完整回归及真实环境验收的明细只维护在[持久账本](docs/delivery/study-workspace-goal/progress.md)与[状态索引](docs/delivery/study-workspace-goal/status.json)，本索引不另建完成状态副本。
+- [x] **Task10 / A、Task11** 已完成；真实验收、实际本地提交及保留限制见[持久账本](docs/delivery/study-workspace-goal/progress.md)与[状态索引](docs/delivery/study-workspace-goal/status.json)。[A 三层 raw](superpowers/frontend-ui/2026-11-02-task10-goal-recovery-minimal-raw.md) · [A 实施计划](docs/superpowers/plans/2026-11-02-task10-goal-recovery-minimal.md)
+- [ ] **Task12 → Task13** 按既有顺序和依赖推进；当前阶段、历史浏览器失败及后续验收明细仅维护在上述持久账本/状态索引，本入口不复制细状态；B 仍为下述独立候选。
 
 ### 可选方向 — DEC-SESSION-001 / B 扩展恢复能力
 
