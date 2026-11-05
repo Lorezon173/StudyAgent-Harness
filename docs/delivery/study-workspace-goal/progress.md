@@ -462,3 +462,8 @@ status的Task10与current_round现为DONE，记录实际提交与最终证据。
 
 - Task12 VERIFIED_UNCOMMITTED、commit=null；[验收摘要](evidence/Task12/acceptance-summary.md)与[独立审计](evidence/Task12/acceptance-audit.md)记录最新 25/0/0：24 项受控 API、1 项真实 HTTP 账号组；428 项前端测试与构建依冻结关联沿用。原失败检查点不改，L1–L4 及独立 E2E 类型检查、联网审计限制保留。
 - Task11 DONE，Task13 PENDING；真实模型及隔离 PostgreSQL 重启持久化属 Task13。DEC-SESSION-001 的 B 扩展是独立候选，与真实账号 B 不同。清单待独审，两笔提交及实核前不得标 DONE。
+
+## 2026-11-06 Task12：第一笔产品提交已核，账本待提交
+
+- 第一笔产品提交 `4e1d15b0ba0a065af4d6246bcd5e7e4b21679791`、父提交 `a6117c48c1ff7e8877806d0862e69ff0e42f13f4`；[独立核验](evidence/Task12/local-closeout-commit-verification.md)记录 98 项与明确清单一致、索引为空及用户差异保护。Task12 记 DONE，第二笔账本提交及其自身实核仍待完成。
+- Task13 进入规划，状态保持 PENDING；待第二笔提交与实核后继续原范围的真实模型教学、隔离 PostgreSQL 重启持久化和端到端验收。Task11 结论、Task12 既有 L1–L4 与工具检查限制均保留，B 扩展仍为独立候选。

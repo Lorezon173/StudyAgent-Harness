@@ -516,10 +516,10 @@ React工作区采用已确认的纸感书房配色：左栏按本人画像主题
 
 2026-11-04 Task11已完成：真实本地提交 `bd3df180f6ef37b922674bc0e16d30d946eb9a54`，155个明确文件及空index已核，原README162行/asset34行差异保留。[分类验收汇总](docs/delivery/study-workspace-goal/evidence/Task11/acceptance-summary.md)已追记DONE；此前待提交段及全部验收限制保留为历史。下一步Task12三层规划，尚未编码；Task13未完成、B仍独立候选，未推送/部署。
 
-### Task12：画像浮卡与账号界面偏好（2026-11-04，验收通过待提交）
+### Task12：画像浮卡与账号界面偏好（2026-11-04，已完成）
 
 问答页显示当前画像摘要，支持浮卡收展、纵向拖动和键盘调整；账号级位置及侧栏偏好沿用既有工作区保存与深链恢复，不新增后端 API。新增固定 Playwright 开发依赖，使用 `npm --prefix web run e2e` 执行浏览器验收。
 
 [验收摘要](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-summary.md)与[独立审计](docs/delivery/study-workspace-goal/evidence/Task12/acceptance-audit.md)记录最新 25 项浏览器场景通过（24 项受控 API、1 项真实 HTTP 账号组），428 项前端测试及构建按冻结版本关联沿用；历史失败和 L1–L4 覆盖限制保留。独立 E2E TypeScript 检查和联网安全审计未通过。
 
-Task12 为 VERIFIED_UNCOMMITTED、尚未提交；Task11 已完成，Task13 的真实教学模型及隔离 PostgreSQL 重启持久化等验收待完成。DEC-SESSION-001 的 B 扩展为独立候选，与真实账号 B 不同。未推送或部署。
+Task12 已完成，产品提交为 `4e1d15b0ba0a065af4d6246bcd5e7e4b21679791`；Task11 已完成，Task13 进入规划，真实教学模型及隔离 PostgreSQL 重启持久化等验收待完成。DEC-SESSION-001 的 B 扩展为独立候选，与真实账号 B 不同。未推送或部署。

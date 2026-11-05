@@ -26,7 +26,7 @@
   "native_goal_status": "active",
   "branch": "codex/frontend-ui-optimization",
   "baseline_commit": "d0584d993b8293a2333acc35f3f5753a08068230",
-  "current_task": "Task12",
+  "current_task": "Task13",
   "proposed_manifest": [
     {
       "path": "docs/designs/frontend-paper-study.html",
@@ -210,8 +210,8 @@
     },
     {
       "id": "Task12",
-      "status": "VERIFIED_UNCOMMITTED",
-      "commit": null,
+      "status": "DONE",
+      "commit": "4e1d15b0ba0a065af4d6246bcd5e7e4b21679791",
       "evidence": [
         "docs/delivery/study-workspace-goal/evidence/Task12/round1-implementation-handoff.md",
         "docs/delivery/study-workspace-goal/evidence/Task12/round1-code-review.md",
@@ -263,7 +263,8 @@
         "docs/delivery/study-workspace-goal/evidence/Task12/playwright-m3-baseline-round1/exit-code.txt",
         "docs/delivery/study-workspace-goal/evidence/Task12/m3-baseline-state-review-hashes.json",
         "docs/delivery/study-workspace-goal/evidence/Task12/exit-escape-priority-web-test.log",
-        "docs/delivery/study-workspace-goal/evidence/Task12/exit-escape-priority-build.log"
+        "docs/delivery/study-workspace-goal/evidence/Task12/exit-escape-priority-build.log",
+        "docs/delivery/study-workspace-goal/evidence/Task12/local-closeout-commit-verification.md"
       ],
       "review": "功能验收及累计独审 PASS，25/0/0，详情见 acceptance-audit.md；428 项/build 按冻结版本关联沿用；L1–L4 和独立 E2E 类型检查、联网审计限制保留。",
       "blocked_reason": null,
@@ -356,19 +357,12 @@
   "execution_mode": "task10_task13_authorized_workflow",
   "round_execution_policy": "每步三层计划→独立子代理计划审查PASS→编码→独立子代理代码审查→功能验收；修复轮同样适用",
   "current_round": {
-    "task": "Task12",
-    "round": "local-closeout-preparation",
-    "plan": "docs/delivery/study-workspace-goal/evidence/Task12/m3-baseline-state-plan.md",
-    "plan_version": "BF88 M3 measurement precondition plan independently PASS; implementing E2E only",
-    "plan_sha256": "bf88ff6691815467dc8280d77bc6bd520f15817e61dc8bc40430634e779a5dac",
-    "raw_sha256": "e58574dadbaefd0c538f047d5d30ee741ab7e01c808147a27502575923ff1323",
-    "plan_review": "PASS m3-baseline-state-plan-review.md（仅计划）",
-    "status": "VERIFIED_UNCOMMITTED",
-    "planner": "m3-baseline-state plan author",
-    "reviewer": "acceptance-audit.md PASS；收口材料与清单待独审",
-    "acceptance_supplement_sha256": "17eac1f1aa58102d7aaa15a529edcd557d445eb888b56961cd47876133df5de7"
+    "task": "Task13",
+    "round": "planning",
+    "status": "PLANNING",
+    "reviewer": "待规划及独立审查"
   },
-  "next_step": "独审收口材料和明确清单；第一笔产品提交及实核后，再以第二笔记录 Task12 DONE 和真实 SHA；两笔核验后进入 Task13。",
+  "next_step": "Task12 第一笔产品提交已核；待第二笔账本提交并实核后，按原范围进行 Task13 三层规划及独立审查。",
   "scope_change": {
     "id": "SC-004",
     "status": "APPROVED",
