@@ -467,3 +467,23 @@ status的Task10与current_round现为DONE，记录实际提交与最终证据。
 
 - 第一笔产品提交 `4e1d15b0ba0a065af4d6246bcd5e7e4b21679791`、父提交 `a6117c48c1ff7e8877806d0862e69ff0e42f13f4`；[独立核验](evidence/Task12/local-closeout-commit-verification.md)记录 98 项与明确清单一致、索引为空及用户差异保护。Task12 记 DONE，第二笔账本提交及其自身实核仍待完成。
 - Task13 进入规划，状态保持 PENDING；待第二笔提交与实核后继续原范围的真实模型教学、隔离 PostgreSQL 重启持久化和端到端验收。Task11 结论、Task12 既有 L1–L4 与工具检查限制均保留，B 扩展仍为独立候选。
+
+## 2026-11-06 Task13：计划已审，环境准备及实施中
+
+- Task12 两笔提交已核：产品提交 `4e1d15b0ba0a065af4d6246bcd5e7e4b21679791`，完成记录提交 `3c9fae413309731b181e72475cf71c980531e7e4`。Task12 DONE、既有 L1–L4 与工具检查限制保留；DEC-SESSION-001 的 B 扩展仍为独立候选，与验收账号 B 不同。
+- Task13 为 IN_PROGRESS，commit=null。[原实施计划](evidence/Task13/implementation-plan.md)及[独立复审](evidence/Task13/implementation-plan-review.md) PASS；原合同手动知识点界面的[补充计划](evidence/Task13/node-ui-plan.md)和[独立计划审查](evidence/Task13/node-ui-plan-review.md) PASS，已派实施者补齐。计划审查不代表代码或功能通过。
+- [环境准备](evidence/Task13/environment-preparation.md)记录专用 PostgreSQL 容器、独立卷和随机数据库已完成正式迁移，共享实例保留且接受连接。主会话在原生环境确认本机 8317 监听，尚未证明真实模型生成；正式重启持久性和业务读写仍未验证。
+- Python 与浏览器验收设施已有初稿并完成静态收集；浏览器场景的节点步骤仍为占位，尚未接入补齐的界面。收集结果不能作为业务通过证据，代码独立 OCR 和正式功能验收均待执行。
+- 下一步完成节点界面及验收设施，按计划进行独立代码审查，随后执行真实浏览器、模型、同一数据的持久化重启、跨账号和指定回归并据实记录。SC-004 仍 IN_PROGRESS；本检查点仅更新状态与进度，未暂存、提交或部署。
+
+## 2026-11-06 Task13：验收通过，待本地交付
+
+- Task13 VERIFIED_UNCOMMITTED、commit=null；[独立证据审计](evidence/Task13/acceptance-audit.md)和[交付记录](../2026-10-23-workspace-acceptance.md)分别列出正式 26 项浏览器（24 受控、2 真实）、真实模型、同卷 PG 重启重新接入、五类资源及独立双标签。原 PG 首次 500 失败保留，不称自动无感恢复。
+- 默认后端 1362 项、数据库混合集成 67 项（42 PG、25 SQLite）、前端 452 项与构建通过；固定 Ruff 0.17.1 全仓仍有 599 条既有诊断、exit 1。Task13 的功能和证据 PASS 不等于本地提交完成，先独审清单和材料，再按计划两笔提交与实核。第二阶段及 B 扩展独立，保留既有覆盖与工具限制。
+
+## 2026-11-06 Task13：第一笔产品和验收提交已核，账本待提交
+
+- Task13 记 DONE，真实首笔产品提交 `b7484f13bc31b6e29fafb905e5a77219d75e4c41`，直接父提交 `3c9fae413309731b181e72475cf71c980531e7e4`；[首笔核验](evidence/Task13/local-closeout-commit-verification.md)记录 59 项白名单、17 项源码和用户差异保护。该记录是止于 Task13 的最终本地交付账本；第二笔父链、内容、空索引及用户差异以实际提交后的核验为准。
+- 首笔提交差异空白检查记录四处已审冻结材料的文件末尾空行，非全通过；固定 Ruff 全仓仍有 599 条既有诊断。真实 PG 重启后重新接入及历史失败、Task12 覆盖限制、第二阶段和 DEC-SESSION-001 B 独立候选均保留。
+
+- SC-004 本地交付范围记 COMPLETE；平台原生 Goal 仍为 active，由主会话在第二笔成功实核后独立更新。README/资产保护依据为增删行多重集及非空增删序列一致、README 逆向字节恢复与资产原长前缀一致；Git 空白行 hunk 对齐可能改变空白行位置，不称全部增删序列逐行一致。三个原 Task13 计划/环境历史证据仅在工作树，核心证据在首笔中，详见[核验记录](evidence/Task13/local-closeout-commit-verification.md)。

@@ -273,10 +273,19 @@
     },
     {
       "id": "Task13",
-      "status": "PENDING",
-      "commit": null,
-      "evidence": [],
-      "review": null,
+      "status": "DONE",
+      "commit": "b7484f13bc31b6e29fafb905e5a77219d75e4c41",
+      "evidence": [
+        "docs/delivery/study-workspace-goal/evidence/Task13/implementation-plan.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/implementation-plan-review.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/node-ui-plan.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/node-ui-plan-review.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/environment-preparation.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/acceptance-audit.md",
+        "docs/delivery/2026-10-23-workspace-acceptance.md",
+        "docs/delivery/study-workspace-goal/evidence/Task13/local-closeout-commit-verification.md"
+      ],
+      "review": "独立功能和证据审计 PASS；26 浏览器、1362 后端、67 数据库混合、452 前端及构建按各自范围通过；Ruff 599 既有诊断仍未通过。",
       "blocked_reason": null,
       "in_current_goal": true,
       "deferred_reason": null
@@ -358,11 +367,11 @@
   "round_execution_policy": "每步三层计划→独立子代理计划审查PASS→编码→独立子代理代码审查→功能验收；修复轮同样适用",
   "current_round": {
     "task": "Task13",
-    "round": "planning",
-    "status": "PLANNING",
-    "reviewer": "待规划及独立审查"
+    "round": "local-delivery-final-ledger",
+    "status": "SCOPE_COMPLETE_PLATFORM_GOAL_ACTIVE",
+    "reviewer": "第一笔产品与验收提交已核；最终账本范围止于 Task13，第二笔实核后主会话独立更新平台 Goal"
   },
-  "next_step": "Task12 第一笔产品提交已核；待第二笔账本提交并实核后，按原范围进行 Task13 三层规划及独立审查。",
+  "next_step": "本地交付范围止于 Task13；平台 Goal 仍为 active，由主会话在第二笔本地提交成功实核后独立更新。",
   "scope_change": {
     "id": "SC-004",
     "status": "APPROVED",
@@ -370,9 +379,9 @@
     "document": "docs/delivery/study-workspace-goal/scope-change-004-task13.md",
     "stop_after": "Task13",
     "completion_requirement": "依序完成Task10–13，每步三层计划、独立子代理计划审查、编码、独立子代理代码审查、功能验收、README与明确文件提交；Task13真实模型、PostgreSQL重启和跨账号、浏览器真实验收。",
-    "completion_status": "IN_PROGRESS"
+    "completion_status": "COMPLETE"
   },
-  "current_scope_complete": false,
+  "current_scope_complete": true,
   "automation_status": "deleted",
   "native_goal_accounting": {
     "tokens_used": 7088810,
@@ -413,7 +422,7 @@
       "document": "docs/delivery/study-workspace-goal/scope-change-004-task13.md",
       "stop_after": "Task13",
       "completion_requirement": "依序完成Task10–13，每步三层计划、独立子代理计划审查、编码、独立子代理代码审查、功能验收、README与明确文件提交；Task13真实模型、PostgreSQL重启和跨账号、浏览器真实验收。",
-      "completion_status": "IN_PROGRESS"
+      "completion_status": "COMPLETE"
     }
   ],
   "previous_native_goal": {
