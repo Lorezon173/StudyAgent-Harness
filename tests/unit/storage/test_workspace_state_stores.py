@@ -189,7 +189,10 @@ def test_session_schema1_roundtrip_messages_have_stable_ids_and_rollback(workspa
             saved = await SessionStore(db).get("s1")
             assert saved["profile_id"] == "p1" and saved["state_version"] == 0
             assert saved["state_json"] and saved["active_node_id"] == "n1"
-            assert [m["id"] for m in await MessageStore(db).list_by_session("s1")] == [first, second]
+            messages = await MessageStore(db).list_by_session("s1")
+            assert all(set(m) == {"role", "content", "turn_index", "created_at"} for m in messages)
+            ids = (await db.scalars(select(MessageTable.id).where(MessageTable.session_id == "s1").order_by(MessageTable.id))).all()
+            assert ids == [first, second]
             with pytest.raises(ValueError, match="schema"):
                 await SessionStore(db).save("s1", {"schema_version": 2})
             with pytest.raises(ValueError):
@@ -198,6 +201,8 @@ def test_session_schema1_roundtrip_messages_have_stable_ids_and_rollback(workspa
             await db.rollback()
         async with factory() as db:
             assert len(await MessageStore(db).list_by_session("s1")) == 2
+            ids = (await db.scalars(select(MessageTable.id).where(MessageTable.session_id == "s1").order_by(MessageTable.id))).all()
+            assert ids == [first, second]
     workspace_db(check)
 
 
