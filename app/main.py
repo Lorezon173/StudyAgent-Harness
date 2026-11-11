@@ -12,15 +12,23 @@ from app.api.chat_multi import router as chat_multi_router
 from app.api.chat_stream import router as chat_stream_router
 from app.api.eval import router as eval_router
 from app.api.knowledge import router as knowledge_router
+from app.api.private_library import router as private_library_router
 from app.api.profile import router as profile_router
 from app.api.sessions import router as sessions_router
-from app.core.database import init_db
+from app.api.topic_profiles import router as topic_profiles_router
+from app.api.workspace import router as workspace_router
+from app.core.database import async_session, init_db
+from app.orchestration.conversation_service import ConversationService
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
-    yield
+    app.state.conversation_service = ConversationService(async_session)
+    try:
+        yield
+    finally:
+        await app.state.conversation_service.aclose()
 
 
 app = FastAPI(title="StudyAgent", version="0.1.0", lifespan=lifespan)
@@ -33,6 +41,9 @@ app.include_router(eval_router, prefix="/api")
 app.include_router(knowledge_router, prefix="/api")
 app.include_router(sessions_router, prefix="/api")
 app.include_router(profile_router, prefix="/api")
+app.include_router(private_library_router, prefix="/api")
+app.include_router(topic_profiles_router, prefix="/api")
+app.include_router(workspace_router, prefix="/api")
 
 
 @app.get("/health")

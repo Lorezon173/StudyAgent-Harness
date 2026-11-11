@@ -1,13 +1,15 @@
+import json
 import logging
 
 from fastapi import HTTPException
+from sqlalchemy import func, select, update
 from sqlalchemy.exc import DatabaseError, IntegrityError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api._dirty_flag import DirtyFlag
 from app.harness.observability import get_observability
 from app.infrastructure.storage.message_store import MessageStore
-from app.infrastructure.storage.session_store import SessionStore
+from app.models.tables import SessionTable
 
 logger = logging.getLogger(__name__)
 
@@ -15,13 +17,24 @@ logger = logging.getLogger(__name__)
 async def ensure_session_writable(db: AsyncSession, session_id: str,
                                   user_id: int | None) -> None:
     """严格 Direction A：既有会话仅原 owner 可写，NULL owner 不可 claim。"""
-    existing_session = await SessionStore(db).get(session_id)
-    if existing_session is None:
-        return
-
-    existing_owner = existing_session.get("user_id")
-    if existing_owner is None or user_id is None or existing_owner != user_id:
+    row = await db.scalar(select(SessionTable).where(SessionTable.id == session_id)
+        .with_for_update().execution_options(populate_existing=True))
+    if row is None:
+        return None
+    if row.user_id is None or user_id is None or row.user_id != user_id:
         raise HTTPException(status_code=403, detail="无权写入该会话")
+    try:
+        state = json.loads(row.state_json)
+    except (TypeError, ValueError):
+        state = None
+    if row.workspace_entered or row.active_request_id is not None or not isinstance(state, dict) or 'schema_version' in state:
+        raise HTTPException(status_code=409, detail={"code": "workspace_session"})
+    result = await db.execute(update(SessionTable).where(SessionTable.id == session_id,
+        SessionTable.user_id == user_id, SessionTable.workspace_entered.is_(False),
+        SessionTable.active_request_id.is_(None)).values(state_version=SessionTable.state_version))
+    if result.rowcount != 1:
+        raise HTTPException(status_code=409, detail={"code": "workspace_session"})
+    return row
 
 
 def mark_user_dirty(user_id: int | None) -> None:
@@ -38,53 +51,32 @@ async def persist_turn(db: AsyncSession, session_id: str, user_id: int | None,
     成功一次 commit（C3）。
     """
     try:
-        # S1 IDOR 防护：若会话已存在且归属其他用户，拒绝写入
-        await ensure_session_writable(db, session_id, user_id)
-        session_store = SessionStore(db)
-
-        existing = await MessageStore(db).list_by_session(session_id)
-        turn_index = len(existing) // 2
-
-        title = None
-        if len(existing) == 0:
-            title = user_message.strip()[:24] if user_message.strip() else "新会话"
-
-        await session_store.save(session_id, state={}, user_id=user_id, title=title)
-        try:
-            await MessageStore(db).add(session_id, "user", user_message, turn_index)
-            await MessageStore(db).add(session_id, "assistant", reply, turn_index)
-            if graph is not None:
-                await graph.save()
-            await db.commit()
-        except IntegrityError:
-            # M1 竞态降级：并发请求可能算出相同 turn_index，重新查询并重试一次
-            await db.rollback()
-            await ensure_session_writable(db, session_id, user_id)
-            session_store = SessionStore(db)
-            existing = await MessageStore(db).list_by_session(session_id)
-            turn_index = len(existing) // 2
-            title = None
-            if len(existing) == 0:
-                title = user_message.strip()[:24] if user_message.strip() else "新会话"
-            await session_store.save(session_id, state={}, user_id=user_id, title=title)
+        for attempt in range(2):
             try:
+                row = await ensure_session_writable(db, session_id, user_id)
+                existing = await MessageStore(db).list_by_session(session_id)
+                message_next = max((item["turn_index"] for item in existing), default=-1) + 1
+                turn_index = max(row.next_turn_index or 0, message_next) if row is not None else message_next
+                if row is None:
+                    title = user_message.strip()[:24] if user_message.strip() else "新会话"
+                    row = SessionTable(id=session_id, user_id=user_id, state_json="{}", title=title)
+                    db.add(row)
+                    await db.flush()
+                else:
+                    row.state_json = "{}"
+                    row.updated_at = func.now()
                 await MessageStore(db).add(session_id, "user", user_message, turn_index)
                 await MessageStore(db).add(session_id, "assistant", reply, turn_index)
                 if graph is not None:
                     await graph.save()
+                row.next_turn_index = turn_index + 1
                 await db.commit()
-            except IntegrityError as e:
+                break
+            except IntegrityError:
                 await db.rollback()
-                try:
-                    get_observability().log("error", "persist_failure", {
-                        "session_id": session_id,
-                        "reason": "integrity_conflict_retry_exhausted",
-                        "error": str(e)
-                    })
-                except Exception as obs_err:
-                    logger.warning(f"Failed to log persist_failure: {obs_err}")
-                mark_user_dirty(user_id)
-                return None
+                if attempt:
+                    mark_user_dirty(user_id)
+                    return None
 
         # 成功时清除 dirty-flag
         if user_id is not None:

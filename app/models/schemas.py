@@ -8,6 +8,9 @@ class ChatRequest(BaseModel):
     message: str
     session_id: str = Field(default_factory=lambda: f"s-{uuid4().hex}")
     user_id: int | None = None
+    request_id: str | None = Field(None, min_length=1, max_length=64)
+    profile_id: str | None = None
+    expected_state_version: int | None = Field(None, ge=0)
 
 
 class ChatResponse(BaseModel):
@@ -20,6 +23,13 @@ class ChatResponse(BaseModel):
     cost_est_usd: float | None = None      # 本会话 LLM 估算成本（best-effort）
     stack: Literal["new"] | None = None   # 当前仅保留新栈标识
     persisted: bool = True                 # 落库是否成功（P0-② 显式暴露）
+    request_id: str | None = None
+    state_version: int | None = None
+    profile_revision: int | None = None
+    active_node_id: str | None = None
+    status: str | None = None
+    attempt: int | None = None
+    error_code: str | None = None
 
 
 class AuthRegisterRequest(BaseModel):

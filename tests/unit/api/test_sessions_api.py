@@ -1,6 +1,7 @@
 """Tests for refactored sessions API with db injection."""
 import asyncio
 
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.database import Base, get_db
@@ -8,10 +9,23 @@ from app.infrastructure.storage.message_store import MessageStore
 from app.infrastructure.storage.session_store import SessionStore
 from app.main import app
 
+_session_test_loop = None
+
+
+@pytest.fixture(scope="module", autouse=True)
+def session_test_event_loop():
+    global _session_test_loop
+    _session_test_loop = asyncio.new_event_loop()
+    try:
+        yield
+    finally:
+        _session_test_loop.close()
+        _session_test_loop = None
+
 
 def _run(coro):
-    """Run async coroutine synchronously."""
-    return asyncio.get_event_loop().run_until_complete(coro)
+    """Run async coroutine on this module's isolated event loop."""
+    return _session_test_loop.run_until_complete(coro)
 
 
 def _make_db_ctx():
