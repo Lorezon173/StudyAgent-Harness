@@ -77,118 +77,68 @@ def test_persist_turn_rolls_back_and_returns_none_on_error(db_fixture):
 
 @pytest.mark.asyncio
 async def test_persist_success_returns_turn_index_and_clears_dirty():
-    """persist 成功返回 turn_index，清除 dirty-flag"""
     db = AsyncMock()
-    graph = MagicMock()
-    graph.save = AsyncMock()  # 必须是 AsyncMock 才能 await
-
-    with patch("app.api._persist.MessageStore") as mock_store, \
-         patch("app.api._persist.SessionStore") as mock_session, \
-         patch("app.api._persist.DirtyFlag") as mock_dirty, \
+    row = MagicMock(next_turn_index=1)
+    graph = MagicMock(save=AsyncMock())
+    with patch("app.api._persist.ensure_session_writable", AsyncMock(return_value=row)), \
+         patch("app.api._persist.MessageStore") as messages, \
+         patch("app.api._persist.DirtyFlag") as dirty, \
          patch("app.api._persist.get_observability"):
-        # 设置 MessageStore 实例的方法
-        mock_store.return_value.list_by_session = AsyncMock(return_value=[{"role": "user"}, {"role": "assistant"}])
-        mock_store.return_value.add = AsyncMock()
-
-        # 设置 SessionStore 实例的方法
-        mock_session.return_value.get = AsyncMock(return_value=None)
-        mock_session.return_value.save = AsyncMock()
-
-        result = await persist_turn(db, "sess1", 1, "user msg", "reply", graph)
-
-        assert result == 1  # len([user, assistant]) // 2 = 1
-        db.commit.assert_called_once()
-        graph.save.assert_called_once()
-        mock_dirty.clear_dirty.assert_called_once_with(1)
+        messages.return_value.list_by_session = AsyncMock(return_value=[])
+        messages.return_value.add = AsyncMock()
+        assert await persist_turn(db, "s", 1, "message", "reply", graph) == 1
+        db.commit.assert_awaited_once()
+        graph.save.assert_awaited_once()
+        dirty.clear_dirty.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
 async def test_persist_integrity_error_returns_none_no_clear():
-    """IntegrityError（唯一约束冲突）返回 None，不清 dirty"""
     db = AsyncMock()
     db.commit.side_effect = IntegrityError("", "", "")
-
-    with patch("app.api._persist.MessageStore"), \
-         patch("app.api._persist.SessionStore"), \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
-        result = await persist_turn(db, "sess1", 1, "msg", "reply", None)
-
-        assert result is None
-        db.rollback.assert_called_once()
-        mock_dirty.clear_dirty.assert_not_called()
-        mock_dirty.mark_dirty.assert_called_once_with(1)
-
-
-@pytest.mark.asyncio
-async def test_persist_uses_log_not_log_event():
-    """修复 log_event bug，改用 log()"""
-    db = AsyncMock()
-    db.commit.side_effect = Exception("DB error")
-
-    with patch("app.api._persist.get_observability") as mock_obs, \
-         patch("app.api._persist.MessageStore"), \
-         patch("app.api._persist.SessionStore"), \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
-        await persist_turn(db, "sess1", 1, "msg", "reply", None)
-
-        # 验证调用 log() 而非 log_event()
-        mock_obs.return_value.log.assert_called_once()
-        args = mock_obs.return_value.log.call_args[0]
-        assert args[0] == "error"
-        assert args[1] == "persist_failure"  # 修复：实际事件名是 persist_failure
-        mock_dirty.mark_dirty.assert_called_once_with(1)
+    with patch("app.api._persist.ensure_session_writable", AsyncMock(return_value=MagicMock(next_turn_index=0))), \
+         patch("app.api._persist.MessageStore") as messages, \
+         patch("app.api._persist.DirtyFlag") as dirty:
+        messages.return_value.list_by_session = AsyncMock(return_value=[])
+        messages.return_value.add = AsyncMock()
+        assert await persist_turn(db, "s", 1, "message", "reply") is None
+        assert db.rollback.await_count == 2
+        dirty.clear_dirty.assert_not_called()
+        dirty.mark_dirty.assert_called_once_with(1)
 
 
 @pytest.mark.asyncio
-async def test_persist_operational_error_returns_none_and_logs():
-    """OperationalError（连接丢失/锁超时）返回 None，标记 reason=db_layer_error"""
+@pytest.mark.parametrize("error,reason", [(RuntimeError("failure"), "programming_error"),
+                                          (OperationalError("", "", Exception("lost")), "db_layer_error")])
+async def test_persist_errors_log_and_mark_dirty(error, reason):
     db = AsyncMock()
-    db.commit.side_effect = OperationalError("", "", Exception("connection lost"))
-
-    with patch("app.api._persist.MessageStore") as mock_store, \
-         patch("app.api._persist.SessionStore") as mock_session, \
-         patch("app.api._persist.get_observability") as mock_obs, \
-         patch("app.api._persist.DirtyFlag") as mock_dirty:
-        # MessageStore/SessionStore 需要 AsyncMock 才能 await
-        mock_store.return_value.list_by_session = AsyncMock(return_value=[])
-        mock_store.return_value.add = AsyncMock()
-        mock_session.return_value.get = AsyncMock(return_value=None)
-        mock_session.return_value.save = AsyncMock()
-
-        result = await persist_turn(db, "sess1", 1, "msg", "reply", None)
-
-        assert result is None
-        db.rollback.assert_called_once()
-        mock_dirty.clear_dirty.assert_not_called()
-        mock_dirty.mark_dirty.assert_called_once_with(1)
-        # 验证观测性日志 reason 为 db_layer_error
-        mock_obs.return_value.log.assert_called_once()
-        args = mock_obs.return_value.log.call_args[0]
-        assert args[0] == "error"
-        assert args[1] == "persist_failure"
-        assert args[2]["reason"] == "db_layer_error"
+    db.commit.side_effect = error
+    with patch("app.api._persist.ensure_session_writable", AsyncMock(return_value=MagicMock(next_turn_index=0))), \
+         patch("app.api._persist.MessageStore") as messages, \
+         patch("app.api._persist.get_observability") as observer, \
+         patch("app.api._persist.DirtyFlag") as dirty:
+        messages.return_value.list_by_session = AsyncMock(return_value=[])
+        messages.return_value.add = AsyncMock()
+        assert await persist_turn(db, "s", 1, "message", "reply") is None
+        db.rollback.assert_awaited_once()
+        dirty.mark_dirty.assert_called_once_with(1)
+        args = observer.return_value.log.call_args[0]
+        assert args[0:2] == ("error", "persist_failure") and args[2]["reason"] == reason
 
 
 @pytest.mark.asyncio
 async def test_persist_retry_rechecks_owner_before_writing_messages():
-    """A conflicting retry must not write messages after ownership changes."""
+    from fastapi import HTTPException
     db = AsyncMock()
-    db.commit.side_effect = [IntegrityError("", "", ""), None]
-
-    with patch("app.api._persist.MessageStore") as mock_messages, \
-         patch("app.api._persist.SessionStore") as mock_sessions, \
-         patch("app.api._persist.get_observability"), \
-         patch("app.api._persist.DirtyFlag"):
-        mock_sessions.return_value.get = AsyncMock(
-            side_effect=[None, {"session_id": "sess1", "user_id": 2}]
-        )
-        mock_sessions.return_value.save = AsyncMock()
-        mock_messages.return_value.list_by_session = AsyncMock(return_value=[])
-        mock_messages.return_value.add = AsyncMock()
-
-        with pytest.raises(Exception) as exc_info:
-            await persist_turn(db, "sess1", 1, "msg", "reply", None)
-
-        assert getattr(exc_info.value, "status_code", None) == 403
-        assert mock_messages.return_value.add.await_count == 2
-        assert db.rollback.await_count == 1
+    db.add = MagicMock()
+    db.flush.side_effect = IntegrityError("", "", "")
+    guard = AsyncMock(side_effect=[None, HTTPException(403, "forbidden")])
+    with patch("app.api._persist.ensure_session_writable", guard), \
+         patch("app.api._persist.MessageStore") as messages:
+        messages.return_value.list_by_session = AsyncMock(return_value=[])
+        messages.return_value.add = AsyncMock()
+        with pytest.raises(HTTPException) as error:
+            await persist_turn(db, "s", 1, "message", "reply")
+        assert error.value.status_code == 403
+        messages.return_value.add.assert_not_awaited()
+        db.rollback.assert_awaited_once()

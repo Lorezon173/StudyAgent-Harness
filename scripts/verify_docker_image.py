@@ -308,8 +308,15 @@ with e.begin() as c:
 SNAPSHOT = """
 with e.connect() as c:
  result={}
- for table in ('users','sessions','messages','mastery_nodes','mastery_edges'):
-  rows=[dict(row) for row in c.execute(text('SELECT * FROM '+table)).mappings()]
+ columns={
+  'users':'id,username,created_at',
+  'sessions':'id,user_id,state_json,title,created_at,updated_at',
+  'messages':'id,session_id,role,content,turn_index,created_at',
+  'mastery_nodes':'user_id,topic_id,topic_name,mastery,last_practiced_at,practice_count,confusion_with,rationale',
+  'mastery_edges':'id,user_id,from_topic,to_topic,type,weight,confidence,source',
+ }
+ for table,fields in columns.items():
+  rows=[dict(row) for row in c.execute(text('SELECT '+fields+' FROM '+table)).mappings()]
   for row in rows:
    row.pop('password_hash',None)
    if 'user_id' in row: row['user_id']=str(row['user_id'])
@@ -324,6 +331,8 @@ for table in ('mastery_nodes','mastery_edges'):
  assert 'INT' in str(col['type']).upper()
  assert any(f['referred_table']=='users' and f['constrained_columns']==['user_id'] for f in i.get_foreign_keys(table))
 assert 'chunk_id' in {c['name'] for c in i.get_columns('vector_chunks')}
+assert {'profile_id','active_node_id','state_version','next_turn_index','active_request_id','workspace_entered'} <= {c['name'] for c in i.get_columns('sessions')}
+assert {'topic_profiles','profile_nodes','profile_edges','chat_requests','profile_evidence','session_view_states','user_workspace_states','library_items'} <= set(i.get_table_names())
 with e.connect() as c:
  from alembic.config import Config
  from alembic.script import ScriptDirectory

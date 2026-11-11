@@ -1,14 +1,18 @@
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     JSON,
+    Boolean,
+    CheckConstraint,
     Column,
     DateTime,
     Float,
     ForeignKey,
+    ForeignKeyConstraint,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    false,
 )
 from sqlalchemy.sql import func
 
@@ -31,6 +35,23 @@ class SessionTable(Base):
     title = Column(String(128), default="")
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    profile_id = Column(String(36), nullable=True)
+    active_node_id = Column(String(36), nullable=True)
+    workspace_entered = Column(Boolean, nullable=False, default=False, server_default=false())
+    state_version = Column(Integer, nullable=False, default=0, server_default="0")
+    next_turn_index = Column(Integer, nullable=False, default=0, server_default="0")
+    active_request_id = Column(String(64), nullable=True)
+    __table_args__ = (
+        UniqueConstraint("user_id", "id", name="uq_session_owner"),
+        UniqueConstraint("user_id", "id", "profile_id", name="uq_session_profile_owner"),
+        ForeignKeyConstraint(["user_id", "profile_id"], ["topic_profiles.user_id", "topic_profiles.id"], name="fk_session_profile_owner"),
+        ForeignKeyConstraint(["profile_id", "active_node_id"], ["profile_nodes.profile_id", "profile_nodes.id"], name="fk_session_active_node"),
+        ForeignKeyConstraint(["user_id", "id", "active_request_id"], ["chat_requests.user_id", "chat_requests.session_id", "chat_requests.request_id"], name="fk_session_active_request", use_alter=True),
+        CheckConstraint("profile_id IS NULL OR user_id IS NOT NULL", name="ck_session_profile_owner"),
+        CheckConstraint("active_node_id IS NULL OR profile_id IS NOT NULL", name="ck_session_node_profile"),
+        CheckConstraint("active_request_id IS NULL OR user_id IS NOT NULL", name="ck_session_request_owner"),
+        CheckConstraint("state_version >= 0 AND next_turn_index >= 0", name="ck_session_versions"),
+    )
 
 
 class MessageTable(Base):
@@ -42,6 +63,7 @@ class MessageTable(Base):
     turn_index = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     __table_args__ = (
+        UniqueConstraint("session_id", "id", name="uq_message_session_id"),
         UniqueConstraint("session_id", "turn_index", "role",
                          name="uq_message_turn"),
     )

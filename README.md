@@ -207,7 +207,7 @@ app/                            # 事件驱动新栈（主体）
 └── ui/ · worker/               # Chainlit / Celery（均为可选桩）
 
 web/                            # React 18 + Vite 前端（pages: Chat/Knowledge/Login/Profile）
-alembic/versions/               # 7 个迁移：init → vector_chunks → ragas_context_recall → message_unique_constraint → session_user_id 回填 → M3 user_id 类型统一 → vector_chunk_id
+alembic/versions/               # 数据库迁移，包含工作区、主题画像和私有知识库
 tests/                          # 默认：597 passed / 1 skipped / 8 deselected（实测全绿）
 scripts/                        # 辅助工具（测试集生成 generate_ragas_testset + κ 校准 refine_testset/kappa_calibration）
 Dockerfile                      # 多阶段：node 构建前端 → uv 装后端 → 精简 runtime（启动自跑 alembic 迁移）
@@ -309,7 +309,7 @@ store = SessionStore(db=None)
 
 `SessionStore` 契约：`title` 首写生效（first-write-wins）；`save()` 不内部 commit；`list_by_user()` 统一返回 `{session_id, title, updated_at}`，按 updated_at 降序。
 
-迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_context_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）→ `d50dd837b8e6`（回填 sessions.user_id）→ `m3_unify_user_id_type`（MasteryNode/Edge 两表 user_id 从 String 统一为 Integer + ForeignKey，与 session/knowledge/vector_chunk 对齐）→ `20260729_chunk_id`（vector_chunks 增加可空 `chunk_id` provenance 列）。
+迁移链（`alembic/versions/`）：`d48d7137f57f`（初始 5 表）→ `20260622_vector_chunks`（向量表，PG 建 vector 扩展）→ `20260623_ragas_recall`（evals 加 context_recall 列）→ `0208fcea3709`（messages 加 `(session_id, turn_index, role)` 唯一约束）→ `d50dd837b8e6`（回填 sessions.user_id）→ `m3_unify_user_id_type`（MasteryNode/Edge 两表 user_id 从 String 统一为 Integer + ForeignKey，与 session/knowledge/vector_chunk 对齐）→ `20260729_chunk_id`（vector_chunks 增加可空 `chunk_id` provenance 列）→ `20261023_topic_profiles` → `20261023_session_workspace_state` → `20261023_private_library` → `20261111_workspace_entered`。
 
 ## 关键枚举
 
@@ -451,3 +451,15 @@ ClassVar 明确共享契约，原容器类型不变。向量批次先校验文�
 完整回归日志：`artifacts/ruff/remediation-tests.log` / `.xml`；整改后正式双跑证据使用
 `artifacts/ruff/remediated-1`、`remediated-2`，原 final-1/final-2 保留。
 复现时使用从未存在的新输出目录，不覆盖历史证据。
+
+## 学习工作区
+
+登录后可按主题浏览和切换会话，在聊天区继续学习；侧栏支持会话分组，画像展示主题节点与服务端返回的掌握数据，知识库提供私有文本条目的查看和管理。未评估内容显示为待评估，界面不生成评分或证据。桌面及窄屏布局均支持键盘操作。
+
+会话消息、活动节点、草稿和阅读位置通过会话及工作区接口恢复；本地恢复数据按账号隔离，保存状态以服务端确认和版本为准。请求中断时可读取请求状态并按服务端合同重试。登录账户改变时，旧账户的在途结果不会写入当前视图。
+
+前端使用 Node 20：在 `web` 目录执行 `npm ci`、`npm test`、`npm run build`；开发服务器和后端启动方式见上方快速开始。部署前对目标数据库执行 `uv run alembic upgrade head`；当前迁移 head 为 `20261111_workspace_entered`。在线教学仍需上文所列 PostgreSQL、pgvector 和模型配置。
+
+新增认证接口包括 `/api/workspace-state`、`/api/topic-profiles`、`/api/private-library` 和扩展的 `/api/sessions`；私有知识库按账号隔离。原有公开 `/api/knowledge` 接口保留，旧知识数据不会自动迁入私有库。既有 `message/session_id` 聊天入口继续作为旧客户端的兼容入口。已进入工作区的会话拒绝旧格式写入；升级时仅自动关联历史画像的纯旧会话仍可使用旧格式。
+
+受控布局验收使用 `npm run e2e -- workspace-layout.spec.ts`；设置 `PLAYWRIGHT_BROWSER_EXECUTABLE` 可指定浏览器。真实非模型 HTTP 恢复验收需独立的回环 API、测试账号和隔离数据库，通过 `TASK12_ISOLATED_API` 指定地址。真实教学评分验收以及新增教学策略、Embedding 和检索变更留待后续工作；受控界面测试不代表真实模型教学通过。

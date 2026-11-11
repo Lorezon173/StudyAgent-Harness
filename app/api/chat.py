@@ -2,13 +2,15 @@ import asyncio
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api._dirty_flag import DirtyFlag
+from app.api._disconnect import observe_http_disconnect
 from app.api._persist import ensure_session_writable, persist_turn
 from app.core.database import async_session
 from app.core.security import get_current_user
 from app.harness.mastery_graph import MasteryGraph
+from app.infrastructure.storage.chat_request_store import WorkspaceConflict
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
 from app.models.schemas import ChatRequest, ChatResponse
 
@@ -16,8 +18,21 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 logger = logging.getLogger(__name__)
 
 
-@router.post("", response_model=ChatResponse)
-async def chat(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)]):
+def conversation_service(request):
+    service = getattr(request.app.state, 'conversation_service', None)
+    if service is None:
+        raise HTTPException(503, {'code': 'conversation_service_unavailable'})
+    return service
+
+
+@router.post("", response_model=ChatResponse, response_model_exclude_unset=True)
+async def chat(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)], request: Request = None):
+    if req.request_id is not None:
+        try:
+            async with observe_http_disconnect(request) as disconnected:
+                return await conversation_service(request).submit_turn(current_user['user_id'], req, disconnect_event=disconnected)
+        except WorkspaceConflict as error:
+            raise HTTPException(409, {'code': error.code}) from error
     from app.orchestration.assembly import (
         OnlineRAGCompositionError,
         run_online_agent_session,

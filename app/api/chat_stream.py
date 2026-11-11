@@ -2,17 +2,21 @@ import asyncio
 import json
 import logging
 import sys
+import threading
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+import anyio
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 from app.api._dirty_flag import DirtyFlag
 from app.api._persist import ensure_session_writable, persist_turn
 from app.api._sse_projection import project_event
+from app.api.chat import conversation_service
 from app.core.database import async_session
 from app.core.security import get_current_user
 from app.harness.mastery_graph import MasteryGraph
+from app.infrastructure.storage.chat_request_store import WorkspaceConflict
 from app.infrastructure.storage.sqlalchemy_mastery_store import SQLAlchemyMasteryStore
 from app.models.schemas import ChatRequest
 
@@ -23,7 +27,9 @@ _SENTINEL = object()
 
 
 @router.post("/stream")
-async def chat_stream(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)]):
+async def chat_stream(req: ChatRequest, current_user: Annotated[dict, Depends(get_current_user)], request: Request = None):
+    if req.request_id is not None:
+        return await workspace_stream(req, request, current_user)
     from app.orchestration.assembly import (
         OnlineRAGCompositionError,
         run_online_agent_session,
@@ -101,8 +107,11 @@ async def chat_stream(req: ChatRequest, current_user: Annotated[dict, Depends(ge
                 )
             turn_count = (turn_index + 1) if turn_index is not None else None
             was_persisted = turn_index is not None
-        except HTTPException:
-            raise
+        except HTTPException as error:
+            detail = error.detail if isinstance(error.detail, dict) else {}
+            code = detail.get("code", "SESSION_WRITE_REJECTED")
+            yield f"data: {json.dumps({'type': 'error', 'code': code, 'message': '会话不可写，消息未保存', 'retryable': False}, ensure_ascii=False)}\n\n"
+            return
         except Exception as e:
             logger.exception("stream persist stage failed for session %s", req.session_id)
             # Fallback: if logging is not configured (e.g. test env), print to stderr
@@ -119,3 +128,85 @@ async def chat_stream(req: ChatRequest, current_user: Annotated[dict, Depends(ge
         yield f"data: {json.dumps(final, ensure_ascii=False)}\n\n"
 
     return StreamingResponse(generate_new(), media_type="text/event-stream")
+
+
+class PreparedTurnStreamingResponse(StreamingResponse):
+    def __init__(self, content, *, service, prepared, close):
+        super().__init__(content, media_type='text/event-stream')
+        self.service, self.prepared, self.close = service, prepared, close
+
+    async def __call__(self, scope, receive, send):
+        try:
+            await super().__call__(scope, receive, send)
+        finally:
+            self.close()
+            with anyio.CancelScope(shield=True):
+                await asyncio.shield(self.service.cancel_owned(self.prepared))
+
+
+def frame(value):
+    return 'data: ' + json.dumps(value, ensure_ascii=False) + '\n\n'
+
+
+def project_response(response):
+    body = response.model_dump(mode='json')
+    if response.persisted and response.status == 'completed':
+        return {'type':'final', **body}
+    if response.status == 'running':
+        return {'type':'status', **body}
+    return {'type':'error', **body, 'code':'AGENT_ERROR' if response.error_code == 'turn_failed' else response.error_code or 'TURN_FAILED',
+        'message':'处理过程中发生错误', 'retryable':False}
+
+
+async def workspace_stream(req, request, current_user):
+    service = conversation_service(request)
+    queue = asyncio.Queue()
+    closed = threading.Event()
+    loop = asyncio.get_running_loop()
+    def deliver(event):
+        if not closed.is_set():
+            queue.put_nowait(event)
+    def callback(event):
+        if closed.is_set():
+            return
+        try:
+            loop.call_soon_threadsafe(deliver, event)
+        except RuntimeError:
+            pass
+    try:
+        prepared = await service.prepare_request(current_user['user_id'], req)
+    except WorkspaceConflict as error:
+        raise HTTPException(409, {'code':error.code}) from error
+    try:
+        async def generate():
+            task = None
+            try:
+                task = asyncio.create_task(service.run_claim(prepared, on_event=callback))
+                task.add_done_callback(lambda _: deliver(_SENTINEL))
+                while True:
+                    event = await queue.get()
+                    if event is _SENTINEL:
+                        break
+                    projected = project_event(event)
+                    if projected is not None:
+                        yield frame(projected)
+                try:
+                    yield frame(project_response(await task))
+                except HTTPException as error:
+                    detail = error.detail if isinstance(error.detail,dict) else {}
+                    code = detail.get('error_code', detail.get('code','TURN_FAILED'))
+                    current = await service.cancel_owned(prepared)
+                    yield frame({'type':'error','code':'RAG_BACKEND_UNAVAILABLE' if code == 'backend_unavailable' else code,
+                        'error_code':code,'message':detail.get('message','教学回合未保存'),'retryable':False,
+                        'request_id':prepared.request_id,'status':current.status,'attempt':current.attempt,'persisted':False})
+            finally:
+                closed.set()
+                with anyio.CancelScope(shield=True):
+                    await asyncio.shield(service.cancel_owned(prepared))
+                    if task is not None:
+                        await asyncio.gather(task, return_exceptions=True)
+        return PreparedTurnStreamingResponse(generate(), service=service, prepared=prepared, close=closed.set)
+    except asyncio.CancelledError:
+        closed.set()
+        await asyncio.shield(service.cancel_owned(prepared))
+        raise
