@@ -46,7 +46,7 @@ class MessageStore:
     async def list_by_session(self, session_id: str) -> list[dict]:
         """Return messages for a session, ordered by id ascending (R2).
 
-        Returns a list of dicts with keys: {id, role, content, turn_index, created_at}.
+        Returns a list of dicts with keys: {role, content, turn_index, created_at}.
         """
         if self.db:
             result = await self.db.execute(
@@ -56,7 +56,6 @@ class MessageStore:
             )
             return [
                 {
-                    "id": r.id,
                     "role": r.role,
                     "content": r.content,
                     "turn_index": r.turn_index,
@@ -67,7 +66,6 @@ class MessageStore:
         else:
             return [
                 {
-                    "id": m["id"],
                     "role": m["role"],
                     "content": m["content"],
                     "turn_index": m["turn_index"],
