@@ -114,4 +114,3 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
     {exitError && <div className="workspace-exit-overlay"><div className="workspace-exit-dialog" role="dialog" aria-label="退出登录"><p>部分内容未保存到服务器</p>{failedItems.map((item, index) => <p key={index}>{item.kind === "workspace" ? "最近会话未保存" : item.kind === "preferences" ? "界面偏好未保存" : `会话 ${item.sessionId} 的${item.kind === "draft" ? "草稿" : item.kind === "prepared" ? "待发送内容" : "请求"}未保存`}{item.itemId ? ` / ${item.itemId}` : ""}</p>)}{backupError && <p role="alert">本机备份失败，请重试或留在页面</p>}<button type="button" onClick={() => void requestLogout()}>重试保存</button><button type="button" onClick={logoutWithBackup}>退出并保留本机草稿</button><button type="button" autoFocus onClick={() => { setExitError(false); workspaceStore.setExitPending(false); }}>留在页面</button></div></div>}
   </div>;
 }
-

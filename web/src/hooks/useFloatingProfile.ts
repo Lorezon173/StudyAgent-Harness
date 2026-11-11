@@ -80,6 +80,3 @@ export function useFloatingProfile({ hostRef, topbarRef, composerRef, ratio, ses
   const onClickCapture = (event: ReactMouseEvent<HTMLDivElement>) => { if (performance.now() < suppressUntil.current) { event.preventDefault(); event.stopPropagation(); } };
   return { containerRef, triggerRef, open, dragging, top: bounds ? ratioToTop(currentRatio, bounds) : undefined, maxHeight: bounds?.availableHeight, containerEvents: { onPointerEnter, onPointerLeave, onFocus, onBlur, onClickCapture }, toggle, onTriggerPointerDown: () => { pointerActivation.current = true; }, onTriggerPointerCancel: () => { pointerActivation.current = false; }, handleEvents: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel, onLostPointerCapture: onPointerCancel, onKeyDown: onHandleKeyDown } };
 }
-
-
-

@@ -117,4 +117,3 @@ it('touch activation opens even when the browser focuses the button before click
   fireEvent(trigger, event); fireEvent.focus(trigger); fireEvent.click(trigger);
   expect(trigger.getAttribute('aria-expanded')).toBe('true');
 });
-

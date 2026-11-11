@@ -112,4 +112,3 @@ export function getLocalRecovery() {
   if (!recovery) recovery = createLocalRecovery(localStorage);
   return recovery;
 }
-

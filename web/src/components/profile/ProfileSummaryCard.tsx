@@ -11,4 +11,3 @@ export default function ProfileSummaryCard({ profile, summary, activeNodeId, com
     {activeNodeId !== null && <p>当前知识点：{active?.title ?? "未选择或已归档"}</p>}
   </aside>;
 }
-
